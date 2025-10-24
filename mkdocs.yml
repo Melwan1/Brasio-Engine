@@ -1,0 +1,6 @@
+site_name: Brasio Engine Documentation
+theme: readthedocs
+
+nav:
+  - Home: index.md
+  - Events: events/index.md
