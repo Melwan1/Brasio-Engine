@@ -1,24 +1,23 @@
-add_executable(brasio)
+add_library(libevents)
 
-set_target_properties(brasio PROPERTIES
+set_target_properties(libevents PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    OUTPUT_NAME events
 )
 
-target_include_directories(brasio PRIVATE
+target_include_directories(libevents PRIVATE
     ${OPENGL_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(brasio PRIVATE
+target_link_libraries(libevents PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
     GLEW::GLEW
 )
 
-add_subdirectory(events)
-
-target_sources(brasio PRIVATE
-    main.cc
+target_sources(libevents PRIVATE
+    libevents.cc
 )
