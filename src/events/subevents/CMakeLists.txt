@@ -1,0 +1,18 @@
+target_sources(libevents PRIVATE
+    application-render.cc
+    application-tick.cc
+    application-update.cc
+    keyboard-long-press.cc
+    keyboard-press.cc
+    keyboard-release.cc
+    mouse-click.cc
+    mouse-move.cc
+    mouse-release.cc
+    mouse-scroll.cc
+    unknown.cc
+    window-close.cc
+    window-focus.cc
+    window-lost-focus.cc
+    window-move.cc
+    window-resize.cc
+)

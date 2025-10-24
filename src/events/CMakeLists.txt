@@ -22,3 +22,6 @@ target_sources(libevents PRIVATE
     event-validator.cc
     event.hxx
 )
+
+add_subdirectory(categories)
+add_subdirectory(subevents)
