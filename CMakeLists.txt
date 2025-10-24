@@ -14,3 +14,5 @@ project(BrasioEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast)
+
+add_subdirectory(tests)
