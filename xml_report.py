@@ -32,8 +32,7 @@ for testsuite in root.findall('testsuite'):
     for testcase in testsuite.findall('testcase'):
         classname = testcase.get('classname')
         if classname:
-            word_array = re.findall(r'[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))', classname)
-            testcase.set('classname', 'BrasioEngine.' + '.'.join(word_array))
+            testcase.set('classname', 'BrasioEngine.' + '.'.join(classname.split('_')))
 
         merged_suite.append(testcase)
 

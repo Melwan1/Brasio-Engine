@@ -19,6 +19,6 @@ target_link_libraries(libevents PRIVATE
 )
 
 target_sources(libevents PRIVATE
-    libevents.cc
+    event-validator.cc
     event.hxx
 )
