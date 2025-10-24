@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include <events/event.hh>
+#include <events/libevents.hh>
 
 TEST(Events, event_constructor_id)
 {
-    Event<void, void> event1;
-    Event<void, void> event2;
+    Event<void, void> event1(EVENT_CATEGORY_UNKNOWN, EVENT_UNKNOWN);
+    Event<void, void> event2(EVENT_CATEGORY_UNKNOWN, EVENT_UNKNOWN);
     EXPECT_EQ(event2.get_id() - event1.get_id(), 1)
         << "Expected two successive generated events to have their id "
            "incremented by 1, got "

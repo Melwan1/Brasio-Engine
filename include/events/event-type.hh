@@ -1,0 +1,9 @@
+#pragma once
+
+enum EventType
+{
+    EVENT_KEYBOARD_PRESS = 1,
+    EVENT_KEYBOARD_LONGPRESS,
+    EVENT_KEYBOARD_RELEASE,
+    EVENT_UNKNOWN = 0
+};

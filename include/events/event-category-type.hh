@@ -1,0 +1,9 @@
+#pragma once
+
+enum EventCategoryType
+{
+    EVENT_CATEGORY_KEYBOARD = 0b001,
+    EVENT_CATEGORY_MOUSE = 0b010,
+    EVENT_CATEGORY_APPLICATION = 0b100,
+    EVENT_CATEGORY_UNKNOWN = 0b0000
+};
