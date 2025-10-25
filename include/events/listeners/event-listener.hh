@@ -5,6 +5,7 @@
 class EventListener
 {
 public:
+    virtual ~EventListener() = default;
     virtual void onEvent(ApplicationRenderEvent &) = 0;
     virtual void onEvent(ApplicationTickEvent &) = 0;
     virtual void onEvent(ApplicationUpdateEvent &) = 0;

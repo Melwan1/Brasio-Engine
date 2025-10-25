@@ -5,6 +5,7 @@
 class EventEmitter
 {
 public:
+    virtual ~EventEmitter() = default;
     virtual void fire(ApplicationRenderEvent &) = 0;
     virtual void fire(ApplicationTickEvent &) = 0;
     virtual void fire(ApplicationUpdateEvent &) = 0;
