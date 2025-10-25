@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/emitters/emitters.hh>
+#include <events/emitters/default-event-emitter.hh>
 #include <events/listeners/application-event-listener.hh>
 
 class ApplicationEventEmitter : public DefaultEventEmitter

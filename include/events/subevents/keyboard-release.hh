@@ -9,6 +9,8 @@ public:
 
     char getPressedKey() const;
 
+    static KeyboardReleaseEvent create(int key, int scancode, int mods);
+
 private:
     char _pressedKey;
 };
