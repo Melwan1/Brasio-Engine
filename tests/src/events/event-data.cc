@@ -2,6 +2,7 @@
 
 #include <events/libevents.hh>
 #include "events/subevents/mouse-release.hh"
+#include "events/subevents/mouse-scroll.hh"
 
 TEST(Events_Event_Data_Keyboard_Press, upperA)
 {
@@ -238,4 +239,20 @@ TEST(Events_Event_Data_Mouse_Release, right)
         MouseReleaseEvent::MOUSE_RELEASE_RIGHT;
     MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+}
+
+TEST(Events_Event_Data_Mouse_Scroll, up)
+{
+    enum MouseScrollEvent::MouseScrollDirection mouseScrollDirection =
+        MouseScrollEvent::MOUSE_SCROLL_UP;
+    MouseScrollEvent event(mouseScrollDirection);
+    EXPECT_EQ(event.getDirection(), mouseScrollDirection);
+}
+
+TEST(Events_Event_Data_Mouse_Scroll, down)
+{
+    enum MouseScrollEvent::MouseScrollDirection mouseScrollDirection =
+        MouseScrollEvent::MOUSE_SCROLL_DOWN;
+    MouseScrollEvent event(mouseScrollDirection);
+    EXPECT_EQ(event.getDirection(), mouseScrollDirection);
 }
