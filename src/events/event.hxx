@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/event.hh>
+#include <events/libevents.hh>
 
 template <typename CategoryType, typename SubEventType>
 size_t Event<CategoryType, SubEventType>::_sequenceId = 0;
@@ -14,14 +14,22 @@ size_t Event<CategoryType, SubEventType>::generateId()
 template <typename CategoryType, typename SubEventType>
 Event<CategoryType, SubEventType>::Event(enum EventCategoryType categoryType, enum EventType eventType)
     : _id(generateId())
+    , _creationTime(std::chrono::steady_clock::now())
     , _categoryType(categoryType)
     , _eventType(eventType)
+    , _handled(false)
 {}
 
 template<typename CategoryType, typename SubEventType>
 size_t Event<CategoryType, SubEventType>::getId() const
 {
     return _id;
+}
+
+template<typename CategoryType, typename SubEventType>
+std::chrono::steady_clock::time_point Event<CategoryType, SubEventType>::getCreationTime() const
+{
+    return _creationTime;
 }
 
 template <typename CategoryType, typename SubEventType>
