@@ -512,3 +512,75 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, up7left8)
     WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
 }
+
+TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, toggle)
+{
+    bool toggleFullScreen = true;
+    unsigned sizeX = 0;
+    unsigned sizeY = 0;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
+}
+
+TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, noToggle)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 0;
+    unsigned sizeY = 0;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeX, zero)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 0;
+    unsigned sizeY = 0;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeX(), sizeX);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeX, classic)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 1920;
+    unsigned sizeY = 1080;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeX(), sizeX);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeX, reduce)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 640;
+    unsigned sizeY = 480;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeX(), sizeX);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeY, zero)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 0;
+    unsigned sizeY = 0;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeY(), sizeY);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeY, classic)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 1920;
+    unsigned sizeY = 1080;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeY(), sizeY);
+}
+
+TEST(Events_Event_Data_Window_Resize_SizeY, reduce)
+{
+    bool toggleFullScreen = false;
+    unsigned sizeX = 640;
+    unsigned sizeY = 480;
+    WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
+    EXPECT_EQ(event.getSizeY(), sizeY);
+}
