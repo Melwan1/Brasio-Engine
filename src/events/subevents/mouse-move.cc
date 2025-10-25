@@ -1,5 +1,5 @@
-#include <events/subevents/mouse-click.hh>
+#include <events/subevents/mouse-move.hh>
 
-MouseClickEvent::MouseClickEvent()
-    : MouseCategoryEvent<MouseClickEvent>(EVENT_MOUSE_CLICK)
+MouseMoveEvent::MouseMoveEvent()
+    : MouseCategoryEvent<MouseMoveEvent>(EVENT_MOUSE_MOVE)
 {}

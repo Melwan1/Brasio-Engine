@@ -5,5 +5,10 @@
 class KeyboardReleaseEvent : public KeyboardCategoryEvent<KeyboardReleaseEvent>
 {
 public:
-    KeyboardReleaseEvent();
+    KeyboardReleaseEvent(char pressedKey);
+
+    char getPressedKey() const;
+
+private:
+    char _pressedKey;
 };
