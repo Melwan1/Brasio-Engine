@@ -70,7 +70,7 @@ TEST(Events_Event_CreationTime, keyboardLongPress)
     std::chrono::steady_clock::time_point start =
         std::chrono::steady_clock::now();
 
-    KeyboardLongPressEvent event;
+    KeyboardLongPressEvent event('A', 1);
 
     std::chrono::steady_clock::time_point end =
         std::chrono::steady_clock::now();

@@ -6,5 +6,12 @@ class KeyboardLongPressEvent
     : public KeyboardCategoryEvent<KeyboardLongPressEvent>
 {
 public:
-    KeyboardLongPressEvent();
+    KeyboardLongPressEvent(char pressedKey, unsigned numPresses);
+
+    char getPressedKey() const;
+    unsigned getNumPresses() const;
+
+private:
+    char _pressedKey;
+    unsigned _numPresses;
 };
