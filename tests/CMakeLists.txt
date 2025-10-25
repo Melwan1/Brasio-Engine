@@ -19,6 +19,7 @@ target_include_directories(testsuite PRIVATE
 )
 
 target_link_libraries(testsuite
+    libapplication
     libevents
 )
 

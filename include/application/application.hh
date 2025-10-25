@@ -8,6 +8,8 @@ public:
     Application();
     ~Application();
 
+    GLFWwindow *getWindow() const;
+
     bool init();
     void loop();
 

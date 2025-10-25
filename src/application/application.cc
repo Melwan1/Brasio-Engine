@@ -11,6 +11,11 @@ Application::~Application()
     glfwTerminate();
 }
 
+GLFWwindow *Application::getWindow() const
+{
+    return _window;
+}
+
 bool Application::init()
 {
     if (!glfwInit())
