@@ -25,3 +25,4 @@ target_sources(libevents PRIVATE
 
 add_subdirectory(categories)
 add_subdirectory(subevents)
+add_subdirectory(emitters)

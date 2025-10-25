@@ -1,4 +1,5 @@
-#include <events/subevents/mouse-release.hh>
+#include <events/categories/categories.hh>
+#include <events/subevents/subevents.hh>
 
 MouseReleaseEvent::MouseReleaseEvent(
     enum MouseReleaseEvent::MouseReleaseType mouseReleaseType)

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/event-category-type.hh>
+#include <events/event-type.hh>
 
 #include <chrono>
 #include <cstddef>

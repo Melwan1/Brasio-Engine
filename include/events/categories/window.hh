@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/categories.hh>
 
 template <typename SubEventType>
 class WindowCategoryEvent
