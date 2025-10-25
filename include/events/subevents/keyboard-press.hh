@@ -5,5 +5,9 @@
 class KeyboardPressEvent : public KeyboardCategoryEvent<KeyboardPressEvent>
 {
 public:
-    KeyboardPressEvent();
+    KeyboardPressEvent(char pressedKey);
+    char getPressedKey() const;
+
+private:
+    char _pressedKey;
 };
