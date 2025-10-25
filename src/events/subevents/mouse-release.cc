@@ -1,5 +1,5 @@
-#include <events/subevents/mouse-move.hh>
+#include <events/subevents/mouse-release.hh>
 
-MouseMoveEvent::MouseMoveEvent()
-    : MouseCategoryEvent<MouseMoveEvent>(EVENT_MOUSE_MOVE)
+MouseReleaseEvent::MouseReleaseEvent()
+    : MouseCategoryEvent<MouseReleaseEvent>(EVENT_MOUSE_RELEASE)
 {}

@@ -166,3 +166,51 @@ TEST(Events_Event_Data_Mouse_Click, right)
     MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
 }
+
+TEST(Events_Event_Data_Mouse_Move_PositionX, borderLeft)
+{
+    unsigned positionX = 0;
+    unsigned positionY = 512;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionX(), positionX);
+}
+
+TEST(Events_Event_Data_Mouse_Move_PositionX, middle)
+{
+    unsigned positionX = 640;
+    unsigned positionY = 512;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionX(), positionX);
+}
+
+TEST(Events_Event_Data_Mouse_Move_PositionX, borderRight)
+{
+    unsigned positionX = 1919;
+    unsigned positionY = 512;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionX(), positionX);
+}
+
+TEST(Events_Event_Data_Mouse_Move_PositionY, borderDown)
+{
+    unsigned positionX = 512;
+    unsigned positionY = 0;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionY(), positionY);
+}
+
+TEST(Events_Event_Data_Mouse_Move_PositionY, middle)
+{
+    unsigned positionX = 512;
+    unsigned positionY = 640;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionY(), positionY);
+}
+
+TEST(Events_Event_Data_Mouse_Move_PositionY, borderUp)
+{
+    unsigned positionX = 512;
+    unsigned positionY = 1079;
+    MouseMoveEvent event(positionX, positionY);
+    EXPECT_EQ(event.getPositionY(), positionY);
+}

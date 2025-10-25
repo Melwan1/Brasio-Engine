@@ -87,7 +87,7 @@ TEST(Events_Event_Handle_Unhandled, unknown)
 
 TEST(Events_Event_Handle_Unhandled, mouseMove)
 {
-    MouseMoveEvent event;
+    MouseMoveEvent event(14, 28);
     EXPECT_FALSE(event.getHandleStatus());
 }
 
@@ -100,7 +100,7 @@ TEST(Events_Event_Handle_Handled, unknown)
 
 TEST(Events_Event_Handle_Handled, mouseMove)
 {
-    MouseMoveEvent event;
+    MouseMoveEvent event(14, 28);
     event.handle();
     EXPECT_TRUE(event.getHandleStatus());
 }
