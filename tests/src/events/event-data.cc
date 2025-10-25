@@ -256,3 +256,259 @@ TEST(Events_Event_Data_Mouse_Scroll, down)
     MouseScrollEvent event(mouseScrollDirection);
     EXPECT_EQ(event.getDirection(), mouseScrollDirection);
 }
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, up50)
+{
+    int downBy = -50;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, up2right1)
+{
+    int downBy = -2;
+    int rightBy = 1;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, right16)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, down10right15)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, down20)
+{
+    int downBy = 20;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, down5left17)
+{
+    int downBy = 5;
+    int rightBy = -17;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, left32)
+{
+    int downBy = 0;
+    int rightBy = -32;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_DownDisplacement, up7left8)
+{
+    int downBy = -7;
+    int rightBy = -8;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getDownDisplacement(), downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, up50)
+{
+    int downBy = -50;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, up2right1)
+{
+    int downBy = -2;
+    int rightBy = 1;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, right16)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, down10right15)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, down20)
+{
+    int downBy = 20;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, down5left17)
+{
+    int downBy = 5;
+    int rightBy = -17;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, left32)
+{
+    int downBy = 0;
+    int rightBy = -32;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_UpDisplacement, up7left8)
+{
+    int downBy = -7;
+    int rightBy = -8;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getUpDisplacement(), -downBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, up50)
+{
+    int downBy = -50;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, up2right1)
+{
+    int downBy = -2;
+    int rightBy = 1;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, right16)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, down10right15)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, down20)
+{
+    int downBy = 20;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, down5left17)
+{
+    int downBy = 5;
+    int rightBy = -17;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, left32)
+{
+    int downBy = 0;
+    int rightBy = -32;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_LeftDisplacement, up7left8)
+{
+    int downBy = -7;
+    int rightBy = -8;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, up50)
+{
+    int downBy = -50;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, up2right1)
+{
+    int downBy = -2;
+    int rightBy = 1;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, right16)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, down10right15)
+{
+    int downBy = 10;
+    int rightBy = 15;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, down20)
+{
+    int downBy = 20;
+    int rightBy = 0;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, down5left17)
+{
+    int downBy = 5;
+    int rightBy = -17;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, left32)
+{
+    int downBy = 0;
+    int rightBy = -32;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
+
+TEST(Events_Event_Data_Window_Move_RightDisplacement, up7left8)
+{
+    int downBy = -7;
+    int rightBy = -8;
+    WindowMoveEvent event(downBy, rightBy);
+    EXPECT_EQ(event.getRightDisplacement(), rightBy);
+}
