@@ -43,3 +43,15 @@ enum EventType Event<CategoryType, SubEventType>::getType() const
 {
     return _eventType;
 }
+
+template <typename CategoryType, typename SubEventType>
+bool Event<CategoryType, SubEventType>::getHandleStatus() const
+{
+    return _handled;
+}
+
+template <typename CategoryType, typename SubEventType>
+void Event<CategoryType, SubEventType>::handle()
+{
+    _handled = true;
+}

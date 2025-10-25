@@ -78,3 +78,29 @@ TEST(Events_Event_CreationTime, keyboardLongPress)
     EXPECT_GE(event.getCreationTime(), start);
     EXPECT_LE(event.getCreationTime(), end);
 }
+
+TEST(Events_Event_Handle_Unhandled, unknown)
+{
+    UnknownEvent event;
+    EXPECT_FALSE(event.getHandleStatus());
+}
+
+TEST(Events_Event_Handle_Unhandled, mouseMove)
+{
+    MouseMoveEvent event;
+    EXPECT_FALSE(event.getHandleStatus());
+}
+
+TEST(Events_Event_Handle_Handled, unknown)
+{
+    UnknownEvent event;
+    event.handle();
+    EXPECT_TRUE(event.getHandleStatus());
+}
+
+TEST(Events_Event_Handle_Handled, mouseMove)
+{
+    MouseMoveEvent event;
+    event.handle();
+    EXPECT_TRUE(event.getHandleStatus());
+}

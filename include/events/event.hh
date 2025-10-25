@@ -16,6 +16,8 @@ public:
     inline std::chrono::steady_clock::time_point getCreationTime() const;
     inline enum EventCategoryType getCategoryType() const;
     inline enum EventType getType() const;
+    inline bool getHandleStatus() const;
+    void handle();
 
 private:
     size_t _id;
