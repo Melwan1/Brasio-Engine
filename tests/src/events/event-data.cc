@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <events/libevents.hh>
+#include "events/subevents/mouse-release.hh"
 
 TEST(Events_Event_Data_Keyboard_Press, upperA)
 {
@@ -213,4 +214,28 @@ TEST(Events_Event_Data_Mouse_Move_PositionY, borderUp)
     unsigned positionY = 1079;
     MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionY(), positionY);
+}
+
+TEST(Events_Event_Data_Mouse_Release, left)
+{
+    enum MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        MouseReleaseEvent::MOUSE_RELEASE_LEFT;
+    MouseReleaseEvent event(mouseReleaseType);
+    EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+}
+
+TEST(Events_Event_Data_Mouse_Release, middle)
+{
+    enum MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        MouseReleaseEvent::MOUSE_RELEASE_MIDDLE;
+    MouseReleaseEvent event(mouseReleaseType);
+    EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+}
+
+TEST(Events_Event_Data_Mouse_Release, right)
+{
+    enum MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        MouseReleaseEvent::MOUSE_RELEASE_RIGHT;
+    MouseReleaseEvent event(mouseReleaseType);
+    EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
 }
