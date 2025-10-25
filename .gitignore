@@ -1,2 +1,6 @@
+# CMAKE-RELATED
 build/
+.cache/
+
+# TESTSUITE-RELATED
 report.xml

@@ -18,8 +18,11 @@ target_include_directories(testsuite PRIVATE
     ${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(
-  testsuite
+target_link_libraries(testsuite
+    libevents
+)
+
+target_link_libraries(testsuite
   GTest::gtest_main
 )
 

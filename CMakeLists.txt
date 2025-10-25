@@ -14,5 +14,13 @@ project(BrasioEngine)
 set(CMAKE_CXX_STANDARD 20)
 
 add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast)
+add_link_options(-g -O0)
 
+find_package(OpenGL REQUIRED)
+
+find_package(glfw3 3.3 REQUIRED)
+
+find_package(GLEW REQUIRED)
+
+add_subdirectory(src)
 add_subdirectory(tests)
