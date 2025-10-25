@@ -17,7 +17,12 @@ target_link_libraries(brasio PRIVATE
     GLEW::GLEW
 )
 
+add_subdirectory(application)
 add_subdirectory(events)
+
+target_link_libraries(brasio PRIVATE
+    libapplication
+)
 
 target_sources(brasio PRIVATE
     main.cc
