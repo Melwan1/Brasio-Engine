@@ -20,4 +20,5 @@ target_link_libraries(libapplication PRIVATE
 
 target_sources(libapplication PRIVATE
     application.cc
+    callbacks.cc
 )

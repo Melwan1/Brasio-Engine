@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/mouse.hh>
 
 class MouseReleaseEvent : public MouseCategoryEvent<MouseReleaseEvent>
 {

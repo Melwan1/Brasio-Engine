@@ -1,4 +1,5 @@
 #include <application/libapplication.hh>
+#include <application/callbacks.hh>
 
 Application::Application()
     : _window(nullptr)
@@ -14,6 +15,14 @@ Application::~Application()
 GLFWwindow *Application::getWindow() const
 {
     return _window;
+}
+
+void Application::initListeners()
+{
+    ApplicationEventEmitter::addListener(*this);
+    KeyboardEventEmitter::addListener(*this);
+    MouseEventEmitter::addListener(*this);
+    WindowEventEmitter::addListener(*this);
 }
 
 bool Application::init()
@@ -42,6 +51,11 @@ bool Application::init()
     }
 
     _window = window;
+    glfwSetWindowUserPointer(window, this);
+
+    initListeners();
+
+    glfwSetKeyCallback(window, keyCallback);
     return true;
 }
 

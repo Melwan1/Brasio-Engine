@@ -9,3 +9,14 @@ char KeyboardReleaseEvent::getPressedKey() const
 {
     return _pressedKey;
 }
+
+KeyboardReleaseEvent KeyboardReleaseEvent::create(int key, int scancode,
+                                                  int mods)
+{
+    (void)key;
+    (void)scancode;
+    (void)mods;
+    char pressedKey = 'A';
+    KeyboardReleaseEvent event(pressedKey);
+    return event;
+}

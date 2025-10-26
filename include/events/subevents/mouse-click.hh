@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/categories.hh>
 
 class MouseClickEvent : public MouseCategoryEvent<MouseClickEvent>
 {

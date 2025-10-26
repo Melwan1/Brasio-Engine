@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/application.hh>
 
 class ApplicationRenderEvent
     : public ApplicationCategoryEvent<ApplicationRenderEvent>

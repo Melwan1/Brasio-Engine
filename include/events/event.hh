@@ -1,6 +1,7 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/event-category-type.hh>
+#include <events/event-type.hh>
 
 #include <chrono>
 #include <cstddef>
@@ -10,6 +11,7 @@ class Event
 {
 public:
     Event(enum EventCategoryType categoryType, enum EventType eventType);
+    virtual ~Event() = default;
 
     static inline size_t generateId();
     inline size_t getId() const;

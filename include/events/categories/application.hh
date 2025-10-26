@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/event.hh>
 
 template <typename SubEventType>
 class ApplicationCategoryEvent

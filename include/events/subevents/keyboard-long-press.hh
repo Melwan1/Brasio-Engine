@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/categories.hh>
 
 class KeyboardLongPressEvent
     : public KeyboardCategoryEvent<KeyboardLongPressEvent>
@@ -10,6 +10,8 @@ public:
 
     char getPressedKey() const;
     unsigned getNumPresses() const;
+
+    static KeyboardLongPressEvent create(int key, int scancode, int mods);
 
 private:
     char _pressedKey;

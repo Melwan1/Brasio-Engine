@@ -1,6 +1,6 @@
 #pragma once
 
-#include <events/libevents.hh>
+#include <events/categories/application.hh>
 
 class ApplicationTickEvent
     : public ApplicationCategoryEvent<ApplicationTickEvent>

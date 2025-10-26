@@ -22,6 +22,7 @@ add_subdirectory(events)
 
 target_link_libraries(brasio PRIVATE
     libapplication
+    libevents
 )
 
 target_sources(brasio PRIVATE
