@@ -5,12 +5,12 @@
 
 #include <iostream>
 
-KeyboardPressEvent::KeyboardPressEvent(char pressedKey)
+KeyboardPressEvent::KeyboardPressEvent(const std::string &pressedKey)
     : KeyboardCategoryEvent<KeyboardPressEvent>(EVENT_KEYBOARD_PRESS)
     , _pressedKey(pressedKey)
 {}
 
-char KeyboardPressEvent::getPressedKey() const
+const std::string &KeyboardPressEvent::getPressedKey() const
 {
     return _pressedKey;
 }
@@ -47,31 +47,36 @@ std::function<bool(int, int, int)> KeyboardPressEvent::conditionNumpadDigits =
 
 // key generators
 
-std::function<char(int, int, int)>
+std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorLowercaseLetters =
-        [](int key, int, int) -> char {
+        [](int key, int, int) -> std::string {
     std::cout << "generating a lowercase letter!" << std::endl;
-    return key - GLFW_KEY_A + 'a';
+    char c = key - GLFW_KEY_A + 'a';
+    return { 1, c };
 };
 
-std::function<char(int, int, int)>
+std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorUppercaseLetters =
-        [](int key, int, int) -> bool {
+        [](int key, int, int) -> std::string {
     std::cout << "generating an uppercase letter!" << std::endl;
-    return key - GLFW_KEY_A + 'A';
+    char c = key - GLFW_KEY_A + 'A';
+    return { 1, c };
 };
 
-std::function<char(int, int, int)> KeyboardPressEvent::keyGeneratorDigits =
-    [](int key, int, int) -> bool {
+std::function<std::string(int, int, int)>
+    KeyboardPressEvent::keyGeneratorDigits =
+        [](int key, int, int) -> std::string {
     std::cout << "generating a classic digit!" << std::endl;
-    return key - GLFW_KEY_0 + '0';
+    char c = key - GLFW_KEY_0 + '0';
+    return { 1, c };
 };
 
-std::function<char(int, int, int)>
+std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorNumpadDigits =
-        [](int key, int, int) -> bool {
+        [](int key, int, int) -> std::string {
     std::cout << "generating a numpad digit!" << std::endl;
-    return key - GLFW_KEY_KP_0 + '0';
+    char c = key - GLFW_KEY_KP_0 + '0';
+    return { 1, c };
 };
 
 const KeyboardPressEvent::Handler KeyboardPressEvent::_handlers[] = {
@@ -88,19 +93,18 @@ KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode, int mods)
 {
     std::cout << "Creating KeyboardPressEvent with key: " << key
               << " with modifiers: " << mods << std::endl;
-    const char *keyName = glfwGetKeyName(key, scancode);
-    std::cout << "Name of key: " << (keyName ? keyName : "(null)") << std::endl;
     for (const auto &handler : _handlers)
     {
         if (handler.condition(key, scancode, mods))
         {
-            char pressedKey = handler.keyGenerator(key, scancode, mods);
+            std::string pressedKey = handler.keyGenerator(key, scancode, mods);
             KeyboardPressEvent event(pressedKey);
+            std::cout << "Name of key: " << event.getPressedKey() << std::endl;
             return event;
         }
     }
     // should not go here
-    char pressedKey = 0;
+    std::string pressedKey = "";
     KeyboardPressEvent event(pressedKey);
     return event;
 }

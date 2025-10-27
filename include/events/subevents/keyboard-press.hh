@@ -7,18 +7,18 @@
 class KeyboardPressEvent : public KeyboardCategoryEvent<KeyboardPressEvent>
 {
 public:
-    KeyboardPressEvent(char pressedKey);
-    char getPressedKey() const;
+    KeyboardPressEvent(const std::string &pressedKey);
+    const std::string &getPressedKey() const;
 
     static KeyboardPressEvent create(int key, int scancode, int mods);
 
 private:
-    char _pressedKey;
+    std::string _pressedKey;
 
     struct Handler
     {
         std::function<bool(int, int, int)> condition;
-        std::function<char(int, int, int)> keyGenerator;
+        std::function<std::string(int, int, int)> keyGenerator;
     };
 
     // condition handlers
@@ -30,10 +30,12 @@ private:
 
     // key generators
 
-    static std::function<char(int, int, int)> keyGeneratorLowercaseLetters;
-    static std::function<char(int, int, int)> keyGeneratorUppercaseLetters;
-    static std::function<char(int, int, int)> keyGeneratorDigits;
-    static std::function<char(int, int, int)> keyGeneratorNumpadDigits;
+    static std::function<std::string(int, int, int)>
+        keyGeneratorLowercaseLetters;
+    static std::function<std::string(int, int, int)>
+        keyGeneratorUppercaseLetters;
+    static std::function<std::string(int, int, int)> keyGeneratorDigits;
+    static std::function<std::string(int, int, int)> keyGeneratorNumpadDigits;
 
     const static Handler _handlers[];
 };

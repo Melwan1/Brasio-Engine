@@ -5,12 +5,12 @@
 class KeyboardReleaseEvent : public KeyboardCategoryEvent<KeyboardReleaseEvent>
 {
 public:
-    KeyboardReleaseEvent(char pressedKey);
+    KeyboardReleaseEvent(const std::string &pressedKey);
 
-    char getPressedKey() const;
+    const std::string &getPressedKey() const;
 
     static KeyboardReleaseEvent create(int key, int scancode, int mods);
 
 private:
-    char _pressedKey;
+    std::string _pressedKey;
 };

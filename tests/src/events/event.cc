@@ -26,7 +26,7 @@ TEST(Events_Event_Identifiers, generation)
 TEST(Events_Event_CategoryType, keyboard)
 {
     enum EventCategoryType categoryType = EVENT_CATEGORY_KEYBOARD;
-    KeyboardPressEvent event('A');
+    KeyboardPressEvent event("A");
     EXPECT_EQ(event.getCategoryType(), categoryType);
 }
 
@@ -40,7 +40,7 @@ TEST(Events_Event_CategoryType, unknown)
 TEST(Events_Event_EventType, keyboardPress)
 {
     enum EventType eventType = EVENT_KEYBOARD_PRESS;
-    KeyboardPressEvent event('A');
+    KeyboardPressEvent event("A");
     EXPECT_EQ(event.getType(), eventType);
 }
 
@@ -70,7 +70,7 @@ TEST(Events_Event_CreationTime, keyboardLongPress)
     std::chrono::steady_clock::time_point start =
         std::chrono::steady_clock::now();
 
-    KeyboardLongPressEvent event('A', 1);
+    KeyboardLongPressEvent event("A", 1);
 
     std::chrono::steady_clock::time_point end =
         std::chrono::steady_clock::now();
