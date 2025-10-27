@@ -7,4 +7,9 @@ class ApplicationRenderEvent
 {
 public:
     ApplicationRenderEvent();
+
+    virtual std::string getTypeName() const override
+    {
+        return "ApplicationRenderEvent";
+    }
 };

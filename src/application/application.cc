@@ -41,6 +41,7 @@ bool Application::init()
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
 
     if (glewInit() != GLEW_OK)
     {

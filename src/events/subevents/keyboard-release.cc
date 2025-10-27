@@ -1,11 +1,11 @@
 #include <events/subevents/keyboard-release.hh>
 
-KeyboardReleaseEvent::KeyboardReleaseEvent(char pressedKey)
+KeyboardReleaseEvent::KeyboardReleaseEvent(const std::string &pressedKey)
     : KeyboardCategoryEvent<KeyboardReleaseEvent>(EVENT_KEYBOARD_RELEASE)
     , _pressedKey(pressedKey)
 {}
 
-char KeyboardReleaseEvent::getPressedKey() const
+const std::string &KeyboardReleaseEvent::getPressedKey() const
 {
     return _pressedKey;
 }
@@ -16,7 +16,7 @@ KeyboardReleaseEvent KeyboardReleaseEvent::create(int key, int scancode,
     (void)key;
     (void)scancode;
     (void)mods;
-    char pressedKey = 'A';
+    const std::string pressedKey = "";
     KeyboardReleaseEvent event(pressedKey);
     return event;
 }

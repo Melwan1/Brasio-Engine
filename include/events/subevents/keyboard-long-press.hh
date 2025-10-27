@@ -6,14 +6,19 @@ class KeyboardLongPressEvent
     : public KeyboardCategoryEvent<KeyboardLongPressEvent>
 {
 public:
-    KeyboardLongPressEvent(char pressedKey, unsigned numPresses);
+    KeyboardLongPressEvent(const std::string &pressedKey, unsigned numPresses);
 
-    char getPressedKey() const;
+    const std::string &getPressedKey() const;
     unsigned getNumPresses() const;
 
     static KeyboardLongPressEvent create(int key, int scancode, int mods);
 
+    virtual std::string getTypeName() const override
+    {
+        return "KeyboardLongPressEvent";
+    }
+
 private:
-    char _pressedKey;
+    std::string _pressedKey;
     unsigned _numPresses;
 };
