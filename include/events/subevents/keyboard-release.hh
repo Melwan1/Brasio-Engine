@@ -11,6 +11,11 @@ public:
 
     static KeyboardReleaseEvent create(int key, int scancode, int mods);
 
+    virtual std::string getTypeName() const override
+    {
+        return "KeyboardReleaseEvent";
+    }
+
 private:
     std::string _pressedKey;
 };

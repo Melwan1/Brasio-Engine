@@ -16,6 +16,11 @@ public:
 
     enum MouseReleaseType getReleaseType() const;
 
+    virtual std::string getTypeName() const override
+    {
+        return "MouseReleaseEvent";
+    }
+
 private:
     enum MouseReleaseType _mouseReleaseType;
 };

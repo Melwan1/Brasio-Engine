@@ -10,6 +10,11 @@ public:
     unsigned getPositionX() const;
     unsigned getPositionY() const;
 
+    virtual std::string getTypeName() const override
+    {
+        return "MouseMoveEvent";
+    }
+
 private:
     unsigned _positionX;
     unsigned _positionY;

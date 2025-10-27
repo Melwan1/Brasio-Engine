@@ -13,6 +13,11 @@ public:
 
     static KeyboardLongPressEvent create(int key, int scancode, int mods);
 
+    virtual std::string getTypeName() const override
+    {
+        return "KeyboardLongPressEvent";
+    }
+
 private:
     std::string _pressedKey;
     unsigned _numPresses;

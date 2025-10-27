@@ -14,7 +14,7 @@ size_t Event<CategoryType, SubEventType>::generateId()
 template <typename CategoryType, typename SubEventType>
 Event<CategoryType, SubEventType>::Event(enum EventCategoryType categoryType, enum EventType eventType)
     : _id(generateId())
-    , _creationTime(std::chrono::steady_clock::now())
+    , _creationTime(std::chrono::system_clock::now())
     , _categoryType(categoryType)
     , _eventType(eventType)
     , _handled(false)
@@ -27,7 +27,7 @@ size_t Event<CategoryType, SubEventType>::getId() const
 }
 
 template<typename CategoryType, typename SubEventType>
-std::chrono::steady_clock::time_point Event<CategoryType, SubEventType>::getCreationTime() const
+std::chrono::system_clock::time_point Event<CategoryType, SubEventType>::getCreationTime() const
 {
     return _creationTime;
 }

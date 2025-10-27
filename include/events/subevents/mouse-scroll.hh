@@ -15,6 +15,11 @@ public:
 
     enum MouseScrollDirection getDirection() const;
 
+    virtual std::string getTypeName() const override
+    {
+        return "MouseScrollEvent";
+    }
+
 private:
     enum MouseScrollDirection _mouseScrollDirection;
 };

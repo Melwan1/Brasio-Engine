@@ -7,4 +7,9 @@ class ApplicationUpdateEvent
 {
 public:
     ApplicationUpdateEvent();
+
+    virtual std::string getTypeName() const override
+    {
+        return "ApplicationUpdateEvent";
+    }
 };

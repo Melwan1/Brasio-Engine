@@ -16,6 +16,11 @@ public:
 
     enum MouseClickType getClickType() const;
 
+    virtual std::string getTypeName() const override
+    {
+        return "MouseClickEvent";
+    }
+
 private:
     enum MouseClickType _mouseClickType;
 };

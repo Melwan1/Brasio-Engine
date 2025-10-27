@@ -56,7 +56,6 @@ std::function<bool(int, int, int)> KeyboardPressEvent::conditionFunctions =
 std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorLowercaseLetters =
         [](int key, int, int) -> std::string {
-    std::cout << "generating a lowercase letter!" << std::endl;
     char c = key - GLFW_KEY_A + 'a';
     return { 1, c };
 };
@@ -64,7 +63,6 @@ std::function<std::string(int, int, int)>
 std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorUppercaseLetters =
         [](int key, int, int) -> std::string {
-    std::cout << "generating an uppercase letter!" << std::endl;
     char c = key - GLFW_KEY_A + 'A';
     return { 1, c };
 };
@@ -72,7 +70,6 @@ std::function<std::string(int, int, int)>
 std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorDigits =
         [](int key, int, int) -> std::string {
-    std::cout << "generating a classic digit!" << std::endl;
     char c = key - GLFW_KEY_0 + '0';
     return { 1, c };
 };
@@ -80,7 +77,6 @@ std::function<std::string(int, int, int)>
 std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorNumpadDigits =
         [](int key, int, int) -> std::string {
-    std::cout << "generating a numpad digit!" << std::endl;
     char c = key - GLFW_KEY_KP_0 + '0';
     return { 1, c };
 };
@@ -88,7 +84,6 @@ std::function<std::string(int, int, int)>
 std::function<std::string(int, int, int)>
     KeyboardPressEvent::keyGeneratorFunctions =
         [](int key, int, int) -> std::string {
-    std::cout << "generating a function key!" << std::endl;
     int functionKey = key - GLFW_KEY_F1 + 1;
     std::ostringstream oss;
     oss << 'F' << functionKey;
@@ -108,15 +103,12 @@ const KeyboardPressEvent::Handler KeyboardPressEvent::_handlers[] = {
 
 KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode, int mods)
 {
-    std::cout << "Creating KeyboardPressEvent with key: " << key
-              << " with modifiers: " << mods << std::endl;
     for (const auto &handler : _handlers)
     {
         if (handler.condition(key, scancode, mods))
         {
             std::string pressedKey = handler.keyGenerator(key, scancode, mods);
             KeyboardPressEvent event(pressedKey);
-            std::cout << "Name of key: " << event.getPressedKey() << std::endl;
             return event;
         }
     }
