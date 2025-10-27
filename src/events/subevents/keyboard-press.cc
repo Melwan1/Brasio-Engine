@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <sstream>
 
 KeyboardPressEvent::KeyboardPressEvent(const std::string &pressedKey)
     : KeyboardCategoryEvent<KeyboardPressEvent>(EVENT_KEYBOARD_PRESS)
@@ -45,6 +46,11 @@ std::function<bool(int, int, int)> KeyboardPressEvent::conditionNumpadDigits =
         && (key >= GLFW_KEY_KP_0 && key <= GLFW_KEY_KP_9);
 };
 
+std::function<bool(int, int, int)> KeyboardPressEvent::conditionFunctions =
+    [](int key, int, int) -> bool {
+    return key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12;
+};
+
 // key generators
 
 std::function<std::string(int, int, int)>
@@ -79,6 +85,16 @@ std::function<std::string(int, int, int)>
     return { 1, c };
 };
 
+std::function<std::string(int, int, int)>
+    KeyboardPressEvent::keyGeneratorFunctions =
+        [](int key, int, int) -> std::string {
+    std::cout << "generating a function key!" << std::endl;
+    int functionKey = key - GLFW_KEY_F1 + 1;
+    std::ostringstream oss;
+    oss << 'F' << functionKey;
+    return oss.str();
+};
+
 const KeyboardPressEvent::Handler KeyboardPressEvent::_handlers[] = {
     { .condition = conditionLowercaseLetters,
       .keyGenerator = keyGeneratorLowercaseLetters },
@@ -87,6 +103,7 @@ const KeyboardPressEvent::Handler KeyboardPressEvent::_handlers[] = {
     { .condition = conditionDigits, .keyGenerator = keyGeneratorDigits },
     { .condition = conditionNumpadDigits,
       .keyGenerator = keyGeneratorNumpadDigits },
+    { .condition = conditionFunctions, .keyGenerator = keyGeneratorFunctions },
 };
 
 KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode, int mods)

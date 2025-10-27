@@ -27,6 +27,7 @@ private:
     static std::function<bool(int, int, int)> conditionUppercaseLetters;
     static std::function<bool(int, int, int)> conditionDigits;
     static std::function<bool(int, int, int)> conditionNumpadDigits;
+    static std::function<bool(int, int, int)> conditionFunctions;
 
     // key generators
 
@@ -36,6 +37,7 @@ private:
         keyGeneratorUppercaseLetters;
     static std::function<std::string(int, int, int)> keyGeneratorDigits;
     static std::function<std::string(int, int, int)> keyGeneratorNumpadDigits;
+    static std::function<std::string(int, int, int)> keyGeneratorFunctions;
 
     const static Handler _handlers[];
 };
