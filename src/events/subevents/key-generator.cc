@@ -1,5 +1,6 @@
 #include <events/subevents/key-generator.hh>
 
+#include <iostream>
 #include <sstream>
 
 #include <GL/glew.h>
@@ -38,6 +39,9 @@ std::function<bool(int, int, int)> KeyGenerator::conditionFunctions =
     return key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12;
 };
 
+std::function<bool(int, int, int)> KeyGenerator::conditionEscape =
+    [](int key, int, int) -> bool { return key == GLFW_KEY_ESCAPE; };
+
 // key generators
 
 std::function<std::string(int, int, int)>
@@ -75,6 +79,9 @@ std::function<std::string(int, int, int)> KeyGenerator::keyGeneratorFunctions =
     return oss.str();
 };
 
+std::function<std::string(int, int, int)> KeyGenerator::keyGeneratorEscape =
+    [](int, int, int) -> std::string { return "ESC"; };
+
 const KeyGenerator::Handler KeyGenerator::_handlers[] = {
     { .condition = conditionLowercaseLetters,
       .keyGenerator = keyGeneratorLowercaseLetters },
@@ -84,6 +91,7 @@ const KeyGenerator::Handler KeyGenerator::_handlers[] = {
     { .condition = conditionNumpadDigits,
       .keyGenerator = keyGeneratorNumpadDigits },
     { .condition = conditionFunctions, .keyGenerator = keyGeneratorFunctions },
+    { .condition = conditionEscape, .keyGenerator = keyGeneratorEscape },
 };
 
 std::string KeyGenerator::generate(int key, int scancode, int mods)

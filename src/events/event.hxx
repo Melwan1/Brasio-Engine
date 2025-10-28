@@ -80,5 +80,5 @@ void Event<CategoryType, SubEventType>::print(std::ostream& ostr)
               << std::format("{:03}", ms.count());
     ostr << FG_ESC(15) << " in " << FG_ESC(76) << std::setw(3)
               << std::setfill(' ') << duration.count() << FG_ESC(15) << " ms";
-    ostr << "]" << FG_ESC(15) << " Handling " << getTypeName();
+    ostr << "]" << FG_ESC(15) << " Handling " << getTypeName() << ESC_RESET;
 }
