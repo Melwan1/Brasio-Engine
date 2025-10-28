@@ -1,6 +1,6 @@
 #include <events/subevents/keyboard-long-press.hh>
 
-#include <events/subevents/key-generator.hh>
+#include <events/key-generator.hh>
 
 KeyboardLongPressEvent::KeyboardLongPressEvent(const std::string &pressedKey,
                                                unsigned numPresses)

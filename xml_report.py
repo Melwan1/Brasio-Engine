@@ -32,7 +32,10 @@ for testsuite in root.findall('testsuite'):
     for testcase in testsuite.findall('testcase'):
         classname = testcase.get('classname')
         if classname:
-            testcase.set('classname', 'BrasioEngine.' + '.'.join(classname.split('_')))
+            testcase.set('classname', 'BrasioEngine.' + classname.replace('_', '.').replace('/', '.'))
+        if testcase.get('value_param'):
+            # discard
+            testcase.attrib.pop('value_param')
 
         merged_suite.append(testcase)
 

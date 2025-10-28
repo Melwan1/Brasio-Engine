@@ -21,6 +21,7 @@ target_link_libraries(libevents PRIVATE
 target_sources(libevents PRIVATE
     event-validator.cc
     event.hxx
+    key-generator.cc
 )
 
 add_subdirectory(categories)

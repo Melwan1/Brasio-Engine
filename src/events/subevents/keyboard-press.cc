@@ -1,6 +1,6 @@
 #include <events/subevents/keyboard-press.hh>
 
-#include <events/subevents/key-generator.hh>
+#include <events/key-generator.hh>
 
 KeyboardPressEvent::KeyboardPressEvent(const std::string &pressedKey)
     : KeyboardCategoryEvent<KeyboardPressEvent>(EVENT_KEYBOARD_PRESS)
