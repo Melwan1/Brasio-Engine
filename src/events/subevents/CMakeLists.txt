@@ -2,6 +2,7 @@ target_sources(libevents PRIVATE
     application-render.cc
     application-tick.cc
     application-update.cc
+    key-generator.cc
     keyboard-long-press.cc
     keyboard-press.cc
     keyboard-release.cc

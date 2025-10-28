@@ -1,5 +1,7 @@
 #include <events/subevents/keyboard-release.hh>
 
+#include <events/subevents/key-generator.hh>
+
 KeyboardReleaseEvent::KeyboardReleaseEvent(const std::string &pressedKey)
     : KeyboardCategoryEvent<KeyboardReleaseEvent>(EVENT_KEYBOARD_RELEASE)
     , _pressedKey(pressedKey)
@@ -13,10 +15,7 @@ const std::string &KeyboardReleaseEvent::getPressedKey() const
 KeyboardReleaseEvent KeyboardReleaseEvent::create(int key, int scancode,
                                                   int mods)
 {
-    (void)key;
-    (void)scancode;
-    (void)mods;
-    const std::string pressedKey = "";
+    const std::string pressedKey = KeyGenerator::generate(key, scancode, mods);
     KeyboardReleaseEvent event(pressedKey);
     return event;
 }
