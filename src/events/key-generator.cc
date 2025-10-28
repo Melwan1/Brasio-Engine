@@ -1,4 +1,4 @@
-#include <events/subevents/key-generator.hh>
+#include <events/key-generator.hh>
 
 #include <iostream>
 #include <sstream>
@@ -48,27 +48,27 @@ std::function<std::string(int, int, int)>
     KeyGenerator::keyGeneratorLowercaseLetters =
         [](int key, int, int) -> std::string {
     char c = key - GLFW_KEY_A + 'a';
-    return { 1, c };
+    return std::string(1, c);
 };
 
 std::function<std::string(int, int, int)>
     KeyGenerator::keyGeneratorUppercaseLetters =
         [](int key, int, int) -> std::string {
     char c = key - GLFW_KEY_A + 'A';
-    return { 1, c };
+    return std::string(1, c);
 };
 
 std::function<std::string(int, int, int)> KeyGenerator::keyGeneratorDigits =
     [](int key, int, int) -> std::string {
     char c = key - GLFW_KEY_0 + '0';
-    return { 1, c };
+    return std::string(1, c);
 };
 
 std::function<std::string(int, int, int)>
     KeyGenerator::keyGeneratorNumpadDigits =
         [](int key, int, int) -> std::string {
     char c = key - GLFW_KEY_KP_0 + '0';
-    return { 1, c };
+    return std::string(1, c);
 };
 
 std::function<std::string(int, int, int)> KeyGenerator::keyGeneratorFunctions =

@@ -3,3 +3,5 @@ target_sources(testsuite PRIVATE
     event-data.cc
     event-validator.cc
 )
+
+add_subdirectory(generation)
