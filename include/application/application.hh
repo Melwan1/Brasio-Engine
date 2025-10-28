@@ -22,8 +22,18 @@ public:
 
     void initListeners();
     bool init();
+
+    // various setups
+
+    void setupGlfwInput();
+    void setupCallbacks();
+
     void loop();
+
+    virtual void onEvent(WindowCloseEvent &event) override;
 
 private:
     GLFWwindow *_window;
+
+    bool _shouldTerminate;
 };

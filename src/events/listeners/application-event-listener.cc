@@ -1,10 +1,24 @@
 #include <events/listeners/application-event-listener.hh>
 
-void ApplicationEventListener::onEvent(ApplicationRenderEvent &)
-{}
+#include <iostream>
 
-void ApplicationEventListener::onEvent(ApplicationTickEvent &)
-{}
+void ApplicationEventListener::onEvent(ApplicationRenderEvent &event)
+{
+    event.print(std::cout);
+    std::cout << "\n";
+    event.handle();
+}
 
-void ApplicationEventListener::onEvent(ApplicationUpdateEvent &)
-{}
+void ApplicationEventListener::onEvent(ApplicationTickEvent &event)
+{
+    event.print(std::cout);
+    std::cout << "\n";
+    event.handle();
+}
+
+void ApplicationEventListener::onEvent(ApplicationUpdateEvent &event)
+{
+    event.print(std::cout);
+    std::cout << "\n";
+    event.handle();
+}

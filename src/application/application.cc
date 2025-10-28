@@ -1,8 +1,11 @@
 #include <application/libapplication.hh>
 #include <application/callbacks.hh>
 
+#include <events/libevents.hh>
+
 Application::Application()
     : _window(nullptr)
+    , _shouldTerminate(false)
 {}
 
 Application::~Application()
@@ -40,8 +43,11 @@ bool Application::init()
         return false;
     }
 
+    _window = window;
+
     glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_LOCK_KEY_MODS, GLFW_TRUE);
+
+    setupGlfwInput();
 
     if (glewInit() != GLEW_OK)
     {
@@ -51,20 +57,40 @@ bool Application::init()
         return false;
     }
 
-    _window = window;
     glfwSetWindowUserPointer(window, this);
 
     initListeners();
 
-    glfwSetKeyCallback(window, keyCallback);
+    setupCallbacks();
     return true;
+}
+
+void Application::setupGlfwInput()
+{
+    glfwSetInputMode(getWindow(), GLFW_LOCK_KEY_MODS, GLFW_TRUE);
+}
+
+void Application::setupCallbacks()
+{
+    glfwSetKeyCallback(_window, keyCallback);
+    glfwSetWindowCloseCallback(_window, windowCloseCallback);
 }
 
 void Application::loop()
 {
-    while (!glfwWindowShouldClose(_window))
+    while (!_shouldTerminate)
     {
+        ApplicationTickEvent event;
+        ApplicationEventEmitter::fire(event);
         glfwSwapBuffers(_window);
         glfwPollEvents();
     }
+}
+
+void Application::onEvent(WindowCloseEvent &event)
+{
+    event.print(std::cout);
+    std::cout << ESC_RESET << "\n";
+    _shouldTerminate = true;
+    event.handle();
 }

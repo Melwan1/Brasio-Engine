@@ -1,16 +1,33 @@
 #include <events/listeners/window-event-listener.hh>
 
-void WindowEventListener::onEvent(WindowCloseEvent &)
-{}
+#include <iostream>
 
-void WindowEventListener::onEvent(WindowFocusEvent &)
-{}
+void WindowEventListener::onEvent(WindowCloseEvent &event)
+{
+    event.print(std::cout);
+    event.handle();
+}
 
-void WindowEventListener::onEvent(WindowLostFocusEvent &)
-{}
+void WindowEventListener::onEvent(WindowFocusEvent &event)
+{
+    event.print(std::cout);
+    event.handle();
+}
 
-void WindowEventListener::onEvent(WindowMoveEvent &)
-{}
+void WindowEventListener::onEvent(WindowLostFocusEvent &event)
+{
+    event.print(std::cout);
+    event.handle();
+}
 
-void WindowEventListener::onEvent(WindowResizeEvent &)
-{}
+void WindowEventListener::onEvent(WindowMoveEvent &event)
+{
+    event.print(std::cout);
+    event.handle();
+}
+
+void WindowEventListener::onEvent(WindowResizeEvent &event)
+{
+    event.print(std::cout);
+    event.handle();
+}

@@ -26,3 +26,9 @@ KeyboardLongPressEvent KeyboardLongPressEvent::create(int key, int scancode,
     KeyboardLongPressEvent event(pressedKey, 1);
     return event;
 }
+
+void KeyboardLongPressEvent::print(std::ostream &ostr)
+{
+    Event::print(ostr);
+    ostr << FG_ESC(220) << " " << getPressedKey() << ESC_RESET << "\n";
+}

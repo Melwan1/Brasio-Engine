@@ -2,8 +2,6 @@
 
 #include <events/categories/categories.hh>
 
-#include <functional>
-
 class KeyboardPressEvent : public KeyboardCategoryEvent<KeyboardPressEvent>
 {
 public:
@@ -16,6 +14,8 @@ public:
     {
         return "KeyboardPressEvent";
     }
+
+    virtual void print(std::ostream &ostr) override;
 
 private:
     std::string _pressedKey;

@@ -16,6 +16,8 @@ public:
         return "KeyboardReleaseEvent";
     }
 
+    virtual void print(std::ostream &ostr) override;
+
 private:
     std::string _pressedKey;
 };

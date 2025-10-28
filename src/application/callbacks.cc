@@ -34,3 +34,18 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action,
     }
     }
 }
+
+void windowCloseCallback(GLFWwindow *window)
+{
+    Application *application =
+        static_cast<Application *>(glfwGetWindowUserPointer(window));
+    if (!application)
+    {
+        std::cerr << "Discarding Window close event due to no application "
+                     "linked to the window."
+                  << std::endl;
+        return;
+    }
+    WindowCloseEvent event;
+    application->WindowEventEmitter::fire(event);
+}
