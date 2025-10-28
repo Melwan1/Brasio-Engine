@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <cstddef>
+#include <ostream>
 
 template <typename CategoryType, typename SubEventType>
 class Event
@@ -22,6 +23,7 @@ public:
     void handle();
 
     virtual std::string getTypeName() const = 0;
+    virtual void print(std::ostream &ostr);
 
 private:
     size_t _id;

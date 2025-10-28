@@ -18,3 +18,9 @@ KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode, int mods)
     KeyboardPressEvent event(pressedKey);
     return event;
 }
+
+void KeyboardPressEvent::print(std::ostream &ostr)
+{
+    Event::print(ostr);
+    ostr << FG_ESC(220) << " " << getPressedKey() << ESC_RESET << "\n";
+}

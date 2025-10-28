@@ -18,6 +18,8 @@ public:
         return "KeyboardLongPressEvent";
     }
 
+    virtual void print(std::ostream &ostr) override;
+
 private:
     std::string _pressedKey;
     unsigned _numPresses;
