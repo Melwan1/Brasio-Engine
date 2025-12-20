@@ -3,6 +3,9 @@
 
 #include <events/libevents.hh>
 
+#include <renderer/default_renderer.hh>
+#include <renderer/vulkan_renderer.hh>
+
 Application::Application()
     : _window(nullptr)
     , _shouldTerminate(false)
@@ -36,15 +39,17 @@ bool Application::init()
         return false;
     }
 
+    bool useOpengl = false;
+
     int monitorIndex = -1;
-    if (!setupWindow(monitorIndex))
+    if (!setupWindow(monitorIndex, useOpengl))
     {
         return false;
     }
 
     setupGlfwInput();
 
-    if (glewInit() != GLEW_OK)
+    if (useOpengl && glewInit() != GLEW_OK)
     {
         std::cerr << "Unable to setup GLEW." << std::endl;
         glfwDestroyWindow(_window);
@@ -57,10 +62,34 @@ bool Application::init()
     initListeners();
 
     setupCallbacks();
+    std::unique_ptr<Renderer> renderer = nullptr;
+    if (useOpengl)
+    {
+        renderer = std::make_unique<DefaultRenderer>();
+    }
+    else
+    {
+        renderer = std::make_unique<VulkanRenderer>();
+    }
+    if (!initRenderer(std::move(renderer)))
+    {
+        return false;
+    }
     return true;
 }
 
-bool Application::setupWindow(int monitorIndex)
+bool Application::initRenderer(std::unique_ptr<Renderer> renderer)
+{
+    if (!renderer)
+    {
+        return false;
+    }
+    _renderer = std::move(renderer);
+    _renderer->init();
+    return true;
+}
+
+bool Application::setupWindow(int monitorIndex, bool use_opengl)
 {
     int monitorCount;
     GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
@@ -68,11 +97,18 @@ bool Application::setupWindow(int monitorIndex)
     {
         monitorIndex = monitorCount - 1;
     }
+    if (!use_opengl)
+    {
+        // in case of Vulkan renderer, disable initialization of OpenGL context
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    }
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
     GLFWmonitor *monitor = monitors[monitorIndex];
     const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-    GLFWwindow *window = glfwCreateWindow(mode->width, mode->height,
-                                          "Brasio Engine", monitor, nullptr);
+    GLFWwindow *window =
+        glfwCreateWindow(1920 /* mode->width */, 1080 /* mode->height */,
+                         "Brasio Engine", nullptr /* monitor */, nullptr);
+    (void)mode;
     if (!window)
     {
         std::cerr << "Unable to create GLFW window." << std::endl;
@@ -100,8 +136,8 @@ void Application::loop()
 {
     while (!_shouldTerminate)
     {
-        ApplicationTickEvent tickEvent;
-        ApplicationEventEmitter::fire(tickEvent);
+        // ApplicationTickEvent tickEvent;
+        // ApplicationEventEmitter::fire(tickEvent);
         glfwPollEvents();
     }
 }
