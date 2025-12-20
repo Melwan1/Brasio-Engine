@@ -38,7 +38,7 @@ public:
      *
      * @return true if the window has been created correctly, false otherwise.
      */
-    bool setupWindow(int monitorIndex, bool use_opengl);
+    bool setupWindow(int monitorIndex, bool useOpengl);
 
     void setupGlfwInput();
     void setupCallbacks();
