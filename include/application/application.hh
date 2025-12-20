@@ -3,6 +3,7 @@
 #include <application/libapplication.hh>
 #include <events/emitters/emitters.hh>
 #include <events/listeners/listeners.hh>
+#include <renderer/renderer.hh>
 
 class Application
     : public ApplicationEventEmitter
@@ -23,6 +24,8 @@ public:
     void initListeners();
     bool init();
 
+    bool initRenderer(std::unique_ptr<Renderer> renderer);
+
     // various setups
 
     /** Setup the window on which to render the application.
@@ -31,9 +34,11 @@ public:
      * greater or equal to the number of monitors, the last monitor is used.
      * Any other input is considered invalid and throws an exception.
      *
+     * @param use_opengl whether the window should initialize OpenGL context.
+     *
      * @return true if the window has been created correctly, false otherwise.
      */
-    bool setupWindow(int monitorIndex);
+    bool setupWindow(int monitorIndex, bool use_opengl);
 
     void setupGlfwInput();
     void setupCallbacks();
@@ -48,6 +53,7 @@ public:
 
 private:
     GLFWwindow *_window;
+    std::unique_ptr<Renderer> _renderer;
 
     bool _shouldTerminate;
 };

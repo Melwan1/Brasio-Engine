@@ -3,6 +3,8 @@
 
 #include <events/libevents.hh>
 
+#include <renderer/default_renderer.hh>
+
 Application::Application()
     : _window(nullptr)
     , _shouldTerminate(false)
@@ -36,8 +38,10 @@ bool Application::init()
         return false;
     }
 
+    bool use_opengl = false;
+
     int monitorIndex = -1;
-    if (!setupWindow(monitorIndex))
+    if (!setupWindow(monitorIndex, use_opengl))
     {
         return false;
     }
@@ -57,16 +61,36 @@ bool Application::init()
     initListeners();
 
     setupCallbacks();
+    if (!initRenderer(std::make_unique<DefaultRenderer>()))
+    {
+        return false;
+    }
     return true;
 }
 
-bool Application::setupWindow(int monitorIndex)
+bool Application::initRenderer(std::unique_ptr<Renderer> renderer)
+{
+    if (!renderer)
+    {
+        return false;
+    }
+    _renderer = std::move(renderer);
+    _renderer->init();
+    return true;
+}
+
+bool Application::setupWindow(int monitorIndex, bool use_opengl)
 {
     int monitorCount;
     GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
     if (monitorIndex >= monitorCount || monitorIndex == -1)
     {
         monitorIndex = monitorCount - 1;
+    }
+    if (!use_opengl)
+    {
+        // in case of Vulkan renderer, disable initialization of OpenGL context
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     }
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
     GLFWmonitor *monitor = monitors[monitorIndex];

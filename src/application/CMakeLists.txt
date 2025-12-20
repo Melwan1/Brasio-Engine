@@ -2,7 +2,7 @@ add_library(libapplication)
 
 set_target_properties(libapplication PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
-    OUTPUT_NAME events
+    OUTPUT_NAME application
 )
 
 target_include_directories(libapplication PRIVATE
@@ -16,6 +16,10 @@ target_link_libraries(libapplication PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
     GLEW::GLEW
+)
+
+target_link_libraries(libapplication PRIVATE
+    librenderer
 )
 
 target_sources(libapplication PRIVATE
