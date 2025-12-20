@@ -13,8 +13,8 @@ project(BrasioEngine)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast -g -O0)
-add_link_options(-g -O0)
+add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast -g -O0 -fsanitize=address)
+add_link_options(-g -O0 -fsanitize=address)
 
 find_package(OpenGL REQUIRED)
 

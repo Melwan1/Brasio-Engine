@@ -15,7 +15,7 @@ class VulkanRenderer : public Renderer
 public:
     VulkanRenderer();
 
-    ~VulkanRenderer() = default;
+    ~VulkanRenderer();
 
     virtual void init() override;
 

@@ -36,3 +36,8 @@ VulkanRenderer::VulkanRenderer()
 
 void VulkanRenderer::init()
 {}
+
+VulkanRenderer::~VulkanRenderer()
+{
+    vkDestroyInstance(_instance, nullptr);
+}
