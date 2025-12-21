@@ -4,6 +4,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <ostream>
+
 /**
  * The Vulkan Renderer.
  *
@@ -19,6 +21,10 @@ public:
 
     virtual void init() override;
 
+    void print_extensions(std::ostream &ostr);
+
 private:
     VkInstance _instance;
+    uint32_t _extensionCount;
+    std::vector<VkExtensionProperties> _extensions;
 };

@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
+#include <iostream>
+
 VulkanRenderer::VulkanRenderer()
 {
     VkApplicationInfo applicationInfo{};
@@ -28,6 +30,13 @@ VulkanRenderer::VulkanRenderer()
 
     createInfo.enabledLayerCount = 0; // FIXME, only temporary
 
+    vkEnumerateInstanceExtensionProperties(nullptr, &_extensionCount, nullptr);
+    _extensions.resize(_extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &_extensionCount,
+                                           _extensions.data());
+
+    print_extensions(std::cout);
+
     if (vkCreateInstance(&createInfo, nullptr, &_instance) != VK_SUCCESS)
     {
         throw std::runtime_error("failed to create instance!");
@@ -40,4 +49,14 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDestroyInstance(_instance, nullptr);
+}
+
+void VulkanRenderer::print_extensions(std::ostream &ostr)
+{
+    ostr << "Available Vulkan Instance Extensions:";
+    for (auto &extension : _extensions)
+    {
+        ostr << extension.extensionName << ", ";
+    }
+    ostr << std::endl;
 }
