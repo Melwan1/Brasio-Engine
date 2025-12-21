@@ -3,9 +3,33 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
+#include <algorithm>
 #include <iostream>
 
 VulkanRenderer::VulkanRenderer()
+{
+    createInstance();
+}
+
+void VulkanRenderer::init()
+{}
+
+VulkanRenderer::~VulkanRenderer()
+{
+    vkDestroyInstance(_instance, nullptr);
+}
+
+void VulkanRenderer::printExtensions(std::ostream &ostr)
+{
+    ostr << "Available Vulkan Instance Extensions:";
+    for (auto &extension : _extensions)
+    {
+        ostr << extension.extensionName << ", ";
+    }
+    ostr << std::endl;
+}
+
+void VulkanRenderer::createInstance()
 {
     VkApplicationInfo applicationInfo{};
     applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -28,35 +52,61 @@ VulkanRenderer::VulkanRenderer()
     createInfo.enabledExtensionCount = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
 
-    createInfo.enabledLayerCount = 0; // FIXME, only temporary
-
     vkEnumerateInstanceExtensionProperties(nullptr, &_extensionCount, nullptr);
     _extensions.resize(_extensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &_extensionCount,
                                            _extensions.data());
 
-    print_extensions(std::cout);
+    printExtensions(std::cout);
+
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
+
+    if (enableValidationLayers && !checkValidationLayerSupport())
+    {
+        throw std::runtime_error("Validation layers requested but not found.");
+    }
+
+    if (enableValidationLayers)
+    {
+        createInfo.enabledLayerCount = _validationLayers.size();
+        createInfo.ppEnabledLayerNames = _validationLayers.data();
+    }
+    else
+    {
+        createInfo.enabledLayerCount = 0;
+    }
 
     if (vkCreateInstance(&createInfo, nullptr, &_instance) != VK_SUCCESS)
     {
-        throw std::runtime_error("failed to create instance!");
+        throw std::runtime_error("Failed to create an instance.");
     }
 }
 
-void VulkanRenderer::init()
-{}
-
-VulkanRenderer::~VulkanRenderer()
+bool VulkanRenderer::checkValidationLayerSupport()
 {
-    vkDestroyInstance(_instance, nullptr);
-}
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
-void VulkanRenderer::print_extensions(std::ostream &ostr)
-{
-    ostr << "Available Vulkan Instance Extensions:";
-    for (auto &extension : _extensions)
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    _validationLayers.clear();
+    _validationLayers.emplace_back("VK_LAYER_KHRONOS_validation");
+
+    for (auto &layerName : _validationLayers)
     {
-        ostr << extension.extensionName << ", ";
+        if (std::find_if(availableLayers.begin(), availableLayers.end(),
+                         [&layerName](VkLayerProperties &prop) {
+                             return !std::strcmp(prop.layerName, layerName);
+                         })
+            == availableLayers.end())
+        {
+            return false;
+        }
     }
-    ostr << std::endl;
+    return true;
 }

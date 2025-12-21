@@ -21,10 +21,13 @@ public:
 
     virtual void init() override;
 
-    void print_extensions(std::ostream &ostr);
+    void printExtensions(std::ostream &ostr);
+    void createInstance();
+    bool checkValidationLayerSupport();
 
 private:
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
+    std::vector<const char *> _validationLayers;
 };
