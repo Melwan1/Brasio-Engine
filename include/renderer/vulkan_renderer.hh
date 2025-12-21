@@ -4,6 +4,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <ostream>
+
 /**
  * The Vulkan Renderer.
  *
@@ -19,6 +21,13 @@ public:
 
     virtual void init() override;
 
+    void printExtensions(std::ostream &ostr);
+    void createInstance();
+    bool checkValidationLayerSupport();
+
 private:
     VkInstance _instance;
+    uint32_t _extensionCount;
+    std::vector<VkExtensionProperties> _extensions;
+    std::vector<const char *> _validationLayers;
 };
