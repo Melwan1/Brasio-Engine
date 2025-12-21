@@ -1,4 +1,4 @@
-#include <renderer/default_renderer.hh>
+#include <renderer/default-renderer.hh>
 
 DefaultRenderer::DefaultRenderer()
 {}

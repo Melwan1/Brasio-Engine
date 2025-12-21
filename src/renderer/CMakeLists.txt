@@ -15,10 +15,11 @@ target_include_directories(librenderer PRIVATE
 target_link_libraries(librenderer PRIVATE
     Vulkan::Vulkan
     glfw
+    libio
 )
 
 target_sources(librenderer PRIVATE
     renderer.cc
-    default_renderer.cc
-    vulkan_renderer.cc
+    default-renderer.cc
+    vulkan-renderer.cc
 )
