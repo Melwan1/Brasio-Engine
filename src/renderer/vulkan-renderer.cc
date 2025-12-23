@@ -497,4 +497,11 @@ void VulkanRenderer::createSwapChain()
     {
         throw std::runtime_error("Failed to create swap chain.");
     }
+
+    _swapChainImageFormat = surfaceFormat.format;
+    _swapChainExtent = extent;
+
+    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, nullptr);
+    _swapChainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, _swapChainImages.data());
 }
