@@ -361,5 +361,5 @@ void VulkanRenderer::createLogicalDevice()
 void VulkanRenderer::getDeviceQueues(const QueueFamilyIndices &indices)
 {
     vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
-    vkGetDeviceQueue(_device, indices.presentFamily.value(), 0, &_graphicsQueue);
+    vkGetDeviceQueue(_device, indices.presentFamily.value(), 0, &_presentationQueue);
 }

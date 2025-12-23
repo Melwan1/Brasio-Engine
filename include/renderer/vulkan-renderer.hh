@@ -76,5 +76,5 @@ private:
 
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
-    VkQueue _presnetationQueue = VK_NULL_HANDLE;
+    VkQueue _presentationQueue = VK_NULL_HANDLE;
 };
