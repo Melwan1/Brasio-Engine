@@ -28,6 +28,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createSurface();
     pickPhysicalDevice();
     createLogicalDevice();
+    createSwapChain();
 }
 
 void VulkanRenderer::init()
@@ -35,12 +36,14 @@ void VulkanRenderer::init()
 
 VulkanRenderer::~VulkanRenderer()
 {
+    vkDeviceWaitIdle(_device);
+    vkDestroySwapchainKHR(_device, _swapChain, nullptr);
+    vkDestroySurfaceKHR(_instance, _surface, nullptr);
+    vkDestroyDevice(_device, nullptr);
     if (_enableValidationLayers)
     {
         destroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
     }
-    vkDestroySurfaceKHR(_instance, _surface, nullptr);
-    vkDestroyDevice(_device, nullptr);
     vkDestroyInstance(_instance, nullptr);
 }
 
@@ -451,4 +454,47 @@ VkExtent2D VulkanRenderer::chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capa
     actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
     actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
     return actualExtent;
+}
+
+void VulkanRenderer::createSwapChain()
+{
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(_physicalDevice);
+
+    VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+    {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = _surface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    QueueFamilyIndices indices = findQueueFamilies(_physicalDevice);
+    uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+    bool areIndicesSame = indices.graphicsFamily.value() == indices.presentFamily.value();
+
+    createInfo.imageSharingMode = areIndicesSame ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;
+    createInfo.queueFamilyIndexCount = areIndicesSame ? 0 : 2;
+    createInfo.pQueueFamilyIndices = areIndicesSame ? nullptr : queueFamilyIndices;
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform; // no transform
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE; // best performance with a window over the drawn window
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+    
+    if (vkCreateSwapchainKHR(_device, &createInfo, nullptr, &_swapChain) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create swap chain.");
+    }
 }

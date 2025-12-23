@@ -43,6 +43,8 @@ public:
     void createLogicalDevice();
     void getDeviceQueues(const QueueFamilyIndices &indices);
 
+    void createSwapChain();
+
 private:
     GLFWwindow *_window;
     VkInstance _instance;
@@ -85,4 +87,6 @@ private:
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+    VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
 };
