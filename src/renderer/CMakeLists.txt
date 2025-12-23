@@ -22,5 +22,5 @@ target_sources(librenderer PRIVATE
     renderer.cc
     default-renderer.cc
     vulkan-renderer.cc
-queue-family-indices.cc
+    queue-family-indices.cc
 )
