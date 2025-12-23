@@ -245,11 +245,7 @@ bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice &device)
         return false;
     }
     QueueFamilyIndices indices = findQueueFamilies(device);
-    if (!indices.isComplete())
-    {
-        return false;
-    }
-    return true;
+    return indices.isComplete() && checkDeviceExtensionSupport(device);
 }
 
 int VulkanRenderer::getDeviceSuitability(const VkPhysicalDevice &device)
@@ -362,4 +358,23 @@ void VulkanRenderer::getDeviceQueues(const QueueFamilyIndices &indices)
 {
     vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
     vkGetDeviceQueue(_device, indices.presentFamily.value(), 0, &_presentationQueue);
+}
+
+bool VulkanRenderer::checkDeviceExtensionSupport(const VkPhysicalDevice &device)
+{
+    uint32_t extensionCount = 0;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::vector<const char *> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+    for (const auto &availableExtension : availableExtensions)
+    {
+        requiredExtensions.erase(availableExtension.extensionName);
+    }
+
+    return requiredExtensions.empty();
 }

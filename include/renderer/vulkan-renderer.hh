@@ -73,6 +73,7 @@ private:
     std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
     bool isDeviceSuitable(const VkPhysicalDevice &device);
     int getDeviceSuitability(const VkPhysicalDevice &device);
+    bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
