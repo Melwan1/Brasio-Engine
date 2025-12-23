@@ -24,6 +24,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     _window = window;
     createInstance();
     setupDebugMessenger();
+    createSurface();
     pickPhysicalDevice();
     createLogicalDevice();
 }
@@ -293,7 +294,12 @@ QueueFamilyIndices VulkanRenderer::findQueueFamilies(const VkPhysicalDevice &dev
     {
         if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
-            break;
+        }
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surface, &presentSupport);
+        if (presentSupport)
+        {
+            indices.presentFamily = i;
         }
         i++;
     }
