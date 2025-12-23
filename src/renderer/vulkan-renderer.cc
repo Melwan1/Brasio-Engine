@@ -245,7 +245,14 @@ bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice &device)
         return false;
     }
     QueueFamilyIndices indices = findQueueFamilies(device);
-    return indices.isComplete() && checkDeviceExtensionSupport(device);
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
+    bool swapChainAdequate = false;
+    if (extensionsSupported)
+    {
+        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+        swapChainAdequate = swapChainSupport.isValid();
+    }
+    return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
 int VulkanRenderer::getDeviceSuitability(const VkPhysicalDevice &device)
@@ -376,4 +383,29 @@ bool VulkanRenderer::checkDeviceExtensionSupport(const VkPhysicalDevice &device)
     }
 
     return requiredExtensions.empty();
+}
+
+SwapChainSupportDetails VulkanRenderer::querySwapChainSupport(const VkPhysicalDevice &device)
+{
+    SwapChainSupportDetails details;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _surface, &details.capabilities);
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount, nullptr);
+
+    if (formatCount > 0)
+    {
+        details.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount, details.formats.data());
+    }
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface, &presentModeCount, nullptr);
+
+    if (presentModeCount > 0)
+    {
+        details.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface, &presentModeCount, details.presentModes.data());
+    }
+
+    return details;
 }

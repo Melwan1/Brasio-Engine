@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <renderer/queue-family-indices.hh>
+#include <renderer/swap-chain-support-details.hh>
 
 /**
  * The Vulkan Renderer.
@@ -79,4 +80,6 @@ private:
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;
+
+    SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device);
 };
