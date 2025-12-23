@@ -6,6 +6,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
+#include <GLFW/glfw3.h>
 
 #include <renderer/queue-family-indices.hh>
 
@@ -18,7 +19,7 @@
 class VulkanRenderer : public Renderer
 {
 public:
-    VulkanRenderer();
+    VulkanRenderer(GLFWwindow *window);
 
     ~VulkanRenderer();
 
@@ -33,6 +34,8 @@ public:
     VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
     void setupDebugMessenger();
 
+    void createSurface();
+
     void pickPhysicalDevice();
     QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
 
@@ -40,6 +43,7 @@ public:
     void getDeviceQueue(const QueueFamilyIndices &indices);
 
 private:
+    GLFWwindow *_window;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -61,6 +65,8 @@ private:
     void destroyDebugUtilsMessengerEXT(VkInstance &instance,
                                        VkDebugUtilsMessengerEXT &debugMessenger,
                                        const VkAllocationCallbacks *allocator);
+
+    VkSurfaceKHR _surface = VK_NULL_HANDLE;
 
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 

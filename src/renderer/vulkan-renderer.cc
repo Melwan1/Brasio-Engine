@@ -19,8 +19,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     return VK_FALSE;
 }
 
-VulkanRenderer::VulkanRenderer()
+VulkanRenderer::VulkanRenderer(GLFWwindow *window)
 {
+    _window = window;
     createInstance();
     setupDebugMessenger();
     pickPhysicalDevice();
@@ -36,6 +37,7 @@ VulkanRenderer::~VulkanRenderer()
     {
         destroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
     }
+    vkDestroySurfaceKHR(_instance, _surface, nullptr);
     vkDestroyDevice(_device, nullptr);
     vkDestroyInstance(_instance, nullptr);
 }
@@ -205,6 +207,14 @@ void VulkanRenderer::setupDebugMessenger()
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to setup debug messenger.");
+    }
+}
+
+void VulkanRenderer::createSurface()
+{
+    if (glfwCreateWindowSurface(_instance, _window, nullptr, &_surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create a window surface.");
     }
 }
 
