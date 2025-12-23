@@ -336,7 +336,8 @@ void VulkanRenderer::createLogicalDevice()
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
 
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(_deviceExtensions.size());
+    createInfo.ppEnabledExtensionNames = _deviceExtensions.data();
 
     if (_enableValidationLayers)
     {
@@ -367,9 +368,7 @@ bool VulkanRenderer::checkDeviceExtensionSupport(const VkPhysicalDevice &device)
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
     vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
-    std::vector<const char *> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
-    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+    std::set<std::string> requiredExtensions(_deviceExtensions.begin(), _deviceExtensions.end());
 
     for (const auto &availableExtension : availableExtensions)
     {

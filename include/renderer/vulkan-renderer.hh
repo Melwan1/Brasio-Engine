@@ -75,6 +75,7 @@ private:
     int getDeviceSuitability(const VkPhysicalDevice &device);
     bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 
+    std::vector<const char *> _deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;
