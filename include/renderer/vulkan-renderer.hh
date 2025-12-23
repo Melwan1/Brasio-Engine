@@ -47,6 +47,8 @@ public:
 
     void createImageViews();
 
+    void createGraphicsPipeline();
+
 private:
     GLFWwindow *_window;
     VkInstance _instance;

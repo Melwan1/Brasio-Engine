@@ -30,6 +30,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createLogicalDevice();
     createSwapChain();
     createImageViews();
+    createGraphicsPipeline();
 }
 
 void VulkanRenderer::init()
@@ -536,4 +537,9 @@ void VulkanRenderer::createImageViews()
             throw std::runtime_error("Failed to create image view.");
         }
     }
+}
+
+void VulkanRenderer::createGraphicsPipeline()
+{
+
 }
