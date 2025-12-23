@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 
@@ -309,20 +310,25 @@ QueueFamilyIndices VulkanRenderer::findQueueFamilies(const VkPhysicalDevice &dev
 void VulkanRenderer::createLogicalDevice()
 {
     QueueFamilyIndices indices = findQueueFamilies(_physicalDevice);
-    VkDeviceQueueCreateInfo queueCreateInfo{};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-    queueCreateInfo.queueCount = 1;
-
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    for (const uint32_t queueFamilyIndex : uniqueQueueFamilies)
+    {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.emplace_back(queueCreateInfo);
+    }
 
     VkPhysicalDeviceFeatures deviceFeatures{};
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
 
     createInfo.enabledExtensionCount = 0;
@@ -340,10 +346,11 @@ void VulkanRenderer::createLogicalDevice()
     {
         throw std::runtime_error("Failed to create a logical device.");
     }
-    getDeviceQueue(indices);
+    getDeviceQueues(indices);
 }
 
-void VulkanRenderer::getDeviceQueue(const QueueFamilyIndices &indices)
+void VulkanRenderer::getDeviceQueues(const QueueFamilyIndices &indices)
 {
     vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
+    vkGetDeviceQueue(_device, indices.presentFamily.value(), 0, &_graphicsQueue);
 }

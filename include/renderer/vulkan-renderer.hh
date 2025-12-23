@@ -40,7 +40,7 @@ public:
     QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
 
     void createLogicalDevice();
-    void getDeviceQueue(const QueueFamilyIndices &indices);
+    void getDeviceQueues(const QueueFamilyIndices &indices);
 
 private:
     GLFWwindow *_window;
@@ -75,4 +75,5 @@ private:
 
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
+    VkQueue _presnetationQueue = VK_NULL_HANDLE;
 };
