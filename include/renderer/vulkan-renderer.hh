@@ -7,6 +7,8 @@
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
 
+#include <renderer/queue-family-indices.hh>
+
 /**
  * The Vulkan Renderer.
  *
@@ -32,6 +34,8 @@ public:
     void setupDebugMessenger();
 
     void pickPhysicalDevice();
+
+    QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
 
 private:
     VkInstance _instance;
