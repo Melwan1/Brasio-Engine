@@ -45,6 +45,8 @@ public:
 
     void createSwapChain();
 
+    void createImageViews();
+
 private:
     GLFWwindow *_window;
     VkInstance _instance;
@@ -92,4 +94,6 @@ private:
     VkExtent2D _swapChainExtent;
     VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
     std::vector<VkImage> _swapChainImages;
+
+    std::vector<VkImageView> _swapChainImageViews;
 };
