@@ -24,6 +24,7 @@ VulkanRenderer::VulkanRenderer()
     createInstance();
     setupDebugMessenger();
     pickPhysicalDevice();
+    createLogicalDevice();
 }
 
 void VulkanRenderer::init()
@@ -35,6 +36,7 @@ VulkanRenderer::~VulkanRenderer()
     {
         destroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
     }
+    vkDestroyDevice(_device, nullptr);
     vkDestroyInstance(_instance, nullptr);
 }
 
@@ -286,4 +288,46 @@ QueueFamilyIndices VulkanRenderer::findQueueFamilies(const VkPhysicalDevice &dev
         i++;
     }
     return indices;
+}
+
+void VulkanRenderer::createLogicalDevice()
+{
+    QueueFamilyIndices indices = findQueueFamilies(_physicalDevice);
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (_enableValidationLayers)
+    {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(_validationLayers.size());
+        createInfo.ppEnabledLayerNames = _validationLayers.data();
+    }
+    else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    if (vkCreateDevice(_physicalDevice, &createInfo, nullptr, &_device) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create a logical device.");
+    }
+    getDeviceQueue(indices);
+}
+
+void VulkanRenderer::getDeviceQueue(const QueueFamilyIndices &indices)
+{
+    vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &_graphicsQueue);
 }

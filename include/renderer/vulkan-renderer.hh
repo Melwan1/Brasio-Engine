@@ -34,8 +34,10 @@ public:
     void setupDebugMessenger();
 
     void pickPhysicalDevice();
-
     QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
+
+    void createLogicalDevice();
+    void getDeviceQueue(const QueueFamilyIndices &indices);
 
 private:
     VkInstance _instance;
@@ -56,7 +58,6 @@ private:
         const VkDebugUtilsMessengerCreateInfoEXT &createInfo,
         const VkAllocationCallbacks *allocator,
         VkDebugUtilsMessengerEXT &debugMessenger);
-
     void destroyDebugUtilsMessengerEXT(VkInstance &instance,
                                        VkDebugUtilsMessengerEXT &debugMessenger,
                                        const VkAllocationCallbacks *allocator);
@@ -64,6 +65,8 @@ private:
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 
     std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
-
     int getDeviceSuitability(const VkPhysicalDevice &device);
+
+    VkDevice _device = VK_NULL_HANDLE;
+    VkQueue _graphicsQueue = VK_NULL_HANDLE;
 };
