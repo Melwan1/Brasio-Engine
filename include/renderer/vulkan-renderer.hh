@@ -6,8 +6,10 @@
 
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
+#include <GLFW/glfw3.h>
 
 #include <renderer/queue-family-indices.hh>
+#include <renderer/swap-chain-support-details.hh>
 
 /**
  * The Vulkan Renderer.
@@ -18,7 +20,7 @@
 class VulkanRenderer : public Renderer
 {
 public:
-    VulkanRenderer();
+    VulkanRenderer(GLFWwindow *window);
 
     ~VulkanRenderer();
 
@@ -33,13 +35,20 @@ public:
     VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
     void setupDebugMessenger();
 
+    void createSurface();
+
     void pickPhysicalDevice();
     QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
 
     void createLogicalDevice();
-    void getDeviceQueue(const QueueFamilyIndices &indices);
+    void getDeviceQueues(const QueueFamilyIndices &indices);
+
+    void createSwapChain();
+
+    void createImageViews();
 
 private:
+    GLFWwindow *_window;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -62,11 +71,29 @@ private:
                                        VkDebugUtilsMessengerEXT &debugMessenger,
                                        const VkAllocationCallbacks *allocator);
 
+    VkSurfaceKHR _surface = VK_NULL_HANDLE;
+
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 
     std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+    bool isDeviceSuitable(const VkPhysicalDevice &device);
     int getDeviceSuitability(const VkPhysicalDevice &device);
+    bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 
+    std::vector<const char *> _deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
+    VkQueue _presentationQueue = VK_NULL_HANDLE;
+
+    SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapChainExtent;
+    VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
+    std::vector<VkImage> _swapChainImages;
+
+    std::vector<VkImageView> _swapChainImageViews;
 };

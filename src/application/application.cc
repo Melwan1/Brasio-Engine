@@ -69,7 +69,7 @@ bool Application::init()
     }
     else
     {
-        renderer = std::make_unique<VulkanRenderer>();
+        renderer = std::make_unique<VulkanRenderer>(_window);
     }
     if (!initRenderer(std::move(renderer)))
     {
