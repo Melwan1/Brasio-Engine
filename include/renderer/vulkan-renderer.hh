@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <renderer/queue-family-indices.hh>
+#include <renderer/swap-chain-support-details.hh>
 
 /**
  * The Vulkan Renderer.
@@ -42,6 +43,8 @@ public:
     void createLogicalDevice();
     void getDeviceQueues(const QueueFamilyIndices &indices);
 
+    void createSwapChain();
+
 private:
     GLFWwindow *_window;
     VkInstance _instance;
@@ -71,9 +74,22 @@ private:
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 
     std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+    bool isDeviceSuitable(const VkPhysicalDevice &device);
     int getDeviceSuitability(const VkPhysicalDevice &device);
+    bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 
+    std::vector<const char *> _deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
-    VkQueue _presnetationQueue = VK_NULL_HANDLE;
+    VkQueue _presentationQueue = VK_NULL_HANDLE;
+
+    SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapChainExtent;
+    VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
+    std::vector<VkImage> _swapChainImages;
 };
