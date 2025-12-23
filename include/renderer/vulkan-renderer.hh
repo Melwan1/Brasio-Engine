@@ -7,6 +7,8 @@
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
 
+#include <renderer/queue-family-indices.hh>
+
 /**
  * The Vulkan Renderer.
  *
@@ -31,6 +33,10 @@ public:
     VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
     void setupDebugMessenger();
 
+    void pickPhysicalDevice();
+
+    QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
+
 private:
     VkInstance _instance;
     uint32_t _extensionCount;
@@ -54,4 +60,10 @@ private:
     void destroyDebugUtilsMessengerEXT(VkInstance &instance,
                                        VkDebugUtilsMessengerEXT &debugMessenger,
                                        const VkAllocationCallbacks *allocator);
+
+    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+
+    std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+
+    int getDeviceSuitability(const VkPhysicalDevice &device);
 };
