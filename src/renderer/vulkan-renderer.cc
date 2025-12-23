@@ -235,23 +235,32 @@ std::vector<VkPhysicalDevice> VulkanRenderer::getAvailablePhysicalDevices()
     return devices;
 }
 
-int VulkanRenderer::getDeviceSuitability(const VkPhysicalDevice &device)
+bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice &device)
 {
-    int score = 0;
-    VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
-    vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
     if (!deviceFeatures.geometryShader || !deviceFeatures.tessellationShader)
     {
-        return 0;
+        return false;
     }
     QueueFamilyIndices indices = findQueueFamilies(device);
     if (!indices.isComplete())
     {
+        return false;
+    }
+    return true;
+}
+
+int VulkanRenderer::getDeviceSuitability(const VkPhysicalDevice &device)
+{
+    if (!isDeviceSuitable(device))
+    {
         return 0;
     }
+    int score = 0;
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
 
     if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
     {

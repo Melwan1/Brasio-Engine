@@ -71,6 +71,7 @@ private:
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 
     std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+    bool isDeviceSuitable(const VkPhysicalDevice &device);
     int getDeviceSuitability(const VkPhysicalDevice &device);
 
     VkDevice _device = VK_NULL_HANDLE;
