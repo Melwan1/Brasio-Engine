@@ -31,6 +31,8 @@ public:
     VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
     void setupDebugMessenger();
 
+    void pickPhysicalDevice();
+
 private:
     VkInstance _instance;
     uint32_t _extensionCount;
@@ -54,4 +56,10 @@ private:
     void destroyDebugUtilsMessengerEXT(VkInstance &instance,
                                        VkDebugUtilsMessengerEXT &debugMessenger,
                                        const VkAllocationCallbacks *allocator);
+
+    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+
+    std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+
+    int getDeviceSuitability(const VkPhysicalDevice &device);
 };

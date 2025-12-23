@@ -4,6 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 #include <iostream>
+#include <map>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 
@@ -22,6 +23,7 @@ VulkanRenderer::VulkanRenderer()
 {
     createInstance();
     setupDebugMessenger();
+    pickPhysicalDevice();
 }
 
 void VulkanRenderer::init()
@@ -202,4 +204,60 @@ void VulkanRenderer::setupDebugMessenger()
     {
         throw std::runtime_error("Failed to setup debug messenger.");
     }
+}
+
+std::vector<VkPhysicalDevice> VulkanRenderer::getAvailablePhysicalDevices()
+{
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(_instance, &deviceCount, nullptr);
+
+    if (deviceCount == 0)
+    {
+        throw std::runtime_error("Failed to find a GPU with Vulkan support.");
+    }
+
+    std::vector<VkPhysicalDevice> devices(deviceCount);
+    vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
+    return devices;
+}
+
+int VulkanRenderer::getDeviceSuitability(const VkPhysicalDevice &device)
+{
+    int score = 0;
+    VkPhysicalDeviceProperties deviceProperties;
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+    if (!deviceFeatures.geometryShader || !deviceFeatures.tessellationShader)
+    {
+        return 0;
+    }
+
+    if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+    {
+        score += 1000;
+    }
+    score += deviceProperties.limits.maxImageDimension2D;
+    return score;
+}
+
+void VulkanRenderer::pickPhysicalDevice()
+{
+    std::vector<VkPhysicalDevice> devices = getAvailablePhysicalDevices();
+    std::multimap<int, VkPhysicalDevice> candidates;
+
+    for (const auto &device : devices)
+    {
+        int score = getDeviceSuitability(device);
+        candidates.insert(std::make_pair(score, device));
+    }
+    if (candidates.rbegin()->first > 0)
+    {
+        _physicalDevice = candidates.rbegin()->second;
+    }
+    else {
+        throw std::runtime_error("Failed to find a suitable GPU device.");
+    }
+
 }
