@@ -40,6 +40,11 @@ void ShaderManager::readSpirVFile(const fs::path &outputPath)
     _shaderLocationToContent.insert({outputPath.string(), fileContent});
 }
 
+const std::string &ShaderManager::getSpirVFileContent(const fs::path &entry)
+{
+    return _shaderLocationToContent.at(_shaderCompiler.getEntryPaths(entry).second);
+}
+
 ShaderManager::~ShaderManager()
 {
     fs::remove_all("compiled-shaders/");

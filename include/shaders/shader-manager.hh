@@ -16,6 +16,8 @@ public:
     bool compileAllShaders();
     void readSpirVFile(const fs::path &outputPath);
 
+    const std::string &getSpirVFileContent(const fs::path &entry);
+
 private:
     ShaderCompiler _shaderCompiler;
     std::map<const fs::path, const std::string> _shaderLocationToContent;

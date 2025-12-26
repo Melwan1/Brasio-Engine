@@ -32,12 +32,12 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createLogicalDevice();
     createSwapChain();
     createImageViews();
+    _shaderManager.compileAllShaders();
     createGraphicsPipeline();
 }
 
 void VulkanRenderer::init()
 {
-    _shaderManager.compileAllShaders();
 }
 
 VulkanRenderer::~VulkanRenderer()
@@ -545,5 +545,6 @@ void VulkanRenderer::createImageViews()
 
 void VulkanRenderer::createGraphicsPipeline()
 {
-
+    auto vertShaderCode = _shaderManager.getSpirVFileContent("shaders/vertex/basic.vert");
+    auto fragShaderCode = _shaderManager.getSpirVFileContent("shaders/fragment/basic.frag");
 }
