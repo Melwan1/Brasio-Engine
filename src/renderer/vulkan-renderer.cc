@@ -21,6 +21,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 }
 
 VulkanRenderer::VulkanRenderer(GLFWwindow *window)
+    : _window(window)
+    , _shaderManager("shaders", "output.log")
 {
     _window = window;
     createInstance();
@@ -34,7 +36,9 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
 }
 
 void VulkanRenderer::init()
-{}
+{
+    _shaderManager.compileAllShaders();
+}
 
 VulkanRenderer::~VulkanRenderer()
 {
