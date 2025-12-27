@@ -10,6 +10,7 @@
 
 #include <renderer/queue-family-indices.hh>
 #include <renderer/swap-chain-support-details.hh>
+#include <shaders/shader-manager.hh>
 
 /**
  * The Vulkan Renderer.
@@ -47,8 +48,11 @@ public:
 
     void createImageViews();
 
+    void createGraphicsPipeline();
+
 private:
     GLFWwindow *_window;
+    ShaderManager _shaderManager;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -96,4 +100,5 @@ private:
     std::vector<VkImage> _swapChainImages;
 
     std::vector<VkImageView> _swapChainImageViews;
+
 };
