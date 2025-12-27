@@ -8,6 +8,7 @@
 #include <set>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
+#include <shaders/shader-module.hh>
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -545,6 +546,21 @@ void VulkanRenderer::createImageViews()
 
 void VulkanRenderer::createGraphicsPipeline()
 {
-    auto vertShaderCode = _shaderManager.getSpirVFileContent("shaders/vertex/basic.vert");
-    auto fragShaderCode = _shaderManager.getSpirVFileContent("shaders/fragment/basic.frag");
+    ShaderModule vertModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/vertex/basic.vert"));
+    ShaderModule fragModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/fragment/basic.frag"));
+
+    VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+    vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertShaderStageInfo.module = vertModule.getVulkanModule();
+    vertShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+    fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragShaderStageInfo.module = fragModule.getVulkanModule();
+    fragShaderStageInfo.pName = "main";
+
+    VkPipelineShaderStageCreateInfo stages[] = { vertShaderStageInfo, fragShaderStageInfo };
+    (void)stages;
 }

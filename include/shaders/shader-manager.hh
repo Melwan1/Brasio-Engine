@@ -5,6 +5,8 @@
 
 #include <shaders/shader-compiler.hh>
 
+#include <vulkan/vulkan.hpp>
+
 namespace fs = std::filesystem;
 
 class ShaderManager
@@ -17,6 +19,9 @@ public:
     void readSpirVFile(const fs::path &outputPath);
 
     const std::string &getSpirVFileContent(const fs::path &entry);
+
+    VkShaderModule createShaderModuleFromByteCode(VkDevice &device, const std::string &shaderByteCode);
+    VkShaderModule createShaderModuleFromPath(VkDevice &device, const fs::path &entry);
 
 private:
     ShaderCompiler _shaderCompiler;

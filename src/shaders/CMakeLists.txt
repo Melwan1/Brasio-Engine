@@ -21,4 +21,5 @@ target_link_libraries(libshaders PRIVATE
 target_sources(libshaders PRIVATE
     shader-compiler.cc
     shader-manager.cc
+    shader-module.cc
 )
