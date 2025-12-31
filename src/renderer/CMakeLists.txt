@@ -16,6 +16,7 @@ target_link_libraries(librenderer PRIVATE
     Vulkan::Vulkan
     glfw
     libio
+    libshaders
 )
 
 target_sources(librenderer PRIVATE
