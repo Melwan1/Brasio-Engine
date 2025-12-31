@@ -101,6 +101,8 @@ private:
     std::vector<VkImage> _swapChainImages;
 
     std::vector<VkImageView> _swapChainImageViews;
+
+    VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
 
 };

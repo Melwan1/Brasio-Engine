@@ -46,6 +46,7 @@ VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
     vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
+    vkDestroyRenderPass(_device, _renderPass, nullptr);
     for (const auto &imageView : _swapChainImageViews)
     {
         vkDestroyImageView(_device, imageView, nullptr);
@@ -557,6 +558,27 @@ void VulkanRenderer::createRenderPass()
     colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference colorAttachmentRef{};
+    colorAttachmentRef.attachment = 0; // index of the attachment description in the attachment description array
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    
+    VkSubpassDescription subpass{};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+    VkRenderPassCreateInfo renderPassCreateInfo{};
+    renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassCreateInfo.attachmentCount = 1;
+    renderPassCreateInfo.pAttachments = &colorAttachment;
+    renderPassCreateInfo.subpassCount = 1;
+    renderPassCreateInfo.pSubpasses = &subpass;
+
+    if (vkCreateRenderPass(_device, &renderPassCreateInfo, nullptr, &_renderPass) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create render pass.");
+    }
 
 }
 
