@@ -53,6 +53,7 @@ public:
 
     void createFramebuffers();
     void createCommandPool();
+    void createCommandBuffer();
 
 private:
     GLFWwindow *_window;
@@ -111,5 +112,6 @@ private:
 
     std::vector<VkFramebuffer> _swapChainFramebuffers;
     VkCommandPool _commandPool;
+    VkCommandBuffer _commandBuffer;
 
 };
