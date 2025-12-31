@@ -13,4 +13,5 @@ public:
     DefaultRenderer();
 
     virtual void init() override;
+    virtual void drawFrame() override;
 };

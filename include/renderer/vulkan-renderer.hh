@@ -26,6 +26,7 @@ public:
     ~VulkanRenderer();
 
     virtual void init() override;
+    virtual void drawFrame() override;
 
     void printExtensions(std::ostream &ostr);
     VkApplicationInfo getApplicationInfo();
@@ -50,6 +51,14 @@ public:
 
     void createRenderPass();
     void createGraphicsPipeline();
+
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
+
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    void createSyncObjects();
 
 private:
     GLFWwindow *_window;
@@ -105,5 +114,15 @@ private:
     VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
+
+    std::vector<VkFramebuffer> _swapChainFramebuffers;
+    VkCommandPool _commandPool;
+    std::vector<VkCommandBuffer> _commandBuffers;
+
+    std::vector<VkSemaphore> _imageAvailableSemaphores;
+    std::vector<VkSemaphore> _renderFinishedSemaphores;
+    std::vector<VkFence> _inFlightFences;
+
+    uint32_t _currentFrame = 0;
 
 };
