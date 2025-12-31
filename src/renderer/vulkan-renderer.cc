@@ -36,6 +36,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     _shaderManager.compileAllShaders();
     createRenderPass();
     createGraphicsPipeline();
+    createFramebuffers();
 }
 
 void VulkanRenderer::init()
@@ -45,20 +46,30 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
+
+    for (auto &framebuffer : _swapChainFramebuffers)
+    {
+        vkDestroyFramebuffer(_device, framebuffer, nullptr);
+    }
+
     vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
     vkDestroyRenderPass(_device, _renderPass, nullptr);
+
     for (const auto &imageView : _swapChainImageViews)
     {
         vkDestroyImageView(_device, imageView, nullptr);
     }
+
     vkDestroySwapchainKHR(_device, _swapChain, nullptr);
     vkDestroySurfaceKHR(_instance, _surface, nullptr);
     vkDestroyDevice(_device, nullptr);
+
     if (_enableValidationLayers)
     {
         destroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
     }
+
     vkDestroyInstance(_instance, nullptr);
 }
 
@@ -722,5 +733,31 @@ void VulkanRenderer::createGraphicsPipeline()
     if (vkCreateGraphicsPipelines(_device, VK_NULL_HANDLE, pipelineCreateInfoCount, &pipelineCreateInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create graphics pipeline.");
+    }
+}
+
+void VulkanRenderer::createFramebuffers()
+{
+    _swapChainFramebuffers.resize(_swapChainImageViews.size());
+
+    for (size_t i = 0; i < _swapChainImageViews.size(); i++)
+    {
+        VkImageView attachments[] = {
+            _swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferCreateInfo{};
+        framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferCreateInfo.renderPass = _renderPass;
+        framebufferCreateInfo.attachmentCount = 1;
+        framebufferCreateInfo.pAttachments = attachments;
+        framebufferCreateInfo.width = _swapChainExtent.width;
+        framebufferCreateInfo.height = _swapChainExtent.height;
+        framebufferCreateInfo.layers = 1;
+
+        if (vkCreateFramebuffer(_device, &framebufferCreateInfo, nullptr, &_swapChainFramebuffers[i]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("Failed to create framebuffer.");
+        }
     }
 }
