@@ -44,6 +44,7 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
+    vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
     for (const auto &imageView : _swapChainImageViews)
     {
         vkDestroyImageView(_device, imageView, nullptr);
@@ -645,6 +646,17 @@ void VulkanRenderer::createGraphicsPipeline()
     {
         colorBlending.blendConstants[i] = 0.0f;
     }
-    
+
+    VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
+    pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutCreateInfo.setLayoutCount = 0;
+    pipelineLayoutCreateInfo.pSetLayouts = nullptr;
+    pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
+    pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
+
+    if (vkCreatePipelineLayout(_device, &pipelineLayoutCreateInfo, nullptr, &_pipelineLayout) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create pipeline layout.");
+    }
 
 }
