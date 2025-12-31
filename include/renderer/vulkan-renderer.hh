@@ -26,6 +26,7 @@ public:
     ~VulkanRenderer();
 
     virtual void init() override;
+    virtual void drawFrame() override;
 
     void printExtensions(std::ostream &ostr);
     VkApplicationInfo getApplicationInfo();
@@ -56,6 +57,8 @@ public:
     void createCommandBuffer();
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    void createSyncObjects();
 
 private:
     GLFWwindow *_window;
@@ -115,5 +118,9 @@ private:
     std::vector<VkFramebuffer> _swapChainFramebuffers;
     VkCommandPool _commandPool;
     VkCommandBuffer _commandBuffer;
+
+    VkSemaphore _imageAvailableSemaphore;
+    VkSemaphore _renderFinishedSemaphore;
+    VkFence _inFlightFence;
 
 };

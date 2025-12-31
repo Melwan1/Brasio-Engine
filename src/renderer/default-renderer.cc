@@ -5,3 +5,6 @@ DefaultRenderer::DefaultRenderer()
 
 void DefaultRenderer::init()
 {}
+
+void DefaultRenderer::drawFrame()
+{}
