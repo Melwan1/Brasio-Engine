@@ -55,6 +55,8 @@ public:
     void createCommandPool();
     void createCommandBuffer();
 
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
 private:
     GLFWwindow *_window;
     ShaderManager _shaderManager;
