@@ -37,6 +37,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createRenderPass();
     createGraphicsPipeline();
     createFramebuffers();
+    createCommandPool();
 }
 
 void VulkanRenderer::init()
@@ -46,6 +47,8 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
+
+    vkDestroyCommandPool(_device, _commandPool, nullptr);
 
     for (auto &framebuffer : _swapChainFramebuffers)
     {
@@ -759,5 +762,20 @@ void VulkanRenderer::createFramebuffers()
         {
             throw std::runtime_error("Failed to create framebuffer.");
         }
+    }
+}
+
+void VulkanRenderer::createCommandPool()
+{
+    QueueFamilyIndices queueFamilyIndices = findQueueFamilies(_physicalDevice);
+
+    VkCommandPoolCreateInfo poolCreateInfo{};
+    poolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    poolCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+    if (vkCreateCommandPool(_device, &poolCreateInfo, nullptr, &_commandPool) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create command pool.");
     }
 }
