@@ -34,6 +34,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createSwapChain();
     createImageViews();
     _shaderManager.compileAllShaders();
+    createRenderPass();
     createGraphicsPipeline();
 }
 
@@ -44,7 +45,9 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
+    vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
+    vkDestroyRenderPass(_device, _renderPass, nullptr);
     for (const auto &imageView : _swapChainImageViews)
     {
         vkDestroyImageView(_device, imageView, nullptr);
@@ -545,6 +548,41 @@ void VulkanRenderer::createImageViews()
     }
 }
 
+void VulkanRenderer::createRenderPass()
+{
+    VkAttachmentDescription colorAttachment{};
+    colorAttachment.format = _swapChainImageFormat;
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+    VkAttachmentReference colorAttachmentRef{};
+    colorAttachmentRef.attachment = 0; // index of the attachment description in the attachment description array
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    
+    VkSubpassDescription subpass{};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+    VkRenderPassCreateInfo renderPassCreateInfo{};
+    renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassCreateInfo.attachmentCount = 1;
+    renderPassCreateInfo.pAttachments = &colorAttachment;
+    renderPassCreateInfo.subpassCount = 1;
+    renderPassCreateInfo.pSubpasses = &subpass;
+
+    if (vkCreateRenderPass(_device, &renderPassCreateInfo, nullptr, &_renderPass) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create render pass.");
+    }
+
+}
+
 void VulkanRenderer::createGraphicsPipeline()
 {
     ShaderModule vertModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/vertex/basic.vert"));
@@ -562,7 +600,7 @@ void VulkanRenderer::createGraphicsPipeline()
     fragShaderStageInfo.module = fragModule.getVulkanModule();
     fragShaderStageInfo.pName = "main";
 
-    VkPipelineShaderStageCreateInfo stages[] = { vertShaderStageInfo, fragShaderStageInfo };
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
     std::vector<VkDynamicState> dynamicStates = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR,
@@ -659,4 +697,30 @@ void VulkanRenderer::createGraphicsPipeline()
         throw std::runtime_error("Failed to create pipeline layout.");
     }
 
+    VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
+    pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineCreateInfo.stageCount = 2;
+    pipelineCreateInfo.pStages = shaderStages;
+
+    pipelineCreateInfo.pVertexInputState = &vertexInputStateCreateInfo;
+    pipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
+    pipelineCreateInfo.pViewportState = &viewportState;
+    pipelineCreateInfo.pRasterizationState = &rasterizer;
+    pipelineCreateInfo.pMultisampleState = &multisampling;
+    pipelineCreateInfo.pDepthStencilState = nullptr;
+    pipelineCreateInfo.pColorBlendState = &colorBlending;
+    pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
+
+    pipelineCreateInfo.layout = _pipelineLayout;
+    pipelineCreateInfo.renderPass = _renderPass;
+    pipelineCreateInfo.subpass = 0;
+
+    pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+    pipelineCreateInfo.basePipelineIndex = -1;
+
+    uint32_t pipelineCreateInfoCount = 1;
+    if (vkCreateGraphicsPipelines(_device, VK_NULL_HANDLE, pipelineCreateInfoCount, &pipelineCreateInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create graphics pipeline.");
+    }
 }
