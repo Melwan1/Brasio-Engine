@@ -826,5 +826,10 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     uint32_t firstVertex = 0;
     uint32_t firstInstance = 0;
     vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
+    vkCmdEndRenderPass(commandBuffer);
 
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to record command buffer.");
+    }
 }
