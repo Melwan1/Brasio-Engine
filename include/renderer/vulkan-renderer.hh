@@ -48,6 +48,7 @@ public:
 
     void createImageViews();
 
+    void createRenderPass();
     void createGraphicsPipeline();
 
 private:
