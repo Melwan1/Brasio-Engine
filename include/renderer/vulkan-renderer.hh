@@ -54,7 +54,7 @@ public:
 
     void createFramebuffers();
     void createCommandPool();
-    void createCommandBuffer();
+    void createCommandBuffers();
 
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
@@ -117,10 +117,12 @@ private:
 
     std::vector<VkFramebuffer> _swapChainFramebuffers;
     VkCommandPool _commandPool;
-    VkCommandBuffer _commandBuffer;
+    std::vector<VkCommandBuffer> _commandBuffers;
 
-    VkSemaphore _imageAvailableSemaphore;
-    VkSemaphore _renderFinishedSemaphore;
-    VkFence _inFlightFence;
+    std::vector<VkSemaphore> _imageAvailableSemaphores;
+    std::vector<VkSemaphore> _renderFinishedSemaphores;
+    std::vector<VkFence> _inFlightFences;
+
+    uint32_t _currentFrame = 0;
 
 };
