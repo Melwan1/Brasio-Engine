@@ -52,6 +52,10 @@ public:
     void createGraphicsPipeline();
 
     void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffer();
+
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 private:
     GLFWwindow *_window;
@@ -109,5 +113,7 @@ private:
     VkPipeline _graphicsPipeline;
 
     std::vector<VkFramebuffer> _swapChainFramebuffers;
+    VkCommandPool _commandPool;
+    VkCommandBuffer _commandBuffer;
 
 };
