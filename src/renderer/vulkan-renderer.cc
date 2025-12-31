@@ -38,6 +38,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     createGraphicsPipeline();
     createFramebuffers();
     createCommandPool();
+    createCommandBuffer();
     createSyncObjects();
 }
 
@@ -587,12 +588,22 @@ void VulkanRenderer::createRenderPass()
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &colorAttachmentRef;
 
+    VkSubpassDependency dependency{};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
     VkRenderPassCreateInfo renderPassCreateInfo{};
     renderPassCreateInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassCreateInfo.attachmentCount = 1;
     renderPassCreateInfo.pAttachments = &colorAttachment;
     renderPassCreateInfo.subpassCount = 1;
     renderPassCreateInfo.pSubpasses = &subpass;
+    renderPassCreateInfo.dependencyCount = 1;
+    renderPassCreateInfo.pDependencies = &dependency;
 
     if (vkCreateRenderPass(_device, &renderPassCreateInfo, nullptr, &_renderPass) != VK_SUCCESS)
     {
@@ -641,24 +652,10 @@ void VulkanRenderer::createGraphicsPipeline()
     inputAssemblyStateCreateInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssemblyStateCreateInfo.primitiveRestartEnable = VK_FALSE;
 
-    VkViewport viewport;
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = static_cast<float>(_swapChainExtent.width);
-    viewport.height = static_cast<float>(_swapChainExtent.height);
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 0.0f;
-
-    VkRect2D scissor;
-    scissor.offset = { 0, 0 };
-    scissor.extent = _swapChainExtent;
-
     VkPipelineViewportStateCreateInfo viewportState{};
     viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewportState.viewportCount = 1;
-    viewportState.pViewports = &viewport;
     viewportState.scissorCount = 1;
-    viewportState.pScissors = &scissor;
 
     VkPipelineRasterizationStateCreateInfo rasterizer{};
     rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -817,13 +814,27 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     renderPassBeginInfo.renderArea.offset = { 0, 0 };
     renderPassBeginInfo.renderArea.extent = _swapChainExtent;
 
-    VkClearValue clearColor = {{{ 0.0f, 0.0f, 0.0f, 1.0f }}};
+    VkClearValue clearColor = {{{ 0.4f, 0.6f, 1.0f, 1.0f }}};
     renderPassBeginInfo.clearValueCount = 1;
     renderPassBeginInfo.pClearValues = &clearColor;
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(_swapChainExtent.width);
+    viewport.height = static_cast<float>(_swapChainExtent.height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+    VkRect2D scissor{};
+    scissor.offset = {0, 0};
+    scissor.extent = _swapChainExtent;
+    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     uint32_t vertexCount = 3;
     uint32_t instanceCount = 1;
@@ -859,6 +870,7 @@ void VulkanRenderer::drawFrame()
 {
     vkWaitForFences(_device, 1, &_inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(_device, 1, &_inFlightFence);
+
     uint32_t imageIndex;
     vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
     vkResetCommandBuffer(_commandBuffer, 0);
@@ -883,4 +895,16 @@ void VulkanRenderer::drawFrame()
     {
         throw std::runtime_error("Failed to submit draw command buffer.");
     }
+
+    VkSwapchainKHR swapchains[] = { _swapChain };
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapchains;
+    presentInfo.pImageIndices = &imageIndex;
+    presentInfo.pResults = nullptr;
+    vkQueuePresentKHR(_presentationQueue, &presentInfo);
+
 }
