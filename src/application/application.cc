@@ -136,8 +136,8 @@ void Application::loop()
 {
     while (!_shouldTerminate)
     {
-        // ApplicationTickEvent tickEvent;
-        // ApplicationEventEmitter::fire(tickEvent);
+        ApplicationTickEvent tickEvent;
+        ApplicationEventEmitter::fire(tickEvent);
         glfwPollEvents();
     }
 }
@@ -146,7 +146,7 @@ void Application::onEvent(ApplicationRenderEvent &event)
 {
     event.print(std::cout);
     std::cout << "\n";
-    glfwSwapBuffers(_window);
+    _renderer->drawFrame();
     event.handle();
 }
 
