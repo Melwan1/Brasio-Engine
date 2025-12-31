@@ -45,6 +45,7 @@ void VulkanRenderer::init()
 VulkanRenderer::~VulkanRenderer()
 {
     vkDeviceWaitIdle(_device);
+    vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
     vkDestroyRenderPass(_device, _renderPass, nullptr);
     for (const auto &imageView : _swapChainImageViews)
@@ -599,7 +600,7 @@ void VulkanRenderer::createGraphicsPipeline()
     fragShaderStageInfo.module = fragModule.getVulkanModule();
     fragShaderStageInfo.pName = "main";
 
-    VkPipelineShaderStageCreateInfo stages[] = { vertShaderStageInfo, fragShaderStageInfo };
+    VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
     std::vector<VkDynamicState> dynamicStates = {
         VK_DYNAMIC_STATE_VIEWPORT,
         VK_DYNAMIC_STATE_SCISSOR,
@@ -696,4 +697,30 @@ void VulkanRenderer::createGraphicsPipeline()
         throw std::runtime_error("Failed to create pipeline layout.");
     }
 
+    VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
+    pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineCreateInfo.stageCount = 2;
+    pipelineCreateInfo.pStages = shaderStages;
+
+    pipelineCreateInfo.pVertexInputState = &vertexInputStateCreateInfo;
+    pipelineCreateInfo.pInputAssemblyState = &inputAssemblyStateCreateInfo;
+    pipelineCreateInfo.pViewportState = &viewportState;
+    pipelineCreateInfo.pRasterizationState = &rasterizer;
+    pipelineCreateInfo.pMultisampleState = &multisampling;
+    pipelineCreateInfo.pDepthStencilState = nullptr;
+    pipelineCreateInfo.pColorBlendState = &colorBlending;
+    pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
+
+    pipelineCreateInfo.layout = _pipelineLayout;
+    pipelineCreateInfo.renderPass = _renderPass;
+    pipelineCreateInfo.subpass = 0;
+
+    pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+    pipelineCreateInfo.basePipelineIndex = -1;
+
+    uint32_t pipelineCreateInfoCount = 1;
+    if (vkCreateGraphicsPipelines(_device, VK_NULL_HANDLE, pipelineCreateInfoCount, &pipelineCreateInfo, nullptr, &_graphicsPipeline) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create graphics pipeline.");
+    }
 }

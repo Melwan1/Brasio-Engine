@@ -104,5 +104,6 @@ private:
 
     VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
+    VkPipeline _graphicsPipeline;
 
 };
