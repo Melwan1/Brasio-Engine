@@ -130,6 +130,7 @@ void Application::setupCallbacks()
 {
     glfwSetKeyCallback(_window, keyCallback);
     glfwSetWindowCloseCallback(_window, windowCloseCallback);
+    glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
 }
 
 void Application::loop()
@@ -186,5 +187,13 @@ void Application::onEvent(WindowCloseEvent &event)
     std::cout << "\n";
     glfwSetWindowShouldClose(_window, GLFW_TRUE);
     _shouldTerminate = true;
+    event.handle();
+}
+
+void Application::onEvent(WindowResizeEvent &event)
+{
+    event.print(std::cout);
+    std::cout << "\n";
+    _renderer->setResizedFramebuffer();
     event.handle();
 }

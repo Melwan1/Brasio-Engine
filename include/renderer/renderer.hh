@@ -39,4 +39,13 @@ public:
      * the API used.
      */
     virtual void drawFrame() = 0;
+
+    /**
+     * Set the framebuffer as resized.
+     *
+     */
+    void setResizedFramebuffer();
+
+protected:
+    bool _resizedFramebuffer = false;
 };
