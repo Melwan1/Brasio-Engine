@@ -9,6 +9,7 @@
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 #include <shaders/shader-module.hh>
+#include <geometry/vertex.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 #define CLEAR_COLOR { 0.4f, 0.6f, 1.0f, 1.0f }
@@ -611,8 +612,8 @@ void VulkanRenderer::createRenderPass()
 
 void VulkanRenderer::createGraphicsPipeline()
 {
-    ShaderModule vertModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/vertex/basic.vert"));
-    ShaderModule fragModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/fragment/basic.frag"));
+    ShaderModule vertModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/vertex/minimal-triangle.vert"));
+    ShaderModule fragModule = ShaderModule(_device, _shaderManager.createShaderModuleFromPath(_device, "shaders/fragment/minimal-triangle.frag"));
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -637,12 +638,15 @@ void VulkanRenderer::createGraphicsPipeline()
     dynamicStateCreateInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicStateCreateInfo.pDynamicStates = dynamicStates.data();
 
+    auto bindingDescription = Vertex::getBindingDescription();
+    auto attributeDescriptions = Vertex::getAttributeDescriptions();
+
     VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo{};
     vertexInputStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputStateCreateInfo.vertexBindingDescriptionCount = 0;
-    vertexInputStateCreateInfo.pVertexBindingDescriptions = nullptr;
-    vertexInputStateCreateInfo.vertexAttributeDescriptionCount = 0;
-    vertexInputStateCreateInfo.pVertexAttributeDescriptions = nullptr;
+    vertexInputStateCreateInfo.vertexBindingDescriptionCount = 1;
+    vertexInputStateCreateInfo.pVertexBindingDescriptions = &bindingDescription;
+    vertexInputStateCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+    vertexInputStateCreateInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyStateCreateInfo{};
     inputAssemblyStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
