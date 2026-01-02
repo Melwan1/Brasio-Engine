@@ -60,6 +60,9 @@ public:
 
     void createSyncObjects();
 
+    void cleanupSwapChain();
+    void recreateSwapChain();
+
 private:
     GLFWwindow *_window;
     ShaderManager _shaderManager;

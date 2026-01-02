@@ -50,7 +50,7 @@ VkShaderModule ShaderManager::createShaderModuleFromByteCode(VkDevice &device, c
     size_t alignment = 4;
     size_t paddingToAdd = (alignment - shaderByteCode.size() % alignment) % alignment;
     const std::string finalShaderByteCode = shaderByteCode + std::string(paddingToAdd, 0);
-    VkShaderModuleCreateInfo createInfo;
+    VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     createInfo.codeSize = finalShaderByteCode.length();
     createInfo.pCode = reinterpret_cast<const uint32_t*>(finalShaderByteCode.data());
