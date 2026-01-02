@@ -19,13 +19,17 @@ target_link_libraries(brasio PRIVATE
 
 add_subdirectory(application)
 add_subdirectory(events)
+add_subdirectory(io)
 add_subdirectory(math)
 add_subdirectory(renderer)
+add_subdirectory(shaders)
 
 target_link_libraries(brasio PRIVATE
     libapplication
     libevents
+    libio
     librenderer
+    libshaders
 )
 
 target_sources(brasio PRIVATE

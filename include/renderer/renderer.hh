@@ -31,4 +31,21 @@ public:
      * used.
      */
     virtual void init() = 0;
+
+    /**
+     * Draw a frame.
+     * 
+     * Again, each derived class implements this method since it depends on
+     * the API used.
+     */
+    virtual void drawFrame() = 0;
+
+    /**
+     * Set the framebuffer as resized.
+     *
+     */
+    void setResizedFramebuffer();
+
+protected:
+    bool _resizedFramebuffer = false;
 };

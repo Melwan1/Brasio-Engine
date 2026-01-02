@@ -50,6 +50,7 @@ public:
     virtual void onEvent(ApplicationUpdateEvent &event) override;
     virtual void onEvent(KeyboardPressEvent &event) override;
     virtual void onEvent(WindowCloseEvent &event) override;
+    virtual void onEvent(WindowResizeEvent &event) override;
 
 private:
     GLFWwindow *_window;

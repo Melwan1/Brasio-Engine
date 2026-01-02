@@ -49,3 +49,17 @@ void windowCloseCallback(GLFWwindow *window)
     WindowCloseEvent event;
     application->WindowEventEmitter::fire(event);
 }
+
+void framebufferSizeCallback(GLFWwindow *window, int width, int height)
+{
+    Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
+    if (!application)
+    {
+        std::cerr << "Discarding Window resize event due to no application "
+                     "linked to the window."
+                  << std::endl;
+        return;
+    }
+    WindowResizeEvent event(false, static_cast<unsigned>(width), static_cast<unsigned>(height));
+    application->WindowEventEmitter::fire(event);
+}

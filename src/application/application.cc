@@ -3,8 +3,8 @@
 
 #include <events/libevents.hh>
 
-#include <renderer/default_renderer.hh>
-#include <renderer/vulkan_renderer.hh>
+#include <renderer/default-renderer.hh>
+#include <renderer/vulkan-renderer.hh>
 
 Application::Application()
     : _window(nullptr)
@@ -69,7 +69,7 @@ bool Application::init()
     }
     else
     {
-        renderer = std::make_unique<VulkanRenderer>();
+        renderer = std::make_unique<VulkanRenderer>(_window);
     }
     if (!initRenderer(std::move(renderer)))
     {
@@ -130,14 +130,15 @@ void Application::setupCallbacks()
 {
     glfwSetKeyCallback(_window, keyCallback);
     glfwSetWindowCloseCallback(_window, windowCloseCallback);
+    glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
 }
 
 void Application::loop()
 {
     while (!_shouldTerminate)
     {
-        // ApplicationTickEvent tickEvent;
-        // ApplicationEventEmitter::fire(tickEvent);
+        ApplicationTickEvent tickEvent;
+        ApplicationEventEmitter::fire(tickEvent);
         glfwPollEvents();
     }
 }
@@ -146,7 +147,7 @@ void Application::onEvent(ApplicationRenderEvent &event)
 {
     event.print(std::cout);
     std::cout << "\n";
-    glfwSwapBuffers(_window);
+    _renderer->drawFrame();
     event.handle();
 }
 
@@ -186,5 +187,13 @@ void Application::onEvent(WindowCloseEvent &event)
     std::cout << "\n";
     glfwSetWindowShouldClose(_window, GLFW_TRUE);
     _shouldTerminate = true;
+    event.handle();
+}
+
+void Application::onEvent(WindowResizeEvent &event)
+{
+    event.print(std::cout);
+    std::cout << "\n";
+    _renderer->setResizedFramebuffer();
     event.handle();
 }

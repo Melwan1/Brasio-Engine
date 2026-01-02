@@ -1,0 +1,131 @@
+#pragma once
+
+#include <renderer/renderer.hh>
+
+#include <ostream>
+
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_core.h>
+#include <GLFW/glfw3.h>
+
+#include <renderer/queue-family-indices.hh>
+#include <renderer/swap-chain-support-details.hh>
+#include <shaders/shader-manager.hh>
+
+/**
+ * The Vulkan Renderer.
+ *
+ * Uses Vulkan as the base API to renderer objects to the window.
+ */
+
+class VulkanRenderer : public Renderer
+{
+public:
+    VulkanRenderer(GLFWwindow *window);
+
+    ~VulkanRenderer();
+
+    virtual void init() override;
+    virtual void drawFrame() override;
+
+    void printExtensions(std::ostream &ostr);
+    VkApplicationInfo getApplicationInfo();
+    void createInstance();
+    bool checkValidationLayerSupport();
+    std::vector<const char *> getExtensions();
+
+    VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
+    void setupDebugMessenger();
+
+    void createSurface();
+
+    void pickPhysicalDevice();
+    QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
+
+    void createLogicalDevice();
+    void getDeviceQueues(const QueueFamilyIndices &indices);
+
+    void createSwapChain();
+
+    void createImageViews();
+
+    void createRenderPass();
+    void createGraphicsPipeline();
+
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
+
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+    void createSyncObjects();
+
+    void cleanupSwapChain();
+    void recreateSwapChain();
+
+private:
+    GLFWwindow *_window;
+    ShaderManager _shaderManager;
+    VkInstance _instance;
+    uint32_t _extensionCount;
+    std::vector<VkExtensionProperties> _extensions;
+
+#ifdef NDEBUG
+    const bool _enableValidationLayers = false;
+#else
+    const bool _enableValidationLayers = true;
+    std::vector<const char *> _validationLayers;
+#endif /* ! NDEBUG */
+
+    VkDebugUtilsMessengerEXT _debugMessenger;
+
+    VkResult createDebugUtilsMessengerEXT(
+        VkInstance &instance,
+        const VkDebugUtilsMessengerCreateInfoEXT &createInfo,
+        const VkAllocationCallbacks *allocator,
+        VkDebugUtilsMessengerEXT &debugMessenger);
+    void destroyDebugUtilsMessengerEXT(VkInstance &instance,
+                                       VkDebugUtilsMessengerEXT &debugMessenger,
+                                       const VkAllocationCallbacks *allocator);
+
+    VkSurfaceKHR _surface = VK_NULL_HANDLE;
+
+    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+
+    std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
+    bool isDeviceSuitable(const VkPhysicalDevice &device);
+    int getDeviceSuitability(const VkPhysicalDevice &device);
+    bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
+
+    std::vector<const char *> _deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+    VkDevice _device = VK_NULL_HANDLE;
+    VkQueue _graphicsQueue = VK_NULL_HANDLE;
+    VkQueue _presentationQueue = VK_NULL_HANDLE;
+
+    SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapChainExtent;
+    VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
+    std::vector<VkImage> _swapChainImages;
+
+    std::vector<VkImageView> _swapChainImageViews;
+
+    VkRenderPass _renderPass;
+    VkPipelineLayout _pipelineLayout;
+    VkPipeline _graphicsPipeline;
+
+    std::vector<VkFramebuffer> _swapChainFramebuffers;
+    VkCommandPool _commandPool;
+    std::vector<VkCommandBuffer> _commandBuffers;
+
+    std::vector<VkSemaphore> _imageAvailableSemaphores;
+    std::vector<VkSemaphore> _renderFinishedSemaphores;
+    std::vector<VkFence> _inFlightFences;
+
+    uint32_t _currentFrame = 0;
+
+};
