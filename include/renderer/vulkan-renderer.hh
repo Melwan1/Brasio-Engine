@@ -11,6 +11,7 @@
 #include <renderer/queue-family-indices.hh>
 #include <renderer/swap-chain-support-details.hh>
 #include <shaders/shader-manager.hh>
+#include <geometry/vertex.hh>
 
 /**
  * The Vulkan Renderer.
@@ -63,9 +64,12 @@ public:
     void cleanupSwapChain();
     void recreateSwapChain();
 
+    void createVertexBuffer();
+
 private:
     GLFWwindow *_window;
     ShaderManager _shaderManager;
+    std::vector<Vertex> _vertices;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -125,6 +129,11 @@ private:
     std::vector<VkSemaphore> _imageAvailableSemaphores;
     std::vector<VkSemaphore> _renderFinishedSemaphores;
     std::vector<VkFence> _inFlightFences;
+
+    VkBuffer _vertexBuffer;
+    VkDeviceMemory _vertexBufferMemory;
+
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
     uint32_t _currentFrame = 0;
 
