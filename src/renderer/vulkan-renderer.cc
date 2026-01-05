@@ -846,11 +846,15 @@ void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     scissor.extent = _swapChainExtent;
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    uint32_t vertexCount = 3;
+    VkBuffer vertexBuffers[] = { _vertexBuffer };
+    VkDeviceSize offsets[] = { 0 };
+    uint32_t firstBinding = 0;
+    uint32_t bindingCount = 1;
+    vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount, vertexBuffers, offsets);
     uint32_t instanceCount = 1;
     uint32_t firstVertex = 0;
     uint32_t firstInstance = 0;
-    vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertex, firstInstance);
+    vkCmdDraw(commandBuffer, static_cast<uint32_t>(_vertices.size()), instanceCount, firstVertex, firstInstance);
     vkCmdEndRenderPass(commandBuffer);
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
@@ -1007,6 +1011,11 @@ void VulkanRenderer::createVertexBuffer()
         throw std::runtime_error("Failed to allocate vertex buffer memory.");
     }
     vkBindBufferMemory(_device, _vertexBuffer, _vertexBufferMemory, 0);
+
+    void *data;
+    vkMapMemory(_device, _vertexBufferMemory, 0, bufferCreateInfo.size, 0, &data);
+    memcpy(data, _vertices.data(), static_cast<size_t>(bufferCreateInfo.size));
+    vkUnmapMemory(_device, _vertexBufferMemory);
 }
 
 uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
