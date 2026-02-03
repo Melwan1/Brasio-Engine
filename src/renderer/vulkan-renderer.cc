@@ -1099,7 +1099,7 @@ void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
     }
 
     VkMemoryRequirements memoryRequirements;
-    vkGetBufferMemoryRequirements(_device, _vertexBuffer, &memoryRequirements);
+    vkGetBufferMemoryRequirements(_device, buffer, &memoryRequirements);
 
     VkMemoryAllocateInfo memoryAllocateInfo{};
     memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -1118,15 +1118,37 @@ void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
 void VulkanRenderer::createVertexBuffer()
 {
     VkDeviceSize bufferSize = sizeof(_vertices[0]) * _vertices.size();
-    createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-                     | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-                 _vertexBuffer, _vertexBufferMemory);
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+
+    VkBufferUsageFlags stagingBufferUsageFlags =
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+    VkMemoryPropertyFlags stagingBufferMemoryFlags =
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+        | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+    createBuffer(bufferSize, stagingBufferUsageFlags, stagingBufferMemoryFlags,
+                 stagingBuffer, stagingBufferMemory);
 
     void *data;
-    vkMapMemory(_device, _vertexBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
     memcpy(data, _vertices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(_device, _vertexBufferMemory);
+    vkUnmapMemory(_device, stagingBufferMemory);
+
+    VkBufferUsageFlags vertexBufferUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT
+        | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
+        | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    VkMemoryPropertyFlags vertexBufferMemoryFlags =
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+    createBuffer(bufferSize, vertexBufferUsageFlags, vertexBufferMemoryFlags,
+                 _vertexBuffer, _vertexBufferMemory);
+
+    copyBuffer(stagingBuffer, _vertexBuffer, bufferSize);
+
+    vkDestroyBuffer(_device, stagingBuffer, nullptr);
+    vkFreeMemory(_device, stagingBufferMemory, nullptr);
 }
 
 uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,
@@ -1146,4 +1168,40 @@ uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,
     }
 
     throw std::runtime_error("Failed to find a suitable memory type.");
+}
+
+void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,
+                                VkDeviceSize size)
+{
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = _commandPool;
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(_device, &allocInfo, &commandBuffer);
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    VkBufferCopy copyRegion;
+    copyRegion.srcOffset = 0;
+    copyRegion.dstOffset = 0;
+    copyRegion.size = size;
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+    vkEndCommandBuffer(commandBuffer);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(_graphicsQueue);
+
+    vkFreeCommandBuffers(_device, _commandPool, 1, &commandBuffer);
 }

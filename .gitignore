@@ -1,6 +1,10 @@
 # CMAKE-RELATED
 build/
 .cache/
+compile_commands.json
 
 # TESTSUITE-RELATED
 report.xml
+
+# OTHER
+*.cap
