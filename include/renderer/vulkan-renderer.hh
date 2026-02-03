@@ -11,6 +11,7 @@
 #include <renderer/queue-family-indices.hh>
 #include <renderer/swap-chain-support-details.hh>
 #include <shaders/shader-manager.hh>
+#include <geometry/vertex.hh>
 
 /**
  * The Vulkan Renderer.
@@ -56,16 +57,26 @@ public:
     void createCommandPool();
     void createCommandBuffers();
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    void recordCommandBuffer(VkCommandBuffer commandBuffer,
+                             uint32_t imageIndex);
 
     void createSyncObjects();
 
     void cleanupSwapChain();
     void recreateSwapChain();
 
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
+                      VkMemoryPropertyFlags properties, VkBuffer &buffer,
+                      VkDeviceMemory &bufferMemory);
+    void createVertexBuffer();
+    void createIndexBuffer();
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
 private:
     GLFWwindow *_window;
     ShaderManager _shaderManager;
+    std::vector<Vertex> _vertices;
+    std::vector<uint16_t> _indices;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -97,14 +108,19 @@ private:
     int getDeviceSuitability(const VkPhysicalDevice &device);
     bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
 
-    std::vector<const char *> _deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+    std::vector<const char *> _deviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;
 
-    SwapChainSupportDetails querySwapChainSupport(const VkPhysicalDevice &device);
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    SwapChainSupportDetails
+    querySwapChainSupport(const VkPhysicalDevice &device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+        const std::vector<VkSurfaceFormatKHR> &availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(
+        const std::vector<VkPresentModeKHR> &availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
     VkFormat _swapChainImageFormat;
@@ -126,6 +142,14 @@ private:
     std::vector<VkSemaphore> _renderFinishedSemaphores;
     std::vector<VkFence> _inFlightFences;
 
-    uint32_t _currentFrame = 0;
+    VkBuffer _vertexBuffer;
+    VkDeviceMemory _vertexBufferMemory;
 
+    VkBuffer _indexBuffer;
+    VkDeviceMemory _indexBufferMemory;
+
+    uint32_t findMemoryType(uint32_t typeFilter,
+                            VkMemoryPropertyFlags properties);
+
+    uint32_t _currentFrame = 0;
 };

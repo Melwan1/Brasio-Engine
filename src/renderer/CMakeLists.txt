@@ -15,6 +15,7 @@ target_include_directories(librenderer PRIVATE
 target_link_libraries(librenderer PRIVATE
     Vulkan::Vulkan
     glfw
+    libgeometry
     libio
     libshaders
 )
