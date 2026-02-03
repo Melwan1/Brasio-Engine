@@ -69,12 +69,14 @@ public:
                       VkMemoryPropertyFlags properties, VkBuffer &buffer,
                       VkDeviceMemory &bufferMemory);
     void createVertexBuffer();
+    void createIndexBuffer();
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 private:
     GLFWwindow *_window;
     ShaderManager _shaderManager;
     std::vector<Vertex> _vertices;
+    std::vector<uint16_t> _indices;
     VkInstance _instance;
     uint32_t _extensionCount;
     std::vector<VkExtensionProperties> _extensions;
@@ -142,6 +144,9 @@ private:
 
     VkBuffer _vertexBuffer;
     VkDeviceMemory _vertexBufferMemory;
+
+    VkBuffer _indexBuffer;
+    VkDeviceMemory _indexBufferMemory;
 
     uint32_t findMemoryType(uint32_t typeFilter,
                             VkMemoryPropertyFlags properties);
