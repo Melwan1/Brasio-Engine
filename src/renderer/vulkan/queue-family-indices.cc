@@ -1,4 +1,4 @@
-#include <renderer/queue-family-indices.hh>
+#include <renderer/vulkan/queue-family-indices.hh>
 
 bool QueueFamilyIndices::isComplete()
 {

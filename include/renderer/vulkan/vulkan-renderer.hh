@@ -8,8 +8,8 @@
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
 
-#include <renderer/queue-family-indices.hh>
-#include <renderer/swap-chain-support-details.hh>
+#include <renderer/vulkan/queue-family-indices.hh>
+#include <renderer/vulkan/swap-chain-support-details.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
 
@@ -30,7 +30,6 @@ public:
     virtual void drawFrame() override;
 
     void printExtensions(std::ostream &ostr);
-    VkApplicationInfo getApplicationInfo();
     void createInstance();
     bool checkValidationLayerSupport();
     std::vector<const char *> getExtensions();

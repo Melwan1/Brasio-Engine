@@ -1,4 +1,4 @@
-#include <renderer/vulkan-renderer.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
@@ -10,6 +10,7 @@
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 #include <shaders/shader-module.hh>
 #include <geometry/vertex.hh>
+#include "renderer/vulkan/builders/application-info-builder.hh"
 
 #define MAX_FRAMES_IN_FLIGHT 2
 #define CLEAR_COLOR                                                            \
@@ -102,25 +103,12 @@ void VulkanRenderer::printExtensions(std::ostream &ostr)
     ostr << std::endl;
 }
 
-VkApplicationInfo VulkanRenderer::getApplicationInfo()
-{
-    VkApplicationInfo applicationInfo{};
-    applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    applicationInfo.pApplicationName = "Brasio Engine";
-    applicationInfo.applicationVersion = VK_MAKE_VERSION(0, 1, 0);
-    applicationInfo.pEngineName = "Brasio Engine";
-    applicationInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
-    applicationInfo.apiVersion = VK_API_VERSION_1_3;
-    applicationInfo.pNext = nullptr;
-    return applicationInfo;
-}
-
 void VulkanRenderer::createInstance()
 {
     VkInstanceCreateInfo createInfo{};
 
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    VkApplicationInfo applicationInfo = getApplicationInfo();
+    VkApplicationInfo applicationInfo = ApplicationInfoBuilder().build();
     createInfo.pApplicationInfo = &applicationInfo;
 
     std::vector<const char *> extensions = getExtensions();

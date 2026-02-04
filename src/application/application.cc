@@ -4,7 +4,7 @@
 #include <events/libevents.hh>
 
 #include <renderer/default-renderer.hh>
-#include <renderer/vulkan-renderer.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 Application::Application()
     : _window(nullptr)
