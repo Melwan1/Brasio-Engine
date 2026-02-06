@@ -27,4 +27,5 @@ target_sources(librenderer PRIVATE
     vulkan/queue-family-indices.cc
     vulkan/swap-chain-support-details.cc
     vulkan/builders/application-info-builder.cc
+    vulkan/builders/instance-builder.cc
 )
