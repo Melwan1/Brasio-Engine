@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include <renderer/vulkan/builders/instance-builder.hh>
+#include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/swap-chain-support-details.hh>
 #include <shaders/shader-manager.hh>
@@ -85,7 +86,7 @@ private:
     std::vector<const char *> _validationLayers;
 #endif /* ! NDEBUG */
 
-    VkSurfaceKHR _surface = VK_NULL_HANDLE;
+    SurfaceType _surface;
 
     VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 

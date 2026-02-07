@@ -3,14 +3,13 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
-#include <iostream>
-#include <map>
 #include <set>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 #include <io/logging/logger.hh>
 #include <geometry/vertex.hh>
 #include <renderer/vulkan/builders/instance-builder.hh>
+#include <renderer/vulkan/builders/surface-builder.hh>
 #include <shaders/shader-module.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
@@ -72,8 +71,6 @@ VulkanRenderer::~VulkanRenderer()
     vkDestroyCommandPool(_device, _commandPool, nullptr);
 
     vkDestroyDevice(_device, nullptr);
-
-    vkDestroySurfaceKHR(_instance->getHandle(), _surface, nullptr);
 }
 
 void VulkanRenderer::createInstance()
@@ -85,12 +82,7 @@ void VulkanRenderer::createInstance()
 
 void VulkanRenderer::createSurface()
 {
-    if (glfwCreateWindowSurface(_instance->getHandle(), _window, nullptr,
-                                &_surface)
-        != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create a window surface.");
-    }
+    _surface = SurfaceBuilder(_instance->getHandle(), _window).build();
 }
 
 std::vector<VkPhysicalDevice> VulkanRenderer::getAvailablePhysicalDevices()
@@ -189,7 +181,7 @@ VulkanRenderer::findQueueFamilies(const VkPhysicalDevice &device)
             indices.graphicsFamily = i;
         }
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surface,
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, _surface->getHandle(),
                                              &presentSupport);
         if (presentSupport)
         {
@@ -281,28 +273,30 @@ SwapChainSupportDetails
 VulkanRenderer::querySwapChainSupport(const VkPhysicalDevice &device)
 {
     SwapChainSupportDetails details;
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _surface,
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _surface->getHandle(),
                                               &details.capabilities);
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount,
-                                         nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface->getHandle(),
+                                         &formatCount, nullptr);
 
     if (formatCount > 0)
     {
         details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount,
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface->getHandle(),
+                                             &formatCount,
                                              details.formats.data());
     }
 
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface,
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface->getHandle(),
                                               &presentModeCount, nullptr);
 
     if (presentModeCount > 0)
     {
         details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(
-            device, _surface, &presentModeCount, details.presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface->getHandle(),
+                                                  &presentModeCount,
+                                                  details.presentModes.data());
     }
 
     return details;
@@ -378,7 +372,7 @@ void VulkanRenderer::createSwapChain()
 
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-    createInfo.surface = _surface;
+    createInfo.surface = _surface->getHandle();
     createInfo.minImageCount = imageCount;
     createInfo.imageFormat = surfaceFormat.format;
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
