@@ -112,10 +112,14 @@ void Logger::critical(const std::string &message,
                       std::vector<std::string> additionalTags)
 {
     _log(message, LogLevel::CRITICAL, additionalTags);
+    _ostr << std::flush;
+    throw std::runtime_error("RECEIVED A CRITICAL MESSAGE: " + message);
 }
 
 void Logger::critical(std::ostream &ostr, const std::string &message,
                       std::vector<std::string> additionalTags)
 {
     log(ostr, message, LogLevel::CRITICAL, additionalTags);
+    ostr << std::flush;
+    throw std::runtime_error("RECEIVED A CRITICAL MESSAGE: " + message);
 }

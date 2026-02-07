@@ -1,15 +1,18 @@
 #pragma once
 
 #include <core/builder.hh>
-#include <renderer/vulkan/builders/application-info-builder.hh>
-
-#include <vulkan/vulkan_core.h>
-#include <GLFW/glfw3.h>
 
 #include <memory>
 #include <vector>
 
-using InstanceType = std::unique_ptr<VkInstance>;
+#include <vulkan/vulkan_core.h>
+#include <GLFW/glfw3.h>
+
+#include <renderer/vulkan/builders/application-info-builder.hh>
+#include <renderer/vulkan/builders/debug-messenger-builder.hh>
+#include <renderer/vulkan/instance.hh>
+
+using InstanceType = std::unique_ptr<Instance>;
 
 class InstanceBuilder : public Builder<InstanceType>
 {
@@ -19,14 +22,21 @@ public:
     virtual InstanceType build() override;
     virtual InstanceBuilder &base() override;
     virtual InstanceBuilder &
-    withValidationLayers(bool enable_validation_layers);
+    withValidationLayers(std::vector<const char *> validationLayers = {});
 
 private:
+    ApplicationInfoBuilder _applicationBuilder;
+
     bool _enableValidationLayers;
     std::vector<const char *> _validationLayers;
 
-    ApplicationInfoBuilder _application_builder;
     VkInstanceCreateInfo _instanceCreateInfo;
 
-    bool checkValidationLayerSupport();
+    uint32_t _instanceExtensionCount;
+    std::vector<VkExtensionProperties> _instanceExtensions;
+
+    std::unique_ptr<DebugMessengerBuilder> _debugMessengerBuilder;
+
+    bool _checkValidationLayerSupport();
+    std::vector<const char *> _getExtensions();
 };

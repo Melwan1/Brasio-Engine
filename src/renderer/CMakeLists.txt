@@ -23,9 +23,6 @@ target_link_libraries(librenderer PRIVATE
 target_sources(librenderer PRIVATE
     renderer.cc
     default-renderer.cc
-    vulkan/vulkan-renderer.cc
-    vulkan/queue-family-indices.cc
-    vulkan/swap-chain-support-details.cc
-    vulkan/builders/application-info-builder.cc
-    vulkan/builders/instance-builder.cc
 )
+
+add_subdirectory(vulkan)

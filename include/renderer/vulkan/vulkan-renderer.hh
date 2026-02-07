@@ -8,6 +8,7 @@
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
 
+#include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/swap-chain-support-details.hh>
 #include <shaders/shader-manager.hh>
@@ -31,8 +32,6 @@ public:
 
     void printExtensions(std::ostream &ostr);
     void createInstance();
-    bool checkValidationLayerSupport();
-    std::vector<const char *> getExtensions();
 
     VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
     void setupDebugMessenger();
@@ -76,9 +75,8 @@ private:
     ShaderManager _shaderManager;
     std::vector<Vertex> _vertices;
     std::vector<uint16_t> _indices;
-    VkInstance _instance;
-    uint32_t _extensionCount;
-    std::vector<VkExtensionProperties> _extensions;
+
+    InstanceType _instance;
 
 #ifdef NDEBUG
     const bool _enableValidationLayers = false;
@@ -86,17 +84,6 @@ private:
     const bool _enableValidationLayers = true;
     std::vector<const char *> _validationLayers;
 #endif /* ! NDEBUG */
-
-    VkDebugUtilsMessengerEXT _debugMessenger;
-
-    VkResult createDebugUtilsMessengerEXT(
-        VkInstance &instance,
-        const VkDebugUtilsMessengerCreateInfoEXT &createInfo,
-        const VkAllocationCallbacks *allocator,
-        VkDebugUtilsMessengerEXT &debugMessenger);
-    void destroyDebugUtilsMessengerEXT(VkInstance &instance,
-                                       VkDebugUtilsMessengerEXT &debugMessenger,
-                                       const VkAllocationCallbacks *allocator);
 
     VkSurfaceKHR _surface = VK_NULL_HANDLE;
 
