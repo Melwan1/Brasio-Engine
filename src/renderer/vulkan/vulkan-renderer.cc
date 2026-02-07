@@ -8,6 +8,7 @@
 #include <set>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
+#include <io/logging/logger.hh>
 #include <shaders/shader-module.hh>
 #include <geometry/vertex.hh>
 #include "renderer/vulkan/builders/application-info-builder.hh"
@@ -95,12 +96,15 @@ VulkanRenderer::~VulkanRenderer()
 
 void VulkanRenderer::printExtensions(std::ostream &ostr)
 {
-    ostr << "Available Vulkan Instance Extensions: ";
+    std::ostringstream oss;
+
+    oss << "Available Vulkan Instance Extensions: ";
     for (auto &extension : _extensions)
     {
-        ostr << extension.extensionName << ", ";
+        oss << extension.extensionName << ", ";
     }
-    ostr << std::endl;
+    std::string message = oss.str();
+    Logger::debug(ostr, message);
 }
 
 void VulkanRenderer::createInstance()

@@ -146,7 +146,6 @@ void Application::loop()
 void Application::onEvent(ApplicationRenderEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     _renderer->drawFrame();
     event.handle();
 }
@@ -154,7 +153,6 @@ void Application::onEvent(ApplicationRenderEvent &event)
 void Application::onEvent(ApplicationTickEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     ApplicationRenderEvent renderEvent;
     ApplicationEventEmitter::fire(renderEvent);
     event.handle();
@@ -163,7 +161,6 @@ void Application::onEvent(ApplicationTickEvent &event)
 void Application::onEvent(ApplicationUpdateEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     ApplicationRenderEvent renderEvent;
     ApplicationEventEmitter::fire(renderEvent);
     event.handle();
@@ -172,7 +169,6 @@ void Application::onEvent(ApplicationUpdateEvent &event)
 void Application::onEvent(KeyboardPressEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     if (event.getPressedKey() == "ESC")
     {
         WindowCloseEvent windowCloseEvent;
@@ -184,7 +180,6 @@ void Application::onEvent(KeyboardPressEvent &event)
 void Application::onEvent(WindowCloseEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     glfwSetWindowShouldClose(_window, GLFW_TRUE);
     _shouldTerminate = true;
     event.handle();
@@ -193,7 +188,6 @@ void Application::onEvent(WindowCloseEvent &event)
 void Application::onEvent(WindowResizeEvent &event)
 {
     event.print(std::cout);
-    std::cout << "\n";
     _renderer->setResizedFramebuffer();
     event.handle();
 }

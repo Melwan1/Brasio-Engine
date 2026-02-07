@@ -30,5 +30,5 @@ KeyboardLongPressEvent KeyboardLongPressEvent::create(int key, int scancode,
 void KeyboardLongPressEvent::print(std::ostream &ostr)
 {
     Event::print(ostr);
-    ostr << FG_ESC(220) << " " << getPressedKey() << ESC_RESET << "\n";
+    Logger::trace(ostr, "Key: " + getPressedKey(), { "EVENT" });
 }
