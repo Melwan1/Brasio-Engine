@@ -23,14 +23,14 @@ void Logger::_log(const std::string &message, const LogLevel messageLevel,
         std::chrono::system_clock::now();
     std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
     std::tm local_time = *std::localtime(&currentTime);
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                  now.time_since_epoch())
-        % 1000;
+    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
+                            now.time_since_epoch())
+        % 1'000'000;
     std::ostringstream oss;
     oss << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
 
-    _ostr << FG_ESC(244) << oss.str() << "." << std::format("{:03}", ms.count())
-          << "   ";
+    _ostr << FG_ESC(244) << oss.str() << "."
+          << std::format("{:06}", microseconds.count()) << "   ";
 
     _ostr << toColor(messageLevel) << "[" << toString(messageLevel) << "]";
 
