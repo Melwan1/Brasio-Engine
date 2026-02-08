@@ -2,8 +2,6 @@
 
 #include <renderer/renderer.hh>
 
-#include <ostream>
-
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
@@ -12,6 +10,7 @@
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/swap-chain-support-details.hh>
+#include <renderer/vulkan/physical-device.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
 
@@ -79,17 +78,8 @@ private:
 #endif /* ! NDEBUG */
 
     SurfaceType _surface;
+    PhysicalDeviceType _physicalDevice;
 
-    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
-
-    std::vector<VkPhysicalDevice> getAvailablePhysicalDevices();
-    bool isDeviceSuitable(const VkPhysicalDevice &device);
-    int getDeviceSuitability(const VkPhysicalDevice &device);
-    bool checkDeviceExtensionSupport(const VkPhysicalDevice &device);
-
-    std::vector<const char *> _deviceExtensions = {
-        VK_KHR_SWAPCHAIN_EXTENSION_NAME
-    };
     VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;
