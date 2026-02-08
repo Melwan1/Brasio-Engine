@@ -31,14 +31,6 @@ public:
     virtual void init() override;
     virtual void drawFrame() override;
 
-    void printExtensions(std::ostream &ostr);
-    void createInstance();
-
-    VkDebugUtilsMessengerCreateInfoEXT getDebugUtilsMessengerCreateInfo();
-    void setupDebugMessenger();
-
-    void createSurface();
-
     void pickPhysicalDevice();
     QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
 

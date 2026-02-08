@@ -28,8 +28,10 @@ VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     , _indices({ 0, 1, 2, 2, 3, 0 })
 {
     _window = window;
-    createInstance();
-    createSurface();
+    _instance = InstanceBuilder()
+                    .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
+                    .build();
+    _surface = SurfaceBuilder(_instance->getHandle(), _window).build();
     pickPhysicalDevice();
     createLogicalDevice();
     createSwapChain();
@@ -71,18 +73,6 @@ VulkanRenderer::~VulkanRenderer()
     vkDestroyCommandPool(_device, _commandPool, nullptr);
 
     vkDestroyDevice(_device, nullptr);
-}
-
-void VulkanRenderer::createInstance()
-{
-    _instance = InstanceBuilder()
-                    .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
-                    .build();
-}
-
-void VulkanRenderer::createSurface()
-{
-    _surface = SurfaceBuilder(_instance->getHandle(), _window).build();
 }
 
 std::vector<VkPhysicalDevice> VulkanRenderer::getAvailablePhysicalDevices()
