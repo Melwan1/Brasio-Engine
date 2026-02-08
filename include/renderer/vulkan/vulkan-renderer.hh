@@ -10,6 +10,7 @@
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/swap-chain-support-details.hh>
+#include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
@@ -79,8 +80,8 @@ private:
 
     SurfaceType _surface;
     PhysicalDeviceType _physicalDevice;
+    LogicalDeviceType _device;
 
-    VkDevice _device = VK_NULL_HANDLE;
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;
 

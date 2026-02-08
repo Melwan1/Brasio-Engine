@@ -1,6 +1,7 @@
 target_sources(librenderer PRIVATE
     debug-messenger.cc
     instance.cc
+    logical-device.cc
     physical-device.cc
     queue-family-indices.cc
     surface.cc

@@ -3,12 +3,11 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
 
-#include <set>
-
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 #include <io/logging/logger.hh>
 #include <geometry/vertex.hh>
 #include <renderer/vulkan/builders/physical-device-builder.hh>
+#include <renderer/vulkan/builders/logical-device-builder.hh>
 #include <shaders/shader-module.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
@@ -53,25 +52,25 @@ VulkanRenderer::~VulkanRenderer()
 {
     cleanupSwapChain();
 
-    vkDestroyBuffer(_device, _indexBuffer, nullptr);
-    vkFreeMemory(_device, _indexBufferMemory, nullptr);
-    vkDestroyBuffer(_device, _vertexBuffer, nullptr);
-    vkFreeMemory(_device, _vertexBufferMemory, nullptr);
+    vkDestroyBuffer(_device->getHandle(), _indexBuffer, nullptr);
+    vkFreeMemory(_device->getHandle(), _indexBufferMemory, nullptr);
+    vkDestroyBuffer(_device->getHandle(), _vertexBuffer, nullptr);
+    vkFreeMemory(_device->getHandle(), _vertexBufferMemory, nullptr);
 
-    vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
-    vkDestroyRenderPass(_device, _renderPass, nullptr);
+    vkDestroyPipeline(_device->getHandle(), _graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(_device->getHandle(), _pipelineLayout, nullptr);
+    vkDestroyRenderPass(_device->getHandle(), _renderPass, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        vkDestroySemaphore(_device, _imageAvailableSemaphores[i], nullptr);
-        vkDestroySemaphore(_device, _renderFinishedSemaphores[i], nullptr);
-        vkDestroyFence(_device, _inFlightFences[i], nullptr);
+        vkDestroySemaphore(_device->getHandle(), _imageAvailableSemaphores[i],
+                           nullptr);
+        vkDestroySemaphore(_device->getHandle(), _renderFinishedSemaphores[i],
+                           nullptr);
+        vkDestroyFence(_device->getHandle(), _inFlightFences[i], nullptr);
     }
 
-    vkDestroyCommandPool(_device, _commandPool, nullptr);
-
-    vkDestroyDevice(_device, nullptr);
+    vkDestroyCommandPool(_device->getHandle(), _commandPool, nullptr);
 }
 
 void VulkanRenderer::pickPhysicalDevice()
@@ -84,61 +83,9 @@ void VulkanRenderer::pickPhysicalDevice()
 
 void VulkanRenderer::createLogicalDevice()
 {
-    QueueFamilyIndices indices = _physicalDevice->findQueueFamilies();
-    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-    std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(),
-                                               indices.presentFamily.value() };
-    float queuePriority = 1.0f;
-    for (const uint32_t queueFamilyIndex : uniqueQueueFamilies)
-    {
-        VkDeviceQueueCreateInfo queueCreateInfo{};
-        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-        queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
-        queueCreateInfo.queueCount = 1;
-        queueCreateInfo.pQueuePriorities = &queuePriority;
-        queueCreateInfos.emplace_back(queueCreateInfo);
-    }
-
-    VkPhysicalDeviceFeatures deviceFeatures{};
-
-    VkDeviceCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.queueCreateInfoCount =
-        static_cast<uint32_t>(queueCreateInfos.size());
-    createInfo.pEnabledFeatures = &deviceFeatures;
-
-    createInfo.enabledExtensionCount =
-        static_cast<uint32_t>(_physicalDevice->getDeviceExtensions().size());
-    createInfo.ppEnabledExtensionNames =
-        _physicalDevice->getDeviceExtensions().data();
-
-    if (_enableValidationLayers)
-    {
-        createInfo.enabledLayerCount =
-            static_cast<uint32_t>(_validationLayers.size());
-        createInfo.ppEnabledLayerNames = _validationLayers.data();
-    }
-    else
-    {
-        createInfo.enabledLayerCount = 0;
-    }
-
-    if (vkCreateDevice(_physicalDevice->getHandle(), &createInfo, nullptr,
-                       &_device)
-        != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create a logical device.");
-    }
-    getDeviceQueues(indices);
-}
-
-void VulkanRenderer::getDeviceQueues(const QueueFamilyIndices &indices)
-{
-    vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0,
-                     &_graphicsQueue);
-    vkGetDeviceQueue(_device, indices.presentFamily.value(), 0,
-                     &_presentationQueue);
+    _device = LogicalDeviceBuilder(*_physicalDevice)
+                  .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
+                  .build();
 }
 
 VkSurfaceFormatKHR VulkanRenderer::chooseSwapSurfaceFormat(
@@ -238,7 +185,8 @@ void VulkanRenderer::createSwapChain()
         VK_TRUE; // best performance with a window over the drawn window
     createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(_device, &createInfo, nullptr, &_swapChain)
+    if (vkCreateSwapchainKHR(_device->getHandle(), &createInfo, nullptr,
+                             &_swapChain)
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create swap chain.");
@@ -247,9 +195,10 @@ void VulkanRenderer::createSwapChain()
     _swapChainImageFormat = surfaceFormat.format;
     _swapChainExtent = extent;
 
-    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, nullptr);
+    vkGetSwapchainImagesKHR(_device->getHandle(), _swapChain, &imageCount,
+                            nullptr);
     _swapChainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount,
+    vkGetSwapchainImagesKHR(_device->getHandle(), _swapChain, &imageCount,
                             _swapChainImages.data());
 }
 
@@ -273,7 +222,7 @@ void VulkanRenderer::createImageViews()
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        if (vkCreateImageView(_device, &createInfo, nullptr,
+        if (vkCreateImageView(_device->getHandle(), &createInfo, nullptr,
                               &_swapChainImageViews[i])
             != VK_SUCCESS)
         {
@@ -321,7 +270,7 @@ void VulkanRenderer::createRenderPass()
     renderPassCreateInfo.dependencyCount = 1;
     renderPassCreateInfo.pDependencies = &dependency;
 
-    if (vkCreateRenderPass(_device, &renderPassCreateInfo, nullptr,
+    if (vkCreateRenderPass(_device->getHandle(), &renderPassCreateInfo, nullptr,
                            &_renderPass)
         != VK_SUCCESS)
     {
@@ -331,14 +280,14 @@ void VulkanRenderer::createRenderPass()
 
 void VulkanRenderer::createGraphicsPipeline()
 {
-    ShaderModule vertModule =
-        ShaderModule(_device,
-                     _shaderManager.createShaderModuleFromPath(
-                         _device, "shaders/vertex/minimal-triangle.vert"));
-    ShaderModule fragModule =
-        ShaderModule(_device,
-                     _shaderManager.createShaderModuleFromPath(
-                         _device, "shaders/fragment/minimal-triangle.frag"));
+    ShaderModule vertModule = ShaderModule(
+        _device->getHandle(),
+        _shaderManager.createShaderModuleFromPath(
+            _device->getHandle(), "shaders/vertex/minimal-triangle.vert"));
+    ShaderModule fragModule = ShaderModule(
+        _device->getHandle(),
+        _shaderManager.createShaderModuleFromPath(
+            _device->getHandle(), "shaders/fragment/minimal-triangle.frag"));
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
     vertShaderStageInfo.sType =
@@ -448,8 +397,8 @@ void VulkanRenderer::createGraphicsPipeline()
     pipelineLayoutCreateInfo.pushConstantRangeCount = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges = nullptr;
 
-    if (vkCreatePipelineLayout(_device, &pipelineLayoutCreateInfo, nullptr,
-                               &_pipelineLayout)
+    if (vkCreatePipelineLayout(_device->getHandle(), &pipelineLayoutCreateInfo,
+                               nullptr, &_pipelineLayout)
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create pipeline layout.");
@@ -477,7 +426,7 @@ void VulkanRenderer::createGraphicsPipeline()
     pipelineCreateInfo.basePipelineIndex = -1;
 
     uint32_t pipelineCreateInfoCount = 1;
-    if (vkCreateGraphicsPipelines(_device, VK_NULL_HANDLE,
+    if (vkCreateGraphicsPipelines(_device->getHandle(), VK_NULL_HANDLE,
                                   pipelineCreateInfoCount, &pipelineCreateInfo,
                                   nullptr, &_graphicsPipeline)
         != VK_SUCCESS)
@@ -503,8 +452,8 @@ void VulkanRenderer::createFramebuffers()
         framebufferCreateInfo.height = _swapChainExtent.height;
         framebufferCreateInfo.layers = 1;
 
-        if (vkCreateFramebuffer(_device, &framebufferCreateInfo, nullptr,
-                                &_swapChainFramebuffers[i])
+        if (vkCreateFramebuffer(_device->getHandle(), &framebufferCreateInfo,
+                                nullptr, &_swapChainFramebuffers[i])
             != VK_SUCCESS)
         {
             throw std::runtime_error("Failed to create framebuffer.");
@@ -522,7 +471,8 @@ void VulkanRenderer::createCommandPool()
     poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-    if (vkCreateCommandPool(_device, &poolCreateInfo, nullptr, &_commandPool)
+    if (vkCreateCommandPool(_device->getHandle(), &poolCreateInfo, nullptr,
+                            &_commandPool)
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create command pool.");
@@ -539,7 +489,8 @@ void VulkanRenderer::createCommandBuffers()
     allocateInfo.commandBufferCount =
         static_cast<uint32_t>(_commandBuffers.size());
 
-    if (vkAllocateCommandBuffers(_device, &allocateInfo, _commandBuffers.data())
+    if (vkAllocateCommandBuffers(_device->getHandle(), &allocateInfo,
+                                 _commandBuffers.data())
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate command buffers.");
@@ -625,13 +576,13 @@ void VulkanRenderer::createSyncObjects()
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
-        if (vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr,
-                              &_imageAvailableSemaphores[i])
+        if (vkCreateSemaphore(_device->getHandle(), &semaphoreCreateInfo,
+                              nullptr, &_imageAvailableSemaphores[i])
                 != VK_SUCCESS
-            || vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr,
-                                 &_renderFinishedSemaphores[i])
+            || vkCreateSemaphore(_device->getHandle(), &semaphoreCreateInfo,
+                                 nullptr, &_renderFinishedSemaphores[i])
                 != VK_SUCCESS
-            || vkCreateFence(_device, &fenceCreateInfo, nullptr,
+            || vkCreateFence(_device->getHandle(), &fenceCreateInfo, nullptr,
                              &_inFlightFences[i])
                 != VK_SUCCESS)
         {
@@ -642,12 +593,12 @@ void VulkanRenderer::createSyncObjects()
 
 void VulkanRenderer::drawFrame()
 {
-    vkWaitForFences(_device, 1, &_inFlightFences[_currentFrame], VK_TRUE,
-                    UINT64_MAX);
+    vkWaitForFences(_device->getHandle(), 1, &_inFlightFences[_currentFrame],
+                    VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
     VkResult result = vkAcquireNextImageKHR(
-        _device, _swapChain, UINT64_MAX,
+        _device->getHandle(), _swapChain, UINT64_MAX,
         _imageAvailableSemaphores[_currentFrame], VK_NULL_HANDLE, &imageIndex);
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
@@ -659,7 +610,7 @@ void VulkanRenderer::drawFrame()
         throw std::runtime_error("Failed to acquire swap chain image.");
     }
 
-    vkResetFences(_device, 1, &_inFlightFences[_currentFrame]);
+    vkResetFences(_device->getHandle(), 1, &_inFlightFences[_currentFrame]);
     vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
     recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
 
@@ -682,7 +633,7 @@ void VulkanRenderer::drawFrame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    if (vkQueueSubmit(_graphicsQueue, 1, &submitInfo,
+    if (vkQueueSubmit(_device->getGraphicsQueue(), 1, &submitInfo,
                       _inFlightFences[_currentFrame])
         != VK_SUCCESS)
     {
@@ -698,7 +649,7 @@ void VulkanRenderer::drawFrame()
     presentInfo.pSwapchains = swapchains;
     presentInfo.pImageIndices = &imageIndex;
     presentInfo.pResults = nullptr;
-    result = vkQueuePresentKHR(_presentationQueue, &presentInfo);
+    result = vkQueuePresentKHR(_device->getPresentationQueue(), &presentInfo);
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR
         || _resizedFramebuffer)
     {
@@ -716,18 +667,18 @@ void VulkanRenderer::drawFrame()
 
 void VulkanRenderer::cleanupSwapChain()
 {
-    vkDeviceWaitIdle(_device);
+    _device->waitIdle();
     for (auto &framebuffer : _swapChainFramebuffers)
     {
-        vkDestroyFramebuffer(_device, framebuffer, nullptr);
+        vkDestroyFramebuffer(_device->getHandle(), framebuffer, nullptr);
     }
 
     for (auto &imageView : _swapChainImageViews)
     {
-        vkDestroyImageView(_device, imageView, nullptr);
+        vkDestroyImageView(_device->getHandle(), imageView, nullptr);
     }
 
-    vkDestroySwapchainKHR(_device, _swapChain, nullptr);
+    vkDestroySwapchainKHR(_device->getHandle(), _swapChain, nullptr);
 }
 
 void VulkanRenderer::recreateSwapChain()
@@ -758,14 +709,16 @@ void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
     bufferCreateInfo.usage = usage;
     bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateBuffer(_device, &bufferCreateInfo, nullptr, &buffer)
+    if (vkCreateBuffer(_device->getHandle(), &bufferCreateInfo, nullptr,
+                       &buffer)
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create vertex buffer.");
     }
 
     VkMemoryRequirements memoryRequirements;
-    vkGetBufferMemoryRequirements(_device, buffer, &memoryRequirements);
+    vkGetBufferMemoryRequirements(_device->getHandle(), buffer,
+                                  &memoryRequirements);
 
     VkMemoryAllocateInfo memoryAllocateInfo{};
     memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -773,12 +726,13 @@ void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
     memoryAllocateInfo.memoryTypeIndex =
         findMemoryType(memoryRequirements.memoryTypeBits, properties);
 
-    if (vkAllocateMemory(_device, &memoryAllocateInfo, nullptr, &bufferMemory)
+    if (vkAllocateMemory(_device->getHandle(), &memoryAllocateInfo, nullptr,
+                         &bufferMemory)
         != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate vertex buffer memory.");
     }
-    vkBindBufferMemory(_device, buffer, bufferMemory, 0);
+    vkBindBufferMemory(_device->getHandle(), buffer, bufferMemory, 0);
 }
 
 void VulkanRenderer::createVertexBuffer()
@@ -798,9 +752,10 @@ void VulkanRenderer::createVertexBuffer()
                  stagingBuffer, stagingBufferMemory);
 
     void *data;
-    vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(_device->getHandle(), stagingBufferMemory, 0, bufferSize, 0,
+                &data);
     memcpy(data, _vertices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(_device, stagingBufferMemory);
+    vkUnmapMemory(_device->getHandle(), stagingBufferMemory);
 
     VkBufferUsageFlags vertexBufferUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT
         | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT
@@ -813,8 +768,8 @@ void VulkanRenderer::createVertexBuffer()
 
     copyBuffer(stagingBuffer, _vertexBuffer, bufferSize);
 
-    vkDestroyBuffer(_device, stagingBuffer, nullptr);
-    vkFreeMemory(_device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(_device->getHandle(), stagingBuffer, nullptr);
+    vkFreeMemory(_device->getHandle(), stagingBufferMemory, nullptr);
 }
 
 void VulkanRenderer::createIndexBuffer()
@@ -834,9 +789,10 @@ void VulkanRenderer::createIndexBuffer()
                  stagingBuffer, stagingBufferMemory);
 
     void *data;
-    vkMapMemory(_device, stagingBufferMemory, 0, bufferSize, 0, &data);
+    vkMapMemory(_device->getHandle(), stagingBufferMemory, 0, bufferSize, 0,
+                &data);
     memcpy(data, _indices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(_device, stagingBufferMemory);
+    vkUnmapMemory(_device->getHandle(), stagingBufferMemory);
 
     VkBufferUsageFlags indexBufferUsageFlags =
         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
@@ -848,8 +804,8 @@ void VulkanRenderer::createIndexBuffer()
 
     copyBuffer(stagingBuffer, _indexBuffer, bufferSize);
 
-    vkDestroyBuffer(_device, stagingBuffer, nullptr);
-    vkFreeMemory(_device, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(_device->getHandle(), stagingBuffer, nullptr);
+    vkFreeMemory(_device->getHandle(), stagingBufferMemory, nullptr);
 }
 
 uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,
@@ -882,7 +838,7 @@ void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
-    vkAllocateCommandBuffers(_device, &allocInfo, &commandBuffer);
+    vkAllocateCommandBuffers(_device->getHandle(), &allocInfo, &commandBuffer);
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -902,8 +858,8 @@ void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(_graphicsQueue);
+    vkQueueSubmit(_device->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(_device->getGraphicsQueue());
 
-    vkFreeCommandBuffers(_device, _commandPool, 1, &commandBuffer);
+    vkFreeCommandBuffers(_device->getHandle(), _commandPool, 1, &commandBuffer);
 }
