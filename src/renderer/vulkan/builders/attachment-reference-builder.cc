@@ -8,7 +8,7 @@ AttachmentReferenceBuilder::AttachmentReferenceBuilder()
 AttachmentReferenceBuilder &AttachmentReferenceBuilder::base()
 {
     _index = 0;
-    _layout = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+    _layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     return *this;
 }
 

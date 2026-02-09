@@ -1,6 +1,7 @@
 #include <renderer/vulkan/builders/render-pass-builder.hh>
 
-RenderPassBuilder::RenderPassBuilder()
+RenderPassBuilder::RenderPassBuilder(const VkDevice &logicalDevice)
+    : _logicalDevice(logicalDevice)
 {
     base();
 }
@@ -14,7 +15,7 @@ RenderPassBuilder &RenderPassBuilder::base()
     return *this;
 }
 
-VkRenderPassCreateInfo RenderPassBuilder::build()
+RenderPassType RenderPassBuilder::build()
 {
     VkRenderPassCreateInfo createInfo{};
     createInfo.sType = _structureType;
@@ -24,7 +25,7 @@ VkRenderPassCreateInfo RenderPassBuilder::build()
     createInfo.pSubpasses = _subpasses.data();
     createInfo.dependencyCount = _dependencies.size();
     createInfo.pDependencies = _dependencies.data();
-    return createInfo;
+    return std::make_unique<RenderPass>(_logicalDevice, createInfo);
 }
 
 RenderPassBuilder &

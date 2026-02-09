@@ -117,15 +117,12 @@ void VulkanRenderer::createRenderPass()
     VkSubpassDependency dependency = SubpassDependencyBuilder().build();
 
     RenderPassBuilder builder =
-        RenderPassBuilder()
+        RenderPassBuilder(_logicalDevice->getHandle())
             .withAdditionalAttachment(attachment)
             .withAdditionalSubpass(subpass)
             .withAdditionalSubpassDependency(dependency);
 
-    VkRenderPassCreateInfo createInfo = builder.build();
-
-    _renderPass =
-        std::make_unique<RenderPass>(_logicalDevice->getHandle(), createInfo);
+    _renderPass = builder.build();
 }
 
 void VulkanRenderer::createGraphicsPipeline()

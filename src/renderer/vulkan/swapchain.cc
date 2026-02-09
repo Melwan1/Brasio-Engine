@@ -115,7 +115,7 @@ void Swapchain::createFramebuffers(const VkRenderPass &renderPass)
 
 Swapchain::~Swapchain()
 {
-    Logger::trace(std::cout, "Destroying swapchain", { " DESTROY" });
+    Logger::trace(std::cout, "Destroying swapchain", { "DESTROY" });
 
     for (auto &framebuffer : _framebuffers)
     {
@@ -123,5 +123,5 @@ Swapchain::~Swapchain()
     }
     _images.clear(); // destroy all images
     vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
-    Logger::trace(std::cout, "Destroyed swapchain", { " DESTROY" });
+    Logger::trace(std::cout, "Destroyed swapchain", { "DESTROY" });
 }
