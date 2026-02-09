@@ -12,6 +12,8 @@
 #include <renderer/vulkan/swap-chain-support-details.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
+#include <renderer/vulkan/render-pass.hh>
+#include <renderer/vulkan/swapchain.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
 
@@ -44,7 +46,6 @@ public:
     void createRenderPass();
     void createGraphicsPipeline();
 
-    void createFramebuffers();
     void createCommandPool();
     void createCommandBuffers();
 
@@ -80,31 +81,13 @@ private:
 
     SurfaceType _surface;
     PhysicalDeviceType _physicalDevice;
-    LogicalDeviceType _device;
+    LogicalDeviceType _logicalDevice;
+    SwapchainType _swapchain;
+    RenderPassType _renderPass;
 
-    VkQueue _graphicsQueue = VK_NULL_HANDLE;
-    VkQueue _presentationQueue = VK_NULL_HANDLE;
-
-    SwapChainSupportDetails
-    querySwapChainSupport(const VkPhysicalDevice &device);
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(
-        const std::vector<VkSurfaceFormatKHR> &availableFormats);
-    VkPresentModeKHR chooseSwapPresentMode(
-        const std::vector<VkPresentModeKHR> &availablePresentModes);
-    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
-
-    VkFormat _swapChainImageFormat;
-    VkExtent2D _swapChainExtent;
-    VkSwapchainKHR _swapChain = VK_NULL_HANDLE;
-    std::vector<VkImage> _swapChainImages;
-
-    std::vector<VkImageView> _swapChainImageViews;
-
-    VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
 
-    std::vector<VkFramebuffer> _swapChainFramebuffers;
     VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;
 

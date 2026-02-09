@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <sstream>
 #include <vector>
 
 #include <io/logging/log-level.hh>
