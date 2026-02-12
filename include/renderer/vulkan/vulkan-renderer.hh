@@ -14,6 +14,7 @@
 #include <renderer/vulkan/physical-device.hh>
 #include <renderer/vulkan/render-pass.hh>
 #include <renderer/vulkan/swapchain.hh>
+#include <renderer/vulkan/sync-objects.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
 
@@ -91,9 +92,7 @@ private:
     VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;
 
-    std::vector<VkSemaphore> _imageAvailableSemaphores;
-    std::vector<VkSemaphore> _renderFinishedSemaphores;
-    std::vector<VkFence> _inFlightFences;
+    SyncObjectsType _syncObjects;
 
     VkBuffer _vertexBuffer;
     VkDeviceMemory _vertexBufferMemory;
