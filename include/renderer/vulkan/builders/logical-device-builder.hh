@@ -23,7 +23,7 @@ public:
     virtual LogicalDeviceType build() override;
 
 private:
-    PhysicalDevice _physicalDevice;
+    const PhysicalDevice &_physicalDevice;
     float _queuePriority;
     std::vector<VkDeviceQueueCreateInfo> _queueCreateInfos;
     QueueFamilyIndices _indices;

@@ -7,15 +7,12 @@
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/image.hh>
 
-class Swapchain
+class Swapchain : public Handler<VkSwapchainKHR>
 {
 public:
     Swapchain(const VkDevice &logicalDevice,
               const VkSwapchainCreateInfoKHR &createInfo);
     ~Swapchain();
-
-    const VkSwapchainKHR &getHandle() const;
-    VkSwapchainKHR &getHandle();
 
     const VkFormat &getFormat() const;
     VkFormat &getFormat();
@@ -36,7 +33,6 @@ public:
 
 private:
     VkDevice _logicalDevice;
-    VkSwapchainKHR _swapchain;
     VkFormat _format;
     VkExtent2D _extent;
     uint32_t _imageCount;

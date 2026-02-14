@@ -19,9 +19,10 @@ PhysicalDeviceBuilder &PhysicalDeviceBuilder::base()
     return *this;
 }
 
-PhysicalDevice PhysicalDeviceBuilder::build()
+PhysicalDeviceType PhysicalDeviceBuilder::build()
 {
-    std::multimap<int, PhysicalDevice> deviceMap = _ratePhysicalDevices();
+    std::multimap<int, std::unique_ptr<PhysicalDevice>> deviceMap =
+        _ratePhysicalDevices();
 
     std::ostringstream oss;
     oss << "Best physical device has suitability score "
@@ -38,7 +39,7 @@ PhysicalDevice PhysicalDeviceBuilder::build()
                          "No physical device has a positive suitability score",
                          { "CREATE" });
     }
-    return deviceMap.rbegin()->second;
+    return std::move(deviceMap.rbegin()->second);
 }
 
 PhysicalDeviceBuilder &PhysicalDeviceBuilder::withDeviceExtensions(
@@ -48,7 +49,7 @@ PhysicalDeviceBuilder &PhysicalDeviceBuilder::withDeviceExtensions(
     return *this;
 }
 
-std::vector<PhysicalDevice>
+std::vector<PhysicalDeviceType>
 PhysicalDeviceBuilder::_getAvailablePhysicalDevices()
 {
     uint32_t deviceCount = 0;
@@ -63,10 +64,11 @@ PhysicalDeviceBuilder::_getAvailablePhysicalDevices()
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
-    std::vector<PhysicalDevice> physicalDevices;
+    std::vector<PhysicalDeviceType> physicalDevices;
     for (const auto &device : devices)
     {
-        physicalDevices.emplace_back(device, _surface, _deviceExtensions);
+        physicalDevices.emplace_back(std::make_unique<PhysicalDevice>(
+            device, _surface, _deviceExtensions));
     }
     return physicalDevices;
 }
@@ -110,15 +112,16 @@ int PhysicalDeviceBuilder::_getDeviceSuitability(const PhysicalDevice &device)
     return score;
 }
 
-std::multimap<int, PhysicalDevice> PhysicalDeviceBuilder::_ratePhysicalDevices()
+std::multimap<int, PhysicalDeviceType>
+PhysicalDeviceBuilder::_ratePhysicalDevices()
 {
-    std::vector<PhysicalDevice> devices = _getAvailablePhysicalDevices();
-    std::multimap<int, PhysicalDevice> candidates;
+    std::vector<PhysicalDeviceType> devices = _getAvailablePhysicalDevices();
+    std::multimap<int, PhysicalDeviceType> candidates;
 
-    for (const auto &device : devices)
+    for (auto &device : devices)
     {
-        int score = _getDeviceSuitability(device);
-        candidates.insert(std::make_pair(score, device));
+        candidates.emplace(_getDeviceSuitability(*device), std::move(device));
+        // can't use devices anymore
     }
     return candidates;
 }

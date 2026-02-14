@@ -70,10 +70,10 @@ VulkanRenderer::~VulkanRenderer()
 
 void VulkanRenderer::pickPhysicalDevice()
 {
-    _physicalDevice = std::make_unique<PhysicalDevice>(
+    _physicalDevice =
         PhysicalDeviceBuilder(_instance->getHandle(), _surface->getHandle())
             .withDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
-            .build());
+            .build();
 }
 
 void VulkanRenderer::createLogicalDevice()

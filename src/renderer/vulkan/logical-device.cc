@@ -2,15 +2,15 @@
 
 #include <io/logging/logger.hh>
 
-LogicalDevice::LogicalDevice(const PhysicalDevice &physicalDevice,
+LogicalDevice::LogicalDevice(const VkPhysicalDevice &physicalDevice,
                              const VkDeviceCreateInfo &createInfo,
                              const QueueFamilyIndices &indices)
-    : _physicalDevice(physicalDevice)
+    : Handler("logical device",
+              [](const VkDevice &device) { vkDestroyDevice(device, nullptr); })
     , _queueFamilyIndices(indices)
 {
     Logger::trace(std::cout, "Creating logical device", { "CREATE" });
-    if (vkCreateDevice(_physicalDevice.getHandle(), &createInfo, nullptr,
-                       &_device)
+    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle())
         != VK_SUCCESS)
     {
         Logger::critical(std::cout, "Could not create logical device",
@@ -24,24 +24,6 @@ LogicalDevice::LogicalDevice(const PhysicalDevice &physicalDevice,
     vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(), 0,
                      &_presentationQueue);
     Logger::trace(std::cout, "Set up device queues", { "CREATE" });
-}
-
-LogicalDevice::~LogicalDevice()
-{
-    // no need to destroy device queues
-    Logger::trace(std::cout, "Destroying logical device", { "DESTROY" });
-    vkDestroyDevice(_device, nullptr);
-    Logger::trace(std::cout, "Destroyed logical device", { "DESTROY" });
-}
-
-const VkDevice &LogicalDevice::getHandle() const
-{
-    return _device;
-}
-
-VkDevice &LogicalDevice::getHandle()
-{
-    return _device;
 }
 
 const VkQueue &LogicalDevice::getGraphicsQueue() const

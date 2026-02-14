@@ -6,19 +6,13 @@
 
 #include <renderer/vulkan/logical-device.hh>
 
-class RenderPass
+class RenderPass : public Handler<VkRenderPass>
 {
 public:
     RenderPass(const VkDevice &logicalDevice,
                const VkRenderPassCreateInfo &createInfo);
-    ~RenderPass();
-
-    const VkRenderPass &getHandle() const;
-    VkRenderPass &getHandle();
 
 private:
-    VkDevice _logicalDevice;
-    VkRenderPass _renderPass = VK_NULL_HANDLE;
 };
 
 using RenderPassType = std::unique_ptr<RenderPass>;

@@ -7,25 +7,15 @@
 PhysicalDevice::PhysicalDevice(const VkPhysicalDevice &device,
                                const VkSurfaceKHR &surface,
                                const std::vector<const char *> extensions)
-    : _device(device)
+    : Handler(device, "physical device",
+              [](const VkPhysicalDevice &) {
+                  Logger::trace(std::cout,
+                                "Nothing to be done to destroy physical device",
+                                { "DESTROY" });
+              })
     , _surface(surface)
     , _deviceExtensions(extensions)
 {}
-
-PhysicalDevice::~PhysicalDevice()
-{
-    // nothing, a physical device should not be destructed
-}
-
-const VkPhysicalDevice &PhysicalDevice::getHandle() const
-{
-    return _device;
-}
-
-VkPhysicalDevice &PhysicalDevice::getHandle()
-{
-    return _device;
-}
 
 const std::vector<const char *> &PhysicalDevice::getDeviceExtensions() const
 {

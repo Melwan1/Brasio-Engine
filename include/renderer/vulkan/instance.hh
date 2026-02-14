@@ -5,16 +5,13 @@
 #include <vulkan/vulkan_core.h>
 
 #include <renderer/vulkan/debug-messenger.hh>
+#include <core/handler.hh>
 
-class Instance
+class Instance : public Handler<VkInstance>
 {
 public:
     Instance(const VkInstanceCreateInfo &createInfo);
-    ~Instance();
-
-    VkInstance &getHandle();
 
 private:
-    std::unique_ptr<VkInstance> _instance;
     std::unique_ptr<DebugMessenger> _debugMessenger;
 };

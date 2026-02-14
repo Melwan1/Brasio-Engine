@@ -27,7 +27,7 @@ public:
 
 private:
     GLFWwindow *_window;
-    PhysicalDevice _physicalDevice;
+    const PhysicalDevice &_physicalDevice;
     VkDevice _logicalDevice;
     VkSurfaceKHR _surface;
     std::vector<VkSurfaceFormatKHR> _availableSurfaceFormats;

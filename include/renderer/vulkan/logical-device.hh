@@ -3,17 +3,14 @@
 #include <vulkan/vulkan_core.h>
 
 #include <renderer/vulkan/physical-device.hh>
+#include <core/handler.hh>
 
-class LogicalDevice
+class LogicalDevice : public Handler<VkDevice>
 {
 public:
-    LogicalDevice(const PhysicalDevice &physicalDevice,
+    LogicalDevice(const VkPhysicalDevice &physicalDevice,
                   const VkDeviceCreateInfo &createInfo,
                   const QueueFamilyIndices &indices);
-    ~LogicalDevice();
-
-    const VkDevice &getHandle() const;
-    VkDevice &getHandle();
 
     const VkQueue &getGraphicsQueue() const;
     VkQueue &getGraphicsQueue();
@@ -23,9 +20,7 @@ public:
     void waitIdle() const;
 
 private:
-    PhysicalDevice _physicalDevice;
     QueueFamilyIndices _queueFamilyIndices;
-    VkDevice _device = VK_NULL_HANDLE;
 
     VkQueue _graphicsQueue = VK_NULL_HANDLE;
     VkQueue _presentationQueue = VK_NULL_HANDLE;

@@ -7,16 +7,13 @@
 
 #include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/swap-chain-support-details.hh>
+#include <core/handler.hh>
 
-class PhysicalDevice
+class PhysicalDevice : public Handler<VkPhysicalDevice>
 {
 public:
     PhysicalDevice(const VkPhysicalDevice &device, const VkSurfaceKHR &surface,
                    std::vector<const char *> extensions = {});
-    ~PhysicalDevice();
-
-    const VkPhysicalDevice &getHandle() const;
-    VkPhysicalDevice &getHandle();
 
     const std::vector<const char *> &getDeviceExtensions() const;
     std::vector<const char *> &getDeviceExtensions();
@@ -26,7 +23,6 @@ public:
     SwapChainSupportDetails querySwapChainSupport() const;
 
 private:
-    VkPhysicalDevice _device;
     VkSurfaceKHR _surface;
     std::vector<const char *> _deviceExtensions;
 };

@@ -6,10 +6,14 @@
 
 Swapchain::Swapchain(const VkDevice &logicalDevice,
                      const VkSwapchainCreateInfoKHR &createInfo)
-    : _logicalDevice(logicalDevice)
+    : Handler("swapchain",
+              [logicalDevice](const VkSwapchainKHR &swapchain) {
+                  vkDestroySwapchainKHR(logicalDevice, swapchain, nullptr);
+              })
+    , _logicalDevice(logicalDevice)
 {
     Logger::trace(std::cout, "Creating swapchain", { "CREATE" });
-    if (vkCreateSwapchainKHR(_logicalDevice, &createInfo, nullptr, &_swapchain)
+    if (vkCreateSwapchainKHR(_logicalDevice, &createInfo, nullptr, &getHandle())
         != VK_SUCCESS)
     {
         Logger::critical(std::cout, "Could not create swapchain", { "CREATE" });
@@ -72,27 +76,17 @@ VkFramebuffer &Swapchain::framebufferAt(uint32_t index)
     return _framebuffers.at(index);
 }
 
-const VkSwapchainKHR &Swapchain::getHandle() const
-{
-    return _swapchain;
-}
-
-VkSwapchainKHR &Swapchain::getHandle()
-{
-    return _swapchain;
-}
-
 void Swapchain::createImages()
 {
     std::vector<VkImage> rawImages;
     Logger::trace(std::cout, "Getting swapchain images", { "CREATE" });
-    vkGetSwapchainImagesKHR(_logicalDevice, _swapchain, &_imageCount, nullptr);
+    vkGetSwapchainImagesKHR(_logicalDevice, getHandle(), &_imageCount, nullptr);
     std::ostringstream oss;
     oss << "Getting " << _imageCount << " swapchain images";
     Logger::trace(std::cout, oss.str(), { "CREATE" });
 
     rawImages.resize(_imageCount);
-    vkGetSwapchainImagesKHR(_logicalDevice, _swapchain, &_imageCount,
+    vkGetSwapchainImagesKHR(_logicalDevice, getHandle(), &_imageCount,
                             rawImages.data());
     for (const auto &image : rawImages)
     {
@@ -115,13 +109,9 @@ void Swapchain::createFramebuffers(const VkRenderPass &renderPass)
 
 Swapchain::~Swapchain()
 {
-    Logger::trace(std::cout, "Destroying swapchain", { "DESTROY" });
-
     for (auto &framebuffer : _framebuffers)
     {
         vkDestroyFramebuffer(_logicalDevice, framebuffer, nullptr);
     }
     _images.clear(); // destroy all images
-    vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
-    Logger::trace(std::cout, "Destroyed swapchain", { "DESTROY" });
 }

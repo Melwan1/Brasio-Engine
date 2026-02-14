@@ -8,13 +8,13 @@
 #include <core/builder.hh>
 #include <renderer/vulkan/physical-device.hh>
 
-class PhysicalDeviceBuilder : public Builder<PhysicalDevice>
+class PhysicalDeviceBuilder : public Builder<PhysicalDeviceType>
 {
 public:
     PhysicalDeviceBuilder(const VkInstance &instance,
                           const VkSurfaceKHR &surface);
 
-    virtual PhysicalDevice build() override;
+    virtual PhysicalDeviceType build() override;
     virtual PhysicalDeviceBuilder &base() override;
 
     PhysicalDeviceBuilder &
@@ -26,9 +26,9 @@ private:
 
     std::vector<const char *> _deviceExtensions;
 
-    std::vector<PhysicalDevice> _getAvailablePhysicalDevices();
+    std::vector<PhysicalDeviceType> _getAvailablePhysicalDevices();
     bool _isDeviceSuitable(const PhysicalDevice &device);
     int _getDeviceSuitability(const PhysicalDevice &device);
 
-    std::multimap<int, PhysicalDevice> _ratePhysicalDevices();
+    std::multimap<int, PhysicalDeviceType> _ratePhysicalDevices();
 };

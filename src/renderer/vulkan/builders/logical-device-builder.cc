@@ -60,6 +60,6 @@ LogicalDeviceType LogicalDeviceBuilder::build()
         createInfo.ppEnabledLayerNames = _validationLayers.data();
     }
 
-    return std::make_unique<LogicalDevice>(_physicalDevice, createInfo,
-                                           _indices);
+    return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(),
+                                           createInfo, _indices);
 }
