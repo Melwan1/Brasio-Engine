@@ -48,6 +48,29 @@ PhysicalDeviceBuilder &PhysicalDeviceBuilder::withDeviceExtensions(
     _deviceExtensions = extensions;
     return *this;
 }
+uint32_t PhysicalDevice::findMemoryType(uint32_t typeFilter,
+                                        VkMemoryPropertyFlags properties) const
+{
+    VkPhysicalDeviceMemoryProperties memoryProperties;
+    vkGetPhysicalDeviceMemoryProperties(getHandle(), &memoryProperties);
+
+    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
+    {
+        if ((typeFilter & (1 << i))
+            && (memoryProperties.memoryTypes[i].propertyFlags & properties)
+                == properties)
+        {
+            Logger::debug(std::cout, "Found memory type: " + std::to_string(i),
+                          { "DEVICE" });
+            return i;
+        }
+    }
+
+    Logger::critical(std::cout, "No suitable memory type has been found",
+                     { "DEVICE" });
+
+    throw std::runtime_error("Failed to find a suitable memory type.");
+}
 
 std::vector<PhysicalDeviceType>
 PhysicalDeviceBuilder::_getAvailablePhysicalDevices()

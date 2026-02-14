@@ -510,8 +510,8 @@ void VulkanRenderer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
     VkMemoryAllocateInfo memoryAllocateInfo{};
     memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     memoryAllocateInfo.allocationSize = memoryRequirements.size;
-    memoryAllocateInfo.memoryTypeIndex =
-        findMemoryType(memoryRequirements.memoryTypeBits, properties);
+    memoryAllocateInfo.memoryTypeIndex = _physicalDevice->findMemoryType(
+        memoryRequirements.memoryTypeBits, properties);
 
     if (vkAllocateMemory(_logicalDevice->getHandle(), &memoryAllocateInfo,
                          nullptr, &bufferMemory)
@@ -592,26 +592,6 @@ void VulkanRenderer::createIndexBuffer()
 
     vkDestroyBuffer(_logicalDevice->getHandle(), stagingBuffer, nullptr);
     vkFreeMemory(_logicalDevice->getHandle(), stagingBufferMemory, nullptr);
-}
-
-uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,
-                                        VkMemoryPropertyFlags properties)
-{
-    VkPhysicalDeviceMemoryProperties memoryProperties;
-    vkGetPhysicalDeviceMemoryProperties(_physicalDevice->getHandle(),
-                                        &memoryProperties);
-
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++)
-    {
-        if ((typeFilter & (1 << i))
-            && (memoryProperties.memoryTypes[i].propertyFlags & properties)
-                == properties)
-        {
-            return i;
-        }
-    }
-
-    throw std::runtime_error("Failed to find a suitable memory type.");
 }
 
 void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,

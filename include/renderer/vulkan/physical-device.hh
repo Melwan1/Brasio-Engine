@@ -21,6 +21,8 @@ public:
     QueueFamilyIndices findQueueFamilies() const;
     bool checkDeviceExtensionSupport() const;
     SwapChainSupportDetails querySwapChainSupport() const;
+    uint32_t findMemoryType(uint32_t typeFilter,
+                            VkMemoryPropertyFlags properties) const;
 
 private:
     VkSurfaceKHR _surface;

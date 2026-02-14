@@ -35,10 +35,7 @@ public:
     virtual void drawFrame() override;
 
     void pickPhysicalDevice();
-    QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice &device);
-
     void createLogicalDevice();
-    void getDeviceQueues(const QueueFamilyIndices &indices);
 
     void createSwapChain();
 
@@ -99,9 +96,6 @@ private:
 
     VkBuffer _indexBuffer;
     VkDeviceMemory _indexBufferMemory;
-
-    uint32_t findMemoryType(uint32_t typeFilter,
-                            VkMemoryPropertyFlags properties);
 
     uint32_t _currentFrame = 0;
 };
