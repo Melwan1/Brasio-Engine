@@ -386,7 +386,8 @@ void VulkanRenderer::createSyncObjects()
     fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
     _syncObjects = std::make_unique<SyncObjects>(
-        _logicalDevice->getHandle(), 2 * MAX_FRAMES_IN_FLIGHT,
+        _logicalDevice->getHandle(),
+        MAX_FRAMES_IN_FLIGHT + _swapchain->getImageCount(),
         MAX_FRAMES_IN_FLIGHT, semaphoreCreateInfo, fenceCreateInfo);
 }
 
@@ -426,7 +427,7 @@ void VulkanRenderer::drawFrame()
     submitInfo.pCommandBuffers = &_commandBuffers[_currentFrame];
 
     VkSemaphore signalSemaphores[] = { _syncObjects->semaphoreAt(
-        MAX_FRAMES_IN_FLIGHT + _currentFrame) };
+        MAX_FRAMES_IN_FLIGHT + imageIndex) };
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
