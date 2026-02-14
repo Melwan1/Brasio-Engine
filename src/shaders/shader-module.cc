@@ -3,9 +3,7 @@
 #include <io/logging/logger.hh>
 
 ShaderModule::ShaderModule(VkDevice &device, const VkShaderModule &module)
-    : Handler(module, "shader module",
-              [&device, module]() {
-                  vkDestroyShaderModule(device, module, nullptr);
-              })
-    , _device(device)
+    : Handler(module, "shader module", [device](const VkShaderModule &module) {
+        vkDestroyShaderModule(device, module, nullptr);
+    })
 {}

@@ -6,12 +6,13 @@
 
 #include <renderer/vulkan/logical-device.hh>
 
-class Image
+#include <core/handler.hh>
+
+class Image : public Handler<VkImageView>
 {
 public:
     Image(const VkDevice &logicalDevice, const VkImage &image,
           const VkImageViewCreateInfo &createInfo);
-    ~Image();
 
     const VkImage &getImage() const;
     VkImage &getImage();
@@ -20,9 +21,7 @@ public:
     VkImageView &getImageView();
 
 private:
-    VkDevice _logicalDevice = VK_NULL_HANDLE;
     VkImage _image;
-    VkImageView _imageView;
 };
 
 using ImageType = std::unique_ptr<Image>;

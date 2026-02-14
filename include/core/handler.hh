@@ -9,7 +9,10 @@ class Handler
 {
 public:
     Handler(const T &handle, const std::string &objectName,
-            const std::function<void()> &destroyFunc);
+            const std::function<void(const T &)> &destroyFunc);
+
+    Handler(const std::string &objectName,
+            const std::function<void(const T &)> &destroyFunc);
 
     // Provide a custom move constructor
     Handler(Handler &&other) noexcept;
@@ -29,7 +32,7 @@ public:
 private:
     T _handle;
     const std::string _objectName;
-    std::function<void()> _destroyFunc;
+    std::function<void(const T &)> _destroyFunc;
 };
 
 #include <core/handler.hxx>

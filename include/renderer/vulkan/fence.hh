@@ -2,16 +2,10 @@
 
 #include <vulkan/vulkan_core.h>
 
-class Fence
+#include <core/handler.hh>
+
+class Fence : public Handler<VkFence>
 {
 public:
     Fence(const VkDevice &logicalDevice, const VkFenceCreateInfo &createInfo);
-    ~Fence();
-
-    const VkFence &getHandle() const;
-    VkFence &getHandle();
-
-private:
-    VkDevice _logicalDevice;
-    VkFence _fence = VK_NULL_HANDLE;
 };
