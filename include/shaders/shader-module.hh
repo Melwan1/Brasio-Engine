@@ -2,15 +2,13 @@
 
 #include <vulkan/vulkan.hpp>
 
-class ShaderModule
+#include <core/handler.hh>
+
+class ShaderModule : public Handler<VkShaderModule>
 {
 public:
-    ShaderModule(VkDevice &device, VkShaderModule vulkanModule);
+    ShaderModule(VkDevice &device, const VkShaderModule &module);
 
-    ~ShaderModule();
-
-    const VkShaderModule& getVulkanModule();
 private:
-    VkShaderModule _vulkanModule;
     VkDevice _device;
 };

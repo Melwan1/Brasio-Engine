@@ -1,16 +1,11 @@
 #include <shaders/shader-module.hh>
 
-ShaderModule::ShaderModule(VkDevice &device, VkShaderModule vulkanModule)
-    : _vulkanModule(vulkanModule)
+#include <io/logging/logger.hh>
+
+ShaderModule::ShaderModule(VkDevice &device, const VkShaderModule &module)
+    : Handler(module, "shader module",
+              [&device, module]() {
+                  vkDestroyShaderModule(device, module, nullptr);
+              })
     , _device(device)
 {}
-
-ShaderModule::~ShaderModule()
-{
-    vkDestroyShaderModule(_device, _vulkanModule, nullptr);
-}
-
-const VkShaderModule &ShaderModule::getVulkanModule()
-{
-    return _vulkanModule;
-}

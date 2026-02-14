@@ -18,6 +18,7 @@ target_link_libraries(brasio PRIVATE
 )
 
 add_subdirectory(application)
+add_subdirectory(core)
 add_subdirectory(events)
 add_subdirectory(geometry)
 add_subdirectory(io)
@@ -27,6 +28,7 @@ add_subdirectory(shaders)
 
 target_link_libraries(brasio PRIVATE
     libapplication
+    libcore
     libevents
     libgeometry
     libio

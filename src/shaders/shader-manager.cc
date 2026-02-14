@@ -3,10 +3,11 @@
 #include <fstream>
 #include <iostream>
 
+#include <io/logging/logger.hh>
+
 ShaderManager::ShaderManager(const fs::path &baseShaderDirectoryPath,
                              const fs::path &logPath)
     : _shaderCompiler(baseShaderDirectoryPath, logPath)
-    , _shaderLocationToContent()
     , _baseShaderDirectoryPath(baseShaderDirectoryPath)
     , _logPath(logPath)
 {}
@@ -52,6 +53,7 @@ VkShaderModule
 ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
                                               const std::string &shaderByteCode)
 {
+    Logger::trace(std::cout, "Creating shader module", { "CREATE " });
     // the shaderByteCode string is cast to a uint32_t, so it needs to be
     // realloced in order to be aligned on 4 bytes.
     size_t alignment = 4;
@@ -71,6 +73,7 @@ ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
     {
         throw std::runtime_error("Failed to create shader module.");
     }
+    Logger::trace(std::cout, "Created shader module", { "CREATE " });
     return shaderModule;
 }
 
