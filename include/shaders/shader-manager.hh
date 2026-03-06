@@ -19,13 +19,13 @@ public:
     bool compileAllShaders();
     void readSpirVFile(const fs::path &outputPath);
 
-    const std::string &getSpirVFileContent(const fs::path &entry);
+    const std::string &getSpirVFileContent(const fs::path &entry) const;
 
     VkShaderModule
     createShaderModuleFromByteCode(VkDevice &device,
-                                   const std::string &shaderByteCode);
+                                   const std::string &shaderByteCode) const;
     VkShaderModule createShaderModuleFromPath(VkDevice &device,
-                                              const fs::path &entry);
+                                              const fs::path &entry) const;
 
 private:
     ShaderCompiler _shaderCompiler;

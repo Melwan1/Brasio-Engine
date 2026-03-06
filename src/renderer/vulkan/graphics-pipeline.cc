@@ -1,0 +1,18 @@
+#include <renderer/vulkan/graphics-pipeline.hh>
+
+GraphicsPipeline::GraphicsPipeline(
+    const VkDevice &logicalDevice,
+    const VkGraphicsPipelineCreateInfo &createInfo)
+    : Handler("graphics pipeline", [logicalDevice](const VkPipeline &pipeline) {
+        vkDestroyPipeline(logicalDevice, pipeline, nullptr);
+    })
+{
+    Logger::trace(std::cout, "Creating graphics pipeline", { "CREATE" });
+
+    uint32_t pipelineCreateInfoCount = 1;
+    if (vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE,
+                                  pipelineCreateInfoCount, &createInfo, nullptr,
+                                  &getHandle())
+        != VK_SUCCESS)
+        Logger::trace(std::cout, "Created graphics pipeline", { "CREATE" });
+}

@@ -8,11 +8,13 @@
 
 #include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/builders/surface-builder.hh>
-#include <renderer/vulkan/queue-family-indices.hh>
-#include <renderer/vulkan/swap-chain-support-details.hh>
+#include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
+#include <renderer/vulkan/pipeline-layout.hh>
+#include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/render-pass.hh>
+#include <renderer/vulkan/swap-chain-support-details.hh>
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
 #include <shaders/shader-manager.hh>
@@ -82,9 +84,8 @@ private:
     LogicalDeviceType _logicalDevice;
     SwapchainType _swapchain;
     RenderPassType _renderPass;
-
-    VkPipelineLayout _pipelineLayout;
-    VkPipeline _graphicsPipeline;
+    PipelineLayoutType _pipelineLayout;
+    GraphicsPipelineType _graphicsPipeline;
 
     VkCommandPool _commandPool;
     std::vector<VkCommandBuffer> _commandBuffers;

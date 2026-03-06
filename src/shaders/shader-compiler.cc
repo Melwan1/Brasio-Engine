@@ -13,16 +13,17 @@ ShaderCompiler::ShaderCompiler(const fs::path &baseShaderDirectoryPath,
 {}
 
 std::pair<const fs::path, const fs::path>
-ShaderCompiler::getEntryPaths(const fs::path &entry)
+ShaderCompiler::getEntryPaths(const fs::path &entry) const
 {
     const fs::path destDirectoryPath("compiled-shaders/");
     const fs::path destPath =
-        (destDirectoryPath / fs::relative(entry, _baseShaderDirectoryPath))
+        (destDirectoryPath
+         / entry) // fs::relative(entry, _baseShaderDirectoryPath))
             .replace_extension(".spv");
     return { entry, destPath };
 }
 
-bool ShaderCompiler::compileShader(const fs::path &shaderPath)
+bool ShaderCompiler::compileShader(const fs::path &shaderPath) const
 {
     Logger::debug(std::cout, "Compiling shader: " + shaderPath.string(),
                   { "SHADERS" });
@@ -39,7 +40,7 @@ bool ShaderCompiler::compileShader(const fs::path &shaderPath)
                       + StatUtils::writeTimeToString(resolvedPath),
                   { "SHADERS" });
     Logger::trace(std::cout,
-                  "Compiled shader" + destPath.string() + " write time: "
+                  "Compiled shader " + destPath.string() + " write time: "
                       + StatUtils::writeTimeToString(destPath),
                   { "SHADERS" });
 

@@ -22,12 +22,12 @@ bool ShaderManager::compileAllShaders()
         {
             continue;
         }
-        if (!_shaderCompiler.compileShader(
-                fs::relative(entry, _baseShaderDirectoryPath)))
+        fs::path relative_entry = fs::relative(entry, _baseShaderDirectoryPath);
+        if (!_shaderCompiler.compileShader(relative_entry))
         {
             return false;
         }
-        auto outputEntry = _shaderCompiler.getEntryPaths(entry);
+        auto outputEntry = _shaderCompiler.getEntryPaths(relative_entry);
         readSpirVFile(outputEntry.second);
     }
     return true;
@@ -43,15 +43,15 @@ void ShaderManager::readSpirVFile(const fs::path &outputPath)
     _shaderLocationToContent.insert({ outputPath.string(), fileContent });
 }
 
-const std::string &ShaderManager::getSpirVFileContent(const fs::path &entry)
+const std::string &
+ShaderManager::getSpirVFileContent(const fs::path &entry) const
 {
     return _shaderLocationToContent.at(
         _shaderCompiler.getEntryPaths(entry).second);
 }
 
-VkShaderModule
-ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
-                                              const std::string &shaderByteCode)
+VkShaderModule ShaderManager::createShaderModuleFromByteCode(
+    VkDevice &device, const std::string &shaderByteCode) const
 {
     Logger::trace(std::cout, "Creating shader module", { "CREATE " });
     // the shaderByteCode string is cast to a uint32_t, so it needs to be
@@ -77,8 +77,9 @@ ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
     return shaderModule;
 }
 
-VkShaderModule ShaderManager::createShaderModuleFromPath(VkDevice &device,
-                                                         const fs::path &entry)
+VkShaderModule
+ShaderManager::createShaderModuleFromPath(VkDevice &device,
+                                          const fs::path &entry) const
 {
     return createShaderModuleFromByteCode(device, getSpirVFileContent(entry));
 }

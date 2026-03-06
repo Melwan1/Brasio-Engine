@@ -2,10 +2,12 @@ target_sources(librenderer PRIVATE
     attachment.cc
     debug-messenger.cc
     fence.cc
+    graphics-pipeline.cc
     image.cc
     instance.cc
     logical-device.cc
     physical-device.cc
+    pipeline-layout.cc
     queue-family-indices.cc
     render-pass.cc
     semaphore.cc
