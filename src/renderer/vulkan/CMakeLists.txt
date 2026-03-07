@@ -1,5 +1,6 @@
 target_sources(librenderer PRIVATE
     attachment.cc
+    command-pool.cc
     debug-messenger.cc
     fence.cc
     graphics-pipeline.cc

@@ -63,7 +63,6 @@ VulkanRenderer::~VulkanRenderer()
     _renderPass.reset();
     _syncObjects.reset();
 
-    vkDestroyCommandPool(_logicalDevice->getHandle(), _commandPool, nullptr);
     Logger::trace(std::cout, "Destroyed Vulkan renderer", { "DESTROY" });
 }
 
@@ -134,17 +133,10 @@ void VulkanRenderer::createCommandPool()
     QueueFamilyIndices queueFamilyIndices =
         _physicalDevice->findQueueFamilies();
 
-    VkCommandPoolCreateInfo poolCreateInfo{};
-    poolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    poolCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-
-    if (vkCreateCommandPool(_logicalDevice->getHandle(), &poolCreateInfo,
-                            nullptr, &_commandPool)
-        != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create command pool.");
-    }
+    _commandPool =
+        CommandPoolBuilder(_logicalDevice->getHandle())
+            .withQueueFamilyIndex(queueFamilyIndices.graphicsFamily.value())
+            .build();
 }
 
 void VulkanRenderer::createCommandBuffers()
@@ -152,7 +144,7 @@ void VulkanRenderer::createCommandBuffers()
     _commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     VkCommandBufferAllocateInfo allocateInfo{};
     allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocateInfo.commandPool = _commandPool;
+    allocateInfo.commandPool = _commandPool->getHandle();
     allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocateInfo.commandBufferCount =
         static_cast<uint32_t>(_commandBuffers.size());
@@ -453,7 +445,7 @@ void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandPool = _commandPool;
+    allocInfo.commandPool = _commandPool->getHandle();
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
@@ -482,6 +474,6 @@ void VulkanRenderer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer,
                   VK_NULL_HANDLE);
     vkQueueWaitIdle(_logicalDevice->getGraphicsQueue());
 
-    vkFreeCommandBuffers(_logicalDevice->getHandle(), _commandPool, 1,
-                         &commandBuffer);
+    vkFreeCommandBuffers(_logicalDevice->getHandle(), _commandPool->getHandle(),
+                         1, &commandBuffer);
 }

@@ -4,6 +4,7 @@ target_sources(librenderer PRIVATE
     attachment-reference-builder.cc
     color-blend-attachment-builder.cc
     color-blend-state-builder.cc
+    command-pool-builder.cc
     debug-messenger-builder.cc
     dynamic-state-builder.cc
     framebuffer-builder.cc
