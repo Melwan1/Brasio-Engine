@@ -141,20 +141,11 @@ void VulkanRenderer::createCommandPool()
 
 void VulkanRenderer::createCommandBuffers()
 {
-    _commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-    VkCommandBufferAllocateInfo allocateInfo{};
-    allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocateInfo.commandPool = _commandPool->getHandle();
-    allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocateInfo.commandBufferCount =
-        static_cast<uint32_t>(_commandBuffers.size());
-
-    if (vkAllocateCommandBuffers(_logicalDevice->getHandle(), &allocateInfo,
-                                 _commandBuffers.data())
-        != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to allocate command buffers.");
-    }
+    CommandBufferArrayBuilder commandBufferArrayBuilder(
+        _logicalDevice->getHandle(), _commandPool->getHandle());
+    commandBufferArrayBuilder.withLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+        .withCommandBufferCount(MAX_FRAMES_IN_FLIGHT);
+    _commandBuffers = commandBufferArrayBuilder.build();
 }
 
 void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
@@ -255,8 +246,8 @@ void VulkanRenderer::drawFrame()
     }
 
     _syncObjects->resetSingleFence(_currentFrame);
-    vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
-    recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
+    vkResetCommandBuffer(_commandBuffers->at(_currentFrame), 0);
+    recordCommandBuffer(_commandBuffers->at(_currentFrame), imageIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -269,7 +260,7 @@ void VulkanRenderer::drawFrame()
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &_commandBuffers[_currentFrame];
+    submitInfo.pCommandBuffers = &_commandBuffers->at(_currentFrame);
 
     VkSemaphore signalSemaphores[] = { _syncObjects->semaphoreAt(
         MAX_FRAMES_IN_FLIGHT + imageIndex) };

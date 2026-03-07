@@ -5,6 +5,7 @@
 #include <renderer/vulkan/builders/attachment-reference-builder.hh>
 #include <renderer/vulkan/builders/color-blend-attachment-builder.hh>
 #include <renderer/vulkan/builders/color-blend-state-builder.hh>
+#include <renderer/vulkan/builders/command-buffer-array-builder.hh>
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/builders/debug-messenger-builder.hh>
 #include <renderer/vulkan/builders/dynamic-state-builder.hh>

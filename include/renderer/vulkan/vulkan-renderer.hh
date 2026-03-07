@@ -9,6 +9,7 @@
 #include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/builders/command-pool-builder.hh>
+#include <renderer/vulkan/command-buffer-array.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
@@ -89,7 +90,7 @@ private:
     GraphicsPipelineType _graphicsPipeline;
 
     CommandPoolType _commandPool;
-    std::vector<VkCommandBuffer> _commandBuffers;
+    CommandBufferArrayType _commandBuffers;
 
     SyncObjectsType _syncObjects;
 
