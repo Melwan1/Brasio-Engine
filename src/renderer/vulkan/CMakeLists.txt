@@ -1,5 +1,7 @@
 target_sources(librenderer PRIVATE
     attachment.cc
+    buffer.cc
+    buffer-memory.cc
     command-buffer-array.cc
     command-pool.cc
     debug-messenger.cc

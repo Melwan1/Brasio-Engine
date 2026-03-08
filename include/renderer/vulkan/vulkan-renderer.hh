@@ -9,6 +9,7 @@
 #include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/builders/command-pool-builder.hh>
+#include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
@@ -56,12 +57,8 @@ public:
     void cleanupSwapChain();
     void recreateSwapChain();
 
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
-                      VkMemoryPropertyFlags properties, VkBuffer &buffer,
-                      VkDeviceMemory &bufferMemory);
     void createVertexBuffer();
     void createIndexBuffer();
-    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 private:
     GLFWwindow *_window;
@@ -91,11 +88,8 @@ private:
 
     SyncObjectsType _syncObjects;
 
-    VkBuffer _vertexBuffer;
-    VkDeviceMemory _vertexBufferMemory;
-
-    VkBuffer _indexBuffer;
-    VkDeviceMemory _indexBufferMemory;
+    BufferType _vertexBuffer;
+    BufferType _indexBuffer;
 
     uint32_t _currentFrame = 0;
 };

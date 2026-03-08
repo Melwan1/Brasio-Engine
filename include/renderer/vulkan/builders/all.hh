@@ -3,6 +3,7 @@
 #include <renderer/vulkan/builders/application-info-builder.hh>
 #include <renderer/vulkan/builders/attachment-description-builder.hh>
 #include <renderer/vulkan/builders/attachment-reference-builder.hh>
+#include <renderer/vulkan/builders/buffer-builder.hh>
 #include <renderer/vulkan/builders/color-blend-attachment-builder.hh>
 #include <renderer/vulkan/builders/color-blend-state-builder.hh>
 #include <renderer/vulkan/builders/command-buffer-array-builder.hh>

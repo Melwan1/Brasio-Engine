@@ -2,6 +2,7 @@ target_sources(librenderer PRIVATE
     application-info-builder.cc
     attachment-description-builder.cc
     attachment-reference-builder.cc
+    buffer-builder.cc
     color-blend-attachment-builder.cc
     color-blend-state-builder.cc
     command-buffer-array-builder.cc
