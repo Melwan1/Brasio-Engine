@@ -31,6 +31,9 @@ public:
     void createImages();
     void createFramebuffers(const VkRenderPass &renderPass);
 
+    float getWidth() const;
+    float getHeight() const;
+
 private:
     VkDevice _logicalDevice;
     VkFormat _format;

@@ -3,6 +3,7 @@
 #include <core/builder.hh>
 
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/swapchain.hh>
 
 class CommandBufferArrayBuilder : public Builder<CommandBufferArrayType>
 {
@@ -22,8 +23,6 @@ private:
     VkCommandPool _commandPool;
 
     VkStructureType _structureType;
-
     VkCommandBufferLevel _level;
-
     uint32_t _commandBufferCount;
 };

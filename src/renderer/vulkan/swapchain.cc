@@ -107,6 +107,16 @@ void Swapchain::createFramebuffers(const VkRenderPass &renderPass)
     }
 }
 
+float Swapchain::getWidth() const
+{
+    return getExtent().width;
+}
+
+float Swapchain::getHeight() const
+{
+    return getExtent().height;
+}
+
 Swapchain::~Swapchain()
 {
     for (auto &framebuffer : _framebuffers)

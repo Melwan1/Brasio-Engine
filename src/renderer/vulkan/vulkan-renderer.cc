@@ -12,10 +12,6 @@
 #include <shaders/shader-module.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
-#define CLEAR_COLOR                                                            \
-    {                                                                          \
-        0.4f, 0.6f, 1.0f, 1.0f                                                 \
-    }
 
 VulkanRenderer::VulkanRenderer(GLFWwindow *window)
     : _window(window)
@@ -148,71 +144,6 @@ void VulkanRenderer::createCommandBuffers()
     _commandBuffers = commandBufferArrayBuilder.build();
 }
 
-void VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
-                                         uint32_t imageIndex)
-{
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = 0;
-    beginInfo.pInheritanceInfo = nullptr;
-
-    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to begin recording command buffer.");
-    }
-
-    VkRenderPassBeginInfo renderPassBeginInfo{};
-    renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassBeginInfo.renderPass = _renderPass->getHandle();
-    renderPassBeginInfo.framebuffer = _swapchain->framebufferAt(imageIndex);
-    renderPassBeginInfo.renderArea.offset = { 0, 0 };
-    renderPassBeginInfo.renderArea.extent = _swapchain->getExtent();
-
-    VkClearValue clearColor = { { CLEAR_COLOR } };
-    renderPassBeginInfo.clearValueCount = 1;
-    renderPassBeginInfo.pClearValues = &clearColor;
-
-    vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo,
-                         VK_SUBPASS_CONTENTS_INLINE);
-
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                      _graphicsPipeline->getHandle());
-
-    VkViewport viewport{};
-    viewport.x = 0.0f;
-    viewport.y = 0.0f;
-    viewport.width = static_cast<float>(_swapchain->getExtent().width);
-    viewport.height = static_cast<float>(_swapchain->getExtent().height);
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-    VkRect2D scissor{};
-    scissor.offset = { 0, 0 };
-    scissor.extent = _swapchain->getExtent();
-    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-    VkBuffer vertexBuffers[] = { _vertexBuffer };
-    VkDeviceSize offsets[] = { 0 };
-    uint32_t firstBinding = 0;
-    uint32_t bindingCount = 1;
-    vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount,
-                           vertexBuffers, offsets);
-    vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0, VK_INDEX_TYPE_UINT16);
-    uint32_t instanceCount = 1;
-    uint32_t firstVertex = 0;
-    uint32_t firstInstance = 0;
-    uint32_t instanceOffset = 0;
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(_indices.size()),
-                     instanceCount, firstVertex, firstInstance, instanceOffset);
-    vkCmdEndRenderPass(commandBuffer);
-
-    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to record command buffer.");
-    }
-}
-
 void VulkanRenderer::createSyncObjects()
 {
     VkSemaphoreCreateInfo semaphoreCreateInfo{};
@@ -247,7 +178,9 @@ void VulkanRenderer::drawFrame()
 
     _syncObjects->resetSingleFence(_currentFrame);
     vkResetCommandBuffer(_commandBuffers->at(_currentFrame), 0);
-    recordCommandBuffer(_commandBuffers->at(_currentFrame), imageIndex);
+    _commandBuffers->record(_currentFrame, imageIndex, _renderPass->getHandle(),
+                            _swapchain, _graphicsPipeline, _vertexBuffer,
+                            _indexBuffer, _indices);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

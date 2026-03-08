@@ -16,3 +16,9 @@ GraphicsPipeline::GraphicsPipeline(
         != VK_SUCCESS)
         Logger::trace(std::cout, "Created graphics pipeline", { "CREATE" });
 }
+
+void GraphicsPipeline::bind(const VkCommandBuffer &commandBuffer)
+{
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                      getHandle());
+}

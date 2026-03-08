@@ -51,9 +51,6 @@ public:
     void createCommandPool();
     void createCommandBuffers();
 
-    void recordCommandBuffer(VkCommandBuffer commandBuffer,
-                             uint32_t imageIndex);
-
     void createSyncObjects();
 
     void cleanupSwapChain();

@@ -14,6 +14,8 @@ public:
     GraphicsPipeline(const VkDevice &logicalDevice,
                      const VkGraphicsPipelineCreateInfo &createInfo);
 
+    void bind(const VkCommandBuffer &commandBuffer);
+
 private:
 };
 
