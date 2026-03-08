@@ -76,3 +76,12 @@ void Event<CategoryType, SubEventType>::print(std::ostream& ostr)
     Logger::trace(ostr, "Handling " + getTypeName(), {"EVENT", oss.str()});
     
 }
+
+template <typename CategoryType, typename SubEventType>
+Event<CategoryType, SubEventType>::~Event()
+{
+    if (!_handled)
+    {
+        Logger::warning(std::cout, "Destroying event of type " + std::to_string(getType()) + " without handling it", { "EVENT" } );
+    }
+}
