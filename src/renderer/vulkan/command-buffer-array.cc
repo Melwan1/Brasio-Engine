@@ -30,6 +30,11 @@ const VkCommandBuffer &CommandBufferArray::at(uint32_t index)
     return getHandle().at(index);
 }
 
+void CommandBufferArray::reset(uint32_t commandBufferIndex)
+{
+    vkResetCommandBuffer(at(commandBufferIndex), 0);
+}
+
 void CommandBufferArray::begin(uint32_t commandBufferIndex, uint32_t imageIndex,
                                const VkRenderPass &renderPass,
                                const SwapchainType &swapchain)

@@ -17,6 +17,8 @@ public:
 
     const VkCommandBuffer &at(uint32_t index);
 
+    void reset(uint32_t commandBufferIndex);
+
     void begin(uint32_t commandBufferIndex, uint32_t imageIndex,
                const VkRenderPass &renderPass, const SwapchainType &swapchain);
 
