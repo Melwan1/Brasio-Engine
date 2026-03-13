@@ -1,0 +1,15 @@
+#pragma once
+
+#include <vulkan/vulkan_core.h>
+
+class DebugMessenger
+{
+public:
+    DebugMessenger(const VkInstance &instance,
+                   const VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+    ~DebugMessenger();
+
+private:
+    VkInstance _instance;
+    VkDebugUtilsMessengerEXT _messenger;
+};

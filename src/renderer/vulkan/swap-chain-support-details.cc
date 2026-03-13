@@ -1,4 +1,4 @@
-#include <renderer/swap-chain-support-details.hh>
+#include <renderer/vulkan/swap-chain-support-details.hh>
 
 bool SwapChainSupportDetails::isValid() const
 {

@@ -1,29 +1,62 @@
+#include <filesystem>
 #include <shaders/shader-compiler.hh>
+#include <io/logging/logger.hh>
+#include <io/files/stat-utils.hh>
 
 #include <fstream>
 #include <iostream>
 
-ShaderCompiler::ShaderCompiler(const fs::path &baseShaderDirectoryPath, const fs::path &logPath)
+ShaderCompiler::ShaderCompiler(const fs::path &baseShaderDirectoryPath,
+                               const fs::path &logPath)
     : _baseShaderDirectoryPath(baseShaderDirectoryPath)
     , _logPath(logPath)
 {}
 
-std::pair<const fs::path, const fs::path> ShaderCompiler::getEntryPaths(const fs::path &entry)
+std::pair<const fs::path, const fs::path>
+ShaderCompiler::getEntryPaths(const fs::path &entry) const
 {
     const fs::path destDirectoryPath("compiled-shaders/");
-    const fs::path destPath = (destDirectoryPath / fs::relative(entry, _baseShaderDirectoryPath)).replace_extension(".spv");
+    const fs::path destPath =
+        (destDirectoryPath
+         / entry) // fs::relative(entry, _baseShaderDirectoryPath))
+            .replace_extension(".spv");
     return { entry, destPath };
 }
 
-bool ShaderCompiler::compileShader(const fs::path &shaderPath)
+bool ShaderCompiler::compileShader(const fs::path &shaderPath) const
 {
+    Logger::debug(std::cout, "Compiling shader: " + shaderPath.string(),
+                  { "SHADERS" });
     const fs::path destDirectoryPath("compiled-shaders/");
     const fs::path resolvedPath = _baseShaderDirectoryPath / shaderPath;
-    const fs::path destPath = (destDirectoryPath / fs::relative(resolvedPath, _baseShaderDirectoryPath)).replace_extension(".spv");
+    const fs::path destPath =
+        (destDirectoryPath
+         / fs::relative(resolvedPath, _baseShaderDirectoryPath))
+            .replace_extension(".spv");
     fs::create_directories(destPath.parent_path());
 
+    Logger::trace(std::cout,
+                  "Shader " + resolvedPath.string() + " write time: "
+                      + StatUtils::writeTimeToString(resolvedPath),
+                  { "SHADERS" });
+    Logger::trace(std::cout,
+                  "Compiled shader " + destPath.string() + " write time: "
+                      + StatUtils::writeTimeToString(destPath),
+                  { "SHADERS" });
+
+    if (fs::exists(destPath)
+        && fs::last_write_time(destPath) >= fs::last_write_time(resolvedPath))
+    {
+        Logger::info(std::cout,
+                     "Shader " + resolvedPath.string()
+                         + " does not need to be compiled again.",
+                     { "SHADERS" });
+        return true;
+    }
+
     std::ostringstream commandStream;
-    commandStream << "glslc " << resolvedPath << " -o " << destPath << " 2>" << _logPath;
+    commandStream << "glslc " << resolvedPath << " -o " << destPath << " 2>"
+                  << _logPath;
     int returnCode = system(commandStream.str().c_str());
     if (!returnCode)
     {
@@ -36,6 +69,14 @@ bool ShaderCompiler::compileShader(const fs::path &shaderPath)
     ifs.seekg(0);
     ifs.read(fileContent.data(), fileSize);
 
-    std::cerr << "Compilation failed for shader " << shaderPath << "(return code " << returnCode << "):\n" << fileContent;
+    std::ostringstream err;
+    err << "Shader " << shaderPath.string() << ": compilation failed.";
+    Logger::error(std::cout, err.str(), { "SHADERS" });
+    err.clear();
+    err << "Return code: " << returnCode;
+    Logger::error(std::cout, err.str(), { "SHADERS" });
+    err.clear();
+    err << "Error: " << fileContent;
+    Logger::error(std::cout, err.str(), { "SHADERS" });
     return false;
 }

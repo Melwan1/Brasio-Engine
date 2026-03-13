@@ -17,3 +17,5 @@ target_link_libraries(libio PRIVATE
 )
 
 add_subdirectory(debug)
+add_subdirectory(files)
+add_subdirectory(logging)

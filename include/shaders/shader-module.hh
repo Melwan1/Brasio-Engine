@@ -1,16 +1,22 @@
 #pragma once
 
+#include <memory>
+
 #include <vulkan/vulkan.hpp>
 
-class ShaderModule
+#include <core/handler.hh>
+
+class ShaderModule : public Handler<VkShaderModule>
 {
 public:
-    ShaderModule(VkDevice &device, VkShaderModule vulkanModule);
+    ShaderModule(VkDevice &device, const VkShaderModule &module,
+                 const VkShaderStageFlagBits &shaderType);
 
-    ~ShaderModule();
+    const VkShaderStageFlagBits &getShaderType() const;
+    VkShaderStageFlagBits &getShaderType();
 
-    const VkShaderModule& getVulkanModule();
 private:
-    VkShaderModule _vulkanModule;
-    VkDevice _device;
+    VkShaderStageFlagBits _shaderType;
 };
+
+using ShaderModuleType = std::unique_ptr<ShaderModule>;
