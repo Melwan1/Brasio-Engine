@@ -175,7 +175,6 @@ void VulkanRenderer::drawFrame()
 
     _syncObjects->resetSingleFence(_currentFrame);
     _commandBuffers->reset(_currentFrame);
-    vkResetCommandBuffer(_commandBuffers->at(_currentFrame), 0);
     _commandBuffers->record(_currentFrame, imageIndex, _renderPass->getHandle(),
                             _swapchain, _graphicsPipeline,
                             _vertexBuffer->getHandle(),
@@ -300,6 +299,7 @@ void VulkanRenderer::createIndexBuffer()
     BufferBuilder stagingBufferBuilder(_physicalDevice, _logicalDevice);
     stagingBufferBuilder.withSize(bufferSize)
         .withUsage(stagingBufferUsageFlags)
+        .withData(_indices.data())
         .withMemoryProperties(stagingBufferMemoryFlags);
 
     BufferType stagingBuffer = stagingBufferBuilder.build();
