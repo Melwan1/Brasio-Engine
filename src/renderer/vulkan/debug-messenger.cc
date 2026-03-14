@@ -6,10 +6,40 @@
 
 namespace brasio::renderer::vulkan
 {
+    void destroyDebugMessenger(const VkInstance &instance,
+                               const VkDebugUtilsMessengerEXT &debugMessenger)
+    {
+        io::logging::Logger::trace(std::cout, "Destroying debug messenger",
+                                   { "DESTROY" });
+        auto function = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
+            vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
+        if (function != nullptr)
+        {
+            io::logging::Logger::trace(
+                std::cout,
+                "Vulkan function found for destroying the debug messenger",
+                { "DESTROY" });
+            function(instance, debugMessenger, nullptr);
+        }
+        else
+        {
+            io::logging::Logger::warning(
+                std::cout,
+                "Vulkan function NOT found for destroying the debug "
+                "messenger, skipping",
+                { "DESTROY" });
+        }
+        io::logging::Logger::trace(std::cout, "Destroyed debug messenger",
+                                   { "DESTROY" });
+    }
+
     DebugMessenger::DebugMessenger(
         const VkInstance &instance,
         const VkDebugUtilsMessengerCreateInfoEXT &createInfo)
-        : _instance(instance)
+        : Handler("debug messenger",
+                  [instance](const VkDebugUtilsMessengerEXT &debugMessenger) {
+                      destroyDebugMessenger(instance, debugMessenger);
+                  })
     {
         io::logging::Logger::trace(std::cout, "Creating debug messenger",
                                    { "CREATE" });
@@ -21,7 +51,7 @@ namespace brasio::renderer::vulkan
                 std::cout,
                 "Vulkan function found for creating the debug messenger",
                 { "CREATE" });
-            function(_instance, &createInfo, nullptr, &_messenger);
+            function(instance, &createInfo, nullptr, &getHandle());
         }
         else
         {
@@ -35,30 +65,4 @@ namespace brasio::renderer::vulkan
                                    { "CREATE" });
     }
 
-    DebugMessenger::~DebugMessenger()
-    {
-        io::logging::Logger::trace(std::cout, "Destroying debug messenger",
-                                   { "DESTROY" });
-        auto function = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-            vkGetInstanceProcAddr(_instance,
-                                  "vkDestroyDebugUtilsMessengerEXT"));
-        if (function != nullptr)
-        {
-            io::logging::Logger::trace(
-                std::cout,
-                "Vulkan function found for destroying the debug messenger",
-                { "DESTROY" });
-            function(_instance, _messenger, nullptr);
-        }
-        else
-        {
-            io::logging::Logger::warning(
-                std::cout,
-                "Vulkan function NOT found for destroying the debug "
-                "messenger, skipping",
-                { "DESTROY" });
-        }
-        io::logging::Logger::trace(std::cout, "Destroyed debug messenger",
-                                   { "DESTROY" });
-    }
 } // namespace brasio::renderer::vulkan
