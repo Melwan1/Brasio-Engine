@@ -37,6 +37,7 @@ namespace brasio::renderer::vulkan
         _shaderManager.compileAllShaders();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle());
+        createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
         createVertexBuffer();
@@ -125,6 +126,7 @@ namespace brasio::renderer::vulkan
                                           "fragment/minimal-triangle.frag" };
         _pipelineLayout =
             builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
+                .withSetLayouts({ _descriptorSetLayout->getHandle() })
                 .build();
 
         builders::GraphicsPipelineBuilder pipelineBuilder(
@@ -338,5 +340,16 @@ namespace brasio::renderer::vulkan
 
         stagingBuffer->copyInto(*_indexBuffer, _commandPool->getHandle(),
                                 bufferSize);
+    }
+
+    void VulkanRenderer::createDescriptorSetLayout()
+    {
+        _descriptorSetLayout =
+            builders::DescriptorSetLayoutBuilder(_logicalDevice->getHandle())
+                .withBindings(
+                    { builders::DescriptorSetLayoutBindingBuilder()
+                          .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                          .build() })
+                .build();
     }
 } // namespace brasio::renderer::vulkan

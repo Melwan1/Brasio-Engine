@@ -11,6 +11,7 @@
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/descriptor-set-layout.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
@@ -62,6 +63,8 @@ namespace brasio::renderer::vulkan
         void createVertexBuffer();
         void createIndexBuffer();
 
+        void createDescriptorSetLayout();
+
     private:
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
@@ -92,6 +95,8 @@ namespace brasio::renderer::vulkan
 
         BufferType _vertexBuffer;
         BufferType _indexBuffer;
+
+        DescriptorSetLayoutType _descriptorSetLayout;
 
         uint32_t _currentFrame = 0;
     };

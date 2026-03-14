@@ -20,6 +20,7 @@ namespace brasio::renderer::vulkan
             io::logging::Logger::critical(
                 std::cout, "Could not create render pass", { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created render pass");
+        io::logging::Logger::trace(std::cout, "Created render pass",
+                                   { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan
