@@ -2,9 +2,12 @@
 
 #include <events/libevents.hh>
 
-class EventValidator
+namespace brasio::events
 {
-public:
-    static bool validateEventType(enum EventCategoryType categoryType,
-                                  enum EventType eventType);
-};
+    class EventValidator
+    {
+    public:
+        static bool validateEventType(enum EventCategoryType categoryType,
+                                      enum EventType eventType);
+    };
+} // namespace brasio::events

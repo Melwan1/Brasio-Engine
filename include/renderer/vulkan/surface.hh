@@ -7,10 +7,13 @@
 
 #include <core/handler.hh>
 
-class Surface : public Handler<VkSurfaceKHR>
+namespace brasio::renderer::vulkan
 {
-public:
-    Surface(const VkInstance &instance, GLFWwindow *window);
-};
+    class Surface : public core::Handler<VkSurfaceKHR>
+    {
+    public:
+        Surface(const VkInstance &instance, GLFWwindow *window);
+    };
 
-using SurfaceType = std::unique_ptr<Surface>;
+    using SurfaceType = std::unique_ptr<Surface>;
+} // namespace brasio::renderer::vulkan

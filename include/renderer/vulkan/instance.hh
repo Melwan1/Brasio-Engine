@@ -7,11 +7,17 @@
 #include <renderer/vulkan/debug-messenger.hh>
 #include <core/handler.hh>
 
-class Instance : public Handler<VkInstance>
+namespace brasio::renderer::vulkan
 {
-public:
-    Instance(const VkInstanceCreateInfo &createInfo);
 
-private:
-    std::unique_ptr<DebugMessenger> _debugMessenger;
-};
+    class Instance : public core::Handler<VkInstance>
+    {
+    public:
+        Instance(const VkInstanceCreateInfo &createInfo);
+
+    private:
+        std::unique_ptr<DebugMessenger> _debugMessenger;
+    };
+
+    using InstanceType = std::unique_ptr<Instance>;
+} // namespace brasio::renderer::vulkan

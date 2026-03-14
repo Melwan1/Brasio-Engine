@@ -2,14 +2,17 @@
 
 #include <events/categories/application.hh>
 
-class ApplicationTickEvent
-    : public ApplicationCategoryEvent<ApplicationTickEvent>
+namespace brasio::events::subevents
 {
-public:
-    ApplicationTickEvent();
-
-    virtual std::string getTypeName() const override
+    class ApplicationTickEvent
+        : public categories::ApplicationCategoryEvent<ApplicationTickEvent>
     {
-        return "ApplicationTickEvent";
-    }
-};
+    public:
+        ApplicationTickEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "ApplicationTickEvent";
+        }
+    };
+} // namespace brasio::events::subevents

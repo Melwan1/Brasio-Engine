@@ -10,34 +10,38 @@
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/swapchain.hh>
 
-class SwapchainBuilder : public Builder<SwapchainType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    SwapchainBuilder(GLFWwindow *window, const PhysicalDevice &physicalDevice,
-                     const VkDevice &logicalDevice,
-                     const VkSurfaceKHR &surface);
+    class SwapchainBuilder : public core::Builder<SwapchainType>
+    {
+    public:
+        SwapchainBuilder(GLFWwindow *window,
+                         const PhysicalDevice &physicalDevice,
+                         const VkDevice &logicalDevice,
+                         const VkSurfaceKHR &surface);
 
-    virtual SwapchainBuilder &base() override;
+        virtual SwapchainBuilder &base() override;
 
-    SwapchainBuilder &
-    withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat);
-    SwapchainBuilder &withPresentMode(const VkPresentModeKHR &presentMode);
+        SwapchainBuilder &
+        withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat);
+        SwapchainBuilder &withPresentMode(const VkPresentModeKHR &presentMode);
 
-    virtual SwapchainType build() override;
+        virtual SwapchainType build() override;
 
-private:
-    GLFWwindow *_window;
-    const PhysicalDevice &_physicalDevice;
-    VkDevice _logicalDevice;
-    VkSurfaceKHR _surface;
-    std::vector<VkSurfaceFormatKHR> _availableSurfaceFormats;
-    std::vector<VkPresentModeKHR> _availablePresentModes;
-    VkSurfaceCapabilitiesKHR _availableCapabilities;
+    private:
+        GLFWwindow *_window;
+        const PhysicalDevice &_physicalDevice;
+        VkDevice _logicalDevice;
+        VkSurfaceKHR _surface;
+        std::vector<VkSurfaceFormatKHR> _availableSurfaceFormats;
+        std::vector<VkPresentModeKHR> _availablePresentModes;
+        VkSurfaceCapabilitiesKHR _availableCapabilities;
 
-    VkSurfaceFormatKHR _surfaceFormat;
-    VkPresentModeKHR _presentMode;
-    VkExtent2D _extent;
-    uint32_t _imageCount;
+        VkSurfaceFormatKHR _surfaceFormat;
+        VkPresentModeKHR _presentMode;
+        VkExtent2D _extent;
+        uint32_t _imageCount;
 
-    VkExtent2D _getExtent(const VkSurfaceCapabilitiesKHR &capabilities);
-};
+        VkExtent2D _getExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+    };
+} // namespace brasio::renderer::vulkan::builders

@@ -4,59 +4,64 @@
 #include <math/vector.hh>
 #include <ostream>
 
-template <typename ElementType, unsigned lines, unsigned columns>
-class Matrix
+namespace brasio::math
 {
-public:
-    using container_type = ElementType[lines][columns];
-    Matrix(const container_type &elements);
-    Matrix(std::initializer_list<std::initializer_list<ElementType>> elements);
-    Matrix();
 
-    /**
-     * Conversion to arrays.
-     */
-    const ElementType *to_array() const;
+    template <typename ElementType, unsigned lines, unsigned columns>
+    class Matrix
+    {
+    public:
+        using container_type = ElementType[lines][columns];
+        Matrix(const container_type &elements);
+        Matrix(
+            std::initializer_list<std::initializer_list<ElementType>> elements);
+        Matrix();
 
-    /**
-     * This operator allows operations like mat(2, 3) to return the element
-     * at line 2, column 3.
-     */
-    ElementType &operator()(unsigned line, unsigned column);
-    const ElementType &operator()(unsigned line, unsigned column) const;
-    Matrix<ElementType, lines, columns>
-    operator+(const Matrix<ElementType, lines, columns> &rhs) const;
-    Matrix<ElementType, lines, columns>
-    operator+=(const Matrix<ElementType, lines, columns> &rhs);
+        /**
+         * Conversion to arrays.
+         */
+        const ElementType *to_array() const;
 
-    template <unsigned rhs_columns>
-    Matrix<ElementType, lines, rhs_columns>
-    operator*(const Matrix<ElementType, columns, rhs_columns> &rhs) const;
+        /**
+         * This operator allows operations like mat(2, 3) to return the element
+         * at line 2, column 3.
+         */
+        ElementType &operator()(unsigned line, unsigned column);
+        const ElementType &operator()(unsigned line, unsigned column) const;
+        Matrix<ElementType, lines, columns>
+        operator+(const Matrix<ElementType, lines, columns> &rhs) const;
+        Matrix<ElementType, lines, columns>
+        operator+=(const Matrix<ElementType, lines, columns> &rhs);
 
-    Matrix<ElementType, lines, columns> operator*(ElementType scalar) const;
-    Matrix<ElementType, lines, columns> operator*=(ElementType scalar);
+        template <unsigned rhs_columns>
+        Matrix<ElementType, lines, rhs_columns>
+        operator*(const Matrix<ElementType, columns, rhs_columns> &rhs) const;
 
-    Vector<ElementType, lines>
-    operator*(const Vector<ElementType, columns> &rhs) const;
+        Matrix<ElementType, lines, columns> operator*(ElementType scalar) const;
+        Matrix<ElementType, lines, columns> operator*=(ElementType scalar);
 
-    static ElementType &get_element_base();
-    static Matrix<ElementType, lines, columns> identity()
-        requires(lines == columns);
+        Vector<ElementType, lines>
+        operator*(const Vector<ElementType, columns> &rhs) const;
 
-    Matrix<ElementType, columns, lines> transpose() const;
+        static ElementType &get_element_base();
+        static Matrix<ElementType, lines, columns> identity()
+            requires(lines == columns);
 
-private:
-    container_type elements_;
-};
+        Matrix<ElementType, columns, lines> transpose() const;
 
-template <typename ElementType, unsigned size>
-using SquaredMatrix = Matrix<ElementType, size, size>;
+    private:
+        container_type elements_;
+    };
 
-using Matrix3 = SquaredMatrix<float, 3>;
-using Matrix4 = SquaredMatrix<float, 4>;
+    template <typename ElementType, unsigned size>
+    using SquaredMatrix = Matrix<ElementType, size, size>;
 
-template <typename ElementType, unsigned lines, unsigned columns>
-std::ostream &operator<<(std::ostream &ostr,
-                         const Matrix<ElementType, lines, columns> &matrix);
+    using Matrix3 = SquaredMatrix<float, 3>;
+    using Matrix4 = SquaredMatrix<float, 4>;
+
+    template <typename ElementType, unsigned lines, unsigned columns>
+    std::ostream &operator<<(std::ostream &ostr,
+                             const Matrix<ElementType, lines, columns> &matrix);
+} // namespace brasio::math
 
 #include <math/matrix.hxx>

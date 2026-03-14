@@ -5,11 +5,14 @@
 #include <vulkan/vulkan_core.h>
 #include <renderer/vulkan/logical-device.hh>
 
-class PipelineLayout : public Handler<VkPipelineLayout>
+namespace brasio::renderer::vulkan
 {
-public:
-    PipelineLayout(const VkDevice &logicalDevice,
-                   const VkPipelineLayoutCreateInfo &createInfo);
-};
+    class PipelineLayout : public core::Handler<VkPipelineLayout>
+    {
+    public:
+        PipelineLayout(const VkDevice &logicalDevice,
+                       const VkPipelineLayoutCreateInfo &createInfo);
+    };
 
-using PipelineLayoutType = std::unique_ptr<PipelineLayout>;
+    using PipelineLayoutType = std::unique_ptr<PipelineLayout>;
+} // namespace brasio::renderer::vulkan

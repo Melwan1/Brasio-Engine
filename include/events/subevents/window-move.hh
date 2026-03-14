@@ -2,22 +2,26 @@
 
 #include <events/categories/categories.hh>
 
-class WindowMoveEvent : public WindowCategoryEvent<WindowMoveEvent>
+namespace brasio::events::subevents
 {
-public:
-    WindowMoveEvent(int downBy, int rightBy);
-
-    int getDownDisplacement() const;
-    int getUpDisplacement() const;
-    int getLeftDisplacement() const;
-    int getRightDisplacement() const;
-
-    virtual std::string getTypeName() const override
+    class WindowMoveEvent
+        : public categories::WindowCategoryEvent<WindowMoveEvent>
     {
-        return "WindowMoveEvent";
-    }
+    public:
+        WindowMoveEvent(int downBy, int rightBy);
 
-private:
-    int _downBy;
-    int _rightBy;
-};
+        int getDownDisplacement() const;
+        int getUpDisplacement() const;
+        int getLeftDisplacement() const;
+        int getRightDisplacement() const;
+
+        virtual std::string getTypeName() const override
+        {
+            return "WindowMoveEvent";
+        }
+
+    private:
+        int _downBy;
+        int _rightBy;
+    };
+} // namespace brasio::events::subevents

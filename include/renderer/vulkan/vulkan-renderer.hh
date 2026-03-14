@@ -23,73 +23,76 @@
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
 
-/**
- * The Vulkan Renderer.
- *
- * Uses Vulkan as the base API to renderer objects to the window.
- */
-
-class VulkanRenderer : public Renderer
+namespace brasio::renderer::vulkan
 {
-public:
-    VulkanRenderer(GLFWwindow *window);
+    /**
+     * The Vulkan Renderer.
+     *
+     * Uses Vulkan as the base API to renderer objects to the window.
+     */
 
-    ~VulkanRenderer();
+    class VulkanRenderer : public Renderer
+    {
+    public:
+        VulkanRenderer(GLFWwindow *window);
 
-    virtual void init() override;
-    virtual void drawFrame() override;
+        ~VulkanRenderer();
 
-    void pickPhysicalDevice();
-    void createLogicalDevice();
+        virtual void init() override;
+        virtual void drawFrame() override;
 
-    void createSwapChain();
+        void pickPhysicalDevice();
+        void createLogicalDevice();
 
-    void createImageViews();
+        void createSwapChain();
 
-    void createRenderPass();
-    void createGraphicsPipeline();
+        void createImageViews();
 
-    void createCommandPool();
-    void createCommandBuffers();
+        void createRenderPass();
+        void createGraphicsPipeline();
 
-    void createSyncObjects();
+        void createCommandPool();
+        void createCommandBuffers();
 
-    void cleanupSwapChain();
-    void recreateSwapChain();
+        void createSyncObjects();
 
-    void createVertexBuffer();
-    void createIndexBuffer();
+        void cleanupSwapChain();
+        void recreateSwapChain();
 
-private:
-    GLFWwindow *_window;
-    ShaderManager _shaderManager;
-    std::vector<Vertex> _vertices;
-    std::vector<uint16_t> _indices;
+        void createVertexBuffer();
+        void createIndexBuffer();
 
-    InstanceType _instance;
+    private:
+        GLFWwindow *_window;
+        shaders::ShaderManager _shaderManager;
+        std::vector<geometry::Vertex> _vertices;
+        std::vector<uint16_t> _indices;
+
+        InstanceType _instance;
 
 #ifdef NDEBUG
-    const bool _enableValidationLayers = false;
+        const bool _enableValidationLayers = false;
 #else
-    const bool _enableValidationLayers = true;
-    std::vector<const char *> _validationLayers;
+        const bool _enableValidationLayers = true;
+        std::vector<const char *> _validationLayers;
 #endif /* ! NDEBUG */
 
-    SurfaceType _surface;
-    PhysicalDeviceType _physicalDevice;
-    LogicalDeviceType _logicalDevice;
-    SwapchainType _swapchain;
-    RenderPassType _renderPass;
-    PipelineLayoutType _pipelineLayout;
-    GraphicsPipelineType _graphicsPipeline;
+        SurfaceType _surface;
+        PhysicalDeviceType _physicalDevice;
+        LogicalDeviceType _logicalDevice;
+        SwapchainType _swapchain;
+        RenderPassType _renderPass;
+        PipelineLayoutType _pipelineLayout;
+        GraphicsPipelineType _graphicsPipeline;
 
-    CommandPoolType _commandPool;
-    CommandBufferArrayType _commandBuffers;
+        CommandPoolType _commandPool;
+        CommandBufferArrayType _commandBuffers;
 
-    SyncObjectsType _syncObjects;
+        SyncObjectsType _syncObjects;
 
-    BufferType _vertexBuffer;
-    BufferType _indexBuffer;
+        BufferType _vertexBuffer;
+        BufferType _indexBuffer;
 
-    uint32_t _currentFrame = 0;
-};
+        uint32_t _currentFrame = 0;
+    };
+} // namespace brasio::renderer::vulkan

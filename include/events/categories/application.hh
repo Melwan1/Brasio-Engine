@@ -2,12 +2,15 @@
 
 #include <events/event.hh>
 
-template <typename SubEventType>
-class ApplicationCategoryEvent
-    : public Event<ApplicationCategoryEvent<SubEventType>, SubEventType>
+namespace brasio::events::categories
 {
-public:
-    ApplicationCategoryEvent(enum EventType eventType);
-};
+    template <typename SubEventType>
+    class ApplicationCategoryEvent
+        : public Event<ApplicationCategoryEvent<SubEventType>, SubEventType>
+    {
+    public:
+        ApplicationCategoryEvent(enum EventType eventType);
+    };
+} // namespace brasio::events::categories
 
 #include <events/categories/application.hxx>

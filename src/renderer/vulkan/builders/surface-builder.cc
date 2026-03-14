@@ -1,18 +1,22 @@
 #include <renderer/vulkan/builders/surface-builder.hh>
 
-SurfaceBuilder::SurfaceBuilder(const VkInstance &instance, GLFWwindow *window)
-    : _instance(instance)
-    , _window(window)
+namespace brasio::renderer::vulkan::builders
 {
-    base();
-}
+    SurfaceBuilder::SurfaceBuilder(const VkInstance &instance,
+                                   GLFWwindow *window)
+        : _instance(instance)
+        , _window(window)
+    {
+        base();
+    }
 
-SurfaceBuilder &SurfaceBuilder::base()
-{
-    return *this;
-}
+    SurfaceBuilder &SurfaceBuilder::base()
+    {
+        return *this;
+    }
 
-SurfaceType SurfaceBuilder::build()
-{
-    return std::make_unique<Surface>(_instance, _window);
-}
+    SurfaceType SurfaceBuilder::build()
+    {
+        return std::make_unique<Surface>(_instance, _window);
+    }
+} // namespace brasio::renderer::vulkan::builders

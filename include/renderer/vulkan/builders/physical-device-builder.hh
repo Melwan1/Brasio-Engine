@@ -8,27 +8,30 @@
 #include <core/builder.hh>
 #include <renderer/vulkan/physical-device.hh>
 
-class PhysicalDeviceBuilder : public Builder<PhysicalDeviceType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    PhysicalDeviceBuilder(const VkInstance &instance,
-                          const VkSurfaceKHR &surface);
+    class PhysicalDeviceBuilder : public core::Builder<PhysicalDeviceType>
+    {
+    public:
+        PhysicalDeviceBuilder(const VkInstance &instance,
+                              const VkSurfaceKHR &surface);
 
-    virtual PhysicalDeviceType build() override;
-    virtual PhysicalDeviceBuilder &base() override;
+        virtual PhysicalDeviceType build() override;
+        virtual PhysicalDeviceBuilder &base() override;
 
-    PhysicalDeviceBuilder &
-    withDeviceExtensions(const std::vector<const char *> &extensions);
+        PhysicalDeviceBuilder &
+        withDeviceExtensions(const std::vector<const char *> &extensions);
 
-private:
-    VkInstance _instance;
-    VkSurfaceKHR _surface;
+    private:
+        VkInstance _instance;
+        VkSurfaceKHR _surface;
 
-    std::vector<const char *> _deviceExtensions;
+        std::vector<const char *> _deviceExtensions;
 
-    std::vector<PhysicalDeviceType> _getAvailablePhysicalDevices();
-    bool _isDeviceSuitable(const PhysicalDevice &device);
-    int _getDeviceSuitability(const PhysicalDevice &device);
+        std::vector<PhysicalDeviceType> _getAvailablePhysicalDevices();
+        bool _isDeviceSuitable(const PhysicalDevice &device);
+        int _getDeviceSuitability(const PhysicalDevice &device);
 
-    std::multimap<int, PhysicalDeviceType> _ratePhysicalDevices();
-};
+        std::multimap<int, PhysicalDeviceType> _ratePhysicalDevices();
+    };
+} // namespace brasio::renderer::vulkan::builders

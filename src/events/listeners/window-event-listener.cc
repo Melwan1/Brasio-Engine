@@ -2,32 +2,35 @@
 
 #include <iostream>
 
-void WindowEventListener::onEvent(WindowCloseEvent &event)
+namespace brasio::events::listeners
 {
-    event.print(std::cout);
-    event.handle();
-}
+    void WindowEventListener::onEvent(subevents::WindowCloseEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void WindowEventListener::onEvent(WindowFocusEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void WindowEventListener::onEvent(subevents::WindowFocusEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void WindowEventListener::onEvent(WindowLostFocusEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void WindowEventListener::onEvent(subevents::WindowLostFocusEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void WindowEventListener::onEvent(WindowMoveEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void WindowEventListener::onEvent(subevents::WindowMoveEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void WindowEventListener::onEvent(WindowResizeEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void WindowEventListener::onEvent(subevents::WindowResizeEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
+} // namespace brasio::events::listeners

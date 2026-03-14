@@ -2,17 +2,23 @@
 
 #include <io/logging/logger.hh>
 
-Semaphore::Semaphore(const VkDevice &logicalDevice,
-                     const VkSemaphoreCreateInfo &createInfo)
-    : Handler("semaphore", [logicalDevice](const VkSemaphore &semaphore) {
-        vkDestroySemaphore(logicalDevice, semaphore, nullptr);
-    })
+namespace brasio::renderer::vulkan
 {
-    Logger::trace(std::cout, "Creating semaphore", { "CREATE" });
-    if (vkCreateSemaphore(logicalDevice, &createInfo, nullptr, &getHandle())
-        != VK_SUCCESS)
+    Semaphore::Semaphore(const VkDevice &logicalDevice,
+                         const VkSemaphoreCreateInfo &createInfo)
+        : Handler("semaphore", [logicalDevice](const VkSemaphore &semaphore) {
+            vkDestroySemaphore(logicalDevice, semaphore, nullptr);
+        })
     {
-        Logger::critical(std::cout, "Could not create semaphore", { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating semaphore",
+                                   { "CREATE" });
+        if (vkCreateSemaphore(logicalDevice, &createInfo, nullptr, &getHandle())
+            != VK_SUCCESS)
+        {
+            io::logging::Logger::critical(
+                std::cout, "Could not create semaphore", { "CREATE" });
+        }
+        io::logging::Logger::trace(std::cout, "Created semaphore",
+                                   { "CREATE" });
     }
-    Logger::trace(std::cout, "Created semaphore", { "CREATE" });
-}
+} // namespace brasio::renderer::vulkan

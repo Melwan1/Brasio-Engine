@@ -6,17 +6,23 @@
 
 #include <io/logging/logger.hh>
 
-Instance::Instance(const VkInstanceCreateInfo &createInfo)
-    : Handler("instance", [](const VkInstance &instance) {
-        vkDestroyInstance(instance, nullptr);
-    })
+namespace brasio::renderer::vulkan
 {
-    Logger::trace(std::cout, "Creating Vulkan instance", { "CREATE" });
-    if (vkCreateInstance(&createInfo, nullptr, &getHandle()) != VK_SUCCESS)
+    Instance::Instance(const VkInstanceCreateInfo &createInfo)
+        : Handler("instance", [](const VkInstance &instance) {
+            vkDestroyInstance(instance, nullptr);
+        })
     {
-        Logger::critical(std::cout, "Could not create Vulkan instance",
-                         { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating Vulkan instance",
+                                   { "CREATE" });
+        if (vkCreateInstance(&createInfo, nullptr, &getHandle()) != VK_SUCCESS)
+        {
+            io::logging::Logger::critical(
+                std::cout, "Could not create Vulkan instance", { "CREATE" });
+        }
+        io::logging::Logger::trace(std::cout, "Created Vulkan instance",
+                                   { "CREATE" });
+        _debugMessenger =
+            builders::DebugMessengerBuilder().withInstance(getHandle()).build();
     }
-    Logger::trace(std::cout, "Created Vulkan instance", { "CREATE" });
-    _debugMessenger = DebugMessengerBuilder().withInstance(getHandle()).build();
-}
+} // namespace brasio::renderer::vulkan

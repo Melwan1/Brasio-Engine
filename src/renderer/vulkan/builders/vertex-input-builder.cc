@@ -1,39 +1,46 @@
 #include <renderer/vulkan/builders/vertex-input-builder.hh>
 
-VertexInputBuilder::VertexInputBuilder()
+namespace brasio::renderer::vulkan::builders
 {
-    base();
-}
+    VertexInputBuilder::VertexInputBuilder()
+    {
+        base();
+    }
 
-VertexInputBuilder &VertexInputBuilder::base()
-{
-    _structureType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    return withBindingDescriptions({ Vertex::getBindingDescription() })
-        .withAttributeDescriptions(Vertex::getAttributeDescriptions());
-}
+    VertexInputBuilder &VertexInputBuilder::base()
+    {
+        _structureType =
+            VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+        return withBindingDescriptions(
+                   { geometry::Vertex::getBindingDescription() })
+            .withAttributeDescriptions(
+                geometry::Vertex::getAttributeDescriptions());
+    }
 
-VkPipelineVertexInputStateCreateInfo VertexInputBuilder::build()
-{
-    VkPipelineVertexInputStateCreateInfo createInfo{};
-    createInfo.sType = _structureType;
-    createInfo.vertexBindingDescriptionCount = _bindingDescriptions.size();
-    createInfo.pVertexBindingDescriptions = _bindingDescriptions.data();
-    createInfo.vertexAttributeDescriptionCount = _attributeDescriptions.size();
-    createInfo.pVertexAttributeDescriptions = _attributeDescriptions.data();
-    return createInfo;
-}
+    VkPipelineVertexInputStateCreateInfo VertexInputBuilder::build()
+    {
+        VkPipelineVertexInputStateCreateInfo createInfo{};
+        createInfo.sType = _structureType;
+        createInfo.vertexBindingDescriptionCount = _bindingDescriptions.size();
+        createInfo.pVertexBindingDescriptions = _bindingDescriptions.data();
+        createInfo.vertexAttributeDescriptionCount =
+            _attributeDescriptions.size();
+        createInfo.pVertexAttributeDescriptions = _attributeDescriptions.data();
+        return createInfo;
+    }
 
-VertexInputBuilder &VertexInputBuilder::withBindingDescriptions(
-    const std::vector<VkVertexInputBindingDescription> &bindingDescriptions)
-{
-    _bindingDescriptions = bindingDescriptions;
-    return *this;
-}
+    VertexInputBuilder &VertexInputBuilder::withBindingDescriptions(
+        const std::vector<VkVertexInputBindingDescription> &bindingDescriptions)
+    {
+        _bindingDescriptions = bindingDescriptions;
+        return *this;
+    }
 
-VertexInputBuilder &VertexInputBuilder::withAttributeDescriptions(
-    const std::array<VkVertexInputAttributeDescription, 2>
-        &attributeDescriptions)
-{
-    _attributeDescriptions = attributeDescriptions;
-    return *this;
-}
+    VertexInputBuilder &VertexInputBuilder::withAttributeDescriptions(
+        const std::array<VkVertexInputAttributeDescription, 2>
+            &attributeDescriptions)
+    {
+        _attributeDescriptions = attributeDescriptions;
+        return *this;
+    }
+} // namespace brasio::renderer::vulkan::builders

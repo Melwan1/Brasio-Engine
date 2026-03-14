@@ -2,13 +2,16 @@
 
 #include <events/categories/categories.hh>
 
-class UnknownEvent : public UnknownCategoryEvent<UnknownEvent>
+namespace brasio::events::subevents
 {
-public:
-    UnknownEvent();
-
-    virtual std::string getTypeName() const override
+    class UnknownEvent : public categories::UnknownCategoryEvent<UnknownEvent>
     {
-        return "UnknownEvent";
-    }
-};
+    public:
+        UnknownEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "UnknownEvent";
+        }
+    };
+} // namespace brasio::events::subevents

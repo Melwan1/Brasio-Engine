@@ -7,40 +7,43 @@
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/image.hh>
 
-class Swapchain : public Handler<VkSwapchainKHR>
+namespace brasio::renderer::vulkan
 {
-public:
-    Swapchain(const VkDevice &logicalDevice,
-              const VkSwapchainCreateInfoKHR &createInfo);
-    ~Swapchain();
+    class Swapchain : public core::Handler<VkSwapchainKHR>
+    {
+    public:
+        Swapchain(const VkDevice &logicalDevice,
+                  const VkSwapchainCreateInfoKHR &createInfo);
+        ~Swapchain();
 
-    const VkFormat &getFormat() const;
-    VkFormat &getFormat();
+        const VkFormat &getFormat() const;
+        VkFormat &getFormat();
 
-    const VkExtent2D &getExtent() const;
-    VkExtent2D &getExtent();
+        const VkExtent2D &getExtent() const;
+        VkExtent2D &getExtent();
 
-    uint32_t getImageCount() const;
+        uint32_t getImageCount() const;
 
-    const Image &imageAt(uint32_t index) const;
-    Image &imageAt(uint32_t index);
+        const Image &imageAt(uint32_t index) const;
+        Image &imageAt(uint32_t index);
 
-    const VkFramebuffer &framebufferAt(uint32_t index) const;
-    VkFramebuffer &framebufferAt(uint32_t index);
+        const VkFramebuffer &framebufferAt(uint32_t index) const;
+        VkFramebuffer &framebufferAt(uint32_t index);
 
-    void createImages();
-    void createFramebuffers(const VkRenderPass &renderPass);
+        void createImages();
+        void createFramebuffers(const VkRenderPass &renderPass);
 
-    float getWidth() const;
-    float getHeight() const;
+        float getWidth() const;
+        float getHeight() const;
 
-private:
-    VkDevice _logicalDevice;
-    VkFormat _format;
-    VkExtent2D _extent;
-    uint32_t _imageCount;
-    std::vector<ImageType> _images;
-    std::vector<VkFramebuffer> _framebuffers;
-};
+    private:
+        VkDevice _logicalDevice;
+        VkFormat _format;
+        VkExtent2D _extent;
+        uint32_t _imageCount;
+        std::vector<ImageType> _images;
+        std::vector<VkFramebuffer> _framebuffers;
+    };
 
-using SwapchainType = std::unique_ptr<Swapchain>;
+    using SwapchainType = std::unique_ptr<Swapchain>;
+} // namespace brasio::renderer::vulkan

@@ -2,18 +2,24 @@
 
 #include <io/logging/logger.hh>
 
-RenderPass::RenderPass(const VkDevice &logicalDevice,
-                       const VkRenderPassCreateInfo &createInfo)
-    : Handler("render pass", [logicalDevice](const VkRenderPass &renderPass) {
-        vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
-    })
+namespace brasio::renderer::vulkan
 {
-    Logger::trace(std::cout, "Creating render pass", { "CREATE" });
-    if (vkCreateRenderPass(logicalDevice, &createInfo, nullptr, &getHandle())
-        != VK_SUCCESS)
+    RenderPass::RenderPass(const VkDevice &logicalDevice,
+                           const VkRenderPassCreateInfo &createInfo)
+        : Handler("render pass",
+                  [logicalDevice](const VkRenderPass &renderPass) {
+                      vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
+                  })
     {
-        Logger::critical(std::cout, "Could not create render pass",
-                         { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating render pass",
+                                   { "CREATE" });
+        if (vkCreateRenderPass(logicalDevice, &createInfo, nullptr,
+                               &getHandle())
+            != VK_SUCCESS)
+        {
+            io::logging::Logger::critical(
+                std::cout, "Could not create render pass", { "CREATE" });
+        }
+        io::logging::Logger::trace(std::cout, "Created render pass");
     }
-    Logger::trace(std::cout, "Created render pass");
-}
+} // namespace brasio::renderer::vulkan

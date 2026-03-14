@@ -2,10 +2,14 @@
 
 #include <events/listeners/default-event-listener.hh>
 
-class KeyboardEventListener : public DefaultEventListener
+namespace brasio::events::listeners
 {
-public:
-    virtual void onEvent(KeyboardLongPressEvent &) override;
-    virtual void onEvent(KeyboardPressEvent &) override;
-    virtual void onEvent(KeyboardReleaseEvent &) override;
-};
+
+    class KeyboardEventListener : public DefaultEventListener
+    {
+    public:
+        virtual void onEvent(subevents::KeyboardLongPressEvent &) override;
+        virtual void onEvent(subevents::KeyboardPressEvent &) override;
+        virtual void onEvent(subevents::KeyboardReleaseEvent &) override;
+    };
+} // namespace brasio::events::listeners

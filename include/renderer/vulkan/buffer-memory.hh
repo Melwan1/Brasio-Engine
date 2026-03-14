@@ -8,18 +8,21 @@
 
 #include <renderer/vulkan/buffer.hh>
 
-class Buffer;
-
-class BufferMemory : public Handler<VkDeviceMemory>
+namespace brasio::renderer::vulkan
 {
-public:
-    BufferMemory(const PhysicalDeviceType &physicalDevice,
-                 const VkDevice &logicalDevice, const Buffer &buffer,
-                 VkMemoryPropertyFlags memoryProperties, void *data,
-                 size_t size);
+    class Buffer;
 
-private:
-    void *_deviceData;
-};
+    class BufferMemory : public core::Handler<VkDeviceMemory>
+    {
+    public:
+        BufferMemory(const PhysicalDeviceType &physicalDevice,
+                     const VkDevice &logicalDevice, const Buffer &buffer,
+                     VkMemoryPropertyFlags memoryProperties, void *data,
+                     size_t size);
 
-using BufferMemoryType = std::unique_ptr<BufferMemory>;
+    private:
+        void *_deviceData;
+    };
+
+    using BufferMemoryType = std::unique_ptr<BufferMemory>;
+} // namespace brasio::renderer::vulkan

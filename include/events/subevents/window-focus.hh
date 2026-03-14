@@ -2,13 +2,17 @@
 
 #include <events/categories/categories.hh>
 
-class WindowFocusEvent : public WindowCategoryEvent<WindowFocusEvent>
+namespace brasio::events::subevents
 {
-public:
-    WindowFocusEvent();
-
-    virtual std::string getTypeName() const override
+    class WindowFocusEvent
+        : public categories::WindowCategoryEvent<WindowFocusEvent>
     {
-        return "WindowFocusEvent";
-    }
-};
+    public:
+        WindowFocusEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "WindowFocusEvent";
+        }
+    };
+} // namespace brasio::events::subevents

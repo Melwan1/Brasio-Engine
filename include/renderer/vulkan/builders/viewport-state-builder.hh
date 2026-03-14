@@ -4,20 +4,24 @@
 
 #include <vulkan/vulkan_core.h>
 
-class ViewportStateBuilder : public Builder<VkPipelineViewportStateCreateInfo>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    ViewportStateBuilder();
+    class ViewportStateBuilder
+        : public core::Builder<VkPipelineViewportStateCreateInfo>
+    {
+    public:
+        ViewportStateBuilder();
 
-    virtual ViewportStateBuilder &base() override;
-    virtual VkPipelineViewportStateCreateInfo build() override;
+        virtual ViewportStateBuilder &base() override;
+        virtual VkPipelineViewportStateCreateInfo build() override;
 
-    ViewportStateBuilder &withViewports(unsigned viewportCount);
-    ViewportStateBuilder &withScissors(unsigned scissorCount);
+        ViewportStateBuilder &withViewports(unsigned viewportCount);
+        ViewportStateBuilder &withScissors(unsigned scissorCount);
 
-private:
-    VkStructureType _structureType;
+    private:
+        VkStructureType _structureType;
 
-    unsigned _viewportCount;
-    unsigned _scissorCount;
-};
+        unsigned _viewportCount;
+        unsigned _scissorCount;
+    };
+} // namespace brasio::renderer::vulkan::builders

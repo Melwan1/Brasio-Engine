@@ -4,12 +4,15 @@
 
 #include <ostream>
 
-class VulkanRendererDebugPrinter
+namespace brasio::io::debug
 {
-public:
-    static void
-    printDebugMessage(std::ostream &ostr,
-                      VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                      VkDebugUtilsMessageTypeFlagsEXT messageType,
-                      const VkDebugUtilsMessengerCallbackDataEXT *callbackData);
-};
+    class VulkanRendererDebugPrinter
+    {
+    public:
+        static void printDebugMessage(
+            std::ostream &ostr,
+            VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+            VkDebugUtilsMessageTypeFlagsEXT messageType,
+            const VkDebugUtilsMessengerCallbackDataEXT *callbackData);
+    };
+} // namespace brasio::io::debug

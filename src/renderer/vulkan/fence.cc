@@ -2,16 +2,21 @@
 
 #include <io/logging/logger.hh>
 
-Fence::Fence(const VkDevice &logicalDevice, const VkFenceCreateInfo &createInfo)
-    : Handler("fence", [logicalDevice](const VkFence &fence) {
-        vkDestroyFence(logicalDevice, fence, nullptr);
-    })
+namespace brasio::renderer::vulkan
 {
-    Logger::trace(std::cout, "Creating fence", { "CREATE" });
-    if (vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle())
-        != VK_SUCCESS)
+    Fence::Fence(const VkDevice &logicalDevice,
+                 const VkFenceCreateInfo &createInfo)
+        : Handler("fence", [logicalDevice](const VkFence &fence) {
+            vkDestroyFence(logicalDevice, fence, nullptr);
+        })
     {
-        Logger::critical(std::cout, "Could not create fence", { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating fence", { "CREATE" });
+        if (vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle())
+            != VK_SUCCESS)
+        {
+            io::logging::Logger::critical(std::cout, "Could not create fence",
+                                          { "CREATE" });
+        }
+        io::logging::Logger::trace(std::cout, "Created fence", { "CREATE" });
     }
-    Logger::trace(std::cout, "Created fence", { "CREATE" });
-}
+} // namespace brasio::renderer::vulkan

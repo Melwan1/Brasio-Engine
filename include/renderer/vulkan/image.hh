@@ -8,20 +8,23 @@
 
 #include <core/handler.hh>
 
-class Image : public Handler<VkImageView>
+namespace brasio::renderer::vulkan
 {
-public:
-    Image(const VkDevice &logicalDevice, const VkImage &image,
-          const VkImageViewCreateInfo &createInfo);
+    class Image : public core::Handler<VkImageView>
+    {
+    public:
+        Image(const VkDevice &logicalDevice, const VkImage &image,
+              const VkImageViewCreateInfo &createInfo);
 
-    const VkImage &getImage() const;
-    VkImage &getImage();
+        const VkImage &getImage() const;
+        VkImage &getImage();
 
-    const VkImageView &getImageView() const;
-    VkImageView &getImageView();
+        const VkImageView &getImageView() const;
+        VkImageView &getImageView();
 
-private:
-    VkImage _image;
-};
+    private:
+        VkImage _image;
+    };
 
-using ImageType = std::unique_ptr<Image>;
+    using ImageType = std::unique_ptr<Image>;
+} // namespace brasio::renderer::vulkan

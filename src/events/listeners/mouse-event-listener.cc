@@ -1,13 +1,16 @@
 #include <events/listeners/mouse-event-listener.hh>
 
-void MouseEventListener::onEvent(MouseClickEvent &)
-{}
+namespace brasio::events::listeners
+{
+    void MouseEventListener::onEvent(subevents::MouseClickEvent &)
+    {}
 
-void MouseEventListener::onEvent(MouseMoveEvent &)
-{}
+    void MouseEventListener::onEvent(subevents::MouseMoveEvent &)
+    {}
 
-void MouseEventListener::onEvent(MouseReleaseEvent &)
-{}
+    void MouseEventListener::onEvent(subevents::MouseReleaseEvent &)
+    {}
 
-void MouseEventListener::onEvent(MouseScrollEvent &)
-{}
+    void MouseEventListener::onEvent(subevents::MouseScrollEvent &)
+    {}
+} // namespace brasio::events::listeners

@@ -6,25 +6,29 @@
 
 #include <vulkan/vulkan_core.h>
 
-class ColorBlendStateBuilder
-    : public Builder<VkPipelineColorBlendStateCreateInfo>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    ColorBlendStateBuilder();
+    class ColorBlendStateBuilder
+        : public core::Builder<VkPipelineColorBlendStateCreateInfo>
+    {
+    public:
+        ColorBlendStateBuilder();
 
-    virtual ColorBlendStateBuilder &base() override;
-    virtual VkPipelineColorBlendStateCreateInfo build() override;
+        virtual ColorBlendStateBuilder &base() override;
+        virtual VkPipelineColorBlendStateCreateInfo build() override;
 
-    ColorBlendStateBuilder &withLogicOpEnable(const VkBool32 &logicOpEnable);
-    ColorBlendStateBuilder &withLogicOp(const VkLogicOp &logicOp);
-    ColorBlendStateBuilder &withColorBlendAttachments(
-        const std::vector<VkPipelineColorBlendAttachmentState>
-            &colorBlendAttachments);
+        ColorBlendStateBuilder &
+        withLogicOpEnable(const VkBool32 &logicOpEnable);
+        ColorBlendStateBuilder &withLogicOp(const VkLogicOp &logicOp);
+        ColorBlendStateBuilder &withColorBlendAttachments(
+            const std::vector<VkPipelineColorBlendAttachmentState>
+                &colorBlendAttachments);
 
-private:
-    VkStructureType _structureType;
+    private:
+        VkStructureType _structureType;
 
-    VkBool32 _logicOpEnable;
-    VkLogicOp _logicOp;
-    std::vector<VkPipelineColorBlendAttachmentState> _colorBlendAttachments;
-};
+        VkBool32 _logicOpEnable;
+        VkLogicOp _logicOp;
+        std::vector<VkPipelineColorBlendAttachmentState> _colorBlendAttachments;
+    };
+} // namespace brasio::renderer::vulkan::builders

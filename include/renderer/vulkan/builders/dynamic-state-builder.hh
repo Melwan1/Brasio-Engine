@@ -6,18 +6,22 @@
 
 #include <core/builder.hh>
 
-class DynamicStateBuilder : public Builder<VkPipelineDynamicStateCreateInfo>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    DynamicStateBuilder();
+    class DynamicStateBuilder
+        : public core::Builder<VkPipelineDynamicStateCreateInfo>
+    {
+    public:
+        DynamicStateBuilder();
 
-    virtual VkPipelineDynamicStateCreateInfo build() override;
-    virtual DynamicStateBuilder &base() override;
+        virtual VkPipelineDynamicStateCreateInfo build() override;
+        virtual DynamicStateBuilder &base() override;
 
-    DynamicStateBuilder &
-    withDynamicStates(const std::vector<VkDynamicState> &dynamicStates);
+        DynamicStateBuilder &
+        withDynamicStates(const std::vector<VkDynamicState> &dynamicStates);
 
-private:
-    VkStructureType _structureType;
-    std::vector<VkDynamicState> _dynamicStates;
-};
+    private:
+        VkStructureType _structureType;
+        std::vector<VkDynamicState> _dynamicStates;
+    };
+} // namespace brasio::renderer::vulkan::builders

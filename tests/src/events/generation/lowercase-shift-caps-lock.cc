@@ -31,7 +31,8 @@ TEST_P(Lowercase_ShiftCapsLock, keyGeneration)
     int scancode = param.scancode;
     int mods = param.mods;
     std::string expected = param.expected;
-    std::string actual = KeyGenerator::generate(key, scancode, mods);
+    std::string actual =
+        brasio::events::KeyGenerator::generate(key, scancode, mods);
     EXPECT_EQ(expected, actual);
 }
 

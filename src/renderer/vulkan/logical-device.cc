@@ -2,53 +2,62 @@
 
 #include <io/logging/logger.hh>
 
-LogicalDevice::LogicalDevice(const VkPhysicalDevice &physicalDevice,
-                             const VkDeviceCreateInfo &createInfo,
-                             const QueueFamilyIndices &indices)
-    : Handler("logical device",
+namespace brasio::renderer::vulkan
+{
+    LogicalDevice::LogicalDevice(const VkPhysicalDevice &physicalDevice,
+                                 const VkDeviceCreateInfo &createInfo,
+                                 const QueueFamilyIndices &indices)
+        : Handler(
+              "logical device",
               [](const VkDevice &device) { vkDestroyDevice(device, nullptr); })
-    , _queueFamilyIndices(indices)
-{
-    Logger::trace(std::cout, "Creating logical device", { "CREATE" });
-    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle())
-        != VK_SUCCESS)
+        , _queueFamilyIndices(indices)
     {
-        Logger::critical(std::cout, "Could not create logical device",
-                         { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating logical device",
+                                   { "CREATE" });
+        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle())
+            != VK_SUCCESS)
+        {
+            io::logging::Logger::critical(
+                std::cout, "Could not create logical device", { "CREATE" });
+        }
+        io::logging::Logger::trace(std::cout, "Created logical device",
+                                   { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Setting up device queues",
+                                   { "CREATE" });
+
+        vkGetDeviceQueue(getHandle(),
+                         _queueFamilyIndices.graphicsFamily.value(), 0,
+                         &_graphicsQueue);
+        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(),
+                         0, &_presentationQueue);
+        io::logging::Logger::trace(std::cout, "Set up device queues",
+                                   { "CREATE" });
     }
-    Logger::trace(std::cout, "Created logical device", { "CREATE" });
-    Logger::trace(std::cout, "Setting up device queues", { "CREATE" });
 
-    vkGetDeviceQueue(getHandle(), _queueFamilyIndices.graphicsFamily.value(), 0,
-                     &_graphicsQueue);
-    vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(), 0,
-                     &_presentationQueue);
-    Logger::trace(std::cout, "Set up device queues", { "CREATE" });
-}
+    const VkQueue &LogicalDevice::getGraphicsQueue() const
+    {
+        return _graphicsQueue;
+    }
 
-const VkQueue &LogicalDevice::getGraphicsQueue() const
-{
-    return _graphicsQueue;
-}
+    VkQueue &LogicalDevice::getGraphicsQueue()
+    {
+        return _graphicsQueue;
+    }
 
-VkQueue &LogicalDevice::getGraphicsQueue()
-{
-    return _graphicsQueue;
-}
+    const VkQueue &LogicalDevice::getPresentationQueue() const
+    {
+        return _presentationQueue;
+    }
 
-const VkQueue &LogicalDevice::getPresentationQueue() const
-{
-    return _presentationQueue;
-}
+    VkQueue &LogicalDevice::getPresentationQueue()
+    {
+        return _presentationQueue;
+    }
 
-VkQueue &LogicalDevice::getPresentationQueue()
-{
-    return _presentationQueue;
-}
-
-void LogicalDevice::waitIdle() const
-{
-    Logger::trace(std::cout, "Waiting for idle device");
-    vkDeviceWaitIdle(getHandle());
-    Logger::trace(std::cout, "Device is idle");
-}
+    void LogicalDevice::waitIdle() const
+    {
+        io::logging::Logger::trace(std::cout, "Waiting for idle device");
+        vkDeviceWaitIdle(getHandle());
+        io::logging::Logger::trace(std::cout, "Device is idle");
+    }
+} // namespace brasio::renderer::vulkan

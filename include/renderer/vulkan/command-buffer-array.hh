@@ -9,30 +9,36 @@
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 
-class CommandBufferArray : public Handler<std::vector<VkCommandBuffer>>
+namespace brasio::renderer::vulkan
 {
-public:
-    CommandBufferArray(const VkDevice &logicalDevice,
-                       const VkCommandBufferAllocateInfo &allocateInfo);
+    class CommandBufferArray
+        : public core::Handler<std::vector<VkCommandBuffer>>
+    {
+    public:
+        CommandBufferArray(const VkDevice &logicalDevice,
+                           const VkCommandBufferAllocateInfo &allocateInfo);
 
-    const VkCommandBuffer &at(uint32_t index);
+        const VkCommandBuffer &at(uint32_t index);
 
-    void reset(uint32_t commandBufferIndex);
+        void reset(uint32_t commandBufferIndex);
 
-    void begin(uint32_t commandBufferIndex, uint32_t imageIndex,
-               const VkRenderPass &renderPass, const SwapchainType &swapchain);
+        void begin(uint32_t commandBufferIndex, uint32_t imageIndex,
+                   const VkRenderPass &renderPass,
+                   const SwapchainType &swapchain);
 
-    void setViewport(uint32_t commandBufferIndex,
-                     const SwapchainType &swapchain);
+        void setViewport(uint32_t commandBufferIndex,
+                         const SwapchainType &swapchain);
 
-    void setScissor(uint32_t commandBufferIndex,
-                    const SwapchainType &swapchain);
+        void setScissor(uint32_t commandBufferIndex,
+                        const SwapchainType &swapchain);
 
-    void record(uint32_t commandBufferIndex, uint32_t imageIndex,
-                const VkRenderPass &renderPass, const SwapchainType &swapchain,
-                const GraphicsPipelineType &graphicsPipeline,
-                const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
-                const std::vector<uint16_t> &indices);
-};
+        void record(uint32_t commandBufferIndex, uint32_t imageIndex,
+                    const VkRenderPass &renderPass,
+                    const SwapchainType &swapchain,
+                    const GraphicsPipelineType &graphicsPipeline,
+                    const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
+                    const std::vector<uint16_t> &indices);
+    };
 
-using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
+    using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
+} // namespace brasio::renderer::vulkan

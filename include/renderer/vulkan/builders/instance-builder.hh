@@ -12,31 +12,33 @@
 #include <renderer/vulkan/builders/debug-messenger-builder.hh>
 #include <renderer/vulkan/instance.hh>
 
-using InstanceType = std::unique_ptr<Instance>;
-
-class InstanceBuilder : public Builder<InstanceType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    InstanceBuilder();
 
-    virtual InstanceType build() override;
-    virtual InstanceBuilder &base() override;
-    virtual InstanceBuilder &
-    withValidationLayers(std::vector<const char *> validationLayers = {});
+    class InstanceBuilder : public core::Builder<InstanceType>
+    {
+    public:
+        InstanceBuilder();
 
-private:
-    ApplicationInfoBuilder _applicationBuilder;
+        virtual InstanceType build() override;
+        virtual InstanceBuilder &base() override;
+        virtual InstanceBuilder &
+        withValidationLayers(std::vector<const char *> validationLayers = {});
 
-    bool _enableValidationLayers;
-    std::vector<const char *> _validationLayers;
+    private:
+        ApplicationInfoBuilder _applicationBuilder;
 
-    VkInstanceCreateInfo _instanceCreateInfo;
+        bool _enableValidationLayers;
+        std::vector<const char *> _validationLayers;
 
-    uint32_t _instanceExtensionCount;
-    std::vector<VkExtensionProperties> _instanceExtensions;
+        VkInstanceCreateInfo _instanceCreateInfo;
 
-    std::unique_ptr<DebugMessengerBuilder> _debugMessengerBuilder;
+        uint32_t _instanceExtensionCount;
+        std::vector<VkExtensionProperties> _instanceExtensions;
 
-    bool _checkValidationLayerSupport();
-    std::vector<const char *> _getExtensions();
-};
+        std::unique_ptr<DebugMessengerBuilder> _debugMessengerBuilder;
+
+        bool _checkValidationLayerSupport();
+        std::vector<const char *> _getExtensions();
+    };
+} // namespace brasio::renderer::vulkan::builders

@@ -2,10 +2,13 @@
 
 #include <events/listeners/default-event-listener.hh>
 
-class ApplicationEventListener : public DefaultEventListener
+namespace brasio::events::listeners
 {
-public:
-    virtual void onEvent(ApplicationRenderEvent &) override;
-    virtual void onEvent(ApplicationTickEvent &) override;
-    virtual void onEvent(ApplicationUpdateEvent &) override;
-};
+    class ApplicationEventListener : public DefaultEventListener
+    {
+    public:
+        virtual void onEvent(subevents::ApplicationRenderEvent &) override;
+        virtual void onEvent(subevents::ApplicationTickEvent &) override;
+        virtual void onEvent(subevents::ApplicationUpdateEvent &) override;
+    };
+} // namespace brasio::events::listeners
