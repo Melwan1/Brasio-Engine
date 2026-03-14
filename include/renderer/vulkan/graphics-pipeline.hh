@@ -8,15 +8,18 @@
 #include <core/handler.hh>
 #include <shaders/shader-manager.hh>
 
-class GraphicsPipeline : public Handler<VkPipeline>
+namespace brasio::renderer::vulkan
 {
-public:
-    GraphicsPipeline(const VkDevice &logicalDevice,
-                     const VkGraphicsPipelineCreateInfo &createInfo);
+    class GraphicsPipeline : public core::Handler<VkPipeline>
+    {
+    public:
+        GraphicsPipeline(const VkDevice &logicalDevice,
+                         const VkGraphicsPipelineCreateInfo &createInfo);
 
-    void bind(const VkCommandBuffer &commandBuffer);
+        void bind(const VkCommandBuffer &commandBuffer);
 
-private:
-};
+    private:
+    };
 
-using GraphicsPipelineType = std::unique_ptr<GraphicsPipeline>;
+    using GraphicsPipelineType = std::unique_ptr<GraphicsPipeline>;
+} // namespace brasio::renderer::vulkan

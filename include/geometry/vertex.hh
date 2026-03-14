@@ -4,11 +4,16 @@
 
 #include <vulkan/vulkan.hpp>
 
-struct Vertex
+namespace brasio::geometry
 {
-    glm::vec3 position;
-    glm::vec3 color;
 
-    static VkVertexInputBindingDescription getBindingDescription();
-    static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions();
-};
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 color;
+
+        static VkVertexInputBindingDescription getBindingDescription();
+        static std::array<VkVertexInputAttributeDescription, 2>
+        getAttributeDescriptions();
+    };
+} // namespace brasio::geometry

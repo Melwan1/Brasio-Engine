@@ -7,33 +7,36 @@
 #include <cstddef>
 #include <ostream>
 
-template <typename CategoryType, typename SubEventType>
-class Event
+namespace brasio::events
 {
-public:
-    Event(enum EventCategoryType categoryType, enum EventType eventType);
-    virtual ~Event();
 
-    static inline size_t generateId();
-    inline size_t getId() const;
-    inline std::chrono::system_clock::time_point getCreationTime() const;
-    inline enum EventCategoryType getCategoryType() const;
-    inline enum EventType getType() const;
-    inline bool getHandleStatus() const;
-    void handle();
+    template <typename CategoryType, typename SubEventType>
+    class Event
+    {
+    public:
+        Event(enum EventCategoryType categoryType, enum EventType eventType);
+        virtual ~Event();
 
-    virtual std::string getTypeName() const = 0;
-    virtual void print(std::ostream &ostr);
+        static inline size_t generateId();
+        inline size_t getId() const;
+        inline std::chrono::system_clock::time_point getCreationTime() const;
+        inline enum EventCategoryType getCategoryType() const;
+        inline enum EventType getType() const;
+        inline bool getHandleStatus() const;
+        void handle();
 
-private:
-    size_t _id;
-    std::chrono::system_clock::time_point _creationTime;
-    enum EventCategoryType _categoryType;
-    enum EventType _eventType;
+        virtual std::string getTypeName() const = 0;
+        virtual void print(std::ostream &ostr);
 
-    bool _handled;
+    private:
+        size_t _id;
+        std::chrono::system_clock::time_point _creationTime;
+        enum EventCategoryType _categoryType;
+        enum EventType _eventType;
 
-    static size_t _sequenceId;
-};
+        bool _handled;
 
+        static size_t _sequenceId;
+    };
+} // namespace brasio::events
 #include <events/event.hxx>

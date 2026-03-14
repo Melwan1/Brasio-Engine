@@ -2,14 +2,17 @@
 
 #include <vulkan/vulkan_core.h>
 
-class DebugMessenger
+namespace brasio::renderer::vulkan
 {
-public:
-    DebugMessenger(const VkInstance &instance,
-                   const VkDebugUtilsMessengerCreateInfoEXT &createInfo);
-    ~DebugMessenger();
+    class DebugMessenger
+    {
+    public:
+        DebugMessenger(const VkInstance &instance,
+                       const VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+        ~DebugMessenger();
 
-private:
-    VkInstance _instance;
-    VkDebugUtilsMessengerEXT _messenger;
-};
+    private:
+        VkInstance _instance;
+        VkDebugUtilsMessengerEXT _messenger;
+    };
+} // namespace brasio::renderer::vulkan

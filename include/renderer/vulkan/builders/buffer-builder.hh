@@ -6,32 +6,36 @@
 
 #include <renderer/vulkan/buffer.hh>
 
-class BufferBuilder : public Builder<BufferType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    BufferBuilder(const PhysicalDeviceType &physicalDevice,
-                  const LogicalDeviceType &logicalDevice);
 
-    virtual BufferBuilder &base() override;
-    virtual BufferType build() override;
+    class BufferBuilder : public core::Builder<BufferType>
+    {
+    public:
+        BufferBuilder(const PhysicalDeviceType &physicalDevice,
+                      const LogicalDeviceType &logicalDevice);
 
-    BufferBuilder &withSize(uint32_t size);
-    BufferBuilder &withUsage(const VkBufferUsageFlags &usage);
-    BufferBuilder &withSharingMode(const VkSharingMode &sharingMode);
-    BufferBuilder &
-    withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
+        virtual BufferBuilder &base() override;
+        virtual BufferType build() override;
 
-    BufferBuilder &withData(void *data);
+        BufferBuilder &withSize(uint32_t size);
+        BufferBuilder &withUsage(const VkBufferUsageFlags &usage);
+        BufferBuilder &withSharingMode(const VkSharingMode &sharingMode);
+        BufferBuilder &
+        withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
 
-private:
-    const PhysicalDeviceType &_physicalDevice;
-    const LogicalDeviceType &_logicalDevice;
-    VkStructureType _structureType;
+        BufferBuilder &withData(void *data);
 
-    uint32_t _size;
-    VkBufferUsageFlags _usage;
-    VkSharingMode _sharingMode;
-    VkMemoryPropertyFlags _memoryProperties;
+    private:
+        const PhysicalDeviceType &_physicalDevice;
+        const LogicalDeviceType &_logicalDevice;
+        VkStructureType _structureType;
 
-    void *_data;
-};
+        uint32_t _size;
+        VkBufferUsageFlags _usage;
+        VkSharingMode _sharingMode;
+        VkMemoryPropertyFlags _memoryProperties;
+
+        void *_data;
+    };
+} // namespace brasio::renderer::vulkan::builders

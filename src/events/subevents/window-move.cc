@@ -1,27 +1,30 @@
 #include <events/subevents/window-move.hh>
 
-WindowMoveEvent::WindowMoveEvent(int downBy, int rightBy)
-    : WindowCategoryEvent<WindowMoveEvent>(EVENT_WINDOW_MOVE)
-    , _downBy(downBy)
-    , _rightBy(rightBy)
-{}
-
-int WindowMoveEvent::getUpDisplacement() const
+namespace brasio::events::subevents
 {
-    return -getDownDisplacement();
-}
+    WindowMoveEvent::WindowMoveEvent(int downBy, int rightBy)
+        : WindowCategoryEvent<WindowMoveEvent>(EVENT_WINDOW_MOVE)
+        , _downBy(downBy)
+        , _rightBy(rightBy)
+    {}
 
-int WindowMoveEvent::getDownDisplacement() const
-{
-    return _downBy;
-}
+    int WindowMoveEvent::getUpDisplacement() const
+    {
+        return -getDownDisplacement();
+    }
 
-int WindowMoveEvent::getLeftDisplacement() const
-{
-    return -getRightDisplacement();
-}
+    int WindowMoveEvent::getDownDisplacement() const
+    {
+        return _downBy;
+    }
 
-int WindowMoveEvent::getRightDisplacement() const
-{
-    return _rightBy;
-}
+    int WindowMoveEvent::getLeftDisplacement() const
+    {
+        return -getRightDisplacement();
+    }
+
+    int WindowMoveEvent::getRightDisplacement() const
+    {
+        return _rightBy;
+    }
+} // namespace brasio::events::subevents

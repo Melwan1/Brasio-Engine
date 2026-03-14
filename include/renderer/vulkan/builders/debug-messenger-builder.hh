@@ -7,23 +7,26 @@
 #include <core/builder.hh>
 #include <renderer/vulkan/debug-messenger.hh>
 
-using DebugMessengerType = std::unique_ptr<DebugMessenger>;
-
-class DebugMessengerBuilder : public Builder<DebugMessengerType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    DebugMessengerBuilder();
+    using DebugMessengerType = std::unique_ptr<DebugMessenger>;
 
-    virtual DebugMessengerBuilder &base() override;
-    DebugMessengerBuilder &withInstance(VkInstance &instance);
-    virtual DebugMessengerType build() override;
-    VkDebugUtilsMessengerCreateInfoEXT getCreateInfo() const;
+    class DebugMessengerBuilder : public core::Builder<DebugMessengerType>
+    {
+    public:
+        DebugMessengerBuilder();
 
-private:
-    VkInstance _instance;
+        virtual DebugMessengerBuilder &base() override;
+        DebugMessengerBuilder &withInstance(VkInstance &instance);
+        virtual DebugMessengerType build() override;
+        VkDebugUtilsMessengerCreateInfoEXT getCreateInfo() const;
 
-    VkStructureType _structureType;
-    VkDebugUtilsMessageSeverityFlagsEXT _messageSeverity;
-    VkDebugUtilsMessageTypeFlagsEXT _messageType;
-    PFN_vkDebugUtilsMessengerCallbackEXT _userCallback;
-};
+    private:
+        VkInstance _instance;
+
+        VkStructureType _structureType;
+        VkDebugUtilsMessageSeverityFlagsEXT _messageSeverity;
+        VkDebugUtilsMessageTypeFlagsEXT _messageType;
+        PFN_vkDebugUtilsMessengerCallbackEXT _userCallback;
+    };
+} // namespace brasio::renderer::vulkan::builders

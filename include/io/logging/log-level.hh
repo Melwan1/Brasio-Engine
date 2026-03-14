@@ -3,15 +3,19 @@
 #include <string>
 #include <cstdint>
 
-enum LogLevel
+namespace brasio::io::logging
 {
-    TRACE = 0,
-    DEBUG = 1,
-    INFO = 2,
-    WARNING = 3,
-    ERROR = 4,
-    CRITICAL = 5
-};
 
-std::string toString(LogLevel logLevel);
-std::string toColor(LogLevel logLevel);
+    enum LogLevel
+    {
+        TRACE = 0,
+        DEBUG = 1,
+        INFO = 2,
+        WARNING = 3,
+        ERROR = 4,
+        CRITICAL = 5
+    };
+
+    std::string toString(LogLevel logLevel);
+    std::string toColor(LogLevel logLevel);
+} // namespace brasio::io::logging

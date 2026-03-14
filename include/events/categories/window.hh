@@ -2,12 +2,15 @@
 
 #include <events/categories/categories.hh>
 
-template <typename SubEventType>
-class WindowCategoryEvent
-    : public Event<WindowCategoryEvent<SubEventType>, SubEventType>
+namespace brasio::events::categories
 {
-public:
-    WindowCategoryEvent(enum EventType eventType);
-};
+    template <typename SubEventType>
+    class WindowCategoryEvent
+        : public Event<WindowCategoryEvent<SubEventType>, SubEventType>
+    {
+    public:
+        WindowCategoryEvent(enum EventType eventType);
+    };
+} // namespace brasio::events::categories
 
 #include <events/categories/window.hxx>

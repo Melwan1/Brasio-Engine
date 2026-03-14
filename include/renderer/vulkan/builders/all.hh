@@ -18,7 +18,7 @@
 #include <renderer/vulkan/builders/multisampling-builder.hh>
 #include <renderer/vulkan/builders/physical-device-builder.hh>
 #include <renderer/vulkan/builders/pipeline-layout-builder.hh>
-#include <renderer/vulkan/builders/pipeline-shader-builder.hh>
+#include <renderer/vulkan/builders/pipeline-shader-info-builder.hh>
 #include <renderer/vulkan/builders/rasterizer-builder.hh>
 #include <renderer/vulkan/builders/render-pass-builder.hh>
 #include <renderer/vulkan/builders/subpass-dependency-builder.hh>

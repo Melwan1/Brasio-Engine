@@ -2,19 +2,22 @@
 
 #include <filesystem>
 
-namespace fs = std::filesystem;
-
-class ShaderCompiler
+namespace brasio::shaders
 {
-public:
-    ShaderCompiler(const fs::path &baseShaderDirectoryPath,
-                   const fs::path &logPath);
+    namespace fs = std::filesystem;
 
-    bool compileShader(const fs::path &shaderPath) const;
-    std::pair<const fs::path, const fs::path>
-    getEntryPaths(const fs::path &entry) const;
+    class ShaderCompiler
+    {
+    public:
+        ShaderCompiler(const fs::path &baseShaderDirectoryPath,
+                       const fs::path &logPath);
 
-private:
-    fs::path _baseShaderDirectoryPath;
-    fs::path _logPath;
-};
+        bool compileShader(const fs::path &shaderPath) const;
+        std::pair<const fs::path, const fs::path>
+        getEntryPaths(const fs::path &entry) const;
+
+    private:
+        fs::path _baseShaderDirectoryPath;
+        fs::path _logPath;
+    };
+} // namespace brasio::shaders

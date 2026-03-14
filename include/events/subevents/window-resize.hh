@@ -2,22 +2,27 @@
 
 #include <events/categories/categories.hh>
 
-class WindowResizeEvent : public WindowCategoryEvent<WindowResizeEvent>
+namespace brasio::events::subevents
 {
-public:
-    WindowResizeEvent(bool toggleFullscreen, unsigned sizeX, unsigned sizeY);
-
-    bool getToggleFullscreen() const;
-    unsigned getSizeX() const;
-    unsigned getSizeY() const;
-
-    virtual std::string getTypeName() const override
+    class WindowResizeEvent
+        : public categories::WindowCategoryEvent<WindowResizeEvent>
     {
-        return "WindowResizeEvent";
-    }
+    public:
+        WindowResizeEvent(bool toggleFullscreen, unsigned sizeX,
+                          unsigned sizeY);
 
-private:
-    bool _toggleFullscreen;
-    unsigned _sizeX;
-    unsigned _sizeY;
-};
+        bool getToggleFullscreen() const;
+        unsigned getSizeX() const;
+        unsigned getSizeY() const;
+
+        virtual std::string getTypeName() const override
+        {
+            return "WindowResizeEvent";
+        }
+
+    private:
+        bool _toggleFullscreen;
+        unsigned _sizeX;
+        unsigned _sizeY;
+    };
+} // namespace brasio::events::subevents

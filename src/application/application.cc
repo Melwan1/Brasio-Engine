@@ -6,182 +6,187 @@
 #include <renderer/default-renderer.hh>
 #include <renderer/vulkan/vulkan-renderer.hh>
 
-Application::Application()
-    : _window(nullptr)
-    , _shouldTerminate(false)
-{}
-
-Application::~Application()
+namespace brasio::application
 {
-    glfwDestroyWindow(_window);
-    _window = nullptr;
-    glfwTerminate();
-}
+    Application::Application()
+        : _window(nullptr)
+        , _shouldTerminate(false)
+    {}
 
-GLFWwindow *Application::getWindow() const
-{
-    return _window;
-}
-
-void Application::initListeners()
-{
-    ApplicationEventEmitter::addListener(*this);
-    KeyboardEventEmitter::addListener(*this);
-    MouseEventEmitter::addListener(*this);
-    WindowEventEmitter::addListener(*this);
-}
-
-bool Application::init()
-{
-    if (!glfwInit())
+    Application::~Application()
     {
-        std::cerr << "Unable to initialize GLFW." << std::endl;
-        return false;
-    }
-
-    bool useOpengl = false;
-
-    int monitorIndex = -1;
-    if (!setupWindow(monitorIndex, useOpengl))
-    {
-        return false;
-    }
-
-    setupGlfwInput();
-
-    if (useOpengl && glewInit() != GLEW_OK)
-    {
-        std::cerr << "Unable to setup GLEW." << std::endl;
         glfwDestroyWindow(_window);
+        _window = nullptr;
         glfwTerminate();
-        return false;
     }
 
-    glfwSetWindowUserPointer(_window, this);
-
-    initListeners();
-
-    setupCallbacks();
-    std::unique_ptr<Renderer> renderer = nullptr;
-    if (useOpengl)
+    GLFWwindow *Application::getWindow() const
     {
-        renderer = std::make_unique<DefaultRenderer>();
+        return _window;
     }
-    else
+
+    void Application::initListeners()
     {
-        renderer = std::make_unique<VulkanRenderer>(_window);
+        ApplicationEventEmitter::addListener(*this);
+        KeyboardEventEmitter::addListener(*this);
+        MouseEventEmitter::addListener(*this);
+        WindowEventEmitter::addListener(*this);
     }
-    if (!initRenderer(std::move(renderer)))
+
+    bool Application::init()
     {
-        return false;
-    }
-    return true;
-}
+        if (!glfwInit())
+        {
+            std::cerr << "Unable to initialize GLFW." << std::endl;
+            return false;
+        }
 
-bool Application::initRenderer(std::unique_ptr<Renderer> renderer)
-{
-    if (!renderer)
+        bool useOpengl = false;
+
+        int monitorIndex = -1;
+        if (!setupWindow(monitorIndex, useOpengl))
+        {
+            return false;
+        }
+
+        setupGlfwInput();
+
+        if (useOpengl && glewInit() != GLEW_OK)
+        {
+            std::cerr << "Unable to setup GLEW." << std::endl;
+            glfwDestroyWindow(_window);
+            glfwTerminate();
+            return false;
+        }
+
+        glfwSetWindowUserPointer(_window, this);
+
+        initListeners();
+
+        setupCallbacks();
+        std::unique_ptr<renderer::Renderer> renderer = nullptr;
+        if (useOpengl)
+        {
+            renderer = std::make_unique<renderer::DefaultRenderer>();
+        }
+        else
+        {
+            renderer =
+                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);
+        }
+        if (!initRenderer(std::move(renderer)))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool Application::initRenderer(std::unique_ptr<renderer::Renderer> renderer)
     {
-        return false;
+        if (!renderer)
+        {
+            return false;
+        }
+        _renderer = std::move(renderer);
+        _renderer->init();
+        return true;
     }
-    _renderer = std::move(renderer);
-    _renderer->init();
-    return true;
-}
 
-bool Application::setupWindow(int monitorIndex, bool use_opengl)
-{
-    int monitorCount;
-    GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
-    if (monitorIndex >= monitorCount || monitorIndex == -1)
+    bool Application::setupWindow(int monitorIndex, bool use_opengl)
     {
-        monitorIndex = monitorCount - 1;
+        int monitorCount;
+        GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
+        if (monitorIndex >= monitorCount || monitorIndex == -1)
+        {
+            monitorIndex = monitorCount - 1;
+        }
+        if (!use_opengl)
+        {
+            // in case of Vulkan renderer, disable initialization of OpenGL
+            // context
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        }
+        glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+        GLFWmonitor *monitor = monitors[monitorIndex];
+        const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+        GLFWwindow *window =
+            glfwCreateWindow(1920 /* mode->width */, 1080 /* mode->height */,
+                             "Brasio Engine", nullptr /* monitor */, nullptr);
+        (void)mode;
+        if (!window)
+        {
+            std::cerr << "Unable to create GLFW window." << std::endl;
+            return false;
+        }
+        _window = window;
+
+        glfwMakeContextCurrent(window);
+
+        return true;
     }
-    if (!use_opengl)
+
+    void Application::setupGlfwInput()
     {
-        // in case of Vulkan renderer, disable initialization of OpenGL context
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        glfwSetInputMode(getWindow(), GLFW_LOCK_KEY_MODS, GLFW_TRUE);
     }
-    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-    GLFWmonitor *monitor = monitors[monitorIndex];
-    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-    GLFWwindow *window =
-        glfwCreateWindow(1920 /* mode->width */, 1080 /* mode->height */,
-                         "Brasio Engine", nullptr /* monitor */, nullptr);
-    (void)mode;
-    if (!window)
+
+    void Application::setupCallbacks()
     {
-        std::cerr << "Unable to create GLFW window." << std::endl;
-        return false;
+        glfwSetKeyCallback(_window, keyCallback);
+        glfwSetWindowCloseCallback(_window, windowCloseCallback);
+        glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
     }
-    _window = window;
 
-    glfwMakeContextCurrent(window);
-
-    return true;
-}
-
-void Application::setupGlfwInput()
-{
-    glfwSetInputMode(getWindow(), GLFW_LOCK_KEY_MODS, GLFW_TRUE);
-}
-
-void Application::setupCallbacks()
-{
-    glfwSetKeyCallback(_window, keyCallback);
-    glfwSetWindowCloseCallback(_window, windowCloseCallback);
-    glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
-}
-
-void Application::loop()
-{
-    while (!_shouldTerminate)
+    void Application::loop()
     {
-        ApplicationTickEvent tickEvent;
-        ApplicationEventEmitter::fire(tickEvent);
-        glfwPollEvents();
+        while (!_shouldTerminate)
+        {
+            events::subevents::ApplicationTickEvent tickEvent;
+            ApplicationEventEmitter::fire(tickEvent);
+            glfwPollEvents();
+        }
     }
-}
 
-void Application::onEvent(ApplicationRenderEvent &event)
-{
-    _renderer->drawFrame();
-    event.handle();
-}
-
-void Application::onEvent(ApplicationTickEvent &event)
-{
-    ApplicationRenderEvent renderEvent;
-    ApplicationEventEmitter::fire(renderEvent);
-    event.handle();
-}
-
-void Application::onEvent(ApplicationUpdateEvent &event)
-{
-    ApplicationRenderEvent renderEvent;
-    ApplicationEventEmitter::fire(renderEvent);
-    event.handle();
-}
-
-void Application::onEvent(KeyboardPressEvent &event)
-{
-    if (event.getPressedKey() == "ESC")
+    void Application::onEvent(events::subevents::ApplicationRenderEvent &event)
     {
-        WindowCloseEvent windowCloseEvent;
-        WindowEventEmitter::fire(windowCloseEvent);
+        _renderer->drawFrame();
+        event.handle();
     }
-    event.handle();
-}
 
-void Application::onEvent(WindowCloseEvent &event)
-{
-    glfwSetWindowShouldClose(_window, GLFW_TRUE);
-    _shouldTerminate = true;
-    event.handle();
-}
+    void Application::onEvent(events::subevents::ApplicationTickEvent &event)
+    {
+        events::subevents::ApplicationRenderEvent renderEvent;
+        ApplicationEventEmitter::fire(renderEvent);
+        event.handle();
+    }
 
-void Application::onEvent(WindowResizeEvent &event)
-{
-    _renderer->setResizedFramebuffer();
-    event.handle();
-}
+    void Application::onEvent(events::subevents::ApplicationUpdateEvent &event)
+    {
+        events::subevents::ApplicationRenderEvent renderEvent;
+        ApplicationEventEmitter::fire(renderEvent);
+        event.handle();
+    }
+
+    void Application::onEvent(events::subevents::KeyboardPressEvent &event)
+    {
+        if (event.getPressedKey() == "ESC")
+        {
+            events::subevents::WindowCloseEvent windowCloseEvent;
+            WindowEventEmitter::fire(windowCloseEvent);
+        }
+        event.handle();
+    }
+
+    void Application::onEvent(events::subevents::WindowCloseEvent &event)
+    {
+        glfwSetWindowShouldClose(_window, GLFW_TRUE);
+        _shouldTerminate = true;
+        event.handle();
+    }
+
+    void Application::onEvent(events::subevents::WindowResizeEvent &event)
+    {
+        _renderer->setResizedFramebuffer();
+        event.handle();
+    }
+} // namespace brasio::application

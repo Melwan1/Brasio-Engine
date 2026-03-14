@@ -7,24 +7,28 @@
 #include <core/builder.hh>
 #include <geometry/vertex.hh>
 
-class VertexInputBuilder : public Builder<VkPipelineVertexInputStateCreateInfo>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    VertexInputBuilder();
+    class VertexInputBuilder
+        : public core::Builder<VkPipelineVertexInputStateCreateInfo>
+    {
+    public:
+        VertexInputBuilder();
 
-    virtual VertexInputBuilder &base() override;
-    virtual VkPipelineVertexInputStateCreateInfo build() override;
+        virtual VertexInputBuilder &base() override;
+        virtual VkPipelineVertexInputStateCreateInfo build() override;
 
-    VertexInputBuilder &
-    withBindingDescriptions(const std::vector<VkVertexInputBindingDescription>
-                                &bindingDescriptions);
+        VertexInputBuilder &withBindingDescriptions(
+            const std::vector<VkVertexInputBindingDescription>
+                &bindingDescriptions);
 
-    VertexInputBuilder &withAttributeDescriptions(
-        const std::array<VkVertexInputAttributeDescription, 2>
-            &attributeDescriptions);
+        VertexInputBuilder &withAttributeDescriptions(
+            const std::array<VkVertexInputAttributeDescription, 2>
+                &attributeDescriptions);
 
-private:
-    VkStructureType _structureType;
-    std::vector<VkVertexInputBindingDescription> _bindingDescriptions;
-    std::array<VkVertexInputAttributeDescription, 2> _attributeDescriptions;
-};
+    private:
+        VkStructureType _structureType;
+        std::vector<VkVertexInputBindingDescription> _bindingDescriptions;
+        std::array<VkVertexInputAttributeDescription, 2> _attributeDescriptions;
+    };
+} // namespace brasio::renderer::vulkan::builders

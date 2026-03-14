@@ -2,20 +2,24 @@
 
 #include <iostream>
 
-void KeyboardEventListener::onEvent(KeyboardLongPressEvent &event)
+namespace brasio::events::listeners
 {
-    event.print(std::cout);
-    event.handle();
-}
+    void
+    KeyboardEventListener::onEvent(subevents::KeyboardLongPressEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void KeyboardEventListener::onEvent(KeyboardPressEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void KeyboardEventListener::onEvent(subevents::KeyboardPressEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
 
-void KeyboardEventListener::onEvent(KeyboardReleaseEvent &event)
-{
-    event.print(std::cout);
-    event.handle();
-}
+    void KeyboardEventListener::onEvent(subevents::KeyboardReleaseEvent &event)
+    {
+        event.print(std::cout);
+        event.handle();
+    }
+} // namespace brasio::events::listeners

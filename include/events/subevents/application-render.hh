@@ -2,14 +2,17 @@
 
 #include <events/categories/application.hh>
 
-class ApplicationRenderEvent
-    : public ApplicationCategoryEvent<ApplicationRenderEvent>
+namespace brasio::events::subevents
 {
-public:
-    ApplicationRenderEvent();
-
-    virtual std::string getTypeName() const override
+    class ApplicationRenderEvent
+        : public categories::ApplicationCategoryEvent<ApplicationRenderEvent>
     {
-        return "ApplicationRenderEvent";
-    }
-};
+    public:
+        ApplicationRenderEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "ApplicationRenderEvent";
+        }
+    };
+} // namespace brasio::events::subevents

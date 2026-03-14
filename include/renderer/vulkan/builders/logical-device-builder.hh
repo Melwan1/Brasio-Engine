@@ -10,23 +10,26 @@
 #include <renderer/vulkan/physical-device.hh>
 #include <renderer/vulkan/queue-family-indices.hh>
 
-class LogicalDeviceBuilder : public Builder<LogicalDeviceType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    LogicalDeviceBuilder(const PhysicalDevice &physicalDevice);
+    class LogicalDeviceBuilder : public core::Builder<LogicalDeviceType>
+    {
+    public:
+        LogicalDeviceBuilder(const PhysicalDevice &physicalDevice);
 
-    virtual LogicalDeviceBuilder &base() override;
+        virtual LogicalDeviceBuilder &base() override;
 
-    LogicalDeviceBuilder &
-    withValidationLayers(const std::vector<const char *> validationLayers);
+        LogicalDeviceBuilder &
+        withValidationLayers(const std::vector<const char *> validationLayers);
 
-    virtual LogicalDeviceType build() override;
+        virtual LogicalDeviceType build() override;
 
-private:
-    const PhysicalDevice &_physicalDevice;
-    float _queuePriority;
-    std::vector<VkDeviceQueueCreateInfo> _queueCreateInfos;
-    QueueFamilyIndices _indices;
+    private:
+        const PhysicalDevice &_physicalDevice;
+        float _queuePriority;
+        std::vector<VkDeviceQueueCreateInfo> _queueCreateInfos;
+        QueueFamilyIndices _indices;
 
-    std::vector<const char *> _validationLayers;
-};
+        std::vector<const char *> _validationLayers;
+    };
+} // namespace brasio::renderer::vulkan::builders

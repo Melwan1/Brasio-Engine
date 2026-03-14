@@ -2,12 +2,16 @@
 
 #include <events/event.hh>
 
-template <typename SubEventType>
-class KeyboardCategoryEvent
-    : public Event<KeyboardCategoryEvent<SubEventType>, SubEventType>
+namespace brasio::events::categories
 {
-public:
-    KeyboardCategoryEvent(enum EventType eventType);
-};
+
+    template <typename SubEventType>
+    class KeyboardCategoryEvent
+        : public Event<KeyboardCategoryEvent<SubEventType>, SubEventType>
+    {
+    public:
+        KeyboardCategoryEvent(enum EventType eventType);
+    };
+} // namespace brasio::events::categories
 
 #include <events/categories/keyboard.hxx>

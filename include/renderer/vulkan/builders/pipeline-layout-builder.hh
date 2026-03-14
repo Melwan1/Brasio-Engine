@@ -6,23 +6,26 @@
 
 #include <renderer/vulkan/pipeline-layout.hh>
 
-class PipelineLayoutBuilder : public Builder<PipelineLayoutType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    PipelineLayoutBuilder(const VkDevice &logicalDevice);
+    class PipelineLayoutBuilder : public core::Builder<PipelineLayoutType>
+    {
+    public:
+        PipelineLayoutBuilder(const VkDevice &logicalDevice);
 
-    virtual PipelineLayoutBuilder &base() override;
-    virtual PipelineLayoutType build() override;
+        virtual PipelineLayoutBuilder &base() override;
+        virtual PipelineLayoutType build() override;
 
-    PipelineLayoutBuilder &
-    withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts);
-    PipelineLayoutBuilder &withPushConstantRanges(
-        const std::vector<VkPushConstantRange> &pushConstantRanges);
+        PipelineLayoutBuilder &
+        withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts);
+        PipelineLayoutBuilder &withPushConstantRanges(
+            const std::vector<VkPushConstantRange> &pushConstantRanges);
 
-private:
-    VkStructureType _structureType;
-    VkDevice _logicalDevice;
+    private:
+        VkStructureType _structureType;
+        VkDevice _logicalDevice;
 
-    std::vector<VkDescriptorSetLayout> _setLayouts;
-    std::vector<VkPushConstantRange> _pushConstantRanges;
-};
+        std::vector<VkDescriptorSetLayout> _setLayouts;
+        std::vector<VkPushConstantRange> _pushConstantRanges;
+    };
+} // namespace brasio::renderer::vulkan::builders

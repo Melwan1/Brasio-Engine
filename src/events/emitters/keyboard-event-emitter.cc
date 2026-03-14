@@ -1,24 +1,31 @@
 #include <events/emitters/keyboard-event-emitter.hh>
 
-void KeyboardEventEmitter::addListener(KeyboardEventListener &listener)
+namespace brasio::events::emitters
 {
-    _listeners.push_back(listener);
-}
+    void KeyboardEventEmitter::addListener(
+        listeners::KeyboardEventListener &listener)
+    {
+        _listeners.push_back(listener);
+    }
 
-void KeyboardEventEmitter::fire(KeyboardPressEvent &event)
-{
-    std::for_each(_listeners.begin(), _listeners.end(),
-                  [&event](auto &listener) { listener.get().onEvent(event); });
-}
+    void KeyboardEventEmitter::fire(subevents::KeyboardPressEvent &event)
+    {
+        std::for_each(
+            _listeners.begin(), _listeners.end(),
+            [&event](auto &listener) { listener.get().onEvent(event); });
+    }
 
-void KeyboardEventEmitter::fire(KeyboardLongPressEvent &event)
-{
-    std::for_each(_listeners.begin(), _listeners.end(),
-                  [&event](auto &listener) { listener.get().onEvent(event); });
-}
+    void KeyboardEventEmitter::fire(subevents::KeyboardLongPressEvent &event)
+    {
+        std::for_each(
+            _listeners.begin(), _listeners.end(),
+            [&event](auto &listener) { listener.get().onEvent(event); });
+    }
 
-void KeyboardEventEmitter::fire(KeyboardReleaseEvent &event)
-{
-    std::for_each(_listeners.begin(), _listeners.end(),
-                  [&event](auto &listener) { listener.get().onEvent(event); });
-}
+    void KeyboardEventEmitter::fire(subevents::KeyboardReleaseEvent &event)
+    {
+        std::for_each(
+            _listeners.begin(), _listeners.end(),
+            [&event](auto &listener) { listener.get().onEvent(event); });
+    }
+} // namespace brasio::events::emitters

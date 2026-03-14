@@ -2,11 +2,15 @@
 
 #include <events/listeners/default-event-listener.hh>
 
-class MouseEventListener : public DefaultEventListener
+namespace brasio::events::listeners
 {
-public:
-    virtual void onEvent(MouseClickEvent &) override;
-    virtual void onEvent(MouseMoveEvent &) override;
-    virtual void onEvent(MouseReleaseEvent &) override;
-    virtual void onEvent(MouseScrollEvent &) override;
-};
+
+    class MouseEventListener : public DefaultEventListener
+    {
+    public:
+        virtual void onEvent(subevents::MouseClickEvent &) override;
+        virtual void onEvent(subevents::MouseMoveEvent &) override;
+        virtual void onEvent(subevents::MouseReleaseEvent &) override;
+        virtual void onEvent(subevents::MouseScrollEvent &) override;
+    };
+} // namespace brasio::events::listeners

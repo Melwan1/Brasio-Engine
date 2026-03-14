@@ -4,13 +4,13 @@
 
 TEST(Application_Init, returnValue)
 {
-    Application application;
+    brasio::application::Application application;
     EXPECT_TRUE(application.init());
 }
 
 TEST(Application_Init, windowExists)
 {
-    Application application;
+    brasio::application::Application application;
     application.init();
     EXPECT_NE(application.getWindow(), nullptr);
 }

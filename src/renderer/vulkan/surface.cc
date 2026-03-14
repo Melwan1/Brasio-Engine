@@ -4,19 +4,24 @@
 
 #include <io/logging/logger.hh>
 
-Surface::Surface(const VkInstance &instance, GLFWwindow *window)
-    : Handler("surface", [instance](const VkSurfaceKHR &surface) {
-        vkDestroySurfaceKHR(instance, surface, nullptr);
-    })
+namespace brasio::renderer::vulkan
 {
-    Logger::trace(std::cout, "Creating surface", { "CREATE" });
-    if (glfwCreateWindowSurface(instance, window, nullptr, &getHandle())
-        != VK_SUCCESS)
+    Surface::Surface(const VkInstance &instance, GLFWwindow *window)
+        : Handler("surface", [instance](const VkSurfaceKHR &surface) {
+            vkDestroySurfaceKHR(instance, surface, nullptr);
+        })
     {
-        Logger::error(std::cout, "Could not create surface", { "CREATE" });
+        io::logging::Logger::trace(std::cout, "Creating surface", { "CREATE" });
+        if (glfwCreateWindowSurface(instance, window, nullptr, &getHandle())
+            != VK_SUCCESS)
+        {
+            io::logging::Logger::error(std::cout, "Could not create surface",
+                                       { "CREATE" });
+        }
+        else
+        {
+            io::logging::Logger::trace(std::cout, "Created surface",
+                                       { "CREATE" });
+        }
     }
-    else
-    {
-        Logger::trace(std::cout, "Created surface", { "CREATE" });
-    }
-}
+} // namespace brasio::renderer::vulkan

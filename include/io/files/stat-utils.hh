@@ -4,8 +4,12 @@
 
 namespace fs = std::filesystem;
 
-class StatUtils
+namespace brasio::io::files
 {
-public:
-    static std::string writeTimeToString(const fs::path &filePath);
-};
+
+    class StatUtils
+    {
+    public:
+        static std::string writeTimeToString(const fs::path &filePath);
+    };
+} // namespace brasio::io::files

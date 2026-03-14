@@ -4,21 +4,24 @@
 
 #include <core/builder.hh>
 
-class SubpassDependencyBuilder : public Builder<VkSubpassDependency>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    SubpassDependencyBuilder();
+    class SubpassDependencyBuilder : public core::Builder<VkSubpassDependency>
+    {
+    public:
+        SubpassDependencyBuilder();
 
-    virtual SubpassDependencyBuilder &base() override;
-    virtual VkSubpassDependency build() override;
+        virtual SubpassDependencyBuilder &base() override;
+        virtual VkSubpassDependency build() override;
 
-private:
-    uint32_t _srcSubpass;
-    uint32_t _dstSubpass;
+    private:
+        uint32_t _srcSubpass;
+        uint32_t _dstSubpass;
 
-    VkPipelineStageFlags _srcStageMask;
-    VkAccessFlags _srcAccessMask;
+        VkPipelineStageFlags _srcStageMask;
+        VkAccessFlags _srcAccessMask;
 
-    VkPipelineStageFlags _dstStageMask;
-    VkAccessFlags _dstAccessMask;
-};
+        VkPipelineStageFlags _dstStageMask;
+        VkAccessFlags _dstAccessMask;
+    };
+} // namespace brasio::renderer::vulkan::builders

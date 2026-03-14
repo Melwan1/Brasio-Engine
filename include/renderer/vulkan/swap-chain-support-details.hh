@@ -4,10 +4,14 @@
 
 #include <vulkan/vulkan_core.h>
 
-struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
+namespace brasio::renderer::vulkan
+{
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
 
-    bool isValid() const;
-};
+        bool isValid() const;
+    };
+} // namespace brasio::renderer::vulkan

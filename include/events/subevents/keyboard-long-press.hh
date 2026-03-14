@@ -2,25 +2,29 @@
 
 #include <events/categories/categories.hh>
 
-class KeyboardLongPressEvent
-    : public KeyboardCategoryEvent<KeyboardLongPressEvent>
+namespace brasio::events::subevents
 {
-public:
-    KeyboardLongPressEvent(const std::string &pressedKey, unsigned numPresses);
-
-    const std::string &getPressedKey() const;
-    unsigned getNumPresses() const;
-
-    static KeyboardLongPressEvent create(int key, int scancode, int mods);
-
-    virtual std::string getTypeName() const override
+    class KeyboardLongPressEvent
+        : public categories::KeyboardCategoryEvent<KeyboardLongPressEvent>
     {
-        return "KeyboardLongPressEvent";
-    }
+    public:
+        KeyboardLongPressEvent(const std::string &pressedKey,
+                               unsigned numPresses);
 
-    virtual void print(std::ostream &ostr) override;
+        const std::string &getPressedKey() const;
+        unsigned getNumPresses() const;
 
-private:
-    std::string _pressedKey;
-    unsigned _numPresses;
-};
+        static KeyboardLongPressEvent create(int key, int scancode, int mods);
+
+        virtual std::string getTypeName() const override
+        {
+            return "KeyboardLongPressEvent";
+        }
+
+        virtual void print(std::ostream &ostr) override;
+
+    private:
+        std::string _pressedKey;
+        unsigned _numPresses;
+    };
+} // namespace brasio::events::subevents

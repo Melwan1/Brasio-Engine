@@ -4,11 +4,14 @@
 
 #include <memory>
 
-class CommandPool : public Handler<VkCommandPool>
+namespace brasio::renderer::vulkan
 {
-public:
-    CommandPool(const VkDevice &logicalDevice,
-                const VkCommandPoolCreateInfo &createInfo);
-};
+    class CommandPool : public core::Handler<VkCommandPool>
+    {
+    public:
+        CommandPool(const VkDevice &logicalDevice,
+                    const VkCommandPoolCreateInfo &createInfo);
+    };
 
-using CommandPoolType = std::unique_ptr<CommandPool>;
+    using CommandPoolType = std::unique_ptr<CommandPool>;
+} // namespace brasio::renderer::vulkan

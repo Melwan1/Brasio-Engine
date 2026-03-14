@@ -2,23 +2,26 @@
 
 #include <events/emitters/event-emitter.hh>
 
-class DefaultEventEmitter : public EventEmitter
+namespace brasio::events::emitters
 {
-public:
-    virtual void fire(ApplicationRenderEvent &) override;
-    virtual void fire(ApplicationTickEvent &) override;
-    virtual void fire(ApplicationUpdateEvent &) override;
-    virtual void fire(KeyboardLongPressEvent &) override;
-    virtual void fire(KeyboardPressEvent &) override;
-    virtual void fire(KeyboardReleaseEvent &) override;
-    virtual void fire(MouseClickEvent &) override;
-    virtual void fire(MouseMoveEvent &) override;
-    virtual void fire(MouseReleaseEvent &) override;
-    virtual void fire(MouseScrollEvent &) override;
-    virtual void fire(UnknownEvent &) override;
-    virtual void fire(WindowCloseEvent &) override;
-    virtual void fire(WindowFocusEvent &) override;
-    virtual void fire(WindowLostFocusEvent &) override;
-    virtual void fire(WindowMoveEvent &) override;
-    virtual void fire(WindowResizeEvent &) override;
-};
+    class DefaultEventEmitter : public EventEmitter
+    {
+    public:
+        virtual void fire(subevents::ApplicationRenderEvent &) override;
+        virtual void fire(subevents::ApplicationTickEvent &) override;
+        virtual void fire(subevents::ApplicationUpdateEvent &) override;
+        virtual void fire(subevents::KeyboardLongPressEvent &) override;
+        virtual void fire(subevents::KeyboardPressEvent &) override;
+        virtual void fire(subevents::KeyboardReleaseEvent &) override;
+        virtual void fire(subevents::MouseClickEvent &) override;
+        virtual void fire(subevents::MouseMoveEvent &) override;
+        virtual void fire(subevents::MouseReleaseEvent &) override;
+        virtual void fire(subevents::MouseScrollEvent &) override;
+        virtual void fire(subevents::UnknownEvent &) override;
+        virtual void fire(subevents::WindowCloseEvent &) override;
+        virtual void fire(subevents::WindowFocusEvent &) override;
+        virtual void fire(subevents::WindowLostFocusEvent &) override;
+        virtual void fire(subevents::WindowMoveEvent &) override;
+        virtual void fire(subevents::WindowResizeEvent &) override;
+    };
+} // namespace brasio::events::emitters

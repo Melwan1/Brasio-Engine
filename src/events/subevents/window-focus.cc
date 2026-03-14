@@ -1,5 +1,8 @@
 #include <events/subevents/window-focus.hh>
 
-WindowFocusEvent::WindowFocusEvent()
-    : WindowCategoryEvent<WindowFocusEvent>(EVENT_WINDOW_FOCUS)
-{}
+namespace brasio::events::subevents
+{
+    WindowFocusEvent::WindowFocusEvent()
+        : WindowCategoryEvent<WindowFocusEvent>(EVENT_WINDOW_FOCUS)
+    {}
+} // namespace brasio::events::subevents

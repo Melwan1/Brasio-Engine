@@ -1,10 +1,8 @@
-#include <iostream>
-
 #include <application/libapplication.hh>
 
 int main()
 {
-    Application application;
+    brasio::application::Application application;
     if (!application.init())
     {
         return 1;

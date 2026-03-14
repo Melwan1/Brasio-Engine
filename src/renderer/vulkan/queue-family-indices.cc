@@ -1,6 +1,9 @@
 #include <renderer/vulkan/queue-family-indices.hh>
 
-bool QueueFamilyIndices::isComplete()
+namespace brasio::renderer::vulkan
 {
-    return graphicsFamily.has_value() && presentFamily.has_value();
-}
+    bool QueueFamilyIndices::isComplete()
+    {
+        return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+} // namespace brasio::renderer::vulkan

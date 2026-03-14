@@ -6,17 +6,20 @@
 
 #include <core/handler.hh>
 
-class ShaderModule : public Handler<VkShaderModule>
+namespace brasio::shaders
 {
-public:
-    ShaderModule(VkDevice &device, const VkShaderModule &module,
-                 const VkShaderStageFlagBits &shaderType);
+    class ShaderModule : public core::Handler<VkShaderModule>
+    {
+    public:
+        ShaderModule(VkDevice &device, const VkShaderModule &module,
+                     const VkShaderStageFlagBits &shaderType);
 
-    const VkShaderStageFlagBits &getShaderType() const;
-    VkShaderStageFlagBits &getShaderType();
+        const VkShaderStageFlagBits &getShaderType() const;
+        VkShaderStageFlagBits &getShaderType();
 
-private:
-    VkShaderStageFlagBits _shaderType;
-};
+    private:
+        VkShaderStageFlagBits _shaderType;
+    };
 
-using ShaderModuleType = std::unique_ptr<ShaderModule>;
+    using ShaderModuleType = std::unique_ptr<ShaderModule>;
+} // namespace brasio::shaders

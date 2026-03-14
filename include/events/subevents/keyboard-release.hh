@@ -2,22 +2,26 @@
 
 #include <events/categories/categories.hh>
 
-class KeyboardReleaseEvent : public KeyboardCategoryEvent<KeyboardReleaseEvent>
+namespace brasio::events::subevents
 {
-public:
-    KeyboardReleaseEvent(const std::string &pressedKey);
-
-    const std::string &getPressedKey() const;
-
-    static KeyboardReleaseEvent create(int key, int scancode, int mods);
-
-    virtual std::string getTypeName() const override
+    class KeyboardReleaseEvent
+        : public categories::KeyboardCategoryEvent<KeyboardReleaseEvent>
     {
-        return "KeyboardReleaseEvent";
-    }
+    public:
+        KeyboardReleaseEvent(const std::string &pressedKey);
 
-    virtual void print(std::ostream &ostr) override;
+        const std::string &getPressedKey() const;
 
-private:
-    std::string _pressedKey;
-};
+        static KeyboardReleaseEvent create(int key, int scancode, int mods);
+
+        virtual std::string getTypeName() const override
+        {
+            return "KeyboardReleaseEvent";
+        }
+
+        virtual void print(std::ostream &ostr) override;
+
+    private:
+        std::string _pressedKey;
+    };
+} // namespace brasio::events::subevents

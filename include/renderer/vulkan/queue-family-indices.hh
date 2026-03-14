@@ -3,10 +3,13 @@
 #include <optional>
 #include <cstdint>
 
-struct QueueFamilyIndices
+namespace brasio::renderer::vulkan
 {
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentFamily;
+    struct QueueFamilyIndices
+    {
+        std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
-    bool isComplete();
-};
+        bool isComplete();
+    };
+} // namespace brasio::renderer::vulkan

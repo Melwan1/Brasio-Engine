@@ -1,10 +1,13 @@
 #include <renderer/default-renderer.hh>
 
-DefaultRenderer::DefaultRenderer()
-{}
+namespace brasio::renderer
+{
+    DefaultRenderer::DefaultRenderer()
+    {}
 
-void DefaultRenderer::init()
-{}
+    void DefaultRenderer::init()
+    {}
 
-void DefaultRenderer::drawFrame()
-{}
+    void DefaultRenderer::drawFrame()
+    {}
+} // namespace brasio::renderer

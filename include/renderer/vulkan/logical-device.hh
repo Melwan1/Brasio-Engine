@@ -5,25 +5,28 @@
 #include <renderer/vulkan/physical-device.hh>
 #include <core/handler.hh>
 
-class LogicalDevice : public Handler<VkDevice>
+namespace brasio::renderer::vulkan
 {
-public:
-    LogicalDevice(const VkPhysicalDevice &physicalDevice,
-                  const VkDeviceCreateInfo &createInfo,
-                  const QueueFamilyIndices &indices);
+    class LogicalDevice : public core::Handler<VkDevice>
+    {
+    public:
+        LogicalDevice(const VkPhysicalDevice &physicalDevice,
+                      const VkDeviceCreateInfo &createInfo,
+                      const QueueFamilyIndices &indices);
 
-    const VkQueue &getGraphicsQueue() const;
-    VkQueue &getGraphicsQueue();
-    const VkQueue &getPresentationQueue() const;
-    VkQueue &getPresentationQueue();
+        const VkQueue &getGraphicsQueue() const;
+        VkQueue &getGraphicsQueue();
+        const VkQueue &getPresentationQueue() const;
+        VkQueue &getPresentationQueue();
 
-    void waitIdle() const;
+        void waitIdle() const;
 
-private:
-    QueueFamilyIndices _queueFamilyIndices;
+    private:
+        QueueFamilyIndices _queueFamilyIndices;
 
-    VkQueue _graphicsQueue = VK_NULL_HANDLE;
-    VkQueue _presentationQueue = VK_NULL_HANDLE;
-};
+        VkQueue _graphicsQueue = VK_NULL_HANDLE;
+        VkQueue _presentationQueue = VK_NULL_HANDLE;
+    };
 
-using LogicalDeviceType = std::unique_ptr<LogicalDevice>;
+    using LogicalDeviceType = std::unique_ptr<LogicalDevice>;
+} // namespace brasio::renderer::vulkan

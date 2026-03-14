@@ -2,13 +2,17 @@
 
 #include <events/categories/categories.hh>
 
-class WindowCloseEvent : public WindowCategoryEvent<WindowCloseEvent>
+namespace brasio::events::subevents
 {
-public:
-    WindowCloseEvent();
-
-    virtual std::string getTypeName() const override
+    class WindowCloseEvent
+        : public categories::WindowCategoryEvent<WindowCloseEvent>
     {
-        return "WindowCloseEvent";
-    }
-};
+    public:
+        WindowCloseEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "WindowCloseEvent";
+        }
+    };
+} // namespace brasio::events::subevents

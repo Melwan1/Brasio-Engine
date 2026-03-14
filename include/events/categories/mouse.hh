@@ -2,12 +2,15 @@
 
 #include <events/categories/categories.hh>
 
-template <typename SubEventType>
-class MouseCategoryEvent
-    : public Event<MouseCategoryEvent<SubEventType>, SubEventType>
+namespace brasio::events::categories
 {
-public:
-    MouseCategoryEvent(enum EventType eventType);
-};
+    template <typename SubEventType>
+    class MouseCategoryEvent
+        : public Event<MouseCategoryEvent<SubEventType>, SubEventType>
+    {
+    public:
+        MouseCategoryEvent(enum EventType eventType);
+    };
+} // namespace brasio::events::categories
 
 #include <events/categories/mouse.hxx>

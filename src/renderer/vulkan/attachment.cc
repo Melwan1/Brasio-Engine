@@ -1,27 +1,30 @@
 #include <renderer/vulkan/attachment.hh>
 
-Attachment::Attachment(const VkAttachmentDescription &description,
-                       const VkAttachmentReference &reference)
-    : _description(description)
-    , _reference(reference)
-{}
-
-const VkAttachmentDescription &Attachment::getDescription() const
+namespace brasio::renderer::vulkan
 {
-    return _description;
-}
+    Attachment::Attachment(const VkAttachmentDescription &description,
+                           const VkAttachmentReference &reference)
+        : _description(description)
+        , _reference(reference)
+    {}
 
-VkAttachmentDescription &Attachment::getDescription()
-{
-    return _description;
-}
+    const VkAttachmentDescription &Attachment::getDescription() const
+    {
+        return _description;
+    }
 
-const VkAttachmentReference &Attachment::getReference() const
-{
-    return _reference;
-}
+    VkAttachmentDescription &Attachment::getDescription()
+    {
+        return _description;
+    }
 
-VkAttachmentReference &Attachment::getReference()
-{
-    return _reference;
-}
+    const VkAttachmentReference &Attachment::getReference() const
+    {
+        return _reference;
+    }
+
+    VkAttachmentReference &Attachment::getReference()
+    {
+        return _reference;
+    }
+} // namespace brasio::renderer::vulkan

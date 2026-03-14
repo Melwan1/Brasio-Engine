@@ -6,13 +6,16 @@
 
 #include <renderer/vulkan/logical-device.hh>
 
-class RenderPass : public Handler<VkRenderPass>
+namespace brasio::renderer::vulkan
 {
-public:
-    RenderPass(const VkDevice &logicalDevice,
-               const VkRenderPassCreateInfo &createInfo);
+    class RenderPass : public core::Handler<VkRenderPass>
+    {
+    public:
+        RenderPass(const VkDevice &logicalDevice,
+                   const VkRenderPassCreateInfo &createInfo);
 
-private:
-};
+    private:
+    };
 
-using RenderPassType = std::unique_ptr<RenderPass>;
+    using RenderPassType = std::unique_ptr<RenderPass>;
+} // namespace brasio::renderer::vulkan

@@ -4,8 +4,12 @@
 
 #include <core/handler.hh>
 
-class Fence : public Handler<VkFence>
+namespace brasio::renderer::vulkan
 {
-public:
-    Fence(const VkDevice &logicalDevice, const VkFenceCreateInfo &createInfo);
-};
+    class Fence : public core::Handler<VkFence>
+    {
+    public:
+        Fence(const VkDevice &logicalDevice,
+              const VkFenceCreateInfo &createInfo);
+    };
+} // namespace brasio::renderer::vulkan

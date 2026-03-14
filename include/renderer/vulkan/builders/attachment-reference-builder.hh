@@ -4,14 +4,18 @@
 
 #include <vulkan/vulkan_core.h>
 
-class AttachmentReferenceBuilder : Builder<VkAttachmentReference>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    AttachmentReferenceBuilder();
-    virtual AttachmentReferenceBuilder &base() override;
-    virtual VkAttachmentReference build() override;
 
-private:
-    uint32_t _index;
-    VkImageLayout _layout;
-};
+    class AttachmentReferenceBuilder : core::Builder<VkAttachmentReference>
+    {
+    public:
+        AttachmentReferenceBuilder();
+        virtual AttachmentReferenceBuilder &base() override;
+        virtual VkAttachmentReference build() override;
+
+    private:
+        uint32_t _index;
+        VkImageLayout _layout;
+    };
+} // namespace brasio::renderer::vulkan::builders

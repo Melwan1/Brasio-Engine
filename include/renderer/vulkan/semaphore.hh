@@ -4,9 +4,12 @@
 
 #include <core/handler.hh>
 
-class Semaphore : public Handler<VkSemaphore>
+namespace brasio::renderer::vulkan
 {
-public:
-    Semaphore(const VkDevice &logicalDevice,
-              const VkSemaphoreCreateInfo &createInfo);
-};
+    class Semaphore : public core::Handler<VkSemaphore>
+    {
+    public:
+        Semaphore(const VkDevice &logicalDevice,
+                  const VkSemaphoreCreateInfo &createInfo);
+    };
+} // namespace brasio::renderer::vulkan

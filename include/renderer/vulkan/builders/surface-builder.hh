@@ -4,15 +4,18 @@
 
 #include <renderer/vulkan/surface.hh>
 
-class SurfaceBuilder : public Builder<SurfaceType>
+namespace brasio::renderer::vulkan::builders
 {
-public:
-    SurfaceBuilder(const VkInstance &instance, GLFWwindow *window);
+    class SurfaceBuilder : public core::Builder<SurfaceType>
+    {
+    public:
+        SurfaceBuilder(const VkInstance &instance, GLFWwindow *window);
 
-    virtual SurfaceBuilder &base() override;
-    virtual SurfaceType build() override;
+        virtual SurfaceBuilder &base() override;
+        virtual SurfaceType build() override;
 
-private:
-    VkInstance _instance;
-    GLFWwindow *_window;
-};
+    private:
+        VkInstance _instance;
+        GLFWwindow *_window;
+    };
+} // namespace brasio::renderer::vulkan::builders

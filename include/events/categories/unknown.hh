@@ -2,12 +2,15 @@
 
 #include <events/categories/categories.hh>
 
-template <typename SubEventType>
-class UnknownCategoryEvent
-    : public Event<UnknownCategoryEvent<SubEventType>, SubEventType>
+namespace brasio::events::categories
 {
-public:
-    UnknownCategoryEvent(enum EventType eventType);
-};
+    template <typename SubEventType>
+    class UnknownCategoryEvent
+        : public Event<UnknownCategoryEvent<SubEventType>, SubEventType>
+    {
+    public:
+        UnknownCategoryEvent(enum EventType eventType);
+    };
+} // namespace brasio::events::categories
 
 #include <events/categories/unknown.hxx>

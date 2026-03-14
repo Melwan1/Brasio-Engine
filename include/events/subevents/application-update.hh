@@ -2,14 +2,18 @@
 
 #include <events/categories/categories.hh>
 
-class ApplicationUpdateEvent
-    : public ApplicationCategoryEvent<ApplicationUpdateEvent>
+namespace brasio::events::subevents
 {
-public:
-    ApplicationUpdateEvent();
 
-    virtual std::string getTypeName() const override
+    class ApplicationUpdateEvent
+        : public categories::ApplicationCategoryEvent<ApplicationUpdateEvent>
     {
-        return "ApplicationUpdateEvent";
-    }
-};
+    public:
+        ApplicationUpdateEvent();
+
+        virtual std::string getTypeName() const override
+        {
+            return "ApplicationUpdateEvent";
+        }
+    };
+} // namespace brasio::events::subevents

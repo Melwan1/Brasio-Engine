@@ -1,29 +1,34 @@
 #include <renderer/vulkan/builders/dynamic-state-builder.hh>
+#include <vulkan/vulkan_core.h>
 
-DynamicStateBuilder::DynamicStateBuilder()
+namespace brasio::renderer::vulkan::builders
 {
-    base();
-}
+    DynamicStateBuilder::DynamicStateBuilder()
+    {
+        base();
+    }
 
-DynamicStateBuilder &DynamicStateBuilder::base()
-{
-    _structureType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    _dynamicStates.clear();
-    return *this;
-}
+    DynamicStateBuilder &DynamicStateBuilder::base()
+    {
+        _structureType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        return withDynamicStates(
+            { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR });
+    }
 
-DynamicStateBuilder &DynamicStateBuilder::withDynamicStates(
-    const std::vector<VkDynamicState> &dynamicStates)
-{
-    _dynamicStates = dynamicStates;
-    return *this;
-}
+    DynamicStateBuilder &DynamicStateBuilder::withDynamicStates(
+        const std::vector<VkDynamicState> &dynamicStates)
+    {
+        _dynamicStates = dynamicStates;
+        return *this;
+    }
 
-VkPipelineDynamicStateCreateInfo DynamicStateBuilder::build()
-{
-    VkPipelineDynamicStateCreateInfo createInfo{};
-    createInfo.sType = _structureType;
-    createInfo.dynamicStateCount = _dynamicStates.size();
-    createInfo.pDynamicStates = _dynamicStates.data();
-    return createInfo;
-}
+    VkPipelineDynamicStateCreateInfo DynamicStateBuilder::build()
+    {
+        VkPipelineDynamicStateCreateInfo createInfo{};
+
+        createInfo.dynamicStateCount =
+            static_cast<uint32_t>(_dynamicStates.size());
+        createInfo.pDynamicStates = _dynamicStates.data();
+        return createInfo;
+    }
+} // namespace brasio::renderer::vulkan::builders
