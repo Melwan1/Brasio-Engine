@@ -20,7 +20,13 @@ namespace brasio::renderer::vulkan
                      VkMemoryPropertyFlags memoryProperties, void *data,
                      size_t size);
 
+        void map();
+        void unmap();
+        void setContent(void *content);
+
     private:
+        VkDevice _logicalDevice;
+        size_t _size;
         void *_deviceData;
     };
 

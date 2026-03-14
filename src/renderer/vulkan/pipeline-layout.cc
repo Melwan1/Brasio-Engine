@@ -20,6 +20,7 @@ namespace brasio::renderer::vulkan
                 std::cout, "Could not create pipelineLayout", { "CREATE" });
         }
 
-        io::logging::Logger::trace(std::cout, "Created pipeline layout");
+        io::logging::Logger::trace(std::cout, "Created pipeline layout",
+                                   { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

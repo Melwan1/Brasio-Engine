@@ -5,6 +5,7 @@ target_sources(librenderer PRIVATE
     command-buffer-array.cc
     command-pool.cc
     debug-messenger.cc
+    descriptor-set-layout.cc
     fence.cc
     graphics-pipeline.cc
     image.cc

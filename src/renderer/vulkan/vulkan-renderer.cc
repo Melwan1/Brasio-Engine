@@ -1,11 +1,16 @@
+#define GLM_FORCE_RADIANS
+
 #include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan_core.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
 #include <io/logging/logger.hh>
 #include <geometry/vertex.hh>
+#include <renderer/structs/uniform-buffer-object.hh>
 
 #include <renderer/vulkan/builders/all.hh>
 
@@ -37,10 +42,12 @@ namespace brasio::renderer::vulkan
         _shaderManager.compileAllShaders();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle());
+        createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
         createVertexBuffer();
         createIndexBuffer();
+        createUniformBuffers();
         createCommandBuffers();
         createSyncObjects();
         io::logging::Logger::trace(std::cout, "Created Vulkan renderer",
@@ -55,6 +62,8 @@ namespace brasio::renderer::vulkan
         io::logging::Logger::trace(std::cout, "Destroying Vulkan renderer",
                                    { "DESTROY" });
         cleanupSwapChain();
+        _uniformBuffers.clear();
+        _descriptorSetLayout.reset();
         _indexBuffer.reset();
         _vertexBuffer.reset();
         _graphicsPipeline.reset();
@@ -125,6 +134,7 @@ namespace brasio::renderer::vulkan
                                           "fragment/minimal-triangle.frag" };
         _pipelineLayout =
             builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
+                .withSetLayouts({ _descriptorSetLayout->getHandle() })
                 .build();
 
         builders::GraphicsPipelineBuilder pipelineBuilder(
@@ -193,6 +203,8 @@ namespace brasio::renderer::vulkan
                                 _renderPass->getHandle(), _swapchain,
                                 _graphicsPipeline, _vertexBuffer->getHandle(),
                                 _indexBuffer->getHandle(), _indices);
+
+        updateUniformBuffer(_currentFrame);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -285,6 +297,7 @@ namespace brasio::renderer::vulkan
             .withMemoryProperties(stagingBufferMemoryFlags);
 
         BufferType stagingBuffer = stagingBufferBuilder.build();
+        stagingBuffer->unmapMemory();
 
         VkBufferUsageFlags vertexBufferUsageFlags =
             VK_BUFFER_USAGE_TRANSFER_DST_BIT
@@ -322,6 +335,7 @@ namespace brasio::renderer::vulkan
             .withMemoryProperties(stagingBufferMemoryFlags);
 
         BufferType stagingBuffer = stagingBufferBuilder.build();
+        stagingBuffer->unmapMemory();
 
         VkBufferUsageFlags indexBufferUsageFlags =
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
@@ -338,5 +352,55 @@ namespace brasio::renderer::vulkan
 
         stagingBuffer->copyInto(*_indexBuffer, _commandPool->getHandle(),
                                 bufferSize);
+    }
+
+    void VulkanRenderer::createUniformBuffers()
+    {
+        VkDeviceSize bufferSize = sizeof(structs::UniformBufferObject);
+        for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
+        {
+            _uniformBuffers.emplace_back(
+                builders::BufferBuilder(_physicalDevice, _logicalDevice)
+                    .withUsage(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT)
+                    .withMemoryProperties(
+                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+                        | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+                    .withSize(bufferSize)
+                    .build());
+            _uniformBuffers.back()->mapMemory();
+            // persistent mapping for all uniform buffers
+        }
+    }
+
+    void VulkanRenderer::createDescriptorSetLayout()
+    {
+        _descriptorSetLayout =
+            builders::DescriptorSetLayoutBuilder(_logicalDevice->getHandle())
+                .withBindings(
+                    { builders::DescriptorSetLayoutBindingBuilder()
+                          .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                          .build() })
+                .build();
+    }
+
+    void VulkanRenderer::updateUniformBuffer(uint32_t currentImage)
+    {
+        static auto startTime = std::chrono::high_resolution_clock::now();
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(
+                         currentTime - startTime)
+                         .count();
+        structs::UniformBufferObject ubo{};
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
+                                glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f),
+                               glm::vec3(0.0f, 0.0f, 0.0f),
+                               glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(
+            glm::radians(45.0f),
+            _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
+        ubo.proj[1][1] *= -1;
+        _uniformBuffers.at(currentImage)->setContent(&ubo);
     }
 } // namespace brasio::renderer::vulkan
