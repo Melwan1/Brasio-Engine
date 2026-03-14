@@ -25,9 +25,9 @@ namespace brasio::renderer::vulkan::builders
     {
         this->_structure_type = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         this->_application_name = "Brasio Engine";
-        this->_application_version = VK_MAKE_VERSION(0, 1, 1);
+        this->_application_version = VK_MAKE_VERSION(0, 1, 0);
         this->_engine_name = "Brasio Engine";
-        this->_engine_version = VK_MAKE_VERSION(0, 1, 1);
+        this->_engine_version = VK_MAKE_VERSION(0, 1, 0);
         this->_api_version = VK_API_VERSION_1_3;
 
         return *this;
