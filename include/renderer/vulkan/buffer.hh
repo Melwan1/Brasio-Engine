@@ -26,6 +26,10 @@ namespace brasio::renderer::vulkan
         void copyInto(const Buffer &other, VkCommandPool _commandPool,
                       VkDeviceSize size);
 
+        void mapMemory();
+        void unmapMemory();
+        void setContent(void *content);
+
     private:
         const LogicalDeviceType &_logicalDevice;
         BufferMemoryType _deviceMemory;

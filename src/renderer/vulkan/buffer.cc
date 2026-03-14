@@ -69,4 +69,19 @@ namespace brasio::renderer::vulkan
         vkFreeCommandBuffers(_logicalDevice->getHandle(), _commandPool, 1,
                              &commandBuffer);
     }
+
+    void Buffer::mapMemory()
+    {
+        _deviceMemory->map();
+    }
+
+    void Buffer::unmapMemory()
+    {
+        _deviceMemory->unmap();
+    }
+
+    void Buffer::setContent(void *content)
+    {
+        _deviceMemory->setContent(content);
+    }
 } // namespace brasio::renderer::vulkan

@@ -13,6 +13,8 @@ namespace brasio::renderer::vulkan
                   [logicalDevice](const VkDeviceMemory &bufferMemory) {
                       vkFreeMemory(logicalDevice, bufferMemory, nullptr);
                   })
+        , _logicalDevice(logicalDevice)
+        , _size(size)
     {
         io::logging::Logger::trace(std::cout, "Binding buffer memory",
                                    { "CREATE" });
@@ -42,11 +44,25 @@ namespace brasio::renderer::vulkan
             io::logging::Logger::trace(std::cout,
                                        "Transferring buffer memory to device",
                                        { "CREATE" });
-            vkMapMemory(logicalDevice, getHandle(), 0, size, 0, &_deviceData);
-            std::memcpy(_deviceData, data, size);
-            vkUnmapMemory(logicalDevice, getHandle());
+            map();
+            setContent(data);
             io::logging::Logger::trace(
                 std::cout, "Transferred buffer memory to device", { "CREATE" });
         }
+    }
+
+    void BufferMemory::map()
+    {
+        vkMapMemory(_logicalDevice, getHandle(), 0, _size, 0, &_deviceData);
+    }
+
+    void BufferMemory::unmap()
+    {
+        vkUnmapMemory(_logicalDevice, getHandle());
+    }
+
+    void BufferMemory::setContent(void *content)
+    {
+        std::memcpy(_deviceData, content, _size);
     }
 } // namespace brasio::renderer::vulkan

@@ -62,6 +62,9 @@ namespace brasio::renderer::vulkan
 
         void createVertexBuffer();
         void createIndexBuffer();
+        void createUniformBuffers();
+
+        void updateUniformBuffer(uint32_t currentImage);
 
         void createDescriptorSetLayout();
 
@@ -97,6 +100,7 @@ namespace brasio::renderer::vulkan
         BufferType _indexBuffer;
 
         DescriptorSetLayoutType _descriptorSetLayout;
+        std::vector<BufferType> _uniformBuffers;
 
         uint32_t _currentFrame = 0;
     };

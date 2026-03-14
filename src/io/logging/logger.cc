@@ -6,7 +6,7 @@
 
 namespace brasio::io::logging
 {
-    LogLevel Logger::sLogLevel = LogLevel::TRACE;
+    LogLevel Logger::sLogLevel = LogLevel::DEBUG;
 
     Logger::Logger(std::ostream &ostr, LogLevel logLevel)
         : _ostr(ostr)
