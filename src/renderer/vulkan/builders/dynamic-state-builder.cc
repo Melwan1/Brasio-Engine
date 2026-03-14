@@ -26,6 +26,7 @@ namespace brasio::renderer::vulkan::builders
     {
         VkPipelineDynamicStateCreateInfo createInfo{};
 
+        createInfo.sType = _structureType;
         createInfo.dynamicStateCount =
             static_cast<uint32_t>(_dynamicStates.size());
         createInfo.pDynamicStates = _dynamicStates.data();
