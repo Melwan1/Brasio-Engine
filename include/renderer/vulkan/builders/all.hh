@@ -9,6 +9,8 @@
 #include <renderer/vulkan/builders/command-buffer-array-builder.hh>
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/builders/debug-messenger-builder.hh>
+#include <renderer/vulkan/builders/descriptor-pool-builder.hh>
+#include <renderer/vulkan/builders/descriptor-pool-size-builder.hh>
 #include <renderer/vulkan/builders/descriptor-set-layout-binding-builder.hh>
 #include <renderer/vulkan/builders/descriptor-set-layout-builder.hh>
 #include <renderer/vulkan/builders/dynamic-state-builder.hh>

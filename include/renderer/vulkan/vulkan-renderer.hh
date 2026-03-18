@@ -67,6 +67,7 @@ namespace brasio::renderer::vulkan
         void updateUniformBuffer(uint32_t currentImage);
 
         void createDescriptorSetLayout();
+        void createDescriptorPool();
 
     private:
         GLFWwindow *_window;
@@ -101,6 +102,7 @@ namespace brasio::renderer::vulkan
 
         DescriptorSetLayoutType _descriptorSetLayout;
         std::vector<BufferType> _uniformBuffers;
+        DescriptorPoolType _descriptorPool;
 
         uint32_t _currentFrame = 0;
     };

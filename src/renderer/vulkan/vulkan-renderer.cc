@@ -1,3 +1,4 @@
+#include "renderer/vulkan/builders/descriptor-pool-builder.hh"
 #define GLM_FORCE_RADIANS
 
 #include <renderer/vulkan/vulkan-renderer.hh>
@@ -48,6 +49,7 @@ namespace brasio::renderer::vulkan
         createVertexBuffer();
         createIndexBuffer();
         createUniformBuffers();
+        createDescriptorPool();
         createCommandBuffers();
         createSyncObjects();
         io::logging::Logger::trace(std::cout, "Created Vulkan renderer",
@@ -62,6 +64,7 @@ namespace brasio::renderer::vulkan
         io::logging::Logger::trace(std::cout, "Destroying Vulkan renderer",
                                    { "DESTROY" });
         cleanupSwapChain();
+        _descriptorPool.reset();
         _uniformBuffers.clear();
         _descriptorSetLayout.reset();
         _indexBuffer.reset();
@@ -402,5 +405,16 @@ namespace brasio::renderer::vulkan
             _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
         _uniformBuffers.at(currentImage)->setContent(&ubo);
+    }
+
+    void VulkanRenderer::createDescriptorPool()
+    {
+        _descriptorPool =
+            builders::DescriptorPoolBuilder(_logicalDevice->getHandle())
+                .withMaxSets(MAX_FRAMES_IN_FLIGHT)
+                .withDescriptorPoolSizes({ builders::DescriptorPoolSizeBuilder()
+                                               .withDescriptorCount(1)
+                                               .build() })
+                .build();
     }
 } // namespace brasio::renderer::vulkan
