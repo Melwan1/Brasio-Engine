@@ -11,7 +11,9 @@
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/descriptor-pool.hh>
 #include <renderer/vulkan/descriptor-set-layout.hh>
+#include <renderer/vulkan/descriptor-sets.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
@@ -68,6 +70,7 @@ namespace brasio::renderer::vulkan
 
         void createDescriptorSetLayout();
         void createDescriptorPool();
+        void createDescriptorSets();
 
     private:
         GLFWwindow *_window;
@@ -103,6 +106,7 @@ namespace brasio::renderer::vulkan
         DescriptorSetLayoutType _descriptorSetLayout;
         std::vector<BufferType> _uniformBuffers;
         DescriptorPoolType _descriptorPool;
+        DescriptorSetsType _descriptorSets;
 
         uint32_t _currentFrame = 0;
     };

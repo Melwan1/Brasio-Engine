@@ -12,6 +12,7 @@ target_sources(librenderer PRIVATE
     descriptor-pool-size-builder.cc
     descriptor-set-layout-binding-builder.cc
     descriptor-set-layout-builder.cc
+    descriptor-sets-builder.cc
     dynamic-state-builder.cc
     framebuffer-builder.cc
     graphics-pipeline-builder.cc

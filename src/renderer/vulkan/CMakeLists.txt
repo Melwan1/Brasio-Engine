@@ -7,6 +7,7 @@ target_sources(librenderer PRIVATE
     debug-messenger.cc
     descriptor-pool.cc
     descriptor-set-layout.cc
+    descriptor-sets.cc
     fence.cc
     graphics-pipeline.cc
     image.cc

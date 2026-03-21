@@ -36,6 +36,8 @@ namespace brasio::renderer::vulkan
                     const VkRenderPass &renderPass,
                     const SwapchainType &swapchain,
                     const GraphicsPipelineType &graphicsPipeline,
+                    const VkPipelineLayout &layout,
+                    const VkDescriptorSet &descriptorSet,
                     const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
                     const std::vector<uint16_t> &indices);
     };

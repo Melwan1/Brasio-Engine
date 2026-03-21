@@ -1,4 +1,3 @@
-#include "renderer/vulkan/builders/descriptor-pool-builder.hh"
 #define GLM_FORCE_RADIANS
 
 #include <renderer/vulkan/vulkan-renderer.hh>
@@ -16,6 +15,7 @@
 #include <renderer/vulkan/builders/all.hh>
 
 #include <shaders/shader-module.hh>
+#include <renderer/vulkan/data.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -24,11 +24,8 @@ namespace brasio::renderer::vulkan
     VulkanRenderer::VulkanRenderer(GLFWwindow *window)
         : _window(window)
         , _shaderManager("shaders", "output.log")
-        , _vertices({ { { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-                      { { 0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-                      { { 0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
-                      { { -0.5f, 0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f } } })
-        , _indices({ 0, 1, 2, 2, 3, 0 })
+        , _vertices(vertices_data)
+        , _indices(indices_data)
     {
         io::logging::Logger::trace(std::cout, "Creating Vulkan renderer",
                                    { "CREATE" });
@@ -50,6 +47,7 @@ namespace brasio::renderer::vulkan
         createIndexBuffer();
         createUniformBuffers();
         createDescriptorPool();
+        createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
         io::logging::Logger::trace(std::cout, "Created Vulkan renderer",
@@ -133,7 +131,7 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createGraphicsPipeline()
     {
-        std::vector<fs::path> shaders = { "vertex/minimal-triangle.vert",
+        std::vector<fs::path> shaders = { "vertex/ubo.vert",
                                           "fragment/minimal-triangle.frag" };
         _pipelineLayout =
             builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
@@ -202,10 +200,11 @@ namespace brasio::renderer::vulkan
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
-        _commandBuffers->record(_currentFrame, imageIndex,
-                                _renderPass->getHandle(), _swapchain,
-                                _graphicsPipeline, _vertexBuffer->getHandle(),
-                                _indexBuffer->getHandle(), _indices);
+        _commandBuffers->record(
+            _currentFrame, imageIndex, _renderPass->getHandle(), _swapchain,
+            _graphicsPipeline, _pipelineLayout->getHandle(),
+            _descriptorSets->getHandle().at(_currentFrame),
+            _vertexBuffer->getHandle(), _indexBuffer->getHandle(), _indices);
 
         updateUniformBuffer(_currentFrame);
 
@@ -382,6 +381,7 @@ namespace brasio::renderer::vulkan
                 .withBindings(
                     { builders::DescriptorSetLayoutBindingBuilder()
                           .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                          .withShaderStages(VK_SHADER_STAGE_VERTEX_BIT)
                           .build() })
                 .build();
     }
@@ -397,14 +397,18 @@ namespace brasio::renderer::vulkan
         structs::UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f),
+        ubo.view = glm::lookAt(glm::vec3(-2.0f, 1.0f, -2.0f),
                                glm::vec3(0.0f, 0.0f, 0.0f),
-                               glm::vec3(0.0f, 0.0f, 1.0f));
+                               glm::vec3(0.0f, 1.0f, 0.0f));
         ubo.proj = glm::perspective(
             glm::radians(45.0f),
             _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
+        io::logging::Logger::debug(std::cout, "Changing UBO content",
+                                   { "UPDATE" });
         _uniformBuffers.at(currentImage)->setContent(&ubo);
+        io::logging::Logger::debug(std::cout, "Changed UBO content",
+                                   { "UPDATE" });
     }
 
     void VulkanRenderer::createDescriptorPool()
@@ -412,9 +416,20 @@ namespace brasio::renderer::vulkan
         _descriptorPool =
             builders::DescriptorPoolBuilder(_logicalDevice->getHandle())
                 .withMaxSets(MAX_FRAMES_IN_FLIGHT)
-                .withDescriptorPoolSizes({ builders::DescriptorPoolSizeBuilder()
-                                               .withDescriptorCount(1)
-                                               .build() })
+                .withDescriptorPoolSizes(
+                    { builders::DescriptorPoolSizeBuilder()
+                          .withDescriptorCount(MAX_FRAMES_IN_FLIGHT)
+                          .build() })
                 .build();
+    }
+    void VulkanRenderer::createDescriptorSets()
+    {
+        _descriptorSets =
+            builders::DescriptorSetsBuilder(_logicalDevice->getHandle(),
+                                            _descriptorPool->getHandle())
+                .withSetsCount(MAX_FRAMES_IN_FLIGHT)
+                .withSetLayout(_descriptorSetLayout->getHandle())
+                .build();
+        _descriptorSets->update(_uniformBuffers);
     }
 } // namespace brasio::renderer::vulkan

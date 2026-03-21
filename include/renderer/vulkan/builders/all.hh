@@ -13,6 +13,7 @@
 #include <renderer/vulkan/builders/descriptor-pool-size-builder.hh>
 #include <renderer/vulkan/builders/descriptor-set-layout-binding-builder.hh>
 #include <renderer/vulkan/builders/descriptor-set-layout-builder.hh>
+#include <renderer/vulkan/builders/descriptor-sets-builder.hh>
 #include <renderer/vulkan/builders/dynamic-state-builder.hh>
 #include <renderer/vulkan/builders/framebuffer-builder.hh>
 #include <renderer/vulkan/builders/image-builder.hh>

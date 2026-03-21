@@ -123,8 +123,9 @@ namespace brasio::renderer::vulkan
         uint32_t commandBufferIndex, uint32_t imageIndex,
         const VkRenderPass &renderPass, const SwapchainType &swapchain,
         const GraphicsPipelineType &graphicsPipeline,
-        const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
-        const std::vector<uint16_t> &indices)
+        const VkPipelineLayout &pipelineLayout,
+        const VkDescriptorSet &descriptorSet, const VkBuffer &vertexBuffer,
+        const VkBuffer &indexBuffer, const std::vector<uint16_t> &indices)
     {
         begin(commandBufferIndex, imageIndex, renderPass, swapchain);
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
@@ -141,6 +142,9 @@ namespace brasio::renderer::vulkan
                                vertexBuffers, offsets);
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0,
                              VK_INDEX_TYPE_UINT16);
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                pipelineLayout, 0, 1, &descriptorSet, 0,
+                                nullptr);
         uint32_t instanceCount = 1;
         uint32_t firstVertex = 0;
         uint32_t firstInstance = 0;
