@@ -22,7 +22,7 @@ namespace brasio::renderer::vulkan
                                        { "CREATE" });
     }
 
-    void GraphicsPipeline::bind(const VkCommandBuffer &commandBuffer)
+    void GraphicsPipeline::bind(const VkCommandBuffer &commandBuffer) const
     {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           getHandle());

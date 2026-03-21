@@ -45,7 +45,7 @@ namespace brasio::renderer::vulkan
     void CommandBufferArray::begin(uint32_t commandBufferIndex,
                                    uint32_t imageIndex,
                                    const VkRenderPass &renderPass,
-                                   const SwapchainType &swapchain)
+                                   const Swapchain &swapchain)
     {
         io::logging::Logger::trace(std::cout,
                                    "Beginning command buffer at index "
@@ -80,9 +80,9 @@ namespace brasio::renderer::vulkan
         VkRenderPassBeginInfo renderPassBeginInfo{};
         renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassBeginInfo.renderPass = renderPass;
-        renderPassBeginInfo.framebuffer = swapchain->framebufferAt(imageIndex);
+        renderPassBeginInfo.framebuffer = swapchain.framebufferAt(imageIndex);
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
-        renderPassBeginInfo.renderArea.extent = swapchain->getExtent();
+        renderPassBeginInfo.renderArea.extent = swapchain.getExtent();
 
         VkClearValue clearColor = { { CLEAR_COLOR } };
         renderPassBeginInfo.clearValueCount = 1;
@@ -98,56 +98,60 @@ namespace brasio::renderer::vulkan
     }
 
     void CommandBufferArray::setViewport(uint32_t commandBufferIndex,
-                                         const SwapchainType &swapchain)
+                                         const Swapchain &swapchain)
     {
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = swapchain->getWidth();
-        viewport.height = swapchain->getHeight();
+        viewport.width = swapchain.getWidth();
+        viewport.height = swapchain.getHeight();
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
         vkCmdSetViewport(at(commandBufferIndex), 0, 1, &viewport);
     }
 
     void CommandBufferArray::setScissor(uint32_t commandBufferIndex,
-                                        const SwapchainType &swapchain)
+                                        const Swapchain &swapchain)
     {
         VkRect2D scissor{};
         scissor.offset = { 0, 0 };
-        scissor.extent = swapchain->getExtent();
+        scissor.extent = swapchain.getExtent();
         vkCmdSetScissor(at(commandBufferIndex), 0, 1, &scissor);
     }
 
-    void CommandBufferArray::record(
-        uint32_t commandBufferIndex, uint32_t imageIndex,
-        const VkRenderPass &renderPass, const SwapchainType &swapchain,
-        const GraphicsPipelineType &graphicsPipeline,
-        const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
-        const std::vector<uint16_t> &indices)
+    void CommandBufferArray::record(const VulkanRenderer &renderer,
+                                    uint32_t commandBufferIndex,
+                                    uint32_t imageIndex)
     {
-        begin(commandBufferIndex, imageIndex, renderPass, swapchain);
+        begin(commandBufferIndex, imageIndex,
+              renderer.getRenderPass().getHandle(), renderer.getSwapchain());
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
-        graphicsPipeline->bind(commandBuffer);
+        renderer.getGraphicsPipeline().bind(commandBuffer);
 
-        setViewport(commandBufferIndex, swapchain);
-        setScissor(commandBufferIndex, swapchain);
+        setViewport(commandBufferIndex, renderer.getSwapchain());
+        setScissor(commandBufferIndex, renderer.getSwapchain());
 
-        VkBuffer vertexBuffers[] = { vertexBuffer };
+        VkBuffer vertexBuffers[] = { renderer.getVertexBuffer().getHandle() };
         VkDeviceSize offsets[] = { 0 };
         uint32_t firstBinding = 0;
         uint32_t bindingCount = 1;
         vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount,
                                vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0,
+        vkCmdBindIndexBuffer(commandBuffer,
+                             renderer.getIndexBuffer().getHandle(), 0,
                              VK_INDEX_TYPE_UINT16);
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                renderer.getPipelineLayout().getHandle(), 0, 1,
+                                &renderer.getDescriptorSets().getHandle().at(
+                                    renderer.getCurrentFrame()),
+                                0, nullptr);
         uint32_t instanceCount = 1;
         uint32_t firstVertex = 0;
         uint32_t firstInstance = 0;
         uint32_t instanceOffset = 0;
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()),
-                         instanceCount, firstVertex, firstInstance,
-                         instanceOffset);
+        vkCmdDrawIndexed(
+            commandBuffer, static_cast<uint32_t>(renderer.getIndices().size()),
+            instanceCount, firstVertex, firstInstance, instanceOffset);
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)

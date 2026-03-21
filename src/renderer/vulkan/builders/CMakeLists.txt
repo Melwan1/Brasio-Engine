@@ -8,8 +8,11 @@ target_sources(librenderer PRIVATE
     command-buffer-array-builder.cc
     command-pool-builder.cc
     debug-messenger-builder.cc
+    descriptor-pool-builder.cc
+    descriptor-pool-size-builder.cc
     descriptor-set-layout-binding-builder.cc
     descriptor-set-layout-builder.cc
+    descriptor-sets-builder.cc
     dynamic-state-builder.cc
     framebuffer-builder.cc
     graphics-pipeline-builder.cc

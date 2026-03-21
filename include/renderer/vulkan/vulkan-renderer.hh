@@ -11,7 +11,9 @@
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/descriptor-pool.hh>
 #include <renderer/vulkan/descriptor-set-layout.hh>
+#include <renderer/vulkan/descriptor-sets.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
@@ -23,6 +25,12 @@
 #include <renderer/vulkan/sync-objects.hh>
 #include <shaders/shader-manager.hh>
 #include <geometry/vertex.hh>
+
+namespace brasio::renderer::vulkan
+{
+    class CommandBufferArray;
+    using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
+} // namespace brasio::renderer::vulkan
 
 namespace brasio::renderer::vulkan
 {
@@ -67,6 +75,22 @@ namespace brasio::renderer::vulkan
         void updateUniformBuffer(uint32_t currentImage);
 
         void createDescriptorSetLayout();
+        void createDescriptorPool();
+        void createDescriptorSets();
+
+        // getters
+
+        const Swapchain &getSwapchain() const;
+        const RenderPass &getRenderPass() const;
+        const PipelineLayout &getPipelineLayout() const;
+        const GraphicsPipeline &getGraphicsPipeline() const;
+        const CommandBufferArrayType &getCommandBuffers() const;
+        const Buffer &getVertexBuffer() const;
+        const Buffer &getIndexBuffer() const;
+        const std::vector<uint16_t> &getIndices() const;
+        const DescriptorSetLayout &getDescriptorSetLayout() const;
+        const DescriptorSets &getDescriptorSets() const;
+        uint32_t getCurrentFrame() const;
 
     private:
         GLFWwindow *_window;
@@ -101,6 +125,8 @@ namespace brasio::renderer::vulkan
 
         DescriptorSetLayoutType _descriptorSetLayout;
         std::vector<BufferType> _uniformBuffers;
+        DescriptorPoolType _descriptorPool;
+        DescriptorSetsType _descriptorSets;
 
         uint32_t _currentFrame = 0;
     };
