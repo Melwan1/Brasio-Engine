@@ -28,6 +28,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class CommandBufferArray;
+    using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
+} // namespace brasio::renderer::vulkan
+
+namespace brasio::renderer::vulkan
+{
     /**
      * The Vulkan Renderer.
      *
@@ -71,6 +77,20 @@ namespace brasio::renderer::vulkan
         void createDescriptorSetLayout();
         void createDescriptorPool();
         void createDescriptorSets();
+
+        // getters
+
+        const Swapchain &getSwapchain() const;
+        const RenderPass &getRenderPass() const;
+        const PipelineLayout &getPipelineLayout() const;
+        const GraphicsPipeline &getGraphicsPipeline() const;
+        const CommandBufferArrayType &getCommandBuffers() const;
+        const Buffer &getVertexBuffer() const;
+        const Buffer &getIndexBuffer() const;
+        const std::vector<uint16_t> &getIndices() const;
+        const DescriptorSetLayout &getDescriptorSetLayout() const;
+        const DescriptorSets &getDescriptorSets() const;
+        uint32_t getCurrentFrame() const;
 
     private:
         GLFWwindow *_window;

@@ -200,11 +200,7 @@ namespace brasio::renderer::vulkan
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
-        _commandBuffers->record(
-            _currentFrame, imageIndex, _renderPass->getHandle(), _swapchain,
-            _graphicsPipeline, _pipelineLayout->getHandle(),
-            _descriptorSets->getHandle().at(_currentFrame),
-            _vertexBuffer->getHandle(), _indexBuffer->getHandle(), _indices);
+        _commandBuffers->record(*this, _currentFrame, imageIndex);
 
         updateUniformBuffer(_currentFrame);
 
@@ -431,5 +427,60 @@ namespace brasio::renderer::vulkan
                 .withSetLayout(_descriptorSetLayout->getHandle())
                 .build();
         _descriptorSets->update(_uniformBuffers);
+    }
+
+    const Swapchain &VulkanRenderer::getSwapchain() const
+    {
+        return *_swapchain;
+    }
+
+    const RenderPass &VulkanRenderer::getRenderPass() const
+    {
+        return *_renderPass;
+    }
+
+    const PipelineLayout &VulkanRenderer::getPipelineLayout() const
+    {
+        return *_pipelineLayout;
+    }
+
+    const GraphicsPipeline &VulkanRenderer::getGraphicsPipeline() const
+    {
+        return *_graphicsPipeline;
+    }
+
+    const CommandBufferArrayType &VulkanRenderer::getCommandBuffers() const
+    {
+        return _commandBuffers;
+    }
+
+    const Buffer &VulkanRenderer::getVertexBuffer() const
+    {
+        return *_vertexBuffer;
+    }
+
+    const Buffer &VulkanRenderer::getIndexBuffer() const
+    {
+        return *_indexBuffer;
+    }
+
+    const std::vector<uint16_t> &VulkanRenderer::getIndices() const
+    {
+        return _indices;
+    }
+
+    const DescriptorSetLayout &VulkanRenderer::getDescriptorSetLayout() const
+    {
+        return *_descriptorSetLayout;
+    }
+
+    const DescriptorSets &VulkanRenderer::getDescriptorSets() const
+    {
+        return *_descriptorSets;
+    }
+
+    uint32_t VulkanRenderer::getCurrentFrame() const
+    {
+        return _currentFrame;
     }
 } // namespace brasio::renderer::vulkan

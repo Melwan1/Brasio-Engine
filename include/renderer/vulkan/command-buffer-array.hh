@@ -8,6 +8,13 @@
 
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
+
+namespace brasio::renderer::vulkan
+{
+
+    class VulkanRenderer;
+}
 
 namespace brasio::renderer::vulkan
 {
@@ -23,23 +30,16 @@ namespace brasio::renderer::vulkan
         void reset(uint32_t commandBufferIndex);
 
         void begin(uint32_t commandBufferIndex, uint32_t imageIndex,
-                   const VkRenderPass &renderPass,
-                   const SwapchainType &swapchain);
+                   const VkRenderPass &renderPass, const Swapchain &swapchain);
 
         void setViewport(uint32_t commandBufferIndex,
-                         const SwapchainType &swapchain);
+                         const Swapchain &swapchain);
 
         void setScissor(uint32_t commandBufferIndex,
-                        const SwapchainType &swapchain);
+                        const Swapchain &swapchain);
 
-        void record(uint32_t commandBufferIndex, uint32_t imageIndex,
-                    const VkRenderPass &renderPass,
-                    const SwapchainType &swapchain,
-                    const GraphicsPipelineType &graphicsPipeline,
-                    const VkPipelineLayout &layout,
-                    const VkDescriptorSet &descriptorSet,
-                    const VkBuffer &vertexBuffer, const VkBuffer &indexBuffer,
-                    const std::vector<uint16_t> &indices);
+        void record(const VulkanRenderer &renderer, uint32_t commandBufferIndex,
+                    uint32_t imageIndex);
     };
 
     using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
