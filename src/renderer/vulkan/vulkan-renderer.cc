@@ -24,7 +24,6 @@ namespace brasio::renderer::vulkan
     VulkanRenderer::VulkanRenderer(GLFWwindow *window)
         : _window(window)
         , _shaderManager("shaders", "output.log")
-        , _mesh(mesh::Cube())
     {
         io::logging::Logger::trace(std::cout, "Creating Vulkan renderer",
                                    { "CREATE" });
@@ -42,8 +41,8 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
-        createVertexBuffer();
-        createIndexBuffer();
+        _mesh = std::make_unique<mesh::Cube>();
+        _mesh->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -61,11 +60,10 @@ namespace brasio::renderer::vulkan
         io::logging::Logger::trace(std::cout, "Destroying Vulkan renderer",
                                    { "DESTROY" });
         cleanupSwapChain();
+        _mesh.reset();
         _descriptorPool.reset();
         _uniformBuffers.clear();
         _descriptorSetLayout.reset();
-        _indexBuffer.reset();
-        _vertexBuffer.reset();
         _graphicsPipeline.reset();
         _pipelineLayout.reset();
         _renderPass.reset();
@@ -276,83 +274,6 @@ namespace brasio::renderer::vulkan
         _swapchain->createFramebuffers(_renderPass->getHandle());
     }
 
-    void VulkanRenderer::createVertexBuffer()
-    {
-        VkDeviceSize bufferSize =
-            sizeof(_mesh.getVertices()[0]) * _mesh.getVertices().size();
-
-        VkBufferUsageFlags stagingBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags stagingBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-        builders::BufferBuilder stagingBufferBuilder(_physicalDevice,
-                                                     _logicalDevice);
-        stagingBufferBuilder.withSize(bufferSize)
-            .withUsage(stagingBufferUsageFlags)
-            .withData(_mesh.getVertices().data())
-            .withMemoryProperties(stagingBufferMemoryFlags);
-
-        BufferType stagingBuffer = stagingBufferBuilder.build();
-        stagingBuffer->unmapMemory();
-
-        VkBufferUsageFlags vertexBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT
-            | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        VkMemoryPropertyFlags vertexBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-        builders::BufferBuilder vertexBufferBuilder(_physicalDevice,
-                                                    _logicalDevice);
-        vertexBufferBuilder.withSize(bufferSize)
-            .withUsage(vertexBufferUsageFlags)
-            .withMemoryProperties(vertexBufferMemoryFlags);
-
-        _vertexBuffer = vertexBufferBuilder.build();
-
-        stagingBuffer->copyInto(*_vertexBuffer, _commandPool->getHandle(),
-                                bufferSize);
-    }
-
-    void VulkanRenderer::createIndexBuffer()
-    {
-        VkDeviceSize bufferSize =
-            sizeof(_mesh.getIndices()[0]) * _mesh.getIndices().size();
-
-        VkBufferUsageFlags stagingBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags stagingBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-        builders::BufferBuilder stagingBufferBuilder(_physicalDevice,
-                                                     _logicalDevice);
-        stagingBufferBuilder.withSize(bufferSize)
-            .withUsage(stagingBufferUsageFlags)
-            .withData(_mesh.getIndices().data())
-            .withMemoryProperties(stagingBufferMemoryFlags);
-
-        BufferType stagingBuffer = stagingBufferBuilder.build();
-        stagingBuffer->unmapMemory();
-
-        VkBufferUsageFlags indexBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-        VkMemoryPropertyFlags indexBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-        builders::BufferBuilder indexBufferBuilder(_physicalDevice,
-                                                   _logicalDevice);
-        indexBufferBuilder.withSize(bufferSize)
-            .withUsage(indexBufferUsageFlags)
-            .withMemoryProperties(indexBufferMemoryFlags);
-
-        _indexBuffer = indexBufferBuilder.build();
-
-        stagingBuffer->copyInto(*_indexBuffer, _commandPool->getHandle(),
-                                bufferSize);
-    }
-
     void VulkanRenderer::createUniformBuffers()
     {
         VkDeviceSize bufferSize = sizeof(structs::UniformBufferObject);
@@ -455,19 +376,9 @@ namespace brasio::renderer::vulkan
         return _commandBuffers;
     }
 
-    const Buffer &VulkanRenderer::getVertexBuffer() const
-    {
-        return *_vertexBuffer;
-    }
-
-    const Buffer &VulkanRenderer::getIndexBuffer() const
-    {
-        return *_indexBuffer;
-    }
-
     const mesh::Mesh &VulkanRenderer::getMesh() const
     {
-        return _mesh;
+        return *_mesh;
     }
 
     const DescriptorSetLayout &VulkanRenderer::getDescriptorSetLayout() const

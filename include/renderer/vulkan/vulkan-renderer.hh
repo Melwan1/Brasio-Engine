@@ -68,8 +68,6 @@ namespace brasio::renderer::vulkan
         void cleanupSwapChain();
         void recreateSwapChain();
 
-        void createVertexBuffer();
-        void createIndexBuffer();
         void createUniformBuffers();
 
         void updateUniformBuffer(uint32_t currentImage);
@@ -85,8 +83,6 @@ namespace brasio::renderer::vulkan
         const PipelineLayout &getPipelineLayout() const;
         const GraphicsPipeline &getGraphicsPipeline() const;
         const CommandBufferArrayType &getCommandBuffers() const;
-        const Buffer &getVertexBuffer() const;
-        const Buffer &getIndexBuffer() const;
         const mesh::Mesh &getMesh() const;
         const DescriptorSetLayout &getDescriptorSetLayout() const;
         const DescriptorSets &getDescriptorSets() const;
@@ -95,7 +91,6 @@ namespace brasio::renderer::vulkan
     private:
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
-        mesh::Mesh _mesh;
 
         InstanceType _instance;
 
@@ -115,12 +110,10 @@ namespace brasio::renderer::vulkan
         GraphicsPipelineType _graphicsPipeline;
 
         CommandPoolType _commandPool;
+        mesh::MeshType _mesh;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;
-
-        BufferType _vertexBuffer;
-        BufferType _indexBuffer;
 
         DescriptorSetLayoutType _descriptorSetLayout;
         std::vector<BufferType> _uniformBuffers;

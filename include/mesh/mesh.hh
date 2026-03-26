@@ -6,6 +6,9 @@
 #include <geometry/vertex.hh>
 #include <mesh/transform-mode.hh>
 
+#include <renderer/vulkan/buffer.hh>
+#include <renderer/vulkan/command-pool.hh>
+
 namespace brasio::mesh
 {
 
@@ -17,8 +20,15 @@ namespace brasio::mesh
 
         const std::vector<geometry::Vertex> &getVertices() const;
         std::vector<geometry::Vertex> &getVertices();
+
         const std::vector<uint16_t> &getIndices() const;
         std::vector<uint16_t> &getIndices();
+
+        const renderer::vulkan::BufferType &getVertexBuffer() const;
+        renderer::vulkan::BufferType &getVertexBuffer();
+
+        const renderer::vulkan::BufferType &getIndexBuffer() const;
+        renderer::vulkan::BufferType &getIndexBuffer();
 
         void draw(const renderer::Renderer &renderer);
         void drawWireframe(const renderer::Renderer &renderer);
@@ -34,12 +44,32 @@ namespace brasio::mesh
 
         void applyScale(TransformMode transformMode, const glm::vec3 &scale);
 
+        void createVertexBuffer(
+            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+            const renderer::vulkan::LogicalDeviceType &logicalDevice,
+            const renderer::vulkan::CommandPoolType &commandPool);
+
+        void createIndexBuffer(
+            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+            const renderer::vulkan::LogicalDeviceType &logicalDevice,
+            const renderer::vulkan::CommandPoolType &commandPool);
+
+        void createBuffers(
+            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+            const renderer::vulkan::LogicalDeviceType &logicalDevice,
+            const renderer::vulkan::CommandPoolType &commandPool);
+
     private:
         std::vector<geometry::Vertex> _vertices;
         std::vector<uint16_t> _indices;
 
+        renderer::vulkan::BufferType _vertexBuffer;
+        renderer::vulkan::BufferType _indexBuffer;
+
         glm::mat4 _transformGPU;
         glm::mat4 _transformCPU;
     };
+
+    using MeshType = std::unique_ptr<Mesh>;
 
 } // namespace brasio::mesh
