@@ -19,5 +19,6 @@ target_link_libraries(libmesh PRIVATE
 )
 
 target_sources(libmesh PRIVATE
+    cube.cc
     mesh.cc
 )

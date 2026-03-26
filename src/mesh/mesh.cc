@@ -5,14 +5,40 @@
 namespace brasio::mesh
 {
 
-    Mesh::Mesh(const std::vector<geometry::Vertex> &vertices)
+    Mesh::Mesh(const std::vector<geometry::Vertex> &vertices,
+               const std::vector<uint16_t> &indices)
         : _vertices(vertices)
+        , _indices(indices)
     {}
 
-    void Mesh::draw(const Renderer &renderer)
-    {}
-    void Mesh::drawWireframe(const Renderer &renderer)
-    {}
+    const std::vector<geometry::Vertex> &Mesh::getVertices() const
+    {
+        return _vertices;
+    }
+
+    std::vector<geometry::Vertex> &Mesh::getVertices()
+    {
+        return _vertices;
+    }
+
+    const std::vector<uint16_t> &Mesh::getIndices() const
+    {
+        return _indices;
+    }
+
+    std::vector<uint16_t> &Mesh::getIndices()
+    {
+        return _indices;
+    }
+
+    void Mesh::draw(const renderer::Renderer &renderer)
+    {
+        (void)renderer;
+    }
+    void Mesh::drawWireframe(const renderer::Renderer &renderer)
+    {
+        (void)renderer;
+    }
 
     void Mesh::applyTransform(TransformMode transformMode,
                               const glm::mat4 &transform)

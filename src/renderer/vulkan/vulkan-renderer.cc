@@ -15,7 +15,7 @@
 #include <renderer/vulkan/builders/all.hh>
 
 #include <shaders/shader-module.hh>
-#include <renderer/vulkan/data.hh>
+#include <mesh/cube.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -24,8 +24,7 @@ namespace brasio::renderer::vulkan
     VulkanRenderer::VulkanRenderer(GLFWwindow *window)
         : _window(window)
         , _shaderManager("shaders", "output.log")
-        , _vertices(vertices_data)
-        , _indices(indices_data)
+        , _mesh(mesh::Cube())
     {
         io::logging::Logger::trace(std::cout, "Creating Vulkan renderer",
                                    { "CREATE" });
@@ -279,7 +278,8 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createVertexBuffer()
     {
-        VkDeviceSize bufferSize = sizeof(_vertices[0]) * _vertices.size();
+        VkDeviceSize bufferSize =
+            sizeof(_mesh.getVertices()[0]) * _mesh.getVertices().size();
 
         VkBufferUsageFlags stagingBufferUsageFlags =
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -291,7 +291,7 @@ namespace brasio::renderer::vulkan
                                                      _logicalDevice);
         stagingBufferBuilder.withSize(bufferSize)
             .withUsage(stagingBufferUsageFlags)
-            .withData(_vertices.data())
+            .withData(_mesh.getVertices().data())
             .withMemoryProperties(stagingBufferMemoryFlags);
 
         BufferType stagingBuffer = stagingBufferBuilder.build();
@@ -317,7 +317,8 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createIndexBuffer()
     {
-        VkDeviceSize bufferSize = sizeof(_indices[0]) * _indices.size();
+        VkDeviceSize bufferSize =
+            sizeof(_mesh.getIndices()[0]) * _mesh.getIndices().size();
 
         VkBufferUsageFlags stagingBufferUsageFlags =
             VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -329,7 +330,7 @@ namespace brasio::renderer::vulkan
                                                      _logicalDevice);
         stagingBufferBuilder.withSize(bufferSize)
             .withUsage(stagingBufferUsageFlags)
-            .withData(_indices.data())
+            .withData(_mesh.getIndices().data())
             .withMemoryProperties(stagingBufferMemoryFlags);
 
         BufferType stagingBuffer = stagingBufferBuilder.build();
@@ -464,9 +465,9 @@ namespace brasio::renderer::vulkan
         return *_indexBuffer;
     }
 
-    const std::vector<uint16_t> &VulkanRenderer::getIndices() const
+    const mesh::Mesh &VulkanRenderer::getMesh() const
     {
-        return _indices;
+        return _mesh;
     }
 
     const DescriptorSetLayout &VulkanRenderer::getDescriptorSetLayout() const

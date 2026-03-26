@@ -24,7 +24,7 @@
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
 #include <shaders/shader-manager.hh>
-#include <geometry/vertex.hh>
+#include <mesh/mesh.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -87,7 +87,7 @@ namespace brasio::renderer::vulkan
         const CommandBufferArrayType &getCommandBuffers() const;
         const Buffer &getVertexBuffer() const;
         const Buffer &getIndexBuffer() const;
-        const std::vector<uint16_t> &getIndices() const;
+        const mesh::Mesh &getMesh() const;
         const DescriptorSetLayout &getDescriptorSetLayout() const;
         const DescriptorSets &getDescriptorSets() const;
         uint32_t getCurrentFrame() const;
@@ -95,8 +95,7 @@ namespace brasio::renderer::vulkan
     private:
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
-        std::vector<geometry::Vertex> _vertices;
-        std::vector<uint16_t> _indices;
+        mesh::Mesh _mesh;
 
         InstanceType _instance;
 

@@ -150,7 +150,8 @@ namespace brasio::renderer::vulkan
         uint32_t firstInstance = 0;
         uint32_t instanceOffset = 0;
         vkCmdDrawIndexed(
-            commandBuffer, static_cast<uint32_t>(renderer.getIndices().size()),
+            commandBuffer,
+            static_cast<uint32_t>(renderer.getMesh().getIndices().size()),
             instanceCount, firstVertex, firstInstance, instanceOffset);
         vkCmdEndRenderPass(commandBuffer);
 
