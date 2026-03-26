@@ -8,3 +8,4 @@ report.xml
 
 # OTHER
 *.cap
+compiled-shaders/
