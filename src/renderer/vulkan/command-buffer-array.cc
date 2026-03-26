@@ -130,7 +130,8 @@ namespace brasio::renderer::vulkan
 
         setViewport(commandBufferIndex, renderer.getSwapchain());
         setScissor(commandBufferIndex, renderer.getSwapchain());
-        renderer.getMesh().draw(commandBuffer, renderer);
+        renderer.getMesh1().draw(commandBuffer, renderer);
+        renderer.getMesh2().draw(commandBuffer, renderer);
 
         vkCmdEndRenderPass(commandBuffer);
 

@@ -1,3 +1,4 @@
+#include "mesh/transform-mode.hh"
 #define GLM_FORCE_RADIANS
 
 #include <renderer/vulkan/vulkan-renderer.hh>
@@ -16,6 +17,7 @@
 
 #include <shaders/shader-module.hh>
 #include <mesh/cube.hh>
+#include <mesh/plane.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -41,8 +43,15 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
-        _mesh = std::make_unique<mesh::Cube>();
-        _mesh->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        _mesh1 = std::make_unique<mesh::Cube>();
+        _mesh1->applyTranslation(mesh::TransformMode::CPU,
+                                 { -1.0f, 0.0f, 1.0f });
+        _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+
+        _mesh2 = std::make_unique<mesh::Plane>();
+        _mesh2->applyTranslation(mesh::TransformMode::CPU,
+                                 { 1.0f, 0.0f, -1.0f });
+        _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -60,7 +69,8 @@ namespace brasio::renderer::vulkan
         io::logging::Logger::trace(std::cout, "Destroying Vulkan renderer",
                                    { "DESTROY" });
         cleanupSwapChain();
-        _mesh.reset();
+        _mesh1.reset();
+        _mesh2.reset();
         _descriptorPool.reset();
         _uniformBuffers.clear();
         _descriptorSetLayout.reset();
@@ -376,9 +386,14 @@ namespace brasio::renderer::vulkan
         return _commandBuffers;
     }
 
-    const mesh::Mesh &VulkanRenderer::getMesh() const
+    const mesh::Mesh &VulkanRenderer::getMesh1() const
     {
-        return *_mesh;
+        return *_mesh1;
+    }
+
+    const mesh::Mesh &VulkanRenderer::getMesh2() const
+    {
+        return *_mesh2;
     }
 
     const DescriptorSetLayout &VulkanRenderer::getDescriptorSetLayout() const

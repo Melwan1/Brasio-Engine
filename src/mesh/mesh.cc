@@ -13,6 +13,11 @@ namespace brasio::mesh
         , _indices(indices)
     {}
 
+    Mesh::Mesh(const std::pair<std::vector<geometry::Vertex>,
+                               std::vector<uint16_t>> &vertices_indices)
+        : Mesh(vertices_indices.first, vertices_indices.second)
+    {}
+
     const std::vector<geometry::Vertex> &Mesh::getVertices() const
     {
         return _vertices;

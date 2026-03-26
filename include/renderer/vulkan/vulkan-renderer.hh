@@ -89,7 +89,8 @@ namespace brasio::renderer::vulkan
         const PipelineLayout &getPipelineLayout() const;
         const GraphicsPipeline &getGraphicsPipeline() const;
         const CommandBufferArrayType &getCommandBuffers() const;
-        const mesh::Mesh &getMesh() const;
+        const mesh::Mesh &getMesh1() const;
+        const mesh::Mesh &getMesh2() const;
         const DescriptorSetLayout &getDescriptorSetLayout() const;
         const DescriptorSets &getDescriptorSets() const;
         uint32_t getCurrentFrame() const;
@@ -116,7 +117,8 @@ namespace brasio::renderer::vulkan
         GraphicsPipelineType _graphicsPipeline;
 
         CommandPoolType _commandPool;
-        mesh::MeshType _mesh;
+        mesh::MeshType _mesh1;
+        mesh::MeshType _mesh2;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;

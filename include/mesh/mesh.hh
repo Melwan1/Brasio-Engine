@@ -25,6 +25,8 @@ namespace brasio::mesh
     public:
         Mesh(const std::vector<geometry::Vertex> &vertices,
              const std::vector<uint16_t> &indices);
+        Mesh(const std::pair<std::vector<geometry::Vertex>,
+                             std::vector<uint16_t>> &vertices_indices);
 
         const std::vector<geometry::Vertex> &getVertices() const;
         std::vector<geometry::Vertex> &getVertices();
