@@ -130,31 +130,8 @@ namespace brasio::renderer::vulkan
 
         setViewport(commandBufferIndex, renderer.getSwapchain());
         setScissor(commandBufferIndex, renderer.getSwapchain());
+        renderer.getMesh().draw(commandBuffer, renderer);
 
-        VkBuffer vertexBuffers[] = {
-            renderer.getMesh().getVertexBuffer()->getHandle()
-        };
-        VkDeviceSize offsets[] = { 0 };
-        uint32_t firstBinding = 0;
-        uint32_t bindingCount = 1;
-        vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount,
-                               vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(commandBuffer,
-                             renderer.getMesh().getIndexBuffer()->getHandle(),
-                             0, VK_INDEX_TYPE_UINT16);
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                renderer.getPipelineLayout().getHandle(), 0, 1,
-                                &renderer.getDescriptorSets().getHandle().at(
-                                    renderer.getCurrentFrame()),
-                                0, nullptr);
-        uint32_t instanceCount = 1;
-        uint32_t firstVertex = 0;
-        uint32_t firstInstance = 0;
-        uint32_t instanceOffset = 0;
-        vkCmdDrawIndexed(
-            commandBuffer,
-            static_cast<uint32_t>(renderer.getMesh().getIndices().size()),
-            instanceCount, firstVertex, firstInstance, instanceOffset);
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)

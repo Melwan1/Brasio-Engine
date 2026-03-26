@@ -8,6 +8,14 @@
 
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-pool.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
+
+namespace brasio::renderer::vulkan
+{
+
+    class VulkanRenderer;
+
+}
 
 namespace brasio::mesh
 {
@@ -30,8 +38,11 @@ namespace brasio::mesh
         const renderer::vulkan::BufferType &getIndexBuffer() const;
         renderer::vulkan::BufferType &getIndexBuffer();
 
-        void draw(const renderer::Renderer &renderer);
-        void drawWireframe(const renderer::Renderer &renderer);
+        void draw(const VkCommandBuffer &commandBuffer,
+                  const renderer::vulkan::VulkanRenderer &renderer) const;
+        void
+        drawWireframe(const VkCommandBuffer &commandBuffer,
+                      const renderer::vulkan::VulkanRenderer &renderer) const;
 
         void applyTransform(TransformMode transformMode,
                             const glm::mat4 &transform);

@@ -32,6 +32,12 @@ namespace brasio::renderer::vulkan
     using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
 } // namespace brasio::renderer::vulkan
 
+namespace brasio::mesh
+{
+    class Mesh;
+    using MeshType = std::unique_ptr<Mesh>;
+} // namespace brasio::mesh
+
 namespace brasio::renderer::vulkan
 {
     /**
