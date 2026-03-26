@@ -393,6 +393,10 @@ namespace brasio::renderer::vulkan
         structs::UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::rotate(ubo.model, time / 2 * glm::radians(90.0f),
+                                glm::vec3(0.0f, 1.0f, 0.0f));
+        ubo.model = glm::rotate(ubo.model, time / 4 * glm::radians(90.0f),
+                                glm::vec3(1.0f, 0.0f, 0.0f));
         ubo.view = glm::lookAt(glm::vec3(-2.0f, 1.0f, -2.0f),
                                glm::vec3(0.0f, 0.0f, 0.0f),
                                glm::vec3(0.0f, 1.0f, 0.0f));
@@ -400,11 +404,7 @@ namespace brasio::renderer::vulkan
             glm::radians(45.0f),
             _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
-        io::logging::Logger::debug(std::cout, "Changing UBO content",
-                                   { "UPDATE" });
         _uniformBuffers.at(currentImage)->setContent(&ubo);
-        io::logging::Logger::debug(std::cout, "Changed UBO content",
-                                   { "UPDATE" });
     }
 
     void VulkanRenderer::createDescriptorPool()

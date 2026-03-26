@@ -17,7 +17,7 @@ namespace brasio::renderer::vulkan::builders
             .withPolygonMode(VK_POLYGON_MODE_FILL)
             .withLineWidth(1.0f)
             .withCullMode(VK_CULL_MODE_BACK_BIT)
-            .withFrontFace(VK_FRONT_FACE_CLOCKWISE)
+            .withFrontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE)
             .withDepthBiasEnable(VK_FALSE)
             .withDepthBiasConstantFactor(0.0f)
             .withDepthBiasClamp(0.0f)
