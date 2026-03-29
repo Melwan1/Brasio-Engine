@@ -23,6 +23,7 @@ add_subdirectory(events)
 add_subdirectory(geometry)
 add_subdirectory(io)
 add_subdirectory(math)
+add_subdirectory(mesh)
 add_subdirectory(renderer)
 add_subdirectory(shaders)
 
@@ -32,6 +33,8 @@ target_link_libraries(brasio PRIVATE
     libevents
     libgeometry
     libio
+    libmath
+    libmesh
     librenderer
     libshaders
 )

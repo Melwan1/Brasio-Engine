@@ -1,3 +1,4 @@
+#include "mesh/transform-mode.hh"
 #define GLM_FORCE_RADIANS
 
 #include <renderer/vulkan/vulkan-renderer.hh>
@@ -15,7 +16,10 @@
 #include <renderer/vulkan/builders/all.hh>
 
 #include <shaders/shader-module.hh>
-#include <renderer/vulkan/data.hh>
+#include <mesh/cube.hh>
+#include <mesh/plane.hh>
+#include <mesh/cone.hh>
+#include <mesh/cylinder.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -24,8 +28,6 @@ namespace brasio::renderer::vulkan
     VulkanRenderer::VulkanRenderer(GLFWwindow *window)
         : _window(window)
         , _shaderManager("shaders", "output.log")
-        , _vertices(vertices_data)
-        , _indices(indices_data)
     {
         io::logging::Logger::trace(std::cout, "Creating Vulkan renderer",
                                    { "CREATE" });
@@ -43,8 +45,15 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
-        createVertexBuffer();
-        createIndexBuffer();
+        _mesh1 = std::make_unique<mesh::Cylinder>();
+        _mesh1->applyTranslation(mesh::TransformMode::CPU,
+                                 { -1.0f, 0.0f, 1.0f });
+        _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+
+        _mesh2 = std::make_unique<mesh::Cone>();
+        _mesh2->applyTranslation(mesh::TransformMode::CPU,
+                                 { 1.0f, 0.0f, -1.0f });
+        _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -62,11 +71,11 @@ namespace brasio::renderer::vulkan
         io::logging::Logger::trace(std::cout, "Destroying Vulkan renderer",
                                    { "DESTROY" });
         cleanupSwapChain();
+        _mesh1.reset();
+        _mesh2.reset();
         _descriptorPool.reset();
         _uniformBuffers.clear();
         _descriptorSetLayout.reset();
-        _indexBuffer.reset();
-        _vertexBuffer.reset();
         _graphicsPipeline.reset();
         _pipelineLayout.reset();
         _renderPass.reset();
@@ -102,7 +111,7 @@ namespace brasio::renderer::vulkan
                 .withSurfaceFormat(
                     { .format = VK_FORMAT_R8G8B8A8_SRGB,
                       .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-                .withPresentMode(VK_PRESENT_MODE_MAILBOX_KHR)
+                .withPresentMode(VK_PRESENT_MODE_FIFO_KHR)
                 .build();
     }
 
@@ -277,81 +286,6 @@ namespace brasio::renderer::vulkan
         _swapchain->createFramebuffers(_renderPass->getHandle());
     }
 
-    void VulkanRenderer::createVertexBuffer()
-    {
-        VkDeviceSize bufferSize = sizeof(_vertices[0]) * _vertices.size();
-
-        VkBufferUsageFlags stagingBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags stagingBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-        builders::BufferBuilder stagingBufferBuilder(_physicalDevice,
-                                                     _logicalDevice);
-        stagingBufferBuilder.withSize(bufferSize)
-            .withUsage(stagingBufferUsageFlags)
-            .withData(_vertices.data())
-            .withMemoryProperties(stagingBufferMemoryFlags);
-
-        BufferType stagingBuffer = stagingBufferBuilder.build();
-        stagingBuffer->unmapMemory();
-
-        VkBufferUsageFlags vertexBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT
-            | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        VkMemoryPropertyFlags vertexBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-        builders::BufferBuilder vertexBufferBuilder(_physicalDevice,
-                                                    _logicalDevice);
-        vertexBufferBuilder.withSize(bufferSize)
-            .withUsage(vertexBufferUsageFlags)
-            .withMemoryProperties(vertexBufferMemoryFlags);
-
-        _vertexBuffer = vertexBufferBuilder.build();
-
-        stagingBuffer->copyInto(*_vertexBuffer, _commandPool->getHandle(),
-                                bufferSize);
-    }
-
-    void VulkanRenderer::createIndexBuffer()
-    {
-        VkDeviceSize bufferSize = sizeof(_indices[0]) * _indices.size();
-
-        VkBufferUsageFlags stagingBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags stagingBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-            | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-        builders::BufferBuilder stagingBufferBuilder(_physicalDevice,
-                                                     _logicalDevice);
-        stagingBufferBuilder.withSize(bufferSize)
-            .withUsage(stagingBufferUsageFlags)
-            .withData(_indices.data())
-            .withMemoryProperties(stagingBufferMemoryFlags);
-
-        BufferType stagingBuffer = stagingBufferBuilder.build();
-        stagingBuffer->unmapMemory();
-
-        VkBufferUsageFlags indexBufferUsageFlags =
-            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-        VkMemoryPropertyFlags indexBufferMemoryFlags =
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-        builders::BufferBuilder indexBufferBuilder(_physicalDevice,
-                                                   _logicalDevice);
-        indexBufferBuilder.withSize(bufferSize)
-            .withUsage(indexBufferUsageFlags)
-            .withMemoryProperties(indexBufferMemoryFlags);
-
-        _indexBuffer = indexBufferBuilder.build();
-
-        stagingBuffer->copyInto(*_indexBuffer, _commandPool->getHandle(),
-                                bufferSize);
-    }
-
     void VulkanRenderer::createUniformBuffers()
     {
         VkDeviceSize bufferSize = sizeof(structs::UniformBufferObject);
@@ -393,6 +327,10 @@ namespace brasio::renderer::vulkan
         structs::UniformBufferObject ubo{};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
                                 glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.model = glm::rotate(ubo.model, time / 2 * glm::radians(90.0f),
+                                glm::vec3(0.0f, 1.0f, 0.0f));
+        ubo.model = glm::rotate(ubo.model, time / 4 * glm::radians(90.0f),
+                                glm::vec3(1.0f, 0.0f, 0.0f));
         ubo.view = glm::lookAt(glm::vec3(-2.0f, 1.0f, -2.0f),
                                glm::vec3(0.0f, 0.0f, 0.0f),
                                glm::vec3(0.0f, 1.0f, 0.0f));
@@ -400,11 +338,7 @@ namespace brasio::renderer::vulkan
             glm::radians(45.0f),
             _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
-        io::logging::Logger::debug(std::cout, "Changing UBO content",
-                                   { "UPDATE" });
         _uniformBuffers.at(currentImage)->setContent(&ubo);
-        io::logging::Logger::debug(std::cout, "Changed UBO content",
-                                   { "UPDATE" });
     }
 
     void VulkanRenderer::createDescriptorPool()
@@ -454,19 +388,14 @@ namespace brasio::renderer::vulkan
         return _commandBuffers;
     }
 
-    const Buffer &VulkanRenderer::getVertexBuffer() const
+    const mesh::Mesh &VulkanRenderer::getMesh1() const
     {
-        return *_vertexBuffer;
+        return *_mesh1;
     }
 
-    const Buffer &VulkanRenderer::getIndexBuffer() const
+    const mesh::Mesh &VulkanRenderer::getMesh2() const
     {
-        return *_indexBuffer;
-    }
-
-    const std::vector<uint16_t> &VulkanRenderer::getIndices() const
-    {
-        return _indices;
+        return *_mesh2;
     }
 
     const DescriptorSetLayout &VulkanRenderer::getDescriptorSetLayout() const

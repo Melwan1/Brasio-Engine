@@ -17,6 +17,7 @@ target_link_libraries(librenderer PRIVATE
     glfw
     libgeometry
     libio
+    libmesh
     libshaders
 )
 

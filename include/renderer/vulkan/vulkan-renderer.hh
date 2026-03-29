@@ -24,13 +24,19 @@
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
 #include <shaders/shader-manager.hh>
-#include <geometry/vertex.hh>
+#include <mesh/mesh.hh>
 
 namespace brasio::renderer::vulkan
 {
     class CommandBufferArray;
     using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
 } // namespace brasio::renderer::vulkan
+
+namespace brasio::mesh
+{
+    class Mesh;
+    using MeshType = std::unique_ptr<Mesh>;
+} // namespace brasio::mesh
 
 namespace brasio::renderer::vulkan
 {
@@ -68,8 +74,6 @@ namespace brasio::renderer::vulkan
         void cleanupSwapChain();
         void recreateSwapChain();
 
-        void createVertexBuffer();
-        void createIndexBuffer();
         void createUniformBuffers();
 
         void updateUniformBuffer(uint32_t currentImage);
@@ -85,9 +89,8 @@ namespace brasio::renderer::vulkan
         const PipelineLayout &getPipelineLayout() const;
         const GraphicsPipeline &getGraphicsPipeline() const;
         const CommandBufferArrayType &getCommandBuffers() const;
-        const Buffer &getVertexBuffer() const;
-        const Buffer &getIndexBuffer() const;
-        const std::vector<uint16_t> &getIndices() const;
+        const mesh::Mesh &getMesh1() const;
+        const mesh::Mesh &getMesh2() const;
         const DescriptorSetLayout &getDescriptorSetLayout() const;
         const DescriptorSets &getDescriptorSets() const;
         uint32_t getCurrentFrame() const;
@@ -95,8 +98,6 @@ namespace brasio::renderer::vulkan
     private:
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
-        std::vector<geometry::Vertex> _vertices;
-        std::vector<uint16_t> _indices;
 
         InstanceType _instance;
 
@@ -116,12 +117,11 @@ namespace brasio::renderer::vulkan
         GraphicsPipelineType _graphicsPipeline;
 
         CommandPoolType _commandPool;
+        mesh::MeshType _mesh1;
+        mesh::MeshType _mesh2;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;
-
-        BufferType _vertexBuffer;
-        BufferType _indexBuffer;
 
         DescriptorSetLayoutType _descriptorSetLayout;
         std::vector<BufferType> _uniformBuffers;
