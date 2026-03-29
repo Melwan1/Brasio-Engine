@@ -19,7 +19,9 @@ target_link_libraries(libmesh PRIVATE
 )
 
 target_sources(libmesh PRIVATE
+    cone.cc
     cube.cc
+    cylinder.cc
     mesh.cc
     plane.cc
 )

@@ -72,6 +72,8 @@ namespace brasio::mesh
             const renderer::vulkan::LogicalDeviceType &logicalDevice,
             const renderer::vulkan::CommandPoolType &commandPool);
 
+        void print(std::ostream &ostr) const;
+
     private:
         std::vector<geometry::Vertex> _vertices;
         std::vector<uint16_t> _indices;

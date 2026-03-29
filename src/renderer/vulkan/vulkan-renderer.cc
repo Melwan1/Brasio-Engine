@@ -18,6 +18,8 @@
 #include <shaders/shader-module.hh>
 #include <mesh/cube.hh>
 #include <mesh/plane.hh>
+#include <mesh/cone.hh>
+#include <mesh/cylinder.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -43,12 +45,12 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipeline();
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Cube>();
+        _mesh1 = std::make_unique<mesh::Cylinder>();
         _mesh1->applyTranslation(mesh::TransformMode::CPU,
                                  { -1.0f, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
-        _mesh2 = std::make_unique<mesh::Plane>();
+        _mesh2 = std::make_unique<mesh::Cone>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
@@ -109,7 +111,7 @@ namespace brasio::renderer::vulkan
                 .withSurfaceFormat(
                     { .format = VK_FORMAT_R8G8B8A8_SRGB,
                       .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-                .withPresentMode(VK_PRESENT_MODE_MAILBOX_KHR)
+                .withPresentMode(VK_PRESENT_MODE_FIFO_KHR)
                 .build();
     }
 

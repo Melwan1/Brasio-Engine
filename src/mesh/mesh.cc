@@ -3,6 +3,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <renderer/vulkan/builders/buffer-builder.hh>
+#include <io/logging/logger.hh>
 
 namespace brasio::mesh
 {
@@ -224,6 +225,20 @@ namespace brasio::mesh
     {
         createVertexBuffer(physicalDevice, logicalDevice, commandPool);
         createIndexBuffer(physicalDevice, logicalDevice, commandPool);
+    }
+
+    void Mesh::print(std::ostream &ostr) const
+    {
+        std::ostringstream oss;
+        oss << "Drawing " << getVertices().size() << " vertices and "
+            << getIndices().size() << " segments (= " << getIndices().size() / 3
+            << " triangles)\n";
+        oss << "Indices: ";
+        for (unsigned index = 0; index < getIndices().size(); index++)
+        {
+            oss << getIndices()[index] << " ";
+        }
+        io::logging::Logger::trace(ostr, oss.str(), { "DRAWING" });
     }
 
 } // namespace brasio::mesh
