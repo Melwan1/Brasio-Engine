@@ -32,8 +32,8 @@ namespace brasio::renderer::vulkan::builders
     {
         VkPipelineViewportStateCreateInfo createInfo{};
         createInfo.sType = _structureType;
-        createInfo.viewportCount = 1;
-        createInfo.scissorCount = 1;
+        createInfo.viewportCount = _viewportCount;
+        createInfo.scissorCount = _scissorCount;
         return createInfo;
     }
 } // namespace brasio::renderer::vulkan::builders

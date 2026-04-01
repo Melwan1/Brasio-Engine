@@ -8,11 +8,13 @@ set_target_properties(librenderer PROPERTIES
 target_include_directories(librenderer PRIVATE
     ${OPENGL_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIRS}
+    ${YAML_CPP_INCLUDE_DIRS}
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/src
 )
 
 target_link_libraries(librenderer PRIVATE
+    ${YAML_CPP_LIBRARIES}
     Vulkan::Vulkan
     glfw
     libgeometry

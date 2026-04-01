@@ -24,5 +24,7 @@ find_package(GLEW REQUIRED)
 
 find_package(Vulkan REQUIRED)
 
+find_package(yaml-cpp REQUIRED)
+
 add_subdirectory(src)
 add_subdirectory(tests)
