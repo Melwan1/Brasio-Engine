@@ -73,8 +73,8 @@ namespace brasio::renderer::vulkan
         void createImageViews();
 
         void createRenderPass();
-        void createGraphicsPipeline();
-        void createGraphicsPipeline(const YAML::Node &pipelineConfig);
+        void createGraphicsPipelines();
+        void createGraphicsPipelines(const YAML::Node &pipelineConfig);
 
         void createCommandPool();
         void createCommandBuffers();
@@ -97,7 +97,7 @@ namespace brasio::renderer::vulkan
         const Swapchain &getSwapchain() const;
         const RenderPass &getRenderPass() const;
         const PipelineLayout &getPipelineLayout() const;
-        const GraphicsPipeline &getGraphicsPipeline() const;
+        const std::vector<GraphicsPipelineType> &getGraphicsPipelines() const;
         const CommandBufferArrayType &getCommandBuffers() const;
         const mesh::Mesh &getMesh1() const;
         const mesh::Mesh &getMesh2() const;
@@ -127,7 +127,7 @@ namespace brasio::renderer::vulkan
         SwapchainType _swapchain;
         RenderPassType _renderPass;
         PipelineLayoutType _pipelineLayout;
-        GraphicsPipelineType _graphicsPipeline;
+        std::vector<GraphicsPipelineType> _graphicsPipelines;
 
         CommandPoolType _commandPool;
         mesh::MeshType _mesh1;

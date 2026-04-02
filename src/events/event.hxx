@@ -74,7 +74,7 @@ namespace brasio::events {
 
         std::ostringstream oss;
         oss << "Duration: " << FG_ESC(76) << std::setw(5) << std::setfill(' ') << duration.count() << " us" << ESC_RESET;
-        io::logging::Logger::trace(ostr, "Handling " + getTypeName(), {"EVENT", oss.str()});
+        BRASIO_LOG_TRACE(ostr, "Handling " + getTypeName(), { "EVENT", oss.str()});
         
     }
 
@@ -83,7 +83,7 @@ namespace brasio::events {
     {
         if (!_handled)
         {
-            io::logging::Logger::warning(std::cout, "Destroying event of type " + std::to_string(getType()) + " without handling it", { "EVENT" } );
+            BRASIO_LOG_WARNING(std::cout, "Destroying event of type " + std::to_string(getType()) + " without handling it", { "EVENT" } );
         }
     }
 } // namespace brasio::events

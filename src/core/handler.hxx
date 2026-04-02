@@ -31,9 +31,9 @@ namespace brasio::core {
     template <typename T>
     Handler<T>::~Handler()
     {
-        io::logging::Logger::trace(std::cout, "Destroying " + _objectName, { "DESTROY" });
+        BRASIO_LOG_TRACE(std::cout, "Destroying " + _objectName, { "DESTROY" });
         _destroyFunc(_handle);
-        io::logging::Logger::trace(std::cout, "Destroyed " + _objectName, { "DESTROY" });
+        BRASIO_LOG_TRACE(std::cout, "Destroyed " + _objectName, { "DESTROY" });
     }
 
     template <typename T>

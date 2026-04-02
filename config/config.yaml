@@ -10,7 +10,8 @@ application:
 renderer:
   type: Vulkan
   max_frames_in_flight: 2
-  present_mode: FIFO
+  swapchain:
+    present_mode: FIFO
 
   pipelines:
     - name: Draw filled polygons
@@ -48,11 +49,11 @@ renderer:
       color_blend_attachment:
         writeMask: RGBA
         blend: false
-        src_color_blend_factor: 1
-        dst_color_blend_factor: 0
+        src_color_blend_factor: ONE
+        dst_color_blend_factor: ZERO
         color_blend_op: ADD
-        src_alpha_blend_factor: 1
-        dst_alpha_blend_factor: 0
+        src_alpha_blend_factor: ONE
+        dst_alpha_blend_factor: ZERO
         alpha_blend_op: ADD
 
       color_blend_state: 
@@ -62,7 +63,7 @@ renderer:
     - name: Draw wireframe
       shaders:
         vertex: vertex/ubo.vert
-        fragment: fragment/minimal-triangle.frag
+        fragment: fragment/wireframe.frag
 
       dynamic_states:
         - VIEWPORT
@@ -76,7 +77,7 @@ renderer:
         depth_clamp: false
         discard: false
         polygon_mode: LINE
-        line_width: 1
+        line_width: 3
         cull_mode: BACK
         front_face: CCW
         depth_bias: false
@@ -94,11 +95,11 @@ renderer:
       color_blend_attachment:
         writeMask: RGBA
         blend: false
-        src_color_blend_factor: 1
-        dst_color_blend_factor: 0
+        src_color_blend_factor: ONE
+        dst_color_blend_factor: ZERO
         color_blend_op: ADD
-        src_alpha_blend_factor: 1
-        dst_alpha_blend_factor: 0
+        src_alpha_blend_factor: ONE
+        dst_alpha_blend_factor: ZERO
         alpha_blend_op: ADD
 
       color_blend_state: 
@@ -106,4 +107,4 @@ renderer:
         logic_op: COPY
 
 logging:
-  level: TRACE
+  level: DEBUG

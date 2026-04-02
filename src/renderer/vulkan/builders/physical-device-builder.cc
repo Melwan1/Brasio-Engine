@@ -26,19 +26,19 @@ namespace brasio::renderer::vulkan::builders
         std::multimap<int, std::unique_ptr<PhysicalDevice>> deviceMap =
             _ratePhysicalDevices();
 
-        std::ostringstream oss;
-        oss << "Best physical device has suitability score "
-            << deviceMap.rbegin()->first << "\n";
-        io::logging::Logger::info(std::cout, oss.str(), { "CREATE" });
+        BRASIO_LOG_INFO(std::cout,
+                        "Best physical device has suitability score "
+                            + std::to_string(deviceMap.rbegin()->first),
+                        { "CREATE" });
 
         if (deviceMap.rbegin()->first > 0)
         {
-            io::logging::Logger::trace(
-                std::cout, "Picking best physical device", { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout, "Picking best physical device",
+                             { "CREATE" });
         }
         else
         {
-            io::logging::Logger::critical(
+            BRASIO_LOG_CRITICAL(
                 std::cout,
                 "No physical device has a positive suitability score",
                 { "CREATE" });
@@ -61,10 +61,8 @@ namespace brasio::renderer::vulkan::builders
 
         if (deviceCount == 0)
         {
-            io::logging::Logger::critical(
-                std::cout, "Found no GPU with Vulkan support", { "CREATE" });
-            throw std::runtime_error(
-                "Failed to find a GPU with Vulkan support.");
+            BRASIO_LOG_CRITICAL(std::cout, "Found no GPU with Vulkan support",
+                                { "CREATE" });
         }
 
         std::vector<VkPhysicalDevice> devices(deviceCount);

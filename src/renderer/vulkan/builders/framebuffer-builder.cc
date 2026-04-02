@@ -41,8 +41,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.height = _extent.height;
         createInfo.layers = _layers;
 
-        io::logging::Logger::trace(std::cout, "Creating framebuffer",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating framebuffer", { "CREATE" });
 
         VkFramebuffer framebuffer;
 
@@ -50,11 +49,10 @@ namespace brasio::renderer::vulkan::builders
                                 &framebuffer)
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create framebuffer", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create framebuffer",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created framebuffer",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created framebuffer", { "CREATE" });
         return framebuffer;
     }
 } // namespace brasio::renderer::vulkan::builders

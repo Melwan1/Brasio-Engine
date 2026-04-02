@@ -118,31 +118,30 @@ namespace brasio::renderer::vulkan::builders
     bool GraphicsPipelineBuilder::_checkUniqueShaderType(
         const std::string &extension)
     {
-        std::ostringstream check_message_oss;
-        check_message_oss << "Checking " << extension << " against "
-                          << _shaderPaths.size() << " shaders.";
-        io::logging::Logger::debug(std::cout, check_message_oss.str());
+        BRASIO_LOG_DEBUG(std::cout,
+                         "Checking" + extension + "against"
+                             + std::to_string(_shaderPaths.size()) + "shaders");
         int shaderCount = std::count_if(
             _shaderPaths.begin(), _shaderPaths.end(),
             [&extension](const fs::path &shaderPath) {
-                io::logging::Logger::trace(
-                    std::cout,
-                    "shader path: " + shaderPath.string()
-                        + ", extension: " + shaderPath.extension().string());
+                BRASIO_LOG_TRACE(std::cout,
+                                 "shader path: " + shaderPath.string()
+                                     + ", extension: "
+                                     + shaderPath.extension().string());
                 return shaderPath.extension().string() == extension;
             });
-        io::logging::Logger::trace(std::cout,
-                                   "Found " + std::to_string(shaderCount)
-                                       + " shaders with the " + extension
-                                       + " extension in the graphics pipeline",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Found " + std::to_string(shaderCount)
+                             + " shaders with the " + extension
+                             + " extension in the graphics pipeline",
+                         { "CREATE" });
         bool res = shaderCount == 1;
         if (!res)
         {
-            io::logging::Logger::error(std::cout,
-                                       "Should have exactly 1 shader with the "
-                                           + extension + " extension",
-                                       { "CREATE" });
+            BRASIO_LOG_ERROR(std::cout,
+                             "Should have exactly 1 shader with the "
+                                 + extension + " extension",
+                             { "CREATE" });
         }
         return res;
     }

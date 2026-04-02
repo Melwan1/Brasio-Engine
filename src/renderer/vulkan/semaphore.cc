@@ -10,15 +10,13 @@ namespace brasio::renderer::vulkan
             vkDestroySemaphore(logicalDevice, semaphore, nullptr);
         })
     {
-        io::logging::Logger::trace(std::cout, "Creating semaphore",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating semaphore", { "CREATE" });
         if (vkCreateSemaphore(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create semaphore", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create semaphore",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created semaphore",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created semaphore", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

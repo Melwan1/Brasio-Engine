@@ -12,26 +12,22 @@ namespace brasio::renderer::vulkan
               [](const VkDevice &device) { vkDestroyDevice(device, nullptr); })
         , _queueFamilyIndices(indices)
     {
-        io::logging::Logger::trace(std::cout, "Creating logical device",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating logical device", { "CREATE" });
         if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create logical device", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create logical device",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created logical device",
-                                   { "CREATE" });
-        io::logging::Logger::trace(std::cout, "Setting up device queues",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created logical device", { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Setting up device queues", { "CREATE" });
 
         vkGetDeviceQueue(getHandle(),
                          _queueFamilyIndices.graphicsFamily.value(), 0,
                          &_graphicsQueue);
         vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(),
                          0, &_presentationQueue);
-        io::logging::Logger::trace(std::cout, "Set up device queues",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Set up device queues", { "CREATE" });
     }
 
     const VkQueue &LogicalDevice::getGraphicsQueue() const
@@ -56,8 +52,8 @@ namespace brasio::renderer::vulkan
 
     void LogicalDevice::waitIdle() const
     {
-        io::logging::Logger::trace(std::cout, "Waiting for idle device");
+        BRASIO_LOG_TRACE(std::cout, "Waiting for idle device");
         vkDeviceWaitIdle(getHandle());
-        io::logging::Logger::trace(std::cout, "Device is idle");
+        BRASIO_LOG_TRACE(std::cout, "Device is idle");
     }
 } // namespace brasio::renderer::vulkan

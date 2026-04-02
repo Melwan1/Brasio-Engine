@@ -16,15 +16,15 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _deviceMemory(nullptr)
     {
-        io::logging::Logger::trace(std::cout, "Creating buffer", { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating buffer", { "CREATE" });
         if (vkCreateBuffer(logicalDevice->getHandle(), &createInfo, nullptr,
                            &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(std::cout, "Could not create buffer",
-                                          { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create buffer",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created buffer", { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created buffer", { "CREATE" });
         _deviceMemory = std::make_unique<BufferMemory>(
             physicalDevice, logicalDevice->getHandle(), *this, memoryProperties,
             data, createInfo.size);

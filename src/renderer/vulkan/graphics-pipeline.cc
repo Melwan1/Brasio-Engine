@@ -10,16 +10,18 @@ namespace brasio::renderer::vulkan
                       vkDestroyPipeline(logicalDevice, pipeline, nullptr);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating graphics pipeline",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating graphics pipeline", { "CREATE" });
 
         uint32_t pipelineCreateInfoCount = 1;
         if (vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE,
                                       pipelineCreateInfoCount, &createInfo,
                                       nullptr, &getHandle())
             != VK_SUCCESS)
-            io::logging::Logger::trace(std::cout, "Created graphics pipeline",
-                                       { "CREATE" });
+        {
+            BRASIO_LOG_CRITICAL(std::cout,
+                                "Could not create graphics pipeline");
+        }
+        BRASIO_LOG_TRACE(std::cout, "Created graphics pipeline", { "CREATE" });
     }
 
     void GraphicsPipeline::bind(const VkCommandBuffer &commandBuffer) const

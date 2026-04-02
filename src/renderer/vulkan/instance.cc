@@ -13,15 +13,13 @@ namespace brasio::renderer::vulkan
             vkDestroyInstance(instance, nullptr);
         })
     {
-        io::logging::Logger::trace(std::cout, "Creating Vulkan instance",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating Vulkan instance", { "CREATE" });
         if (vkCreateInstance(&createInfo, nullptr, &getHandle()) != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create Vulkan instance", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create Vulkan instance",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created Vulkan instance",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created Vulkan instance", { "CREATE" });
         _debugMessenger =
             builders::DebugMessengerBuilder().withInstance(getHandle()).build();
     }

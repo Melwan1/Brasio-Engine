@@ -10,13 +10,13 @@ namespace brasio::renderer::vulkan
             vkDestroyFence(logicalDevice, fence, nullptr);
         })
     {
-        io::logging::Logger::trace(std::cout, "Creating fence", { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating fence", { "CREATE" });
         if (vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(std::cout, "Could not create fence",
-                                          { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create fence",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created fence", { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created fence", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan
