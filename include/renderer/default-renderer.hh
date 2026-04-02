@@ -2,8 +2,15 @@
 
 #include <renderer/renderer.hh>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::renderer
 {
+
+    class DefaultRenderer;
+
+    using DefaultRendererType = std::unique_ptr<DefaultRenderer>;
+
     /**
      * The default renderer.
      *
@@ -16,5 +23,7 @@ namespace brasio::renderer
 
         virtual void init() override;
         virtual void drawFrame() override;
+
+        static DefaultRendererType fromConfig(const YAML::Node &config);
     };
 } // namespace brasio::renderer

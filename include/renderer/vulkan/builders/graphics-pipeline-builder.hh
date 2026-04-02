@@ -21,6 +21,7 @@ namespace brasio::renderer::vulkan::builders
 
         GraphicsPipelineBuilder &
         withShaders(const std::vector<fs::path> &shaderPaths);
+        GraphicsPipelineBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkDevice _logicalDevice;

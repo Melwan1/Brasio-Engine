@@ -49,31 +49,31 @@ namespace brasio::mesh
             indices.emplace_back(0);
 
             // top triangle
-            indices.emplace_back(2 * (lateral_tessellation_index + 1) + 1);
             indices.emplace_back(
                 2
                     * ((lateral_tessellation_index + 1) % lateral_tessellation
                        + 1)
                 + 1);
+            indices.emplace_back(2 * (lateral_tessellation_index + 1) + 1);
             indices.emplace_back(1);
 
             // lateral face
-            indices.emplace_back(2 * (lateral_tessellation_index + 1));
             indices.emplace_back(
                 2
                 * ((lateral_tessellation_index + 1) % lateral_tessellation
                    + 1));
-            indices.emplace_back(
-                2
-                    * ((lateral_tessellation_index + 1) % lateral_tessellation
-                       + 1)
-                + 1);
+            indices.emplace_back(2 * (lateral_tessellation_index + 1));
             indices.emplace_back(
                 2
                     * ((lateral_tessellation_index + 1) % lateral_tessellation
                        + 1)
                 + 1);
             indices.emplace_back(2 * (lateral_tessellation_index + 1) + 1);
+            indices.emplace_back(
+                2
+                    * ((lateral_tessellation_index + 1) % lateral_tessellation
+                       + 1)
+                + 1);
             indices.emplace_back(2 * (lateral_tessellation_index + 1));
         }
 

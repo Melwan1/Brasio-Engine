@@ -2,8 +2,15 @@
 
 #include <vulkan/vulkan.h>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::renderer
 {
+
+    class Renderer;
+
+    using RendererType = std::unique_ptr<Renderer>;
+
     /**
      * The renderer class.
      *
@@ -48,6 +55,8 @@ namespace brasio::renderer
          *
          */
         void setResizedFramebuffer();
+
+        static RendererType fromConfig(const YAML::Node &config);
 
     protected:
         bool _resizedFramebuffer = false;

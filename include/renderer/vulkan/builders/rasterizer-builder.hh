@@ -1,8 +1,8 @@
 #pragma once
 
 #include <core/builder.hh>
-
 #include <vulkan/vulkan_core.h>
+#include <yaml-cpp/yaml.h>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -26,6 +26,8 @@ namespace brasio::renderer::vulkan::builders
         withDepthBiasConstantFactor(float depthBiasConstantFactor);
         RasterizerBuilder &withDepthBiasClamp(float depthBiasClamp);
         RasterizerBuilder &withDepthBiasSlopeFactor(float depthBiasSlopeFactor);
+
+        RasterizerBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkStructureType _structureType;

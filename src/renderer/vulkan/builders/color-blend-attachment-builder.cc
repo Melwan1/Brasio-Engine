@@ -83,17 +83,56 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    ColorBlendAttachmentBuilder &
+    ColorBlendAttachmentBuilder::withConfig(const YAML::Node &config)
+    {
+        std::map<char, VkColorComponentFlags> sampleMaskMap = {
+            { 'R', VK_COLOR_COMPONENT_R_BIT },
+            { 'G', VK_COLOR_COMPONENT_G_BIT },
+            { 'B', VK_COLOR_COMPONENT_B_BIT },
+            { 'A', VK_COLOR_COMPONENT_A_BIT }
+        };
+        VkColorComponentFlags colorMask = 0;
+        for (char c : config["writeMask"].as<std::string>())
+        {
+            colorMask |= sampleMaskMap.at(c);
+        }
+
+        std::map<std::string, VkBlendFactor> blendFactorMap = {
+            { "ZERO", VK_BLEND_FACTOR_ZERO }, { "ONE", VK_BLEND_FACTOR_ONE }
+        };
+
+        std::map<std::string, VkBlendOp> blendOpMap = { { "ADD",
+                                                          VK_BLEND_OP_ADD } };
+
+        return withColorWriteMask(colorMask)
+            .withBlendEnable(config["blend"].as<bool>())
+            .withSrcColorBlendFactor(blendFactorMap.at(
+                config["src_color_blend_factor"].as<std::string>()))
+            .withDstColorBlendFactor(blendFactorMap.at(
+                config["dst_color_blend_factor"].as<std::string>()))
+            .withColorBlendOp(
+                blendOpMap.at(config["color_blend_op"].as<std::string>()))
+            .withSrcAlphaBlendFactor(blendFactorMap.at(
+                config["src_alpha_blend_factor"].as<std::string>()))
+            .withDstAlphaBlendFactor(blendFactorMap.at(
+                config["dst_alpha_blend_factor"].as<std::string>()))
+            .withAlphaBlendOp(
+                blendOpMap.at(config["alpha_blend_op"].as<std::string>()));
+    }
+
     VkPipelineColorBlendAttachmentState ColorBlendAttachmentBuilder::build()
     {
         VkPipelineColorBlendAttachmentState colorBlendAttachment{};
         colorBlendAttachment.colorWriteMask = _colorWriteMask;
         colorBlendAttachment.blendEnable = _blendEnable;
-        colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-        colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-        colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-        colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-        colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-        colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+        colorBlendAttachment.srcColorBlendFactor = _srcColorBlendFactor;
+        colorBlendAttachment.dstColorBlendFactor = _dstColorBlendFactor;
+        colorBlendAttachment.colorBlendOp = _colorBlendOp;
+        colorBlendAttachment.srcAlphaBlendFactor = _srcAlphaBlendFactor;
+        colorBlendAttachment.dstAlphaBlendFactor = _dstAlphaBlendFactor;
+        colorBlendAttachment.alphaBlendOp = _alphaBlendOp;
         return colorBlendAttachment;
     }
+
 } // namespace brasio::renderer::vulkan::builders

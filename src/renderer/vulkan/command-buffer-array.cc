@@ -2,7 +2,7 @@
 
 #define CLEAR_COLOR                                                            \
     {                                                                          \
-        0.4f, 0.6f, 1.0f, 1.0f                                                 \
+        1.0f, 1.0f, 1.0f, 1.0f                                                 \
     }
 
 namespace brasio::renderer::vulkan

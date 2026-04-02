@@ -4,6 +4,8 @@
 
 #include <vulkan/vulkan_core.h>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::renderer::vulkan::builders
 {
     class InputAssemblyBuilder
@@ -19,6 +21,8 @@ namespace brasio::renderer::vulkan::builders
         withPrimitiveTopology(const VkPrimitiveTopology &topology);
         InputAssemblyBuilder &
         withPrimitiveRestartEnable(const VkBool32 &enabled);
+
+        InputAssemblyBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkStructureType _structureType;

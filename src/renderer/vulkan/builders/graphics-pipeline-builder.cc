@@ -53,13 +53,28 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    GraphicsPipelineBuilder &
+    GraphicsPipelineBuilder::withConfig(const YAML::Node &config)
+    {
+        _dynamicStateBuilder.withConfig(config["dynamic_states"]);
+        _inputAssemblyBuilder.withConfig(config["input_assembly"]);
+        _rasterizerBuilder.withConfig(config["rasterizer"]);
+        _multisamplingBuilder.withConfig(config["multisampling"]);
+        _colorBlendAttachmentBuilder.withConfig(
+            config["color_blend_attachment"]);
+        _colorBlendStateBuilder.withConfig(config["color_blend_state"]);
+
+        std::vector<fs::path> shaders = {
+            config["shaders"]["vertex"].as<std::string>(),
+            config["shaders"]["fragment"].as<std::string>()
+        };
+        return withShaders(shaders);
+    }
+
     GraphicsPipelineType GraphicsPipelineBuilder::build()
     {
         VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo =
-            _dynamicStateBuilder
-                .withDynamicStates(
-                    { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR })
-                .build();
+            _dynamicStateBuilder.build();
         VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo =
             _vertexInputBuilder.build();
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo =

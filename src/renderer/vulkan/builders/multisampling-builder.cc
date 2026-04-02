@@ -53,6 +53,14 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    MultisamplingBuilder &
+    MultisamplingBuilder::withConfig(const YAML::Node &config)
+    {
+        return withSampleShadingEnable(config["sample_shading"].as<bool>())
+            .withRasterizationSamples(static_cast<VkSampleCountFlagBits>(
+                config["rasterization_samples"].as<unsigned>()));
+    }
+
     VkPipelineMultisampleStateCreateInfo MultisamplingBuilder::build()
     {
         VkPipelineMultisampleStateCreateInfo multisampling{};

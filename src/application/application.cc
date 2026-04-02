@@ -35,6 +35,17 @@ namespace brasio::application
 
     bool Application::init(const YAML::Node &config)
     {
+        std::map<std::string, io::logging::LogLevel> logLevelMap = {
+            { "TRACE", io::logging::LogLevel::TRACE },
+            { "DEBUG", io::logging::LogLevel::DEBUG },
+            { "INFO", io::logging::LogLevel::INFO },
+            { "WARNING", io::logging::LogLevel::WARNING },
+            { "ERROR", io::logging::LogLevel::ERROR },
+            { "CRITICAL", io::logging::LogLevel::CRITICAL }
+        };
+        io::logging::Logger::sLogLevel =
+            logLevelMap.at(config["logging"]["level"].as<std::string>());
+
         if (!glfwInit())
         {
             std::cerr << "Unable to initialize GLFW." << std::endl;
@@ -71,8 +82,10 @@ namespace brasio::application
         }
         else
         {
-            renderer =
-                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);
+            /*renderer =
+                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);*/
+            renderer = renderer::vulkan::VulkanRenderer::fromConfig(
+                config["renderer"], _window);
         }
         if (!initRenderer(std::move(renderer)))
         {

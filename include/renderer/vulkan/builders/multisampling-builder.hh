@@ -3,6 +3,7 @@
 #include <core/builder.hh>
 
 #include <vulkan/vulkan_core.h>
+#include <yaml-cpp/yaml.h>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -24,6 +25,8 @@ namespace brasio::renderer::vulkan::builders
         withAlphaToCoverageEnable(const VkBool32 &alphaToCoverageEnable);
         MultisamplingBuilder &
         withAlphaToOneEnable(const VkBool32 &alphaToOneEnable);
+
+        MultisamplingBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkStructureType _structureType;

@@ -62,6 +62,7 @@ namespace brasio::mesh
     void Mesh::draw(const VkCommandBuffer &commandBuffer,
                     const renderer::vulkan::VulkanRenderer &renderer) const
     {
+        // print(std::cout);
         VkBuffer vertexBuffers[] = { getVertexBuffer()->getHandle() };
         VkDeviceSize offsets[] = { 0 };
         uint32_t firstBinding = 0;
