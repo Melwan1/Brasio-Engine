@@ -16,8 +16,7 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _size(size)
     {
-        io::logging::Logger::trace(std::cout, "Binding buffer memory",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Binding buffer memory", { "CREATE" });
         VkMemoryRequirements memoryRequirements;
         vkGetBufferMemoryRequirements(logicalDevice, buffer.getHandle(),
                                       &memoryRequirements);
@@ -32,22 +31,20 @@ namespace brasio::renderer::vulkan
                              &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not bind buffer memory", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not bind buffer memory",
+                                { "CREATE" });
         }
         vkBindBufferMemory(logicalDevice, buffer.getHandle(), getHandle(), 0);
-        io::logging::Logger::trace(std::cout, "Bound buffer memory",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Bound buffer memory", { "CREATE" });
 
         if (data != nullptr)
         {
-            io::logging::Logger::trace(std::cout,
-                                       "Transferring buffer memory to device",
-                                       { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout, "Transferring buffer memory to device",
+                             { "CREATE" });
             map();
             setContent(data);
-            io::logging::Logger::trace(
-                std::cout, "Transferred buffer memory to device", { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout, "Transferred buffer memory to device",
+                             { "CREATE" });
         }
     }
 

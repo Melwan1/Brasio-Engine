@@ -33,18 +33,29 @@ namespace brasio::application
         WindowEventEmitter::addListener(*this);
     }
 
-    bool Application::init()
+    bool Application::init(const YAML::Node &config)
     {
+        std::map<std::string, io::logging::LogLevel> logLevelMap = {
+            { "TRACE", io::logging::LogLevel::TRACE },
+            { "DEBUG", io::logging::LogLevel::DEBUG },
+            { "INFO", io::logging::LogLevel::INFO },
+            { "WARNING", io::logging::LogLevel::WARNING },
+            { "ERROR", io::logging::LogLevel::ERROR },
+            { "CRITICAL", io::logging::LogLevel::CRITICAL }
+        };
+        io::logging::Logger::sLogLevel =
+            logLevelMap.at(config["logging"]["level"].as<std::string>());
+
         if (!glfwInit())
         {
             std::cerr << "Unable to initialize GLFW." << std::endl;
             return false;
         }
 
-        bool useOpengl = false;
+        bool useOpengl = !config["renderer"]["type"]
+            || !config["renderer"]["type"].as<std::string>().compare("OpenGL");
 
-        int monitorIndex = -1;
-        if (!setupWindow(monitorIndex, useOpengl))
+        if (!setupWindow(config["application"]["window"], useOpengl))
         {
             return false;
         }
@@ -71,8 +82,10 @@ namespace brasio::application
         }
         else
         {
-            renderer =
-                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);
+            /*renderer =
+                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);*/
+            renderer = renderer::vulkan::VulkanRenderer::fromConfig(
+                config["renderer"], _window);
         }
         if (!initRenderer(std::move(renderer)))
         {
@@ -92,15 +105,17 @@ namespace brasio::application
         return true;
     }
 
-    bool Application::setupWindow(int monitorIndex, bool use_opengl)
+    bool Application::setupWindow(const YAML::Node &windowConfig,
+                                  bool useOpengl)
     {
         int monitorCount;
         GLFWmonitor **monitors = glfwGetMonitors(&monitorCount);
+        int monitorIndex = windowConfig["monitorIndex"].as<int>();
         if (monitorIndex >= monitorCount || monitorIndex == -1)
         {
             monitorIndex = monitorCount - 1;
         }
-        if (!use_opengl)
+        if (!useOpengl)
         {
             // in case of Vulkan renderer, disable initialization of OpenGL
             // context
@@ -109,9 +124,10 @@ namespace brasio::application
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         GLFWmonitor *monitor = monitors[monitorIndex];
         const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-        GLFWwindow *window =
-            glfwCreateWindow(1920 /* mode->width */, 1080 /* mode->height */,
-                             "Brasio Engine", nullptr /* monitor */, nullptr);
+        GLFWwindow *window = glfwCreateWindow(
+            windowConfig["width"].as<int>(), windowConfig["height"].as<int>(),
+            windowConfig["title"].as<std::string>().c_str(),
+            nullptr /* monitor */, nullptr);
         (void)mode;
         if (!window)
         {
@@ -188,5 +204,12 @@ namespace brasio::application
     {
         _renderer->setResizedFramebuffer();
         event.handle();
+    }
+
+    ApplicationType Application::fromConfig(const YAML::Node &config)
+    {
+        ApplicationType application = std::make_unique<Application>();
+        application->init(config);
+        return application;
     }
 } // namespace brasio::application

@@ -271,3 +271,51 @@ namespace brasio::io::logging
                   const std::vector<std::string> &additionalTags);
     };
 } // namespace brasio::io::logging
+
+#define BRASIO_LOG_TRACE(ostr, ...)                                             \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::TRACE)                          \
+            ::brasio::io::logging::Logger::trace(ostr, __VA_ARGS__);            \
+    } while (0)
+
+#define BRASIO_LOG_DEBUG(ostr, ...)                                             \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::DEBUG)                          \
+            ::brasio::io::logging::Logger::debug(ostr, __VA_ARGS__);            \
+    } while (0)
+
+#define BRASIO_LOG_INFO(ostr, ...)                                              \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::INFO)                           \
+            ::brasio::io::logging::Logger::info(ostr, __VA_ARGS__);             \
+    } while (0)
+
+#define BRASIO_LOG_WARNING(ostr, ...)                                           \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::WARNING)                        \
+            ::brasio::io::logging::Logger::warning(ostr, __VA_ARGS__);          \
+    } while (0)
+
+#define BRASIO_LOG_ERROR(ostr, ...)                                             \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::ERROR)                          \
+            ::brasio::io::logging::Logger::error(ostr, __VA_ARGS__);            \
+    } while (0)
+
+#define BRASIO_LOG_CRITICAL(ostr, ...)                                          \
+    do                                                                          \
+    {                                                                           \
+        if (::brasio::io::logging::Logger::sLogLevel                            \
+            <= ::brasio::io::logging::LogLevel::CRITICAL)                       \
+            ::brasio::io::logging::Logger::critical(ostr, __VA_ARGS__);         \
+    } while (0)

@@ -1,12 +1,20 @@
 #include <application/libapplication.hh>
 
-int main()
+#include <yaml-cpp/yaml.h>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+int main(int argc, char *argv[])
 {
-    brasio::application::Application application;
-    if (!application.init())
+    fs::path config_path = "config/config.yaml";
+    if (argc > 1)
     {
-        return 1;
+        config_path = argv[1];
     }
-    application.loop();
+    brasio::application::ApplicationType application =
+        brasio::application::Application::fromConfig(
+            YAML::LoadFile(config_path));
+    application->loop();
     return 0;
 }

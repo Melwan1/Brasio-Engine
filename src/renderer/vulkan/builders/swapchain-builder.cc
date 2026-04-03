@@ -25,40 +25,46 @@ namespace brasio::renderer::vulkan::builders
     {
         SwapChainSupportDetails swapchainSupportDetails =
             _physicalDevice.querySwapChainSupport();
-        std::ostringstream oss;
 
         _availableSurfaceFormats = swapchainSupportDetails.formats;
-        oss << "Available surface formats: " << _availableSurfaceFormats.size();
-        io::logging::Logger::info(std::cout, oss.str(), { "CREATE" });
-        oss = std::ostringstream();
+        BRASIO_LOG_INFO(std::cout,
+                        "Available surface formats: "
+                            + std::to_string(_availableSurfaceFormats.size()),
+                        { "CREATE" });
 
         _availablePresentModes = swapchainSupportDetails.presentModes;
-        oss << "Available present modes: " << _availablePresentModes.size();
-        io::logging::Logger::info(std::cout, oss.str(), { "CREATE" });
-        oss = std::ostringstream();
+        BRASIO_LOG_INFO(std::cout,
+                        "Available present modes: "
+                            + std::to_string(_availablePresentModes.size()),
+                        { "CREATE" });
 
         _availableCapabilities = swapchainSupportDetails.capabilities;
-        oss << "Available capabilities: "
-            << _availableCapabilities.currentExtent.width << " x "
-            << _availableCapabilities.currentExtent.height;
-        io::logging::Logger::info(std::cout, oss.str(), { "CREATE" });
-        oss = std::ostringstream();
+        BRASIO_LOG_INFO(
+            std::cout,
+            "Available capacities: "
+                + std::to_string(_availableCapabilities.currentExtent.width)
+                + " x "
+                + std::to_string(_availableCapabilities.currentExtent.height),
+            { "CREATE" });
 
         _surfaceFormat = _availableSurfaceFormats[0];
         _presentMode = VK_PRESENT_MODE_FIFO_KHR;
         _extent = _getExtent(_availableCapabilities);
 
         _imageCount = swapchainSupportDetails.capabilities.minImageCount + 1;
-        oss << "Setting swapchain image count to " << _imageCount;
-        io::logging::Logger::info(std::cout, oss.str(), { "CREATE" });
-        oss = std::ostringstream();
+        BRASIO_LOG_INFO(std::cout,
+                        "Setting swapchain image count to "
+                            + std::to_string(_imageCount),
+                        { "CREATE" });
         if (swapchainSupportDetails.capabilities.maxImageCount > 0
             && _imageCount > swapchainSupportDetails.capabilities.maxImageCount)
         {
             _imageCount = swapchainSupportDetails.capabilities.maxImageCount;
-            oss << "Swapchain image count was too large, reducing to "
-                << _imageCount;
-            io::logging::Logger::warning(std::cout, oss.str(), { "CREATE " });
+            BRASIO_LOG_WARNING(
+                std::cout,
+                "Swapchain image count was too large, reducing to "
+                    + std::to_string(_imageCount),
+                { "CREATE " });
         }
         return *this;
     }
@@ -100,8 +106,8 @@ namespace brasio::renderer::vulkan::builders
     SwapchainBuilder &
     SwapchainBuilder::withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat)
     {
-        io::logging::Logger::trace(std::cout, "Searching for surface format",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Searching for surface format",
+                         { "CREATE" });
         if (std::find_if(_availableSurfaceFormats.begin(),
                          _availableSurfaceFormats.end(),
                          [&surfaceFormat](auto &other) {
@@ -111,13 +117,12 @@ namespace brasio::renderer::vulkan::builders
                          })
             != _availableSurfaceFormats.end())
         {
-            io::logging::Logger::trace(std::cout, "Surface format found",
-                                       { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout, "Surface format found", { "CREATE" });
             _surfaceFormat = surfaceFormat;
         }
         else
         {
-            io::logging::Logger::warning(
+            BRASIO_LOG_WARNING(
                 std::cout,
                 "Surface format not found, defaulting to the previous "
                 "selected format",
@@ -129,23 +134,20 @@ namespace brasio::renderer::vulkan::builders
     SwapchainBuilder &
     SwapchainBuilder::withPresentMode(const VkPresentModeKHR &presentMode)
     {
-        io::logging::Logger::trace(std::cout, "Searching for present mode",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Searching for present mode", { "CREATE" });
         if (std::find(_availablePresentModes.begin(),
                       _availablePresentModes.end(), presentMode)
             != _availablePresentModes.end())
         {
-            io::logging::Logger::trace(std::cout, "Present mode found",
-                                       { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout, "Present mode found", { "CREATE" });
             _presentMode = presentMode;
         }
         else
         {
-            io::logging::Logger::warning(
-                std::cout,
-                "Present mode not found, defaulting to the "
-                "previous selected mode",
-                { "CREATE" });
+            BRASIO_LOG_WARNING(std::cout,
+                               "Present mode not found, defaulting to the "
+                               "previous selected mode",
+                               { "CREATE" });
         }
         return *this;
     }
@@ -153,21 +155,19 @@ namespace brasio::renderer::vulkan::builders
     VkExtent2D
     SwapchainBuilder::_getExtent(const VkSurfaceCapabilitiesKHR &capabilities)
     {
-        io::logging::Logger::trace(std::cout, "Searching for extent",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Searching for extent", { "CREATE" });
         if (capabilities.currentExtent.width
             != std::numeric_limits<uint32_t>::max())
         {
-            io::logging::Logger::trace(
-                std::cout, "Extent found in swapchain support details",
-                { "CREATE" });
+            BRASIO_LOG_TRACE(std::cout,
+                             "Extent found in swapchain support details",
+                             { "CREATE" });
             return capabilities.currentExtent;
         }
-        io::logging::Logger::trace(
-            std::cout,
-            "Extent not found in swapchain support details, "
-            "extracting from GLFW framebuffer",
-            { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Extent not found in swapchain support details, "
+                         "extracting from GLFW framebuffer",
+                         { "CREATE" });
         VkExtent2D extent;
         int width;
         int height;

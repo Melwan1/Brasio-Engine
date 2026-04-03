@@ -53,13 +53,28 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    GraphicsPipelineBuilder &
+    GraphicsPipelineBuilder::withConfig(const YAML::Node &config)
+    {
+        _dynamicStateBuilder.withConfig(config["dynamic_states"]);
+        _inputAssemblyBuilder.withConfig(config["input_assembly"]);
+        _rasterizerBuilder.withConfig(config["rasterizer"]);
+        _multisamplingBuilder.withConfig(config["multisampling"]);
+        _colorBlendAttachmentBuilder.withConfig(
+            config["color_blend_attachment"]);
+        _colorBlendStateBuilder.withConfig(config["color_blend_state"]);
+
+        std::vector<fs::path> shaders = {
+            config["shaders"]["vertex"].as<std::string>(),
+            config["shaders"]["fragment"].as<std::string>()
+        };
+        return withShaders(shaders);
+    }
+
     GraphicsPipelineType GraphicsPipelineBuilder::build()
     {
         VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo =
-            _dynamicStateBuilder
-                .withDynamicStates(
-                    { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR })
-                .build();
+            _dynamicStateBuilder.build();
         VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo =
             _vertexInputBuilder.build();
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo =
@@ -103,31 +118,30 @@ namespace brasio::renderer::vulkan::builders
     bool GraphicsPipelineBuilder::_checkUniqueShaderType(
         const std::string &extension)
     {
-        std::ostringstream check_message_oss;
-        check_message_oss << "Checking " << extension << " against "
-                          << _shaderPaths.size() << " shaders.";
-        io::logging::Logger::debug(std::cout, check_message_oss.str());
+        BRASIO_LOG_DEBUG(std::cout,
+                         "Checking" + extension + "against"
+                             + std::to_string(_shaderPaths.size()) + "shaders");
         int shaderCount = std::count_if(
             _shaderPaths.begin(), _shaderPaths.end(),
             [&extension](const fs::path &shaderPath) {
-                io::logging::Logger::trace(
-                    std::cout,
-                    "shader path: " + shaderPath.string()
-                        + ", extension: " + shaderPath.extension().string());
+                BRASIO_LOG_TRACE(std::cout,
+                                 "shader path: " + shaderPath.string()
+                                     + ", extension: "
+                                     + shaderPath.extension().string());
                 return shaderPath.extension().string() == extension;
             });
-        io::logging::Logger::trace(std::cout,
-                                   "Found " + std::to_string(shaderCount)
-                                       + " shaders with the " + extension
-                                       + " extension in the graphics pipeline",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Found " + std::to_string(shaderCount)
+                             + " shaders with the " + extension
+                             + " extension in the graphics pipeline",
+                         { "CREATE" });
         bool res = shaderCount == 1;
         if (!res)
         {
-            io::logging::Logger::error(std::cout,
-                                       "Should have exactly 1 shader with the "
-                                           + extension + " extension",
-                                       { "CREATE" });
+            BRASIO_LOG_ERROR(std::cout,
+                             "Should have exactly 1 shader with the "
+                                 + extension + " extension",
+                             { "CREATE" });
         }
         return res;
     }

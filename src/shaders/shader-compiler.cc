@@ -27,9 +27,8 @@ namespace brasio::shaders
 
     bool ShaderCompiler::compileShader(const fs::path &shaderPath) const
     {
-        io::logging::Logger::debug(std::cout,
-                                   "Compiling shader: " + shaderPath.string(),
-                                   { "SHADERS" });
+        BRASIO_LOG_DEBUG(std::cout, "Compiling shader: " + shaderPath.string(),
+                         { "SHADERS" });
         const fs::path destDirectoryPath("compiled-shaders/");
         const fs::path resolvedPath = _baseShaderDirectoryPath / shaderPath;
         const fs::path destPath =
@@ -38,12 +37,12 @@ namespace brasio::shaders
                 .replace_extension(".spv");
         fs::create_directories(destPath.parent_path());
 
-        io::logging::Logger::trace(
+        BRASIO_LOG_TRACE(
             std::cout,
             "Shader " + resolvedPath.string() + " write time: "
                 + io::files::StatUtils::writeTimeToString(resolvedPath),
             { "SHADERS" });
-        io::logging::Logger::trace(
+        BRASIO_LOG_TRACE(
             std::cout,
             "Compiled shader " + destPath.string() + " write time: "
                 + io::files::StatUtils::writeTimeToString(destPath),
@@ -53,11 +52,10 @@ namespace brasio::shaders
             && fs::last_write_time(destPath)
                 >= fs::last_write_time(resolvedPath))
         {
-            io::logging::Logger::info(
-                std::cout,
-                "Shader " + resolvedPath.string()
-                    + " does not need to be compiled again.",
-                { "SHADERS" });
+            BRASIO_LOG_INFO(std::cout,
+                            "Shader " + resolvedPath.string()
+                                + " does not need to be compiled again.",
+                            { "SHADERS" });
             return true;
         }
 
@@ -76,15 +74,12 @@ namespace brasio::shaders
         ifs.seekg(0);
         ifs.read(fileContent.data(), fileSize);
 
-        std::ostringstream err;
-        err << "Shader " << shaderPath.string() << ": compilation failed.";
-        io::logging::Logger::error(std::cout, err.str(), { "SHADERS" });
-        err.clear();
-        err << "Return code: " << returnCode;
-        io::logging::Logger::error(std::cout, err.str(), { "SHADERS" });
-        err.clear();
-        err << "Error: " << fileContent;
-        io::logging::Logger::error(std::cout, err.str(), { "SHADERS" });
+        BRASIO_LOG_ERROR(
+            std::cout, "Shader " + shaderPath.string() + ": compilation failed",
+            { "SHADERS" });
+        BRASIO_LOG_ERROR(std::cout, "Return code " + std::to_string(returnCode),
+                         { "SHADERS" });
+        BRASIO_LOG_ERROR(std::cout, "Error: " + fileContent, { "SHADERS" });
         return false;
     }
 } // namespace brasio::shaders

@@ -109,4 +109,34 @@ namespace brasio::renderer::vulkan::builders
         _depthBiasSlopeFactor = depthBiasSlopeFactor;
         return *this;
     }
+
+    RasterizerBuilder &RasterizerBuilder::withConfig(const YAML::Node &config)
+    {
+        std::map<std::string, VkPolygonMode> polygonModeMap = {
+            { "LINE", VK_POLYGON_MODE_LINE },
+            { "FILL", VK_POLYGON_MODE_FILL },
+        };
+        std::map<std::string, VkCullModeFlags> cullModeMap = {
+            { "FRONT", VK_CULL_MODE_FRONT_BIT },
+            { "BACK", VK_CULL_MODE_BACK_BIT },
+        };
+        std::map<std::string, VkFrontFace> frontFaceMap = {
+            { "CW", VK_FRONT_FACE_CLOCKWISE },
+            { "CCW", VK_FRONT_FACE_COUNTER_CLOCKWISE },
+        };
+        return withDepthClampEnable(config["depth_clamp"].as<bool>())
+            .withDiscardEnable(config["discard"].as<bool>())
+            .withPolygonMode(
+                polygonModeMap.at(config["polygon_mode"].as<std::string>()))
+            .withLineWidth(config["line_width"].as<float>())
+            .withCullMode(cullModeMap.at(config["cull_mode"].as<std::string>()))
+            .withFrontFace(
+                frontFaceMap.at(config["front_face"].as<std::string>()))
+            .withDepthBiasEnable(config["depth_bias"].as<bool>())
+            .withDepthBiasConstantFactor(
+                config["depth_bias_constant_factor"].as<float>())
+            .withDepthBiasClamp(config["depth_bias_clamp"].as<float>())
+            .withDepthBiasSlopeFactor(
+                config["depth_bias_slope_factor"].as<float>());
+    }
 } // namespace brasio::renderer::vulkan::builders

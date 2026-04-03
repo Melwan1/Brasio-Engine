@@ -2,7 +2,7 @@
 
 #define CLEAR_COLOR                                                            \
     {                                                                          \
-        0.4f, 0.6f, 1.0f, 1.0f                                                 \
+        1.0f, 1.0f, 1.0f, 1.0f                                                 \
     }
 
 namespace brasio::renderer::vulkan
@@ -12,24 +12,24 @@ namespace brasio::renderer::vulkan
         const VkCommandBufferAllocateInfo &allocateInfo)
         : Handler(
               "command buffer array", [](const std::vector<VkCommandBuffer> &) {
-                  io::logging::Logger::trace(
+                  BRASIO_LOG_TRACE(
                       std::cout, "Nothing to be done to destroy command buffer",
                       { "DESTROY" });
               })
     {
-        io::logging::Logger::trace(std::cout, "Allocating command buffer array",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Allocating command buffer array",
+                         { "CREATE" });
         getHandle().resize(allocateInfo.commandBufferCount);
         if (vkAllocateCommandBuffers(logicalDevice, &allocateInfo,
                                      getHandle().data())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not allocate command buffer array",
-                { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout,
+                                "Could not allocate command buffer array",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Allocated command buffer array",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Allocated command buffer array",
+                         { "CREATE" });
     }
 
     const VkCommandBuffer &CommandBufferArray::at(uint32_t index)
@@ -47,12 +47,11 @@ namespace brasio::renderer::vulkan
                                    const VkRenderPass &renderPass,
                                    const Swapchain &swapchain)
     {
-        io::logging::Logger::trace(std::cout,
-                                   "Beginning command buffer at index "
-                                       + std::to_string(commandBufferIndex)
-                                       + " for image "
-                                       + std::to_string(imageIndex),
-                                   { "RENDER" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Beginning command buffer at index "
+                             + std::to_string(commandBufferIndex)
+                             + " for image " + std::to_string(imageIndex),
+                         { "RENDER" });
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0;
@@ -62,20 +61,19 @@ namespace brasio::renderer::vulkan
 
         if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
         {
-            io::logging::Logger::error(
-                std::cout, "Could not begin command buffer", { "RENDER" });
+            BRASIO_LOG_ERROR(std::cout, "Could not begin command buffer",
+                             { "RENDER" });
         }
-        io::logging::Logger::trace(std::cout,
-                                   "Began command buffer at index "
-                                       + std::to_string(commandBufferIndex)
-                                       + " for image "
-                                       + std::to_string(imageIndex),
-                                   { "RENDER" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Began command buffer at index "
+                             + std::to_string(commandBufferIndex)
+                             + " for image " + std::to_string(imageIndex),
+                         { "RENDER" });
 
-        io::logging::Logger::trace(std::cout,
-                                   "Beginning render pass at image index "
-                                       + std::to_string(imageIndex),
-                                   { "RENDER" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Beginning render pass at image index "
+                             + std::to_string(imageIndex),
+                         { "RENDER" });
 
         VkRenderPassBeginInfo renderPassBeginInfo{};
         renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -91,10 +89,10 @@ namespace brasio::renderer::vulkan
         vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo,
                              VK_SUBPASS_CONTENTS_INLINE);
 
-        io::logging::Logger::trace(std::cout,
-                                   "Began render pass at image index "
-                                       + std::to_string(imageIndex),
-                                   { "RENDER" });
+        BRASIO_LOG_TRACE(std::cout,
+                         "Began render pass at image index "
+                             + std::to_string(imageIndex),
+                         { "RENDER" });
     }
 
     void CommandBufferArray::setViewport(uint32_t commandBufferIndex,
@@ -126,18 +124,24 @@ namespace brasio::renderer::vulkan
         begin(commandBufferIndex, imageIndex,
               renderer.getRenderPass().getHandle(), renderer.getSwapchain());
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
-        renderer.getGraphicsPipeline().bind(commandBuffer);
 
         setViewport(commandBufferIndex, renderer.getSwapchain());
         setScissor(commandBufferIndex, renderer.getSwapchain());
-        renderer.getMesh1().draw(commandBuffer, renderer);
-        renderer.getMesh2().draw(commandBuffer, renderer);
+
+        for (const GraphicsPipelineType &graphicsPipeline :
+             renderer.getGraphicsPipelines())
+        {
+            graphicsPipeline->bind(commandBuffer);
+            renderer.getMesh1().draw(commandBuffer, renderer);
+            renderer.getMesh2().draw(commandBuffer, renderer);
+        }
 
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to record command buffer.");
+            BRASIO_LOG_CRITICAL(std::cout,
+                                "Failed to end command buffer recording");
         }
     }
 } // namespace brasio::renderer::vulkan

@@ -6,6 +6,8 @@
 
 #include <core/builder.hh>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::renderer::vulkan::builders
 {
     class DynamicStateBuilder
@@ -19,6 +21,8 @@ namespace brasio::renderer::vulkan::builders
 
         DynamicStateBuilder &
         withDynamicStates(const std::vector<VkDynamicState> &dynamicStates);
+
+        DynamicStateBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkStructureType _structureType;

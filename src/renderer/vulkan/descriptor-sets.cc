@@ -10,26 +10,24 @@ namespace brasio::renderer::vulkan
         const VkDescriptorSetAllocateInfo &allocateInfo)
         : Handler("descriptor sets",
                   [](const std::vector<VkDescriptorSet> &) {
-                      io::logging::Logger::trace(
+                      BRASIO_LOG_TRACE(
                           std::cout,
                           "nothing to be done to destroy descriptor sets",
                           { "DESTROY" });
                   })
         , _logicalDevice(logicalDevice)
     {
-        io::logging::Logger::trace(std::cout, "Allocating descriptor sets",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Allocating descriptor sets", { "CREATE" });
         getHandle().clear();
         getHandle().resize(allocateInfo.descriptorSetCount);
         if (vkAllocateDescriptorSets(logicalDevice, &allocateInfo,
                                      getHandle().data())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not allocate descriptor sets", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not allocate descriptor sets",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Allocated descriptor sets",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Allocated descriptor sets", { "CREATE" });
     }
 
     void DescriptorSets::update(const std::vector<BufferType> &buffers)

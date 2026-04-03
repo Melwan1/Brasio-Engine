@@ -11,16 +11,14 @@ namespace brasio::renderer::vulkan
                       vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating render pass",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating render pass", { "CREATE" });
         if (vkCreateRenderPass(logicalDevice, &createInfo, nullptr,
                                &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create render pass", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create render pass",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created render pass",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created render pass", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

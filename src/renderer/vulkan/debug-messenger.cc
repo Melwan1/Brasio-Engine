@@ -9,13 +9,13 @@ namespace brasio::renderer::vulkan
     void destroyDebugMessenger(const VkInstance &instance,
                                const VkDebugUtilsMessengerEXT &debugMessenger)
     {
-        io::logging::Logger::trace(std::cout, "Destroying debug messenger",
-                                   { "DESTROY" });
+        BRASIO_LOG_TRACE(std::cout, "Destroying debug messenger",
+                         { "DESTROY" });
         auto function = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
             vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if (function != nullptr)
         {
-            io::logging::Logger::trace(
+            BRASIO_LOG_TRACE(
                 std::cout,
                 "Vulkan function found for destroying the debug messenger",
                 { "DESTROY" });
@@ -23,14 +23,13 @@ namespace brasio::renderer::vulkan
         }
         else
         {
-            io::logging::Logger::warning(
+            BRASIO_LOG_WARNING(
                 std::cout,
                 "Vulkan function NOT found for destroying the debug "
                 "messenger, skipping",
                 { "DESTROY" });
         }
-        io::logging::Logger::trace(std::cout, "Destroyed debug messenger",
-                                   { "DESTROY" });
+        BRASIO_LOG_TRACE(std::cout, "Destroyed debug messenger", { "DESTROY" });
     }
 
     DebugMessenger::DebugMessenger(
@@ -41,13 +40,12 @@ namespace brasio::renderer::vulkan
                       destroyDebugMessenger(instance, debugMessenger);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating debug messenger",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating debug messenger", { "CREATE" });
         auto function = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
             vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
         if (function != nullptr)
         {
-            io::logging::Logger::trace(
+            BRASIO_LOG_TRACE(
                 std::cout,
                 "Vulkan function found for creating the debug messenger",
                 { "CREATE" });
@@ -55,14 +53,13 @@ namespace brasio::renderer::vulkan
         }
         else
         {
-            io::logging::Logger::warning(
+            BRASIO_LOG_WARNING(
                 std::cout,
                 "Vulkan function NOT found for creating the debug "
                 "messenger, skipping",
                 { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created debug messenger",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created debug messenger", { "CREATE" });
     }
 
 } // namespace brasio::renderer::vulkan

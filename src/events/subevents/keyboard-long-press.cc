@@ -33,7 +33,6 @@ namespace brasio::events::subevents
     void KeyboardLongPressEvent::print(std::ostream &ostr)
     {
         Event::print(ostr);
-        io::logging::Logger::trace(ostr, "Key: " + getPressedKey(),
-                                   { "EVENT" });
+        BRASIO_LOG_TRACE(ostr, "Key: " + getPressedKey(), { "EVENT" });
     }
 } // namespace brasio::events::subevents

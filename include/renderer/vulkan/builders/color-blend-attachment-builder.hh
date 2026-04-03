@@ -3,6 +3,7 @@
 #include <core/builder.hh>
 
 #include <vulkan/vulkan_core.h>
+#include <yaml-cpp/yaml.h>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -31,6 +32,8 @@ namespace brasio::renderer::vulkan::builders
         withDstAlphaBlendFactor(const VkBlendFactor &dstAlphaBlendFactor);
         ColorBlendAttachmentBuilder &
         withAlphaBlendOp(const VkBlendOp &alphaBlendOp);
+
+        ColorBlendAttachmentBuilder &withConfig(const YAML::Node &config);
 
     private:
         VkColorComponentFlags _colorWriteMask;

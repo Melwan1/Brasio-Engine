@@ -10,17 +10,15 @@ namespace brasio::renderer::vulkan
                                               nullptr);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating pipeline layout",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating pipeline layout", { "CREATE" });
         if (vkCreatePipelineLayout(logicalDevice, &createInfo, nullptr,
                                    &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create pipelineLayout", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create pipelineLayout",
+                                { "CREATE" });
         }
 
-        io::logging::Logger::trace(std::cout, "Created pipeline layout",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created pipeline layout", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

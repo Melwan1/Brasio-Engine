@@ -11,17 +11,15 @@ namespace brasio::renderer::vulkan
                                               nullptr);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating descriptor pool",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating descriptor pool", { "CREATE" });
         if (vkCreateDescriptorPool(logicalDevice, &createInfo, nullptr,
                                    &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create descriptor pool", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create descriptor pool",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created descriptor pool",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created descriptor pool", { "CREATE" });
     }
 
 } // namespace brasio::renderer::vulkan

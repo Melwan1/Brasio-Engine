@@ -26,6 +26,8 @@
 #include <shaders/shader-manager.hh>
 #include <mesh/mesh.hh>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::renderer::vulkan
 {
     class CommandBufferArray;
@@ -40,6 +42,11 @@ namespace brasio::mesh
 
 namespace brasio::renderer::vulkan
 {
+
+    class VulkanRenderer;
+
+    using VulkanRendererType = std::unique_ptr<VulkanRenderer>;
+
     /**
      * The Vulkan Renderer.
      *
@@ -50,6 +57,7 @@ namespace brasio::renderer::vulkan
     {
     public:
         VulkanRenderer(GLFWwindow *window);
+        VulkanRenderer(GLFWwindow *window, const YAML::Node &config);
 
         ~VulkanRenderer();
 
@@ -60,11 +68,13 @@ namespace brasio::renderer::vulkan
         void createLogicalDevice();
 
         void createSwapChain();
+        void createSwapChain(const YAML::Node &config);
 
         void createImageViews();
 
         void createRenderPass();
-        void createGraphicsPipeline();
+        void createGraphicsPipelines();
+        void createGraphicsPipelines(const YAML::Node &pipelineConfig);
 
         void createCommandPool();
         void createCommandBuffers();
@@ -87,7 +97,7 @@ namespace brasio::renderer::vulkan
         const Swapchain &getSwapchain() const;
         const RenderPass &getRenderPass() const;
         const PipelineLayout &getPipelineLayout() const;
-        const GraphicsPipeline &getGraphicsPipeline() const;
+        const std::vector<GraphicsPipelineType> &getGraphicsPipelines() const;
         const CommandBufferArrayType &getCommandBuffers() const;
         const mesh::Mesh &getMesh1() const;
         const mesh::Mesh &getMesh2() const;
@@ -95,10 +105,13 @@ namespace brasio::renderer::vulkan
         const DescriptorSets &getDescriptorSets() const;
         uint32_t getCurrentFrame() const;
 
+        static VulkanRendererType fromConfig(const YAML::Node &config,
+                                             GLFWwindow *window);
+
     private:
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
-
+        unsigned _maxFramesInFlight;
         InstanceType _instance;
 
 #ifdef NDEBUG
@@ -114,7 +127,7 @@ namespace brasio::renderer::vulkan
         SwapchainType _swapchain;
         RenderPassType _renderPass;
         PipelineLayoutType _pipelineLayout;
-        GraphicsPipelineType _graphicsPipeline;
+        std::vector<GraphicsPipelineType> _graphicsPipelines;
 
         CommandPoolType _commandPool;
         mesh::MeshType _mesh1;

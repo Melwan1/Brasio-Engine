@@ -9,16 +9,14 @@ namespace brasio::renderer::vulkan
                       vkDestroyCommandPool(logicalDevice, commandPool, nullptr);
                   })
     {
-        io::logging::Logger::trace(std::cout, "Creating command pool",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Creating command pool", { "CREATE" });
         if (vkCreateCommandPool(logicalDevice, &createInfo, nullptr,
                                 &getHandle())
             != VK_SUCCESS)
         {
-            io::logging::Logger::critical(
-                std::cout, "Could not create command pool", { "CREATE" });
+            BRASIO_LOG_CRITICAL(std::cout, "Could not create command pool",
+                                { "CREATE" });
         }
-        io::logging::Logger::trace(std::cout, "Created command pool",
-                                   { "CREATE" });
+        BRASIO_LOG_TRACE(std::cout, "Created command pool", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

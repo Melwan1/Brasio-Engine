@@ -38,6 +38,16 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    ColorBlendStateBuilder &
+    ColorBlendStateBuilder::withConfig(const YAML::Node &config)
+    {
+        std::map<std::string, VkLogicOp> logicOpMap = { { "COPY",
+                                                          VK_LOGIC_OP_COPY } };
+
+        return withLogicOpEnable(config["logic_op_enabled"].as<bool>())
+            .withLogicOp(logicOpMap.at(config["logic_op"].as<std::string>()));
+    }
+
     VkPipelineColorBlendStateCreateInfo ColorBlendStateBuilder::build()
     {
         VkPipelineColorBlendStateCreateInfo createInfo{};

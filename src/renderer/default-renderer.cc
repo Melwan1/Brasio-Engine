@@ -10,4 +10,10 @@ namespace brasio::renderer
 
     void DefaultRenderer::drawFrame()
     {}
+
+    DefaultRendererType DefaultRenderer::fromConfig(const YAML::Node &config)
+    {
+        (void)config;
+        return std::make_unique<DefaultRenderer>();
+    }
 } // namespace brasio::renderer

@@ -5,8 +5,15 @@
 #include <events/listeners/listeners.hh>
 #include <renderer/renderer.hh>
 
+#include <yaml-cpp/yaml.h>
+
 namespace brasio::application
 {
+
+    class Application;
+
+    using ApplicationType = std::unique_ptr<Application>;
+
     class Application
         : public events::emitters::ApplicationEventEmitter
         , public events::listeners::ApplicationEventListener
@@ -24,25 +31,22 @@ namespace brasio::application
         GLFWwindow *getWindow() const;
 
         void initListeners();
-        bool init();
+        bool init(const YAML::Node &config);
 
         bool initRenderer(std::unique_ptr<renderer::Renderer> renderer);
 
         // various setups
 
         /** Setup the window on which to render the application.
-         * @param monitorIndex the index of the monitor on which the window must
-         * be displayed. If \c monitorIndex is -1, the last monitor is used. If
-         * it is greater or equal to the number of monitors, the last monitor is
-         * used. Any other input is considered invalid and throws an exception.
          *
-         * @param use_opengl whether the window should initialize OpenGL
-         * context.
+         * @param windowConfig the configuration of the window.
+         *
+         * @param useOpengl whether the renderer is OpenGL-based or not.
          *
          * @return true if the window has been created correctly, false
          * otherwise.
          */
-        bool setupWindow(int monitorIndex, bool useOpengl);
+        bool setupWindow(const YAML::Node &windowConfig, bool useOpengl);
 
         void setupGlfwInput();
         void setupCallbacks();
@@ -61,6 +65,8 @@ namespace brasio::application
         onEvent(events::subevents::WindowCloseEvent &event) override;
         virtual void
         onEvent(events::subevents::WindowResizeEvent &event) override;
+
+        static ApplicationType fromConfig(const YAML::Node &node);
 
     private:
         GLFWwindow *_window;
