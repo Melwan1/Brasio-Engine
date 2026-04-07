@@ -20,6 +20,7 @@
 #include <mesh/plane.hh>
 #include <mesh/cone.hh>
 #include <mesh/cylinder.hh>
+#include <mesh/sphere.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -45,7 +46,7 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipelines();
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Cylinder>();
+        _mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         _mesh1->applyTranslation(mesh::TransformMode::CPU,
                                  { -1.0f, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
@@ -82,7 +83,7 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipelines(config["pipelines"]);
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Cylinder>();
+        _mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         _mesh1->applyTranslation(mesh::TransformMode::CPU,
                                  { -1.0, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);

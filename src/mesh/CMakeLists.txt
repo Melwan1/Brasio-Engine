@@ -24,4 +24,5 @@ target_sources(libmesh PRIVATE
     cylinder.cc
     mesh.cc
     plane.cc
+    sphere.cc
 )
