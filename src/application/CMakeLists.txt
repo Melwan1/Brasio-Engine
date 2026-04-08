@@ -20,6 +20,7 @@ target_link_libraries(libapplication PRIVATE
 
 target_link_libraries(libapplication PRIVATE
     librenderer
+    libutils
 )
 
 target_sources(libapplication PRIVATE

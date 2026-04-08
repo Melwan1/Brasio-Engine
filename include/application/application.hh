@@ -4,6 +4,7 @@
 #include <events/emitters/emitters.hh>
 #include <events/listeners/listeners.hh>
 #include <renderer/renderer.hh>
+#include <utils/libutils.hh>
 
 #include <yaml-cpp/yaml.h>
 
@@ -67,10 +68,16 @@ namespace brasio::application
         onEvent(events::subevents::WindowResizeEvent &event) override;
 
         static ApplicationType fromConfig(const YAML::Node &node);
+        bool setVersion(enum VersionControlType versionControlType,
+                        const YAML::Node &applicationConfig);
+        bool setVersionFromGit();
+        bool setVersionFromConfig(const YAML::Node &versionConfig);
 
     private:
         GLFWwindow *_window;
         std::unique_ptr<renderer::Renderer> _renderer;
+        std::string _title;
+        utils::Version _version;
 
         bool _shouldTerminate;
     };

@@ -1,3 +1,4 @@
+#include "application/application.hh"
 #include <application/libapplication.hh>
 #include <application/callbacks.hh>
 
@@ -5,6 +6,11 @@
 
 #include <renderer/default-renderer.hh>
 #include <renderer/vulkan/vulkan-renderer.hh>
+
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 namespace brasio::application
 {
@@ -91,6 +97,13 @@ namespace brasio::application
         {
             return false;
         }
+        if (!setVersion(VersionControlType::LATEST_GIT_TAG,
+                        config["application"]))
+        {
+            setVersion(VersionControlType::CONFIG_FILE, config["application"]);
+        }
+        std::string newTitle = _title + " v" + _version.toString();
+        glfwSetWindowTitle(_window, newTitle.c_str());
         return true;
     }
 
@@ -124,10 +137,10 @@ namespace brasio::application
         glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
         GLFWmonitor *monitor = monitors[monitorIndex];
         const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+        _title = windowConfig["title"].as<std::string>();
         GLFWwindow *window = glfwCreateWindow(
             windowConfig["width"].as<int>(), windowConfig["height"].as<int>(),
-            windowConfig["title"].as<std::string>().c_str(),
-            nullptr /* monitor */, nullptr);
+            _title.c_str(), nullptr /* monitor */, nullptr);
         (void)mode;
         if (!window)
         {
@@ -211,5 +224,59 @@ namespace brasio::application
         ApplicationType application = std::make_unique<Application>();
         application->init(config);
         return application;
+    }
+
+    bool Application::setVersion(enum VersionControlType versionControlType,
+                                 const YAML::Node &applicationConfig)
+    {
+        switch (versionControlType)
+        {
+        case VersionControlType::LATEST_GIT_TAG:
+            return setVersionFromGit();
+        case VersionControlType::CONFIG_FILE:
+            return setVersionFromConfig(applicationConfig["version"]);
+        default:
+            return false;
+        }
+    }
+
+    bool Application::setVersionFromGit()
+    {
+        fs::path tagFilePath =
+            "brasio-application-set-version-from-git-output.txt";
+        // run git command
+        std::string commandStr =
+            "git tag | sort -r | head -n1 > " + tagFilePath.string();
+        int returnCode = std::system(commandStr.c_str());
+        if (returnCode != 0)
+        {
+            io::logging::Logger::warning(
+                std::cout, "Could not execute git command to fetch tags",
+                { "VERSION" });
+            return false;
+        }
+        std::ifstream tagFileContent(tagFilePath.string(), std::ios::ate);
+        size_t fileSize = tagFileContent.tellg();
+        if (fileSize == 0)
+        {
+            return false; // no tag found
+        }
+        std::string tag(fileSize, 0);
+        tagFileContent.seekg(0);
+        tagFileContent.read(tag.data(),
+                            fileSize - 1); // omit newline at end of file
+        _version = utils::Version(tag);
+        fs::remove(tagFilePath);
+        return true;
+    }
+
+    bool Application::setVersionFromConfig(const YAML::Node &versionConfig)
+    {
+        if (!versionConfig)
+        {
+            return false;
+        }
+        _version = utils::Version(versionConfig.as<std::string>());
+        return true;
     }
 } // namespace brasio::application
