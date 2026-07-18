@@ -11,6 +11,8 @@ TEST(Events_Event_Identifiers, constructor)
         << "Expected two successive generated events to have their id "
            "incremented by 1, got "
         << event2.getId() - event1.getId();
+    event1.handle();
+    event2.handle();
 }
 
 TEST(Events_Event_Identifiers, generation)
@@ -29,6 +31,7 @@ TEST(Events_Event_CategoryType, keyboard)
         brasio::events::EVENT_CATEGORY_KEYBOARD;
     brasio::events::subevents::KeyboardPressEvent event("A");
     EXPECT_EQ(event.getCategoryType(), categoryType);
+    event.handle();
 }
 
 TEST(Events_Event_CategoryType, unknown)
@@ -37,6 +40,7 @@ TEST(Events_Event_CategoryType, unknown)
         brasio::events::EVENT_CATEGORY_UNKNOWN;
     brasio::events::subevents::UnknownEvent event;
     EXPECT_EQ(event.getCategoryType(), categoryType);
+    event.handle();
 }
 
 TEST(Events_Event_EventType, keyboardPress)
@@ -45,6 +49,7 @@ TEST(Events_Event_EventType, keyboardPress)
         brasio::events::EVENT_KEYBOARD_PRESS;
     brasio::events::subevents::KeyboardPressEvent event("A");
     EXPECT_EQ(event.getType(), eventType);
+    event.handle();
 }
 
 TEST(Events_Event_EventType, unknown)
@@ -52,6 +57,7 @@ TEST(Events_Event_EventType, unknown)
     enum brasio::events::EventType eventType = brasio::events::EVENT_UNKNOWN;
     brasio::events::subevents::UnknownEvent event;
     EXPECT_EQ(event.getType(), eventType);
+    event.handle();
 }
 
 TEST(Events_Event_CreationTime, unknown)
@@ -66,6 +72,8 @@ TEST(Events_Event_CreationTime, unknown)
 
     EXPECT_GE(event.getCreationTime(), start);
     EXPECT_LE(event.getCreationTime(), end);
+
+    event.handle();
 }
 
 TEST(Events_Event_CreationTime, keyboardLongPress)
@@ -80,18 +88,22 @@ TEST(Events_Event_CreationTime, keyboardLongPress)
 
     EXPECT_GE(event.getCreationTime(), start);
     EXPECT_LE(event.getCreationTime(), end);
+
+    event.handle();
 }
 
 TEST(Events_Event_Handle_Unhandled, unknown)
 {
     brasio::events::subevents::UnknownEvent event;
     EXPECT_FALSE(event.getHandleStatus());
+    event.handle();
 }
 
 TEST(Events_Event_Handle_Unhandled, mouseMove)
 {
     brasio::events::subevents::MouseMoveEvent event(14, 28);
     EXPECT_FALSE(event.getHandleStatus());
+    event.handle();
 }
 
 TEST(Events_Event_Handle_Handled, unknown)

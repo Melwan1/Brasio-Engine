@@ -7,6 +7,7 @@ TEST(Events_Event_Data_Keyboard_Press, upperA)
     const std::string pressedKey = "A";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Press, upperX)
@@ -14,6 +15,7 @@ TEST(Events_Event_Data_Keyboard_Press, upperX)
     const std::string pressedKey = "X";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Press, digit3)
@@ -21,6 +23,7 @@ TEST(Events_Event_Data_Keyboard_Press, digit3)
     const std::string pressedKey = "3";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Press, lowerF)
@@ -28,6 +31,7 @@ TEST(Events_Event_Data_Keyboard_Press, lowerF)
     const std::string pressedKey = "f";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Press, plus)
@@ -35,6 +39,7 @@ TEST(Events_Event_Data_Keyboard_Press, plus)
     const std::string pressedKey = "+";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Press, sharp)
@@ -42,6 +47,7 @@ TEST(Events_Event_Data_Keyboard_Press, sharp)
     const std::string pressedKey = "#";
     brasio::events::subevents::KeyboardPressEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, upperA)
@@ -51,6 +57,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, upperA)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, digit3)
@@ -60,6 +67,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, digit3)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, lowerF)
@@ -69,6 +77,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, lowerF)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, plus)
@@ -78,6 +87,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, plus)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, one)
@@ -87,6 +97,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, one)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, zero)
@@ -96,6 +107,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, zero)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, three)
@@ -105,6 +117,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, three)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, oneHundred)
@@ -114,6 +127,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, oneHundred)
     brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
                                                             numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Release, upperA)
@@ -121,6 +135,7 @@ TEST(Events_Event_Data_Keyboard_Release, upperA)
     const std::string pressedKey = "A";
     brasio::events::subevents::KeyboardReleaseEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Release, lowerF)
@@ -128,6 +143,7 @@ TEST(Events_Event_Data_Keyboard_Release, lowerF)
     const std::string pressedKey = "f";
     brasio::events::subevents::KeyboardReleaseEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Release, digit3)
@@ -135,6 +151,7 @@ TEST(Events_Event_Data_Keyboard_Release, digit3)
     const std::string pressedKey = "3";
     brasio::events::subevents::KeyboardReleaseEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Release, plus)
@@ -142,6 +159,7 @@ TEST(Events_Event_Data_Keyboard_Release, plus)
     const std::string pressedKey = "+";
     brasio::events::subevents::KeyboardReleaseEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Keyboard_Release, sharp)
@@ -149,6 +167,7 @@ TEST(Events_Event_Data_Keyboard_Release, sharp)
     const std::string pressedKey = "#";
     brasio::events::subevents::KeyboardReleaseEvent event(pressedKey);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Click, left)
@@ -158,6 +177,7 @@ TEST(Events_Event_Data_Mouse_Click, left)
             brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_LEFT;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Click, middle)
@@ -167,6 +187,7 @@ TEST(Events_Event_Data_Mouse_Click, middle)
             brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_MIDDLE;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Click, right)
@@ -176,6 +197,7 @@ TEST(Events_Event_Data_Mouse_Click, right)
             brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_RIGHT;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionX, borderLeft)
@@ -184,6 +206,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionX, borderLeft)
     unsigned positionY = 512;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionX(), positionX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionX, middle)
@@ -192,6 +215,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionX, middle)
     unsigned positionY = 512;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionX(), positionX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionX, borderRight)
@@ -200,6 +224,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionX, borderRight)
     unsigned positionY = 512;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionX(), positionX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionY, borderDown)
@@ -208,6 +233,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionY, borderDown)
     unsigned positionY = 0;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionY(), positionY);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionY, middle)
@@ -216,6 +242,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionY, middle)
     unsigned positionY = 640;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionY(), positionY);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Move_PositionY, borderUp)
@@ -224,6 +251,7 @@ TEST(Events_Event_Data_Mouse_Move_PositionY, borderUp)
     unsigned positionY = 1079;
     brasio::events::subevents::MouseMoveEvent event(positionX, positionY);
     EXPECT_EQ(event.getPositionY(), positionY);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Release, left)
@@ -233,6 +261,7 @@ TEST(Events_Event_Data_Mouse_Release, left)
             brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_LEFT;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Release, middle)
@@ -242,6 +271,7 @@ TEST(Events_Event_Data_Mouse_Release, middle)
             brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_MIDDLE;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Release, right)
@@ -251,6 +281,7 @@ TEST(Events_Event_Data_Mouse_Release, right)
             brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_RIGHT;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Scroll, up)
@@ -260,6 +291,7 @@ TEST(Events_Event_Data_Mouse_Scroll, up)
             brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_UP;
     brasio::events::subevents::MouseScrollEvent event(mouseScrollDirection);
     EXPECT_EQ(event.getDirection(), mouseScrollDirection);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Mouse_Scroll, down)
@@ -269,6 +301,7 @@ TEST(Events_Event_Data_Mouse_Scroll, down)
             brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_DOWN;
     brasio::events::subevents::MouseScrollEvent event(mouseScrollDirection);
     EXPECT_EQ(event.getDirection(), mouseScrollDirection);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, up50)
@@ -277,6 +310,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, up50)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, up2right1)
@@ -285,6 +319,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, up2right1)
     int rightBy = 1;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, right16)
@@ -293,6 +328,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, right16)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, down10right15)
@@ -301,6 +337,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, down10right15)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, down20)
@@ -309,6 +346,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, down20)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, down5left17)
@@ -317,6 +355,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, down5left17)
     int rightBy = -17;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, left32)
@@ -325,6 +364,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, left32)
     int rightBy = -32;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_DownDisplacement, up7left8)
@@ -333,6 +373,7 @@ TEST(Events_Event_Data_Window_Move_DownDisplacement, up7left8)
     int rightBy = -8;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getDownDisplacement(), downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, up50)
@@ -341,6 +382,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, up50)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, up2right1)
@@ -349,6 +391,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, up2right1)
     int rightBy = 1;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, right16)
@@ -357,6 +400,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, right16)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, down10right15)
@@ -365,6 +409,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, down10right15)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, down20)
@@ -373,6 +418,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, down20)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, down5left17)
@@ -381,6 +427,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, down5left17)
     int rightBy = -17;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, left32)
@@ -389,6 +436,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, left32)
     int rightBy = -32;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_UpDisplacement, up7left8)
@@ -397,6 +445,7 @@ TEST(Events_Event_Data_Window_Move_UpDisplacement, up7left8)
     int rightBy = -8;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getUpDisplacement(), -downBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, up50)
@@ -405,6 +454,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, up50)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, up2right1)
@@ -413,6 +463,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, up2right1)
     int rightBy = 1;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, right16)
@@ -421,6 +472,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, right16)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, down10right15)
@@ -429,6 +481,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, down10right15)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, down20)
@@ -437,6 +490,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, down20)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, down5left17)
@@ -445,6 +499,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, down5left17)
     int rightBy = -17;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, left32)
@@ -453,6 +508,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, left32)
     int rightBy = -32;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_LeftDisplacement, up7left8)
@@ -461,6 +517,7 @@ TEST(Events_Event_Data_Window_Move_LeftDisplacement, up7left8)
     int rightBy = -8;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getLeftDisplacement(), -rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, up50)
@@ -469,6 +526,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, up50)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, up2right1)
@@ -477,6 +535,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, up2right1)
     int rightBy = 1;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, right16)
@@ -485,6 +544,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, right16)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, down10right15)
@@ -493,6 +553,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, down10right15)
     int rightBy = 15;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, down20)
@@ -501,6 +562,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, down20)
     int rightBy = 0;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, down5left17)
@@ -509,6 +571,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, down5left17)
     int rightBy = -17;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, left32)
@@ -517,6 +580,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, left32)
     int rightBy = -32;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Move_RightDisplacement, up7left8)
@@ -525,6 +589,7 @@ TEST(Events_Event_Data_Window_Move_RightDisplacement, up7left8)
     int rightBy = -8;
     brasio::events::subevents::WindowMoveEvent event(downBy, rightBy);
     EXPECT_EQ(event.getRightDisplacement(), rightBy);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, toggle)
@@ -535,6 +600,7 @@ TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, toggle)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, noToggle)
@@ -545,6 +611,7 @@ TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, noToggle)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeX, zero)
@@ -555,6 +622,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, zero)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeX, classic)
@@ -565,6 +633,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, classic)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeX, reduce)
@@ -575,6 +644,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, reduce)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeY, zero)
@@ -585,6 +655,7 @@ TEST(Events_Event_Data_Window_Resize_SizeY, zero)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeY, classic)
@@ -595,6 +666,7 @@ TEST(Events_Event_Data_Window_Resize_SizeY, classic)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
+    event.handle();
 }
 
 TEST(Events_Event_Data_Window_Resize_SizeY, reduce)
@@ -605,4 +677,5 @@ TEST(Events_Event_Data_Window_Resize_SizeY, reduce)
     brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
                                                        sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
+    event.handle();
 }
