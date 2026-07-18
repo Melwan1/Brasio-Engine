@@ -16,11 +16,7 @@
 #include <renderer/vulkan/builders/all.hh>
 
 #include <shaders/shader-module.hh>
-#include <mesh/cube.hh>
-#include <mesh/plane.hh>
-#include <mesh/cone.hh>
-#include <mesh/cylinder.hh>
-#include <mesh/sphere.hh>
+#include <mesh/fwd.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
