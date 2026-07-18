@@ -57,6 +57,8 @@ namespace brasio::mesh
 
         void applyScale(TransformMode transformMode, const glm::vec3 &scale);
 
+        void setUniformColor(const glm::vec3 &color);
+
         void createVertexBuffer(
             const renderer::vulkan::PhysicalDeviceType &physicalDevice,
             const renderer::vulkan::LogicalDeviceType &logicalDevice,

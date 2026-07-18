@@ -16,10 +16,8 @@ namespace brasio::mesh
         vertices.reserve(2 + (nStacks - 1) * nSlices); // wtf is this shit
         indices.reserve(3 * 2 * nSlices * nStacks);
 
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, +0.5f, 0.0f }, { 0.5f, 0.5f, 0.5f }));
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, -0.5f, 0.0f }, { 0.5f, 0.5f, 0.5f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, +0.5f, 0.0f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, -0.5f, 0.0f }));
 
         // vertices per stack and slice
         for (unsigned stack = 1; stack < nStacks; stack++)
@@ -31,11 +29,10 @@ namespace brasio::mesh
             {
                 auto theta = 2 * std::numbers::pi * static_cast<float>(slice)
                     / static_cast<float>(nSlices);
-                vertices.emplace_back(
-                    geometry::Vertex({ 0.5f * std::sin(phi) * std::cos(theta),
-                                       0.5f * std::cos(phi),
-                                       0.5f * std::sin(phi) * std::sin(theta) },
-                                     { 0.5f, 0.5f, 0.5f }));
+                vertices.emplace_back(geometry::Vertex(
+                    { 0.5f * std::sin(phi) * std::cos(theta),
+                      0.5f * std::cos(phi),
+                      0.5f * std::sin(phi) * std::sin(theta) }));
             }
         }
 

@@ -135,6 +135,14 @@ namespace brasio::mesh
         applyTransform(transformMode, scaleMatrix);
     }
 
+    void Mesh::setUniformColor(const glm::vec3 &color)
+    {
+        for (geometry::Vertex &vertex : _vertices)
+        {
+            vertex.color = color;
+        }
+    }
+
     void Mesh::createVertexBuffer(
         const renderer::vulkan::PhysicalDeviceType &physicalDevice,
         const renderer::vulkan::LogicalDeviceType &logicalDevice,
