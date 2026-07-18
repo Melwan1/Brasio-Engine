@@ -30,7 +30,7 @@ renderer:
       rasterizer:
         depth_clamp: false
         discard: false
-        polygon_mode: LINE
+        polygon_mode: FILL
         line_width: 1
         cull_mode: BACK
         front_face: CCW
@@ -76,7 +76,7 @@ renderer:
       rasterizer:
         depth_clamp: false
         discard: false
-        polygon_mode: FILL
+        polygon_mode: LINE
         line_width: 3
         cull_mode: BACK
         front_face: CCW
