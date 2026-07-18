@@ -24,12 +24,10 @@ namespace brasio::mesh
         indices.reserve(base_tessellation * 2 * 3 * 2);
 
         // top vertex
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, height, 0.0f }, { 0.5f, 0.5f, 0.5f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, height, 0.0f }));
 
         // base center vertex
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, 0.0f, 0.0f }));
 
         for (int base_tessellation_index = 0;
              base_tessellation_index <= base_tessellation;
@@ -43,8 +41,8 @@ namespace brasio::mesh
                   0.0f,
                   0.5f
                       * std::sin(static_cast<float>(base_tessellation_index)
-                                 / base_tessellation * 2 * std::numbers::pi) },
-                { 0.5f, 0.5f, 0.5f }));
+                                 / base_tessellation * 2
+                                 * std::numbers::pi) }));
 
             // lateral triangle
             indices.emplace_back(base_tessellation_index + 2);

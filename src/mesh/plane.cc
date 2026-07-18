@@ -33,8 +33,7 @@ namespace brasio::mesh
                       0.0f,
                       static_cast<float>(vertical_tessellation_index)
                               / vertical_tessellation
-                          - 0.5f },
-                    { 0.5f, 0.5f, 0.5f }));
+                          - 0.5f }));
                 if (horizontal_tessellation_index > 0
                     && vertical_tessellation_index > 0)
                 {

@@ -21,10 +21,8 @@ namespace brasio::mesh
         // triangle per lateral_tessellation for each base (= 2 triangles)
         indices.reserve(4 * 3 * lateral_tessellation);
 
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, 0.0f, 0.0f }, { 0.5f, 0.5f, 0.5f }));
-        vertices.emplace_back(
-            geometry::Vertex({ 0.0f, 1.0f, 0.0f }, { 0.5f, 0.5f, 0.5f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, 0.0f, 0.0f }));
+        vertices.emplace_back(geometry::Vertex({ 0.0f, 1.0f, 0.0f }));
 
         for (int lateral_tessellation_index = 0;
              lateral_tessellation_index < lateral_tessellation;
@@ -34,11 +32,9 @@ namespace brasio::mesh
                 * static_cast<float>(lateral_tessellation_index)
                 / lateral_tessellation;
             vertices.emplace_back(geometry::Vertex(
-                { 0.5f * std::cos(angle), 0.0f, 0.5f * std::sin(angle) },
-                { 0.5f, 0.5f, 0.5f }));
+                { 0.5f * std::cos(angle), 0.0f, 0.5f * std::sin(angle) }));
             vertices.emplace_back(geometry::Vertex(
-                { 0.5f * std::cos(angle), 1.0f, 0.5f * std::sin(angle) },
-                { 0.5f, 0.5f, 0.5f }));
+                { 0.5f * std::cos(angle), 1.0f, 0.5f * std::sin(angle) }));
 
             // bottom triangle
             indices.emplace_back(2 * (lateral_tessellation_index + 1));
