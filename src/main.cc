@@ -3,6 +3,8 @@
 #include <yaml-cpp/yaml.h>
 #include <filesystem>
 
+#include <images/p3-ppm.hh>
+
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[])
