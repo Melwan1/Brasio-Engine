@@ -23,6 +23,10 @@ namespace brasio::images
         void print(std::ostream &ostr);
         void save(const fs::path &path);
 
+        size_t getSize() const;
+        const void *getData() const;
+        void *getData();
+
     private:
         unsigned _width;
         unsigned _height;

@@ -13,6 +13,7 @@ target_include_directories(libimages PRIVATE
 target_link_libraries(libimages PRIVATE
     Vulkan::Vulkan
     glfw
+    libutils
 )
 
 target_sources(libimages PRIVATE

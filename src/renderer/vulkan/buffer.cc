@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+#include <renderer/vulkan/memory.hh>
+
 namespace brasio::renderer::vulkan
 {
     Buffer::Buffer(const PhysicalDeviceType &physicalDevice,
@@ -25,7 +27,7 @@ namespace brasio::renderer::vulkan
                                 { "CREATE" });
         }
         BRASIO_LOG_TRACE(std::cout, "Created buffer", { "CREATE" });
-        _deviceMemory = std::make_unique<BufferMemory>(
+        _deviceMemory = std::make_unique<Memory>(
             physicalDevice, logicalDevice->getHandle(), *this, memoryProperties,
             data, createInfo.size);
     }

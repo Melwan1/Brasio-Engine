@@ -106,4 +106,19 @@ namespace brasio::images
         print(ostr);
     }
 
+    size_t P3PPM::getSize() const
+    {
+        return _width * _height * 3;
+    }
+
+    const void *P3PPM::getData() const
+    {
+        return _pixels.data()->data();
+    }
+
+    void *P3PPM::getData()
+    {
+        return _pixels.data()->data();
+    }
+
 } // namespace brasio::images
