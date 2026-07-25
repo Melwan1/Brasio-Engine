@@ -23,6 +23,7 @@ add_subdirectory(application)
 add_subdirectory(core)
 add_subdirectory(events)
 add_subdirectory(geometry)
+add_subdirectory(images)
 add_subdirectory(io)
 add_subdirectory(math)
 add_subdirectory(mesh)
@@ -35,6 +36,7 @@ target_link_libraries(brasio PRIVATE
     libcore
     libevents
     libgeometry
+    libimages
     libio
     libmath
     libmesh
