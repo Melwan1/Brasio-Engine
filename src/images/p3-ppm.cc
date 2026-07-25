@@ -100,4 +100,10 @@ namespace brasio::images
         }
     }
 
+    void P3PPM::save(const fs::path &path)
+    {
+        std::ofstream ostr(path);
+        print(ostr);
+    }
+
 } // namespace brasio::images
