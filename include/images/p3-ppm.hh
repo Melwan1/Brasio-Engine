@@ -21,6 +21,7 @@ namespace brasio::images
         static P3PPM load(const fs::path &path);
 
         void print(std::ostream &ostr);
+        void save(const fs::path &path);
 
     private:
         unsigned _width;
