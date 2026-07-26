@@ -19,11 +19,14 @@ namespace brasio::images
         P3PPM(unsigned width, unsigned height, const PixelArray &pixels);
 
         static P3PPM load(const fs::path &path);
+        static P3PPM empty();
 
         void print(std::ostream &ostr);
         void save(const fs::path &path);
 
         size_t getSize() const;
+        size_t getWidth() const;
+        size_t getHeight() const;
         const void *getData() const;
         void *getData();
 

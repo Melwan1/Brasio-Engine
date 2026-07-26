@@ -7,13 +7,14 @@
 #include <memory>
 
 #include <renderer/vulkan/logical-device.hh>
+#include <renderer/vulkan/memory.hh>
 #include <images/p3-ppm.hh>
 
 namespace brasio::renderer::vulkan
 {
 
-    class Memory;
-    using MemoryType = std::unique_ptr<Memory>;
+    // class Memory;
+    // using MemoryType = std::unique_ptr<Memory>;
 
     class Texture : public core::Handler<VkImage>
     {

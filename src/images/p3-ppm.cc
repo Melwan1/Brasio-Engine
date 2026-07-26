@@ -79,6 +79,11 @@ namespace brasio::images
         return { width, height, pixels };
     }
 
+    P3PPM P3PPM::empty()
+    {
+        return { 1, 1, { { 0, 0, 0 } } };
+    }
+
     void P3PPM::print(std::ostream &ostr)
     {
         ostr << "P3\n" << _width << " " << _height << "\n" << 255 << "\n";
@@ -109,6 +114,16 @@ namespace brasio::images
     size_t P3PPM::getSize() const
     {
         return _width * _height * 3;
+    }
+
+    size_t P3PPM::getWidth() const
+    {
+        return _width;
+    }
+
+    size_t P3PPM::getHeight() const
+    {
+        return _height;
     }
 
     const void *P3PPM::getData() const

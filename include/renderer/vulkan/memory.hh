@@ -4,10 +4,10 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <memory>
+#include <renderer/vulkan/logical-device.hh>
+#include <renderer/vulkan/physical-device.hh>
 
-#include <renderer/vulkan/buffer.hh>
-#include <renderer/vulkan/texture.hh>
+#include <memory>
 
 namespace brasio::renderer::vulkan
 {
