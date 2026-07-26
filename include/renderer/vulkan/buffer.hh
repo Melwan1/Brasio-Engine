@@ -23,8 +23,9 @@ namespace brasio::renderer::vulkan
                const VkBufferCreateInfo &createInfo,
                const VkMemoryPropertyFlags memoryProperties, void *data);
 
-        void copyInto(const Buffer &other, VkCommandPool _commandPool,
+        void copyInto(const Buffer &other, VkCommandPool commandPool,
                       VkDeviceSize size);
+        void copyInto(const Texture &other, VkCommandPool commandPool);
 
         void mapMemory();
         void unmapMemory();

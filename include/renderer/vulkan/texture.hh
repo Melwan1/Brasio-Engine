@@ -13,9 +13,6 @@
 namespace brasio::renderer::vulkan
 {
 
-    // class Memory;
-    // using MemoryType = std::unique_ptr<Memory>;
-
     class Texture : public core::Handler<VkImage>
     {
     public:
@@ -26,6 +23,11 @@ namespace brasio::renderer::vulkan
                 const VkMemoryPropertyFlags memoryProperties);
 
         const images::P3PPM &getTextureImage() const;
+
+        void transitionImageLayout(const VkCommandPool &commandPool,
+                                   [[maybe_unused]] const VkFormat &format,
+                                   const VkImageLayout &oldLayout,
+                                   VkImageLayout &newLayout);
 
     private:
         const LogicalDeviceType &_logicalDevice;
