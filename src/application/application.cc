@@ -21,6 +21,7 @@ namespace brasio::application
 
     Application::~Application()
     {
+        _renderer.reset();
         glfwDestroyWindow(_window);
         _window = nullptr;
         glfwTerminate();
