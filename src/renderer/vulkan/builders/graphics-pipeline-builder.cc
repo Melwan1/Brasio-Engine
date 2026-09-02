@@ -119,8 +119,8 @@ namespace brasio::renderer::vulkan::builders
         const std::string &extension)
     {
         BRASIO_LOG_DEBUG(std::cout,
-                         "Checking" + extension + "against"
-                             + std::to_string(_shaderPaths.size()) + "shaders");
+                         "Checking " + extension + " extension against "
+                             + std::to_string(_shaderPaths.size()) + " shaders");
         int shaderCount = std::count_if(
             _shaderPaths.begin(), _shaderPaths.end(),
             [&extension](const fs::path &shaderPath) {

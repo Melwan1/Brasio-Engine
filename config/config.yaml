@@ -1,6 +1,6 @@
 application:
   window:
-    monitorIndex: -1
+    monitorIndex: 0
     width: 1920
     height: 1080
     title: Brasio Engine
@@ -107,4 +107,4 @@ renderer:
         logic_op: COPY
 
 logging:
-  level: TRACE
+  level: DEBUG

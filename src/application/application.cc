@@ -141,14 +141,15 @@ namespace brasio::application
         _title = windowConfig["title"].as<std::string>();
         GLFWwindow *window = glfwCreateWindow(
             windowConfig["width"].as<int>(), windowConfig["height"].as<int>(),
-            _title.c_str(), nullptr /* monitor */, nullptr);
+            _title.c_str(), monitor, nullptr);
         (void)mode;
         if (!window)
         {
-            std::cerr << "Unable to create GLFW window." << std::endl;
+            BRASIO_LOG_CRITICAL(std::cout, "Unable to create GLFW window.", { "APPLICATION", "SETUP" });
             return false;
         }
         _window = window;
+        BRASIO_LOG_DEBUG(std::cout, "Created window at monitor index " + std::to_string(monitorIndex) + " out of " + std::to_string(monitorCount)  + " monitors", { "APPLICATION", "SETUP" });
 
         glfwMakeContextCurrent(window);
 
@@ -251,7 +252,7 @@ namespace brasio::application
         int returnCode = std::system(commandStr.c_str());
         if (returnCode != 0)
         {
-            io::logging::Logger::warning(
+            BRASIO_LOG_WARNING(
                 std::cout, "Could not execute git command to fetch tags",
                 { "VERSION" });
             return false;

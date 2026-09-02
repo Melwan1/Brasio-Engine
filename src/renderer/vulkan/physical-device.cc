@@ -83,8 +83,8 @@ namespace brasio::renderer::vulkan
 
         BRASIO_LOG_CRITICAL(std::cout, "No suitable memory type has been found",
                             { "DEVICE" });
+        return -1;
 
-        throw std::runtime_error("Failed to find a suitable memory type.");
     }
 
     bool PhysicalDevice::checkDeviceExtensionSupport() const

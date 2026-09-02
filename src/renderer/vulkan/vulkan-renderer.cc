@@ -258,7 +258,12 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::drawFrame()
     {
+
+        BRASIO_LOG_TRACE(std::cout, "Starting frame render", { "RENDER" });
         _syncObjects->waitSingleFence(_currentFrame);
+        BRASIO_LOG_TRACE(std::cout, "fence waited for", { "RENDER" });
+
+        BRASIO_LOG_TRACE(std::cout, "acquiring next image", { "RENDER" });
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(
@@ -270,10 +275,13 @@ namespace brasio::renderer::vulkan
             recreateSwapChain();
             return;
         }
+
         else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
         {
-            throw std::runtime_error("Failed to acquire swap chain image.");
+            io::logging::Logger::critical(std::cout, "Failed to acquire swapchain image.", { "RENDER" });
         }
+
+        BRASIO_LOG_TRACE(std::cout, "acquired next image", { "RENDER" });
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
@@ -304,7 +312,7 @@ namespace brasio::renderer::vulkan
                           _syncObjects->fenceAt(_currentFrame))
             != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to submit draw command buffer.");
+            BRASIO_LOG_CRITICAL(std::cout, "Failed to submit draw command buffer.", { "RENDER" });
         }
 
         VkSwapchainKHR swapchains[] = { _swapchain->getHandle() };
@@ -326,11 +334,13 @@ namespace brasio::renderer::vulkan
         }
         else if (result != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to present swap chain image.");
+            BRASIO_LOG_CRITICAL(std::cout, "Failed to present swapchain image.", { "RENDER" });
         }
 
         _currentFrame++;
         _currentFrame %= MAX_FRAMES_IN_FLIGHT;
+
+        BRASIO_LOG_TRACE(std::cout, "Ending frame render", { "RENDER" });
     }
 
     void VulkanRenderer::cleanupSwapChain()

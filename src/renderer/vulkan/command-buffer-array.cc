@@ -121,22 +121,30 @@ namespace brasio::renderer::vulkan
                                     uint32_t commandBufferIndex,
                                     uint32_t imageIndex)
     {
+        BRASIO_LOG_TRACE(std::cout, "starting command buffer record", {});
         begin(commandBufferIndex, imageIndex,
               renderer.getRenderPass().getHandle(), renderer.getSwapchain());
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
 
+        BRASIO_LOG_TRACE(std::cout, "setting viewport and scissor", {});
         setViewport(commandBufferIndex, renderer.getSwapchain());
         setScissor(commandBufferIndex, renderer.getSwapchain());
 
         for (const GraphicsPipelineType &graphicsPipeline :
              renderer.getGraphicsPipelines())
         {
+            BRASIO_LOG_TRACE(std::cout, "binding graphics pipeline", {});
             graphicsPipeline->bind(commandBuffer);
+            BRASIO_LOG_TRACE(std::cout, "rendering mesh 1", {});
             renderer.getMesh1().draw(commandBuffer, renderer);
+            BRASIO_LOG_TRACE(std::cout, "rendering mesh 2", {});
             renderer.getMesh2().draw(commandBuffer, renderer);
         }
 
+        BRASIO_LOG_TRACE(std::cout, "Ending render pass", {});
         vkCmdEndRenderPass(commandBuffer);
+
+        BRASIO_LOG_TRACE(std::cout, "Ending command buffer", {});
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
         {
