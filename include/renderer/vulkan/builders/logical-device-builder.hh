@@ -19,9 +19,6 @@ namespace brasio::renderer::vulkan::builders
 
         virtual LogicalDeviceBuilder &base() override;
 
-        LogicalDeviceBuilder &
-        withValidationLayers(const std::vector<const char *> validationLayers);
-
         virtual LogicalDeviceType build() override;
 
     private:
@@ -29,7 +26,5 @@ namespace brasio::renderer::vulkan::builders
         float _queuePriority;
         std::vector<VkDeviceQueueCreateInfo> _queueCreateInfos;
         QueueFamilyIndices _indices;
-
-        std::vector<const char *> _validationLayers;
     };
 } // namespace brasio::renderer::vulkan::builders

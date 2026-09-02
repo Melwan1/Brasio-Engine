@@ -131,7 +131,6 @@ namespace brasio::renderer::vulkan
     {
         _logicalDevice =
             builders::LogicalDeviceBuilder(*_physicalDevice)
-                .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
                 .build();
     }
 

@@ -1,8 +1,6 @@
 #include <renderer/vulkan/builders/physical-device-builder.hh>
 
-#include <algorithm>
 #include <iostream>
-#include <sstream>
 
 #include <io/logging/logger.hh>
 
@@ -18,6 +16,7 @@ namespace brasio::renderer::vulkan::builders
 
     PhysicalDeviceBuilder &PhysicalDeviceBuilder::base()
     {
+        _validationLayers.clear();
         return *this;
     }
 

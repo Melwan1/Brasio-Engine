@@ -27,14 +27,6 @@ namespace brasio::renderer::vulkan::builders
             queueCreateInfo.pQueuePriorities = &_queuePriority;
             _queueCreateInfos.emplace_back(queueCreateInfo);
         }
-        _validationLayers.clear();
-        return *this;
-    }
-
-    LogicalDeviceBuilder &LogicalDeviceBuilder::withValidationLayers(
-        const std::vector<const char *> validationLayers)
-    {
-        _validationLayers = validationLayers;
         return *this;
     }
 
@@ -53,7 +45,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.ppEnabledExtensionNames =
             _physicalDevice.getDeviceExtensions().data();
 
-        if (_validationLayers.empty())
+       /* if (_validationLayers.empty())
         {
             createInfo.enabledLayerCount = 0;
         }
@@ -63,6 +55,8 @@ namespace brasio::renderer::vulkan::builders
                 static_cast<uint32_t>(_validationLayers.size());
             createInfo.ppEnabledLayerNames = _validationLayers.data();
         }
+        */ // FIXME
+        createInfo.enabledLayerCount = 0;
 
         return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(),
                                                createInfo, _indices);

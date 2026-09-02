@@ -22,16 +22,21 @@ namespace brasio::renderer::vulkan::builders
         PhysicalDeviceBuilder &
         withDeviceExtensions(const std::vector<const char *> &extensions);
 
+        PhysicalDeviceBuilder &
+        withValidationLayers(const std::vector<const char *> validationLayers);
+
     private:
         VkInstance _instance;
         VkSurfaceKHR _surface;
 
         std::vector<const char *> _deviceExtensions;
+        std::vector<const char *> _validationLayers;
 
         std::vector<PhysicalDeviceType> _getAvailablePhysicalDevices();
         bool _isDeviceSuitable(const PhysicalDevice &device);
         int _getDeviceSuitability(const PhysicalDevice &device);
 
         std::multimap<int, PhysicalDeviceType> _ratePhysicalDevices();
+
     };
 } // namespace brasio::renderer::vulkan::builders
