@@ -21,15 +21,14 @@ namespace brasio::images
         std::string format;
         if (!(std::getline(ifs, format)))
         {
-            BRASIO_LOG_WARNING(std::cout, "Unknown PPM format, assuming P3.",
+            BRASIO_LOG_WARNING("Unknown PPM format, assuming P3.",
                                { "IMAGES", "PPM", "LOAD" });
             format = "P3";
         }
         unsigned width, height, max_value;
         if (!(ifs >> width >> height >> max_value))
         {
-            BRASIO_LOG_ERROR(std::cout,
-                             "Could not parse width, height or max value from "
+            BRASIO_LOG_ERROR("Could not parse width, height or max value from "
                              "the P3 PPM file, aborting.",
                              { "IMAGES", "PPM", "LOAD" });
         }
@@ -40,8 +39,7 @@ namespace brasio::images
         pixels.resize(num_pixels);
         if (max_value != 255)
         {
-            BRASIO_LOG_WARNING(std::cout,
-                               "max_value is not 255, multiplying every value "
+            BRASIO_LOG_WARNING("max_value is not 255, multiplying every value "
                                "by 255 / max_value to put max value at 255",
                                { "IMAGES", "PPM", "LOAD" });
         }
@@ -57,8 +55,7 @@ namespace brasio::images
                     oss << "Could not read pixel at coordinates (" << line
                         << ", " << col
                         << "), the image result might be corrupted";
-                    BRASIO_LOG_ERROR(std::cout, oss.str(),
-                                     { "IMAGES", "PPM", "LOAD" });
+                    BRASIO_LOG_ERROR(oss.str(), { "IMAGES", "PPM", "LOAD" });
                 }
 
                 pixels[index++] = {
@@ -71,8 +68,7 @@ namespace brasio::images
         unsigned thrown_unsigned;
         if (ifs >> thrown_unsigned)
         {
-            BRASIO_LOG_ERROR(std::cout,
-                             "Image file is longer than "
+            BRASIO_LOG_ERROR("Image file is longer than "
                                  + std::to_string(num_pixels) + " pixels",
                              { "IMAGES", "PPM", "LOAD" });
         }

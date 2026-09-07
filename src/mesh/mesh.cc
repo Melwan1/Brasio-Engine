@@ -62,7 +62,6 @@ namespace brasio::mesh
     void Mesh::draw(const VkCommandBuffer &commandBuffer,
                     const renderer::vulkan::VulkanRenderer &renderer) const
     {
-        // print(std::cout);
         VkBuffer vertexBuffers[] = { getVertexBuffer()->getHandle() };
         VkDeviceSize offsets[] = { 0 };
         uint32_t firstBinding = 0;
@@ -238,7 +237,7 @@ namespace brasio::mesh
 
     void Mesh::print(std::ostream &ostr) const
     {
-        BRASIO_LOG_TRACE(
+        io::logging::Logger::trace(
             ostr,
             "Drawing " + std::to_string(getVertices().size()) + " vertices and "
                 + std::to_string(getIndices().size()) + " segments (="

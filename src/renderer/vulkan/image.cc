@@ -12,14 +12,14 @@ namespace brasio::renderer::vulkan
                   })
         , _image(image)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating image view", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
         if (vkCreateImageView(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Could not create image view",
+            BRASIO_LOG_CRITICAL("Could not create image view",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE(std::cout, "Created image view", { "CREATE" });
+        BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 
     const VkImage &Image::getImage() const

@@ -22,8 +22,10 @@ namespace brasio::application
     Application::~Application()
     {
         _renderer.reset();
+        BRASIO_LOG_DEBUG("Destroying window", { "APPLICATION", "TEARDOWN" });
         glfwDestroyWindow(_window);
         _window = nullptr;
+        BRASIO_LOG_DEBUG("Terminating glfw", { "APPLICATION", "TEARDOWN" });
         glfwTerminate();
     }
 
@@ -34,6 +36,7 @@ namespace brasio::application
 
     void Application::initListeners()
     {
+        BRASIO_LOG_TRACE("Creating event listeners", { "APPLICATION", "SETUP" });
         ApplicationEventEmitter::addListener(*this);
         KeyboardEventEmitter::addListener(*this);
         MouseEventEmitter::addListener(*this);
@@ -42,28 +45,23 @@ namespace brasio::application
 
     bool Application::init(const YAML::Node &config)
     {
-        std::map<std::string, io::logging::LogLevel> logLevelMap = {
-            { "TRACE", io::logging::LogLevel::TRACE },
-            { "DEBUG", io::logging::LogLevel::DEBUG },
-            { "INFO", io::logging::LogLevel::INFO },
-            { "WARNING", io::logging::LogLevel::WARNING },
-            { "ERROR", io::logging::LogLevel::ERROR },
-            { "CRITICAL", io::logging::LogLevel::CRITICAL }
-        };
-        io::logging::Logger::sLogLevel =
-            logLevelMap.at(config["logging"]["level"].as<std::string>());
+        io::logging::Logger::fromConfig(config["logging"]);
+        BRASIO_LOG_DEBUG("Configured logger", { "APPLICATION", "SETUP" });
 
         if (!glfwInit())
         {
-            std::cerr << "Unable to initialize GLFW." << std::endl;
+            BRASIO_LOG_CRITICAL("Unable to initialize GLFW", { "APPLICATION", "SETUP" });
             return false;
         }
 
         bool useOpengl = !config["renderer"]["type"]
             || !config["renderer"]["type"].as<std::string>().compare("OpenGL");
 
+        BRASIO_LOG_DEBUG("Setting up window", { "APPLICATION", "SETUP" });
+
         if (!setupWindow(config["application"]["window"], useOpengl))
         {
+            BRASIO_LOG_ERROR("Could not setup window", { "APPLICATION", "SETUP" });
             return false;
         }
 
@@ -71,7 +69,7 @@ namespace brasio::application
 
         if (useOpengl && glewInit() != GLEW_OK)
         {
-            std::cerr << "Unable to setup GLEW." << std::endl;
+            BRASIO_LOG_ERROR("Unable to initialize GLEW", { "APPLICATION", "SETUP" });
             glfwDestroyWindow(_window);
             glfwTerminate();
             return false;
@@ -145,11 +143,11 @@ namespace brasio::application
         (void)mode;
         if (!window)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Unable to create GLFW window.", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_CRITICAL("Unable to create GLFW window.", { "APPLICATION", "SETUP" });
             return false;
         }
         _window = window;
-        BRASIO_LOG_DEBUG(std::cout, "Created window at monitor index " + std::to_string(monitorIndex) + " out of " + std::to_string(monitorCount)  + " monitors", { "APPLICATION", "SETUP" });
+        BRASIO_LOG_DEBUG("Created window at monitor index " + std::to_string(monitorIndex) + " out of " + std::to_string(monitorCount)  + " monitors", { "APPLICATION", "SETUP" });
 
         glfwMakeContextCurrent(window);
 
@@ -158,11 +156,13 @@ namespace brasio::application
 
     void Application::setupGlfwInput()
     {
+        BRASIO_LOG_TRACE("Setting up glfw input", { "APPLICATION", "SETUP" });
         glfwSetInputMode(getWindow(), GLFW_LOCK_KEY_MODS, GLFW_TRUE);
     }
 
     void Application::setupCallbacks()
     {
+        BRASIO_LOG_TRACE("Setting up callbacks", { "APPLICATION", "SETUP" });
         glfwSetKeyCallback(_window, keyCallback);
         glfwSetWindowCloseCallback(_window, windowCloseCallback);
         glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
@@ -234,10 +234,13 @@ namespace brasio::application
         switch (versionControlType)
         {
         case VersionControlType::LATEST_GIT_TAG:
+            BRASIO_LOG_DEBUG("Setting application version from latest git tag", { "APPLICATION", "SETUP" });
             return setVersionFromGit();
         case VersionControlType::CONFIG_FILE:
+            BRASIO_LOG_DEBUG("Setting application version from config file", { "APPLICATION", "SETUP" });
             return setVersionFromConfig(applicationConfig["version"]);
         default:
+            BRASIO_LOG_WARNING("Did not set application version", { "APPLICATION", "SETUP" });
             return false;
         }
     }
@@ -253,21 +256,23 @@ namespace brasio::application
         if (returnCode != 0)
         {
             BRASIO_LOG_WARNING(
-                std::cout, "Could not execute git command to fetch tags",
-                { "VERSION" });
+                "Could not execute git command to fetch tags",
+                { "APPLICATION", "SETUP" });
             return false;
         }
         std::ifstream tagFileContent(tagFilePath.string(), std::ios::ate);
         size_t fileSize = tagFileContent.tellg();
         if (fileSize == 0)
         {
-            return false; // no tag found
+            BRASIO_LOG_WARNING("Could not find any tag", { "APPLICATION", "SETUP" });
+            return false;
         }
         std::string tag(fileSize, 0);
         tagFileContent.seekg(0);
         tagFileContent.read(tag.data(),
                             fileSize - 1); // omit newline at end of file
         _version = utils::Version(tag);
+        BRASIO_LOG_DEBUG("Setting application version to " + _version.toString(), { "APPLICATION", "SETUP" });
         fs::remove(tagFilePath);
         return true;
     }

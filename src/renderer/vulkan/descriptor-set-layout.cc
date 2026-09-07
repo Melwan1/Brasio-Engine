@@ -13,17 +13,17 @@ namespace brasio::renderer::vulkan
                                                    nullptr);
                   })
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating descriptor set layout",
+        BRASIO_LOG_TRACE("Creating descriptor set layout",
                          { "CREATE" });
         if (vkCreateDescriptorSetLayout(device, &createInfo, nullptr,
                                         &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout,
+            BRASIO_LOG_CRITICAL(
                                 "Could not create descriptor set layout",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE(std::cout, "Created descriptor set layout",
+        BRASIO_LOG_TRACE("Created descriptor set layout",
                          { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

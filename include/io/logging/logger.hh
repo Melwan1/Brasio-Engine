@@ -1,9 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <ostream>
-#include <sstream>
 #include <vector>
+
+#include <yaml-cpp/yaml.h>
 
 #include <io/logging/log-level.hh>
 
@@ -39,9 +41,10 @@ namespace brasio::io::logging
          * Set the log level of the logger.
          *
          * @param   logLevel  the new log level of the logger.
+         * @param   specificTags specify a log level for certain message tags.
          * @return  void
          */
-        void setLogLevel(LogLevel logLevel);
+        void setLogLevel(LogLevel logLevel, std::vector<std::string> specificTags = {});
 
         /**
          * Log a trace message using the logger object.
@@ -129,10 +132,20 @@ namespace brasio::io::logging
         void critical(const std::string &message,
                       std::vector<std::string> additionalTags = {});
 
+        /*
+         * The list of all log levels.
+         */
+        static std::map<std::string, io::logging::LogLevel> logLevelMap;
+
         /**
          * The static logging level. Used in the static methods only.
          */
         static LogLevel sLogLevel;
+
+        /**
+         * The map representing all the constraints on the logs for specific tags.
+         */
+        static std::map<std::string, LogLevel> specificLogLevelMap;
 
         /**
          * ====================================================
@@ -255,67 +268,103 @@ namespace brasio::io::logging
         static void critical(std::ostream &ostr, const std::string &message,
                              std::vector<std::string> additionalTags = {});
 
+        /**
+         * Converts a list of tags as a vector to a string
+         *
+         * @param   tags  the list of tags to convert
+         * @return  std::string
+         */
+        static std::string tagsToString(const std::vector<std::string> &tags);
+
+        /**
+         * Parse the logging config and set static logger attributes.
+         *
+         * @param   config    the YAML config node
+         * @return  void
+         */
+        static void fromConfig(const YAML::Node &config);
+
+        /**
+         * Perform the recursive call from the fromConfig method.
+         *
+         * @param   config  the YAML config node, starting from the specific_levels config.
+         * @param   tags    a list of tags to add before the incoming tag to the specificLogLevelMap.
+         * @return  void
+         */
+        static void fromConfigRec(const YAML::Node &config, const std::vector<std::string> &tags);
+
     private:
         std::ostream &_ostr;
-        LogLevel _logLevel;
+        LogLevel _globalLogLevel;
+
 
         /**
          * Log a message.
          *
          * @param   message         the message to write
          * @param   messageLevel    the message level
-         * @param   additionalTags  a list of additional tags, defaults to empty
+         * @param   additionalTags  a list of additional tags
          * @return  void
          */
         void _log(const std::string &message, const LogLevel messageLevel,
                   const std::vector<std::string> &additionalTags);
+
+        /**
+         * Checks whether the message should be logged.
+         *
+         * @param   messageLevel    the message level
+         * @param   additionalTags  a list of additional tags
+         * @return  bool
+         */
+        bool _shouldLog(const LogLevel messageLevel, const std::vector<std::string> &additionalTags);
+
     };
 } // namespace brasio::io::logging
 
-#define BRASIO_LOG_TRACE(ostr, ...)                                             \
+#define BRASIO_LOG_TRACE(...)                                                   \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::TRACE)                          \
-            ::brasio::io::logging::Logger::trace(ostr, __VA_ARGS__);            \
+            ::brasio::io::logging::Logger::trace(std::cout, __VA_ARGS__);            \
     } while (0)
 
-#define BRASIO_LOG_DEBUG(ostr, ...)                                             \
+#define BRASIO_LOG_DEBUG(...)                                                   \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::DEBUG)                          \
-            ::brasio::io::logging::Logger::debug(ostr, __VA_ARGS__);            \
+            ::brasio::io::logging::Logger::debug(std::cout, __VA_ARGS__);            \
     } while (0)
 
-#define BRASIO_LOG_INFO(ostr, ...)                                              \
+#define BRASIO_LOG_INFO(...)                                                    \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::INFO)                           \
-            ::brasio::io::logging::Logger::info(ostr, __VA_ARGS__);             \
+            ::brasio::io::logging::Logger::info(std::cout, __VA_ARGS__);             \
     } while (0)
 
-#define BRASIO_LOG_WARNING(ostr, ...)                                           \
+#define BRASIO_LOG_WARNING(...)                                                 \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::WARNING)                        \
-            ::brasio::io::logging::Logger::warning(ostr, __VA_ARGS__);          \
+            ::brasio::io::logging::Logger::warning(std::cout, __VA_ARGS__);          \
     } while (0)
 
-#define BRASIO_LOG_ERROR(ostr, ...)                                             \
+#define BRASIO_LOG_ERROR(...)                                                   \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::ERROR)                          \
-            ::brasio::io::logging::Logger::error(ostr, __VA_ARGS__);            \
+            ::brasio::io::logging::Logger::error(std::cout, __VA_ARGS__);            \
     } while (0)
 
-#define BRASIO_LOG_CRITICAL(ostr, ...)                                          \
+#define BRASIO_LOG_CRITICAL(...)                                                \
     do                                                                          \
     {                                                                           \
         if (::brasio::io::logging::Logger::sLogLevel                            \
             <= ::brasio::io::logging::LogLevel::CRITICAL)                       \
-            ::brasio::io::logging::Logger::critical(ostr, __VA_ARGS__);         \
+            ::brasio::io::logging::Logger::critical(std::cout, __VA_ARGS__);         \
     } while (0)

@@ -8,6 +8,7 @@ target_sources(librenderer PRIVATE
     descriptor-pool.cc
     descriptor-set-layout.cc
     descriptor-sets.cc
+    #device.cc
     fence.cc
     graphics-pipeline.cc
     image.cc

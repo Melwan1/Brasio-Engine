@@ -21,15 +21,15 @@ namespace brasio::renderer::vulkan
         , _textureImage(textureImage)
         , _deviceMemory(nullptr)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating texture", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating texture", { "CREATE" });
         if (vkCreateImage(logicalDevice->getHandle(), &imageInfo, nullptr,
                           &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Could not create texture",
+            BRASIO_LOG_CRITICAL("Could not create texture",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE(std::cout, "Created texture", { "CREATE" });
+        BRASIO_LOG_TRACE("Created texture", { "CREATE" });
         _deviceMemory =
             std::make_unique<Memory>(physicalDevice, logicalDevice->getHandle(),
                                      *this, memoryProperties);

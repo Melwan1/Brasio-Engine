@@ -12,8 +12,9 @@ cmake_minimum_required(VERSION 3.28.1)
 project(BrasioEngine)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast -g -O0)
+add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast -g -O0 -fno-inline)
 add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 add_link_options(-g -O0) 
 

@@ -35,7 +35,7 @@ namespace brasio::renderer::vulkan
         {
             _checkSemaphoreBounds(index);
         }
-        BRASIO_LOG_INFO(std::cout, "Nothing to be done for semaphores");
+        BRASIO_LOG_INFO("Nothing to be done for semaphores");
     }
 
     void SyncObjects::waitSingleFence(uint32_t index)
@@ -115,8 +115,7 @@ namespace brasio::renderer::vulkan
     {
         if (index >= _semaphores.size())
         {
-            BRASIO_LOG_WARNING(std::cout,
-                               "Semaphore at index " + std::to_string(index)
+            BRASIO_LOG_WARNING("Semaphore at index " + std::to_string(index)
                                    + " is out of bounds for vector of size "
                                    + std::to_string(_semaphores.size()));
             return true;
@@ -128,8 +127,7 @@ namespace brasio::renderer::vulkan
     {
         if (index >= _semaphores.size())
         {
-            BRASIO_LOG_WARNING(std::cout,
-                               "Fence at index " + std::to_string(index)
+            BRASIO_LOG_WARNING("Fence at index " + std::to_string(index)
                                    + " is out of bounds for vector of size "
                                    + std::to_string(_semaphores.size()));
             return true;

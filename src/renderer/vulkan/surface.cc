@@ -11,16 +11,16 @@ namespace brasio::renderer::vulkan
             vkDestroySurfaceKHR(instance, surface, nullptr);
         })
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating surface", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating surface", { "CREATE" });
         if (glfwCreateWindowSurface(instance, window, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_ERROR(std::cout, "Could not create surface",
+            BRASIO_LOG_ERROR("Could not create surface",
                              { "CREATE" });
         }
         else
         {
-            BRASIO_LOG_TRACE(std::cout, "Created surface", { "CREATE" });
+            BRASIO_LOG_TRACE("Created surface", { "CREATE" });
         }
     }
 } // namespace brasio::renderer::vulkan

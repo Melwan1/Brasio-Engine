@@ -27,7 +27,7 @@ namespace brasio::renderer::vulkan
         , _shaderManager("shaders", "output.log")
         , _maxFramesInFlight(MAX_FRAMES_IN_FLIGHT)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _instance = builders::InstanceBuilder()
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
                         .build();
@@ -56,14 +56,14 @@ namespace brasio::renderer::vulkan
         createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
-        BRASIO_LOG_TRACE(std::cout, "Created Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     VulkanRenderer::VulkanRenderer(GLFWwindow *window, const YAML::Node &config)
         : _window(window)
         , _shaderManager("shaders", "output.log")
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _maxFramesInFlight = config["max_frames_in_flight"].as<unsigned>();
         _instance = builders::InstanceBuilder()
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
@@ -94,7 +94,7 @@ namespace brasio::renderer::vulkan
         createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
-        BRASIO_LOG_TRACE(std::cout, "Created Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     void VulkanRenderer::init()
@@ -102,7 +102,7 @@ namespace brasio::renderer::vulkan
 
     VulkanRenderer::~VulkanRenderer()
     {
-        BRASIO_LOG_TRACE(std::cout, "Destroying Vulkan renderer",
+        BRASIO_LOG_TRACE("Destroying Vulkan renderer",
                          { "DESTROY" });
         cleanupSwapChain();
         _mesh1.reset();
@@ -115,7 +115,7 @@ namespace brasio::renderer::vulkan
         _renderPass.reset();
         _syncObjects.reset();
 
-        BRASIO_LOG_TRACE(std::cout, "Destroyed Vulkan renderer", { "DESTROY" });
+        BRASIO_LOG_TRACE("Destroyed Vulkan renderer", { "DESTROY" });
     }
 
     void VulkanRenderer::pickPhysicalDevice()
@@ -258,11 +258,11 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::drawFrame()
     {
 
-        BRASIO_LOG_TRACE(std::cout, "Starting frame render", { "RENDER" });
+        BRASIO_LOG_TRACE("Starting frame render", { "RENDER" });
         _syncObjects->waitSingleFence(_currentFrame);
-        BRASIO_LOG_TRACE(std::cout, "fence waited for", { "RENDER" });
+        BRASIO_LOG_TRACE("fence waited for", { "RENDER" });
 
-        BRASIO_LOG_TRACE(std::cout, "acquiring next image", { "RENDER" });
+        BRASIO_LOG_TRACE("acquiring next image", { "RENDER" });
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(
@@ -277,10 +277,10 @@ namespace brasio::renderer::vulkan
 
         else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
         {
-            io::logging::Logger::critical(std::cout, "Failed to acquire swapchain image.", { "RENDER" });
+            BRASIO_LOG_CRITICAL("Failed to acquire swapchain image.", { "RENDER" });
         }
 
-        BRASIO_LOG_TRACE(std::cout, "acquired next image", { "RENDER" });
+        BRASIO_LOG_TRACE("acquired next image", { "RENDER" });
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
@@ -311,7 +311,7 @@ namespace brasio::renderer::vulkan
                           _syncObjects->fenceAt(_currentFrame))
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Failed to submit draw command buffer.", { "RENDER" });
+            BRASIO_LOG_CRITICAL("Failed to submit draw command buffer.", { "RENDER" });
         }
 
         VkSwapchainKHR swapchains[] = { _swapchain->getHandle() };
@@ -333,13 +333,13 @@ namespace brasio::renderer::vulkan
         }
         else if (result != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Failed to present swapchain image.", { "RENDER" });
+            BRASIO_LOG_CRITICAL("Failed to present swapchain image.", { "RENDER" });
         }
 
         _currentFrame++;
         _currentFrame %= MAX_FRAMES_IN_FLIGHT;
 
-        BRASIO_LOG_TRACE(std::cout, "Ending frame render", { "RENDER" });
+        BRASIO_LOG_TRACE("Ending frame render", { "RENDER" });
     }
 
     void VulkanRenderer::cleanupSwapChain()

@@ -118,28 +118,24 @@ namespace brasio::renderer::vulkan::builders
     bool GraphicsPipelineBuilder::_checkUniqueShaderType(
         const std::string &extension)
     {
-        BRASIO_LOG_DEBUG(std::cout,
-                         "Checking " + extension + " extension against "
+        BRASIO_LOG_DEBUG("Checking " + extension + " extension against "
                              + std::to_string(_shaderPaths.size()) + " shaders", { "SHADERS" });
         int shaderCount = std::count_if(
             _shaderPaths.begin(), _shaderPaths.end(),
             [&extension](const fs::path &shaderPath) {
-                BRASIO_LOG_TRACE(std::cout,
-                                 "shader path: " + shaderPath.string()
+                BRASIO_LOG_TRACE("shader path: " + shaderPath.string()
                                      + ", extension: "
-                                     + shaderPath.extension().string());
+                                     + shaderPath.extension().string(), { "SHADERS" });
                 return shaderPath.extension().string() == extension;
             });
-        BRASIO_LOG_TRACE(std::cout,
-                         "Found " + std::to_string(shaderCount)
+        BRASIO_LOG_TRACE("Found " + std::to_string(shaderCount)
                              + " shaders with the " + extension
                              + " extension in the graphics pipeline",
                          { "SHADERS" });
         bool res = shaderCount == 1;
         if (!res)
         {
-            BRASIO_LOG_ERROR(std::cout,
-                             "Should have exactly 1 shader with the "
+            BRASIO_LOG_ERROR("Should have exactly 1 shader with the "
                                  + extension + " extension",
                              { "SHADERS" });
         }

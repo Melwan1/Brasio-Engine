@@ -18,7 +18,7 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _size(size)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating memory memory", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating memory memory", { "CREATE" });
         VkMemoryRequirements memoryRequirements;
         vkGetBufferMemoryRequirements(logicalDevice, buffer.getHandle(),
                                       &memoryRequirements);
@@ -27,15 +27,15 @@ namespace brasio::renderer::vulkan
                  memoryRequirements);
 
         vkBindBufferMemory(logicalDevice, buffer.getHandle(), getHandle(), 0);
-        BRASIO_LOG_TRACE(std::cout, "Bound buffer memory", { "CREATE" });
+        BRASIO_LOG_TRACE("Bound buffer memory", { "CREATE" });
 
         if (data != nullptr)
         {
-            BRASIO_LOG_TRACE(std::cout, "Transferring buffer memory to device",
+            BRASIO_LOG_TRACE("Transferring buffer memory to device",
                              { "CREATE" });
             map();
             setContent(data);
-            BRASIO_LOG_TRACE(std::cout, "Transferred buffer memory to device",
+            BRASIO_LOG_TRACE("Transferred buffer memory to device",
                              { "CREATE" });
         }
     }
@@ -50,7 +50,7 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _size(texture.getTextureImage().getSize())
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating texture memory", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating texture memory", { "CREATE" });
         VkMemoryRequirements memoryRequirements;
         vkGetImageMemoryRequirements(logicalDevice, texture.getHandle(),
                                      &memoryRequirements);
@@ -59,13 +59,13 @@ namespace brasio::renderer::vulkan
                  memoryRequirements);
 
         vkBindImageMemory(logicalDevice, texture.getHandle(), getHandle(), 0);
-        BRASIO_LOG_TRACE(std::cout, "Bound texture memory", { "CREATE" });
+        BRASIO_LOG_TRACE("Bound texture memory", { "CREATE" });
 
-        BRASIO_LOG_TRACE(std::cout, "Transferring texture memory to device",
+        BRASIO_LOG_TRACE("Transferring texture memory to device",
                          { "CREATE" });
         map();
         setContent(texture.getTextureImage().getData());
-        BRASIO_LOG_TRACE(std::cout, "Transferred texture memory to device",
+        BRASIO_LOG_TRACE("Transferred texture memory to device",
                          { "CREATE" });
     }
 
@@ -84,7 +84,7 @@ namespace brasio::renderer::vulkan
                              &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Could not allocate memory",
+            BRASIO_LOG_CRITICAL("Could not allocate memory",
                                 { "CREATE" });
         }
     }
