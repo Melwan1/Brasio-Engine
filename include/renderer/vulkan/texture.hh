@@ -18,8 +18,9 @@ namespace brasio::renderer::vulkan
     public:
         Texture(const PhysicalDeviceType &physicalDevice,
                 const LogicalDeviceType &logicalDevice,
+                const VkCommandPool &commandPool,
                 const VkImageCreateInfo &imageInfo,
-                const images::P3PPM &textureImage,
+                images::P3PPM &textureImage,
                 const VkMemoryPropertyFlags memoryProperties);
 
         const images::P3PPM &getTextureImage() const;
@@ -27,7 +28,7 @@ namespace brasio::renderer::vulkan
         void transitionImageLayout(const VkCommandPool &commandPool,
                                    [[maybe_unused]] const VkFormat &format,
                                    const VkImageLayout &oldLayout,
-                                   VkImageLayout &newLayout);
+                                   const VkImageLayout &newLayout);
 
     private:
         const LogicalDeviceType &_logicalDevice;

@@ -30,6 +30,8 @@ namespace brasio::renderer::vulkan::builders
         withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
         TextureBuilder &withTiling(const VkImageTiling &tiling);
 
+        TextureBuilder &withCommandPool(const VkCommandPool &commandPool);
+
     private:
         const PhysicalDeviceType &_physicalDevice;
         const LogicalDeviceType &_logicalDevice;
@@ -44,5 +46,7 @@ namespace brasio::renderer::vulkan::builders
         VkSharingMode _sharingMode;
         VkMemoryPropertyFlags _memoryProperties;
         VkImageTiling _tiling;
+
+        VkCommandPool _commandPool;
     };
 } // namespace brasio::renderer::vulkan::builders

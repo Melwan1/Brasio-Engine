@@ -61,7 +61,8 @@ namespace brasio::images
                 pixels[index++] = {
                     utils::pixel_to_unsigned_char(red, max_value),
                     utils::pixel_to_unsigned_char(green, max_value),
-                    utils::pixel_to_unsigned_char(blue, max_value)
+                    utils::pixel_to_unsigned_char(blue, max_value),
+                    255
                 };
             }
         }
@@ -109,7 +110,7 @@ namespace brasio::images
 
     size_t P3PPM::getSize() const
     {
-        return _width * _height * 3;
+        return _width * _height * 4;
     }
 
     size_t P3PPM::getWidth() const

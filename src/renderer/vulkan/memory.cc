@@ -35,6 +35,7 @@ namespace brasio::renderer::vulkan
                              { "CREATE" });
             map();
             setContent(data);
+            unmap();
             BRASIO_LOG_TRACE("Transferred buffer memory to device",
                              { "CREATE" });
         }
@@ -61,12 +62,6 @@ namespace brasio::renderer::vulkan
         vkBindImageMemory(logicalDevice, texture.getHandle(), getHandle(), 0);
         BRASIO_LOG_TRACE("Bound texture memory", { "CREATE" });
 
-        BRASIO_LOG_TRACE("Transferring texture memory to device",
-                         { "CREATE" });
-        map();
-        setContent(texture.getTextureImage().getData());
-        BRASIO_LOG_TRACE("Transferred texture memory to device",
-                         { "CREATE" });
     }
 
     void Memory::allocate(const PhysicalDeviceType &physicalDevice,

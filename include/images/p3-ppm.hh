@@ -13,7 +13,7 @@ namespace brasio::images
     class P3PPM
     {
     public:
-        using PixelType = std::array<unsigned char, 3>;
+        using PixelType = std::array<unsigned char, 4>;
         using PixelArray = std::vector<PixelType>;
 
         P3PPM(unsigned width, unsigned height, const PixelArray &pixels);

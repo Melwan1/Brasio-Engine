@@ -20,8 +20,7 @@ namespace brasio::renderer::vulkan::builders
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
             .withUsage(VK_IMAGE_USAGE_TRANSFER_DST_BIT
                        | VK_IMAGE_USAGE_SAMPLED_BIT)
-            .withMemoryProperties(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
-                                  | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+            .withMemoryProperties(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
             .withTiling(VK_IMAGE_TILING_OPTIMAL);
     }
 
@@ -40,7 +39,7 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.sharingMode = _sharingMode;
 
-        return std::make_unique<Texture>(_physicalDevice, _logicalDevice,
+        return std::make_unique<Texture>(_physicalDevice, _logicalDevice, _commandPool,
                                          imageInfo, _textureImage,
                                          _memoryProperties);
     }
@@ -72,10 +71,11 @@ namespace brasio::renderer::vulkan::builders
     TextureBuilder &
     TextureBuilder::withTextureImage(const images::P3PPM &textureImage)
     {
+        _textureImage = textureImage;
         return withWidth(textureImage.getWidth())
             .withHeight(textureImage.getHeight())
             .withImageType(VK_IMAGE_TYPE_2D)
-            .withFormat(VK_FORMAT_R8G8B8_SRGB);
+            .withFormat(VK_FORMAT_R8G8B8A8_SRGB);
     }
 
     TextureBuilder &TextureBuilder::withUsage(const VkImageUsageFlags &usage)
@@ -101,6 +101,12 @@ namespace brasio::renderer::vulkan::builders
     TextureBuilder &TextureBuilder::withTiling(const VkImageTiling &tiling)
     {
         _tiling = tiling;
+        return *this;
+    }
+
+    TextureBuilder &TextureBuilder::withCommandPool(const VkCommandPool &commandPool)
+    {
+        _commandPool = commandPool;
         return *this;
     }
 } // namespace brasio::renderer::vulkan::builders
