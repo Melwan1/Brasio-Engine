@@ -10,14 +10,14 @@ namespace brasio::renderer::vulkan::builders
 
     DescriptorPoolSizeBuilder &DescriptorPoolSizeBuilder::base()
     {
-        return withDescriptorCount(0);
+        return withDescriptorCount(0).withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
     }
 
     VkDescriptorPoolSize DescriptorPoolSizeBuilder::build()
     {
         VkDescriptorPoolSize poolSize{};
         poolSize.descriptorCount = _descriptorCount;
-        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSize.type = _descriptorType;
         return poolSize;
     }
 
@@ -25,6 +25,13 @@ namespace brasio::renderer::vulkan::builders
     DescriptorPoolSizeBuilder::withDescriptorCount(uint32_t descriptorCount)
     {
         _descriptorCount = descriptorCount;
+        return *this;
+    }
+
+    DescriptorPoolSizeBuilder &
+    DescriptorPoolSizeBuilder::withDescriptorType(VkDescriptorType descriptorType)
+    {
+        _descriptorType = descriptorType;
         return *this;
     }
 

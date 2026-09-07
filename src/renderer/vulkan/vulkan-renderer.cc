@@ -398,7 +398,13 @@ namespace brasio::renderer::vulkan
                     { builders::DescriptorSetLayoutBindingBuilder()
                           .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
                           .withShaderStages(VK_SHADER_STAGE_VERTEX_BIT)
-                          .build() })
+                          .build(),
+                      builders::DescriptorSetLayoutBindingBuilder()
+                          .withBindingIndex(1)
+                          .withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+                          .withShaderStages(VK_SHADER_STAGE_FRAGMENT_BIT)
+                          .build()
+                    })
                 .build();
     }
 
@@ -434,8 +440,8 @@ namespace brasio::renderer::vulkan
                 .withMaxSets(_maxFramesInFlight)
                 .withDescriptorPoolSizes(
                     { builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight)
-                          .build() })
+                          .withDescriptorCount(_maxFramesInFlight).withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                          .build(), builders::DescriptorPoolSizeBuilder().withDescriptorCount(_maxFramesInFlight).withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER).build() })
                 .build();
     }
     void VulkanRenderer::createDescriptorSets()
@@ -446,7 +452,7 @@ namespace brasio::renderer::vulkan
                 .withSetsCount(_maxFramesInFlight)
                 .withSetLayout(_descriptorSetLayout->getHandle())
                 .build();
-        _descriptorSets->update(_uniformBuffers);
+        _descriptorSets->update(_uniformBuffers, _textureImageView, _textureSampler);
     }
 
     void VulkanRenderer::createTexture()
