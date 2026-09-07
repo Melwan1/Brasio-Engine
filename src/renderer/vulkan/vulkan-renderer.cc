@@ -1,5 +1,4 @@
 #include "mesh/transform-mode.hh"
-#include "renderer/vulkan/builders/texture-builder.hh"
 #define GLM_FORCE_RADIANS
 
 #include <renderer/vulkan/vulkan-renderer.hh>
@@ -53,6 +52,8 @@ namespace brasio::renderer::vulkan
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
         createTexture();
+        createTextureImageView();
+        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -92,7 +93,8 @@ namespace brasio::renderer::vulkan
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
         createTexture();
-
+        createTextureImageView();
+        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -109,6 +111,8 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Destroying Vulkan renderer",
                          { "DESTROY" });
         cleanupSwapChain();
+        _textureSampler.reset();
+        _textureImageView.reset();
         _texture.reset();
         _mesh1.reset();
         _mesh2.reset();
@@ -449,6 +453,16 @@ namespace brasio::renderer::vulkan
     {
         _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/p3-ppm-example.ppm")).withCommandPool(_commandPool->getHandle()).build();
 
+    }
+
+    void VulkanRenderer::createTextureImageView()
+    {
+        _textureImageView = builders::ImageBuilder(_logicalDevice->getHandle(), _texture->getHandle(), VK_FORMAT_R8G8B8A8_SRGB).build();
+    }
+
+    void VulkanRenderer::createTextureSampler()
+    {
+        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
     }
 
     const Swapchain &VulkanRenderer::getSwapchain() const

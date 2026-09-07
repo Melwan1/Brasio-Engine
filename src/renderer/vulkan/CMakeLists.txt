@@ -25,6 +25,7 @@ target_sources(librenderer PRIVATE
     swapchain.cc
     sync-objects.cc
     texture.cc
+    texture-sampler.cc
     vulkan-renderer.cc
 )
 

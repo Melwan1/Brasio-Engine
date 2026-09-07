@@ -92,7 +92,7 @@ namespace brasio::renderer::vulkan::builders
                 device.querySwapChainSupport();
             swapChainAdequate = swapChainSupport.isValid();
         }
-        return indices.isComplete() && extensionsSupported && swapChainAdequate;
+        return indices.isComplete() && extensionsSupported && swapChainAdequate && deviceFeatures.samplerAnisotropy;
     }
 
     int

@@ -31,6 +31,7 @@ target_sources(librenderer PRIVATE
     surface-builder.cc
     swapchain-builder.cc
     texture-builder.cc
+    texture-sampler-builder.cc
     vertex-input-builder.cc
     viewport-state-builder.cc
 )

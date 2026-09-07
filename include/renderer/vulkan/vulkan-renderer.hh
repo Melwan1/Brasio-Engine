@@ -28,6 +28,7 @@
 #include <mesh/mesh.hh>
 
 #include <yaml-cpp/yaml.h>
+#include "renderer/vulkan/texture-sampler.hh"
 
 namespace brasio::renderer::vulkan
 {
@@ -93,6 +94,8 @@ namespace brasio::renderer::vulkan
         void createDescriptorPool();
         void createDescriptorSets();
         void createTexture();
+        void createTextureImageView();
+        void createTextureSampler();
 
         // getters
 
@@ -143,6 +146,8 @@ namespace brasio::renderer::vulkan
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
         TextureType _texture;
+        ImageType _textureImageView;
+        TextureSamplerType _textureSampler;
 
         uint32_t _currentFrame = 0;
     };
