@@ -1,18 +1,20 @@
 target_sources(librenderer PRIVATE
     attachment.cc
     buffer.cc
-    buffer-memory.cc
+    command-buffer.cc
     command-buffer-array.cc
     command-pool.cc
     debug-messenger.cc
     descriptor-pool.cc
     descriptor-set-layout.cc
     descriptor-sets.cc
+    #device.cc
     fence.cc
     graphics-pipeline.cc
     image.cc
     instance.cc
     logical-device.cc
+    memory.cc
     physical-device.cc
     pipeline-layout.cc
     queue-family-indices.cc
@@ -22,6 +24,8 @@ target_sources(librenderer PRIVATE
     swap-chain-support-details.cc
     swapchain.cc
     sync-objects.cc
+    texture.cc
+    texture-sampler.cc
     vulkan-renderer.cc
 )
 

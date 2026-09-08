@@ -71,8 +71,7 @@ namespace brasio::renderer::vulkan::builders
         this->_enableValidationLayers = enableValidationLayers;
         if (this->_enableValidationLayers && !_checkValidationLayerSupport())
         {
-            BRASIO_LOG_ERROR(std::cout,
-                             "Validation layers requested but not found",
+            BRASIO_LOG_ERROR("Validation layers requested but not found",
                              { "DEBUGGING" });
         }
         this->_validationLayers = validationLayers;

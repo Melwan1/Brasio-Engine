@@ -57,8 +57,7 @@ namespace brasio::utils
         _major = 0;
         _minor = 0;
         _patch = 0;
-        io::logging::Logger::warning(
-            std::cout,
+        BRASIO_LOG_WARNING(
             "Could not set version from string, setting version to 0.0.0",
             { "VERSION" });
     }

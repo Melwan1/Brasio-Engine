@@ -24,11 +24,14 @@ namespace brasio::renderer::vulkan::builders
         withDescriptorCount(uint32_t descriptorCount);
         DescriptorSetLayoutBindingBuilder &
         withShaderStages(const VkShaderStageFlags &shaderStages);
+        DescriptorSetLayoutBindingBuilder &
+        withImmutableSamplers(VkSampler *samplers);
 
     private:
         uint32_t _bindingIndex;
         VkDescriptorType _descriptorType;
         uint32_t _descriptorCount;
         VkShaderStageFlags _shaderStages;
+        VkSampler *_samplers;
     };
 } // namespace brasio::renderer::vulkan::builders

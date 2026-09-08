@@ -2,6 +2,10 @@
 
 #include <cstring>
 
+#include <renderer/vulkan/memory.hh>
+#include <renderer/vulkan/texture.hh>
+#include <renderer/vulkan/command-buffer.hh>
+
 namespace brasio::renderer::vulkan
 {
     Buffer::Buffer(const PhysicalDeviceType &physicalDevice,
@@ -16,58 +20,53 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _deviceMemory(nullptr)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating buffer", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating buffer", { "CREATE" });
         if (vkCreateBuffer(logicalDevice->getHandle(), &createInfo, nullptr,
                            &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Could not create buffer",
+            BRASIO_LOG_CRITICAL("Could not create buffer",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE(std::cout, "Created buffer", { "CREATE" });
-        _deviceMemory = std::make_unique<BufferMemory>(
+        BRASIO_LOG_TRACE("Created buffer", { "CREATE" });
+        _deviceMemory = std::make_unique<Memory>(
             physicalDevice, logicalDevice->getHandle(), *this, memoryProperties,
             data, createInfo.size);
     }
 
-    void Buffer::copyInto(const Buffer &other, VkCommandPool _commandPool,
+    void Buffer::copyInto(const Buffer &other, VkCommandPool commandPool,
                           VkDeviceSize size)
     {
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = _commandPool;
-        allocInfo.commandBufferCount = 1;
+        CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
-        VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(_logicalDevice->getHandle(), &allocInfo,
-                                 &commandBuffer);
-
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-        vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-        VkBufferCopy copyRegion;
-        copyRegion.srcOffset = 0;
-        copyRegion.dstOffset = 0;
+        VkBufferCopy copyRegion{};
         copyRegion.size = size;
-        vkCmdCopyBuffer(commandBuffer, getHandle(), other.getHandle(), 1,
-                        &copyRegion);
-        vkEndCommandBuffer(commandBuffer);
+        vkCmdCopyBuffer(commandBuffer.getHandle(), getHandle(),
+                        other.getHandle(), 1, &copyRegion);
+    }
 
-        VkSubmitInfo submitInfo{};
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffer;
+    void Buffer::copyInto(const Texture &other, VkCommandPool commandPool)
+    {
+        CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
-        vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1, &submitInfo,
-                      VK_NULL_HANDLE);
-        vkQueueWaitIdle(_logicalDevice->getGraphicsQueue());
+        VkBufferImageCopy region{};
+        region.bufferOffset = 0;
+        region.bufferRowLength = 0;
+        region.bufferImageHeight = 0;
 
-        vkFreeCommandBuffers(_logicalDevice->getHandle(), _commandPool, 1,
-                             &commandBuffer);
+        region.imageSubresource = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                                    .mipLevel = 0,
+                                    .baseArrayLayer = 0,
+                                    .layerCount = 1 };
+        region.imageOffset = { 0, 0, 0 };
+        region.imageExtent = {
+            static_cast<uint32_t>(other.getTextureImage().getWidth()),
+            static_cast<uint32_t>(other.getTextureImage().getHeight()), 1
+        };
+
+        vkCmdCopyBufferToImage(
+            commandBuffer.getHandle(), getHandle(), other.getHandle(),
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
     }
 
     void Buffer::mapMemory()

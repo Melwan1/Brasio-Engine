@@ -1,8 +1,6 @@
 #include <renderer/vulkan/builders/physical-device-builder.hh>
 
-#include <algorithm>
 #include <iostream>
-#include <sstream>
 
 #include <io/logging/logger.hh>
 
@@ -18,6 +16,7 @@ namespace brasio::renderer::vulkan::builders
 
     PhysicalDeviceBuilder &PhysicalDeviceBuilder::base()
     {
+        _validationLayers.clear();
         return *this;
     }
 
@@ -26,20 +25,18 @@ namespace brasio::renderer::vulkan::builders
         std::multimap<int, std::unique_ptr<PhysicalDevice>> deviceMap =
             _ratePhysicalDevices();
 
-        BRASIO_LOG_INFO(std::cout,
-                        "Best physical device has suitability score "
+        BRASIO_LOG_TRACE("Best physical device has suitability score "
                             + std::to_string(deviceMap.rbegin()->first),
                         { "CREATE" });
 
         if (deviceMap.rbegin()->first > 0)
         {
-            BRASIO_LOG_TRACE(std::cout, "Picking best physical device",
+            BRASIO_LOG_TRACE("Picking best physical device",
                              { "CREATE" });
         }
         else
         {
             BRASIO_LOG_CRITICAL(
-                std::cout,
                 "No physical device has a positive suitability score",
                 { "CREATE" });
         }
@@ -61,7 +58,7 @@ namespace brasio::renderer::vulkan::builders
 
         if (deviceCount == 0)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Found no GPU with Vulkan support",
+            BRASIO_LOG_CRITICAL("Found no GPU with Vulkan support",
                                 { "CREATE" });
         }
 
@@ -95,7 +92,7 @@ namespace brasio::renderer::vulkan::builders
                 device.querySwapChainSupport();
             swapChainAdequate = swapChainSupport.isValid();
         }
-        return indices.isComplete() && extensionsSupported && swapChainAdequate;
+        return indices.isComplete() && extensionsSupported && swapChainAdequate && deviceFeatures.samplerAnisotropy;
     }
 
     int

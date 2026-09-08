@@ -23,10 +23,12 @@
 #include <renderer/vulkan/swap-chain-support-details.hh>
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
+#include <renderer/vulkan/texture.hh>
 #include <shaders/shader-manager.hh>
 #include <mesh/mesh.hh>
 
 #include <yaml-cpp/yaml.h>
+#include "renderer/vulkan/texture-sampler.hh"
 
 namespace brasio::renderer::vulkan
 {
@@ -91,6 +93,9 @@ namespace brasio::renderer::vulkan
         void createDescriptorSetLayout();
         void createDescriptorPool();
         void createDescriptorSets();
+        void createTexture();
+        void createTextureImageView();
+        void createTextureSampler();
 
         // getters
 
@@ -140,6 +145,9 @@ namespace brasio::renderer::vulkan
         std::vector<BufferType> _uniformBuffers;
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
+        TextureType _texture;
+        ImageType _textureImageView;
+        TextureSamplerType _textureSampler;
 
         uint32_t _currentFrame = 0;
     };

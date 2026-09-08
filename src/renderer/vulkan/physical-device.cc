@@ -12,7 +12,6 @@ namespace brasio::renderer::vulkan
         : Handler(device, "physical device",
                   [](const VkPhysicalDevice &) {
                       BRASIO_LOG_TRACE(
-                          std::cout,
                           "Nothing to be done to destroy physical device",
                           { "DESTROY" });
                   })
@@ -74,17 +73,16 @@ namespace brasio::renderer::vulkan
                 && (memoryProperties.memoryTypes[i].propertyFlags & properties)
                     == properties)
             {
-                BRASIO_LOG_DEBUG(std::cout,
-                                 "Found memory type: " + std::to_string(i),
+                BRASIO_LOG_DEBUG("Found memory type: " + std::to_string(i),
                                  { "DEVICE" });
                 return i;
             }
         }
 
-        BRASIO_LOG_CRITICAL(std::cout, "No suitable memory type has been found",
+        BRASIO_LOG_CRITICAL("No suitable memory type has been found",
                             { "DEVICE" });
+        return -1;
 
-        throw std::runtime_error("Failed to find a suitable memory type.");
     }
 
     bool PhysicalDevice::checkDeviceExtensionSupport() const

@@ -14,22 +14,21 @@ namespace brasio::renderer::vulkan
                   })
         , _logicalDevice(logicalDevice)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating swapchain", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating swapchain", { "CREATE" });
         if (vkCreateSwapchainKHR(_logicalDevice, &createInfo, nullptr,
                                  &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL(std::cout, "Could not create swapchain",
+            BRASIO_LOG_CRITICAL("Could not create swapchain",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE(std::cout, "Created swapchain", { "CREATE" });
-        BRASIO_LOG_TRACE(std::cout,
-                         "Setting image format, extent and image count",
+        BRASIO_LOG_TRACE("Created swapchain", { "CREATE" });
+        BRASIO_LOG_TRACE("Setting image format, extent and image count",
                          { "CREATE" });
         _format = createInfo.imageFormat;
         _extent = createInfo.imageExtent;
         _imageCount = createInfo.minImageCount;
-        BRASIO_LOG_TRACE(std::cout, "Set image format, extent and image count",
+        BRASIO_LOG_TRACE("Set image format, extent and image count",
                          { "CREATE" });
         _images.clear();
         _framebuffers.clear();
@@ -84,11 +83,10 @@ namespace brasio::renderer::vulkan
     void Swapchain::createImages()
     {
         std::vector<VkImage> rawImages;
-        BRASIO_LOG_TRACE(std::cout, "Getting swapchain images", { "CREATE" });
+        BRASIO_LOG_TRACE("Getting swapchain images", { "CREATE" });
         vkGetSwapchainImagesKHR(_logicalDevice, getHandle(), &_imageCount,
                                 nullptr);
-        BRASIO_LOG_TRACE(std::cout,
-                         "Getting " + std::to_string(_imageCount)
+        BRASIO_LOG_TRACE("Getting " + std::to_string(_imageCount)
                              + " swapchain images",
                          { "CREATE" });
 
@@ -101,7 +99,7 @@ namespace brasio::renderer::vulkan
                 builders::ImageBuilder(_logicalDevice, image, getFormat())
                     .build());
         }
-        BRASIO_LOG_TRACE(std::cout, "Got swapchain images", { "CREATE" });
+        BRASIO_LOG_TRACE("Got swapchain images", { "CREATE" });
     }
 
     void Swapchain::createFramebuffers(const VkRenderPass &renderPass)

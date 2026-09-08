@@ -8,12 +8,12 @@
 
 #include <renderer/vulkan/physical-device.hh>
 #include <renderer/vulkan/logical-device.hh>
-#include <renderer/vulkan/buffer-memory.hh>
+#include <renderer/vulkan/memory.hh>
 
 namespace brasio::renderer::vulkan
 {
-    class BufferMemory;
-    using BufferMemoryType = std::unique_ptr<BufferMemory>;
+    class Memory;
+    using MemoryType = std::unique_ptr<Memory>;
 
     class Buffer : public core::Handler<VkBuffer>
     {
@@ -23,8 +23,9 @@ namespace brasio::renderer::vulkan
                const VkBufferCreateInfo &createInfo,
                const VkMemoryPropertyFlags memoryProperties, void *data);
 
-        void copyInto(const Buffer &other, VkCommandPool _commandPool,
+        void copyInto(const Buffer &other, VkCommandPool commandPool,
                       VkDeviceSize size);
+        void copyInto(const Texture &other, VkCommandPool commandPool);
 
         void mapMemory();
         void unmapMemory();
@@ -32,7 +33,7 @@ namespace brasio::renderer::vulkan
 
     private:
         const LogicalDeviceType &_logicalDevice;
-        BufferMemoryType _deviceMemory;
+        MemoryType _deviceMemory;
         void *_deviceData;
     };
 

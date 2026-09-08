@@ -57,8 +57,7 @@ namespace brasio::shaders
     VkShaderModule ShaderManager::createShaderModuleFromByteCode(
         VkDevice &device, const std::string &shaderByteCode) const
     {
-        io::logging::Logger::trace(std::cout, "Creating shader module",
-                                   { "CREATE " });
+        BRASIO_LOG_TRACE("Creating shader module", { "SHADERS" });
         // the shaderByteCode string is cast to a uint32_t, so it needs to be
         // realloced in order to be aligned on 4 bytes.
         size_t alignment = 4;
@@ -76,10 +75,9 @@ namespace brasio::shaders
         if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)
             != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to create shader module.");
+            BRASIO_LOG_CRITICAL("Failed to create shader module.", { "SHADERS" });
         }
-        io::logging::Logger::trace(std::cout, "Created shader module",
-                                   { "CREATE " });
+        BRASIO_LOG_TRACE("Created shader module", { "SHADERS" });
         return shaderModule;
     }
 

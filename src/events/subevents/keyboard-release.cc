@@ -23,9 +23,4 @@ namespace brasio::events::subevents
         return event;
     }
 
-    void KeyboardReleaseEvent::print(std::ostream &ostr)
-    {
-        Event::print(ostr);
-        ostr << FG_ESC(220) << " " << getPressedKey() << ESC_RESET << "\n";
-    }
 } // namespace brasio::events::subevents

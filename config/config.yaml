@@ -1,11 +1,11 @@
 application:
   window:
-    monitorIndex: -1
+    monitorIndex: 0
     width: 1920
     height: 1080
     title: Brasio Engine
 
-  version: 0.2.0
+  version: 0.2.1
 
 renderer:
   type: Vulkan
@@ -17,7 +17,7 @@ renderer:
     - name: Draw filled polygons
       shaders:
         vertex: vertex/ubo.vert
-        fragment: fragment/minimal-triangle.frag
+        fragment: fragment/texture.frag
 
       dynamic_states:
         - VIEWPORT
@@ -107,4 +107,12 @@ renderer:
         logic_op: COPY
 
 logging:
-  level: TRACE
+  global_level: TRACE
+  specific_levels:
+    APPLICATION: DEBUG
+    CREATE: INFO
+    DESTROY: DEBUG
+    DEVICE: INFO
+    GENERAL: INFO
+    RENDER: DEBUG
+    SHADERS: INFO

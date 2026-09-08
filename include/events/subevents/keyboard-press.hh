@@ -18,8 +18,6 @@ namespace brasio::events::subevents
             return "KeyboardPressEvent";
         }
 
-        virtual void print(std::ostream &ostr) override;
-
     private:
         std::string _pressedKey;
     };

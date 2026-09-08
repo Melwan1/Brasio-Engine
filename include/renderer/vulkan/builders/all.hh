@@ -30,6 +30,8 @@
 #include <renderer/vulkan/builders/subpass-description-builder.hh>
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/builders/swapchain-builder.hh>
+#include <renderer/vulkan/builders/texture-builder.hh>
+#include <renderer/vulkan/builders/texture-sampler-builder.hh>
 #include <renderer/vulkan/builders/vertex-input-builder.hh>
 #include <renderer/vulkan/builders/viewport-state-builder.hh>
 

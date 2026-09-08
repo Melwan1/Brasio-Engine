@@ -27,7 +27,7 @@ namespace brasio::renderer::vulkan
         , _shaderManager("shaders", "output.log")
         , _maxFramesInFlight(MAX_FRAMES_IN_FLIGHT)
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _instance = builders::InstanceBuilder()
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
                         .build();
@@ -51,19 +51,22 @@ namespace brasio::renderer::vulkan
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        createTexture();
+        createTextureImageView();
+        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
-        BRASIO_LOG_TRACE(std::cout, "Created Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     VulkanRenderer::VulkanRenderer(GLFWwindow *window, const YAML::Node &config)
         : _window(window)
         , _shaderManager("shaders", "output.log")
     {
-        BRASIO_LOG_TRACE(std::cout, "Creating Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _maxFramesInFlight = config["max_frames_in_flight"].as<unsigned>();
         _instance = builders::InstanceBuilder()
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
@@ -79,22 +82,25 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipelines(config["pipelines"]);
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Sphere>(16, 16);
+        _mesh1 = std::make_unique<mesh::Cube>();
         _mesh1->applyTranslation(mesh::TransformMode::CPU,
                                  { -1.0, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
-        _mesh2 = std::make_unique<mesh::Cone>();
+        _mesh2 = std::make_unique<mesh::Cube>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
+        createTexture();
+        createTextureImageView();
+        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
-        BRASIO_LOG_TRACE(std::cout, "Created Vulkan renderer", { "CREATE" });
+        BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     void VulkanRenderer::init()
@@ -102,9 +108,12 @@ namespace brasio::renderer::vulkan
 
     VulkanRenderer::~VulkanRenderer()
     {
-        BRASIO_LOG_TRACE(std::cout, "Destroying Vulkan renderer",
+        BRASIO_LOG_TRACE("Destroying Vulkan renderer",
                          { "DESTROY" });
         cleanupSwapChain();
+        _textureSampler.reset();
+        _textureImageView.reset();
+        _texture.reset();
         _mesh1.reset();
         _mesh2.reset();
         _descriptorPool.reset();
@@ -115,7 +124,7 @@ namespace brasio::renderer::vulkan
         _renderPass.reset();
         _syncObjects.reset();
 
-        BRASIO_LOG_TRACE(std::cout, "Destroyed Vulkan renderer", { "DESTROY" });
+        BRASIO_LOG_TRACE("Destroyed Vulkan renderer", { "DESTROY" });
     }
 
     void VulkanRenderer::pickPhysicalDevice()
@@ -131,7 +140,6 @@ namespace brasio::renderer::vulkan
     {
         _logicalDevice =
             builders::LogicalDeviceBuilder(*_physicalDevice)
-                .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
                 .build();
     }
 
@@ -192,7 +200,7 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createGraphicsPipelines()
     {
         std::vector<fs::path> shaders = { "vertex/ubo.vert",
-                                          "fragment/minimal-triangle.frag" };
+                                          "fragment/texture.frag" };
         _pipelineLayout =
             builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
                 .withSetLayouts({ _descriptorSetLayout->getHandle() })
@@ -258,7 +266,12 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::drawFrame()
     {
+
+        BRASIO_LOG_TRACE("Starting frame render", { "RENDER" });
         _syncObjects->waitSingleFence(_currentFrame);
+        BRASIO_LOG_TRACE("fence waited for", { "RENDER" });
+
+        BRASIO_LOG_TRACE("acquiring next image", { "RENDER" });
 
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(
@@ -270,10 +283,13 @@ namespace brasio::renderer::vulkan
             recreateSwapChain();
             return;
         }
+
         else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
         {
-            throw std::runtime_error("Failed to acquire swap chain image.");
+            BRASIO_LOG_CRITICAL("Failed to acquire swapchain image.", { "RENDER" });
         }
+
+        BRASIO_LOG_TRACE("acquired next image", { "RENDER" });
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
@@ -304,7 +320,7 @@ namespace brasio::renderer::vulkan
                           _syncObjects->fenceAt(_currentFrame))
             != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to submit draw command buffer.");
+            BRASIO_LOG_CRITICAL("Failed to submit draw command buffer.", { "RENDER" });
         }
 
         VkSwapchainKHR swapchains[] = { _swapchain->getHandle() };
@@ -326,11 +342,13 @@ namespace brasio::renderer::vulkan
         }
         else if (result != VK_SUCCESS)
         {
-            throw std::runtime_error("Failed to present swap chain image.");
+            BRASIO_LOG_CRITICAL("Failed to present swapchain image.", { "RENDER" });
         }
 
         _currentFrame++;
         _currentFrame %= MAX_FRAMES_IN_FLIGHT;
+
+        BRASIO_LOG_TRACE("Ending frame render", { "RENDER" });
     }
 
     void VulkanRenderer::cleanupSwapChain()
@@ -380,7 +398,13 @@ namespace brasio::renderer::vulkan
                     { builders::DescriptorSetLayoutBindingBuilder()
                           .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
                           .withShaderStages(VK_SHADER_STAGE_VERTEX_BIT)
-                          .build() })
+                          .build(),
+                      builders::DescriptorSetLayoutBindingBuilder()
+                          .withBindingIndex(1)
+                          .withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
+                          .withShaderStages(VK_SHADER_STAGE_FRAGMENT_BIT)
+                          .build()
+                    })
                 .build();
     }
 
@@ -416,8 +440,8 @@ namespace brasio::renderer::vulkan
                 .withMaxSets(_maxFramesInFlight)
                 .withDescriptorPoolSizes(
                     { builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight)
-                          .build() })
+                          .withDescriptorCount(_maxFramesInFlight).withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
+                          .build(), builders::DescriptorPoolSizeBuilder().withDescriptorCount(_maxFramesInFlight).withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER).build() })
                 .build();
     }
     void VulkanRenderer::createDescriptorSets()
@@ -428,7 +452,23 @@ namespace brasio::renderer::vulkan
                 .withSetsCount(_maxFramesInFlight)
                 .withSetLayout(_descriptorSetLayout->getHandle())
                 .build();
-        _descriptorSets->update(_uniformBuffers);
+        _descriptorSets->update(_uniformBuffers, _textureImageView, _textureSampler);
+    }
+
+    void VulkanRenderer::createTexture()
+    {
+        _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/mario.ppm")).withCommandPool(_commandPool->getHandle()).build();
+
+    }
+
+    void VulkanRenderer::createTextureImageView()
+    {
+        _textureImageView = builders::ImageBuilder(_logicalDevice->getHandle(), _texture->getHandle(), VK_FORMAT_R8G8B8A8_SRGB).build();
+    }
+
+    void VulkanRenderer::createTextureSampler()
+    {
+        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
     }
 
     const Swapchain &VulkanRenderer::getSwapchain() const

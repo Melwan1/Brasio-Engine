@@ -37,7 +37,7 @@ namespace brasio::renderer::vulkan::builders
     }
 
     VertexInputBuilder &VertexInputBuilder::withAttributeDescriptions(
-        const std::array<VkVertexInputAttributeDescription, 2>
+        const std::array<VkVertexInputAttributeDescription, 3>
             &attributeDescriptions)
     {
         _attributeDescriptions = attributeDescriptions;
