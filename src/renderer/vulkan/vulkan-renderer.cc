@@ -82,12 +82,12 @@ namespace brasio::renderer::vulkan
         createDescriptorSetLayout();
         createGraphicsPipelines(config["pipelines"]);
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Sphere>(16, 16);
+        _mesh1 = std::make_unique<mesh::Cube>();
         _mesh1->applyTranslation(mesh::TransformMode::CPU,
                                  { -1.0, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
-        _mesh2 = std::make_unique<mesh::Cone>();
+        _mesh2 = std::make_unique<mesh::Cube>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
@@ -200,7 +200,7 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createGraphicsPipelines()
     {
         std::vector<fs::path> shaders = { "vertex/ubo.vert",
-                                          "fragment/minimal-triangle.frag" };
+                                          "fragment/texture.frag" };
         _pipelineLayout =
             builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
                 .withSetLayouts({ _descriptorSetLayout->getHandle() })
@@ -457,7 +457,7 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createTexture()
     {
-        _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/p3-ppm-example.ppm")).withCommandPool(_commandPool->getHandle()).build();
+        _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/mario.ppm")).withCommandPool(_commandPool->getHandle()).build();
 
     }
 
