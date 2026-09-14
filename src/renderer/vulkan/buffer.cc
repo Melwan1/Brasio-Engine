@@ -1,7 +1,5 @@
 #include <renderer/vulkan/buffer.hh>
 
-#include <cstring>
-
 #include <renderer/vulkan/memory.hh>
 #include <renderer/vulkan/texture.hh>
 #include <renderer/vulkan/command-buffer.hh>

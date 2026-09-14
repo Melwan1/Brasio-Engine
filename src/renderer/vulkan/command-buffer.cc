@@ -15,6 +15,7 @@ namespace brasio::renderer::vulkan
                       vkFreeCommandBuffers(logicalDevice->getHandle(),
                                            commandPool, 1, &commandBuffer);
                   })
+        , _ended(false)
         , _logicalDevice(logicalDevice)
         , _commandPool(commandPool)
     {

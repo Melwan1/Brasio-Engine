@@ -108,11 +108,11 @@ renderer:
 
 logging:
   global_level: TRACE
-  #specific_levels:
-  #  APPLICATION: DEBUG
-  #  CREATE: INFO
-  #  DESTROY: DEBUG
-  #  DEVICE: INFO
-  #  GENERAL: INFO
-  #  RENDER: DEBUG
-  #  SHADERS: INFO
+  specific_levels:
+    APPLICATION: DEBUG
+    CREATE: INFO
+    DESTROY: DEBUG
+    DEVICE: INFO
+    GENERAL: INFO
+    RENDER: DEBUG
+    SHADERS: INFO
