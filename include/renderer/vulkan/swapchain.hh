@@ -12,7 +12,7 @@ namespace brasio::renderer::vulkan
     class Swapchain : public core::Handler<VkSwapchainKHR>
     {
     public:
-        Swapchain(const VkDevice &logicalDevice,
+        Swapchain(const LogicalDeviceType &logicalDevice,
                   const VkSwapchainCreateInfoKHR &createInfo);
         ~Swapchain();
 
@@ -31,13 +31,13 @@ namespace brasio::renderer::vulkan
         VkFramebuffer &framebufferAt(uint32_t index);
 
         void createImages();
-        void createFramebuffers(const VkRenderPass &renderPass);
+        void createFramebuffers(const VkRenderPass &renderPass, const std::vector<VkImageView> &additionalImageViews);
 
         float getWidth() const;
         float getHeight() const;
 
     private:
-        VkDevice _logicalDevice;
+        const LogicalDeviceType &_logicalDevice;
         VkFormat _format;
         VkExtent2D _extent;
         uint32_t _imageCount;

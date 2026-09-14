@@ -6,7 +6,6 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/attachment.hh>
 #include <renderer/vulkan/render-pass.hh>
 
 namespace brasio::renderer::vulkan::builders
@@ -24,14 +23,13 @@ namespace brasio::renderer::vulkan::builders
         RenderPassBuilder &
         withAdditionalSubpassDependency(const VkSubpassDependency &dependency);
         RenderPassBuilder &
-        withAdditionalAttachment(const Attachment &attachment);
+        withAdditionalAttachmentDescription(const VkAttachmentDescription &attachmentDescription);
 
     private:
         VkDevice _logicalDevice;
         VkStructureType _structureType;
         std::vector<VkSubpassDescription> _subpasses;
         std::vector<VkSubpassDependency> _dependencies;
-        std::vector<Attachment> _attachments;
         std::vector<VkAttachmentDescription> _attachmentDescriptions;
     };
 } // namespace brasio::renderer::vulkan::builders

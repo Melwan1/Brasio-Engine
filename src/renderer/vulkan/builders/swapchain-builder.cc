@@ -10,8 +10,8 @@
 namespace brasio::renderer::vulkan::builders
 {
     SwapchainBuilder::SwapchainBuilder(GLFWwindow *window,
-                                       const PhysicalDevice &physicalDevice,
-                                       const VkDevice &logicalDevice,
+                                       const PhysicalDeviceType &physicalDevice,
+                                       const LogicalDeviceType &logicalDevice,
                                        const VkSurfaceKHR &surface)
         : _window(window)
         , _physicalDevice(physicalDevice)
@@ -24,7 +24,7 @@ namespace brasio::renderer::vulkan::builders
     SwapchainBuilder &SwapchainBuilder::base()
     {
         SwapChainSupportDetails swapchainSupportDetails =
-            _physicalDevice.querySwapChainSupport();
+            _physicalDevice->querySwapChainSupport();
 
         _availableSurfaceFormats = swapchainSupportDetails.formats;
         BRASIO_LOG_DEBUG("Available surface formats: "
@@ -76,7 +76,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = _physicalDevice.findQueueFamilies();
+        QueueFamilyIndices indices = _physicalDevice->findQueueFamilies();
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(),
                                           indices.presentFamily.value() };
         bool areIndicesSame =
@@ -88,7 +88,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.queueFamilyIndexCount = areIndicesSame ? 0 : 2;
         createInfo.pQueueFamilyIndices =
             areIndicesSame ? nullptr : queueFamilyIndices;
-        createInfo.preTransform = _physicalDevice.querySwapChainSupport()
+        createInfo.preTransform = _physicalDevice->querySwapChainSupport()
                                       .capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
         createInfo.presentMode = _presentMode;

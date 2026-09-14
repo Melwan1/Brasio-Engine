@@ -45,7 +45,7 @@ namespace brasio::renderer::vulkan
                         other.getHandle(), 1, &copyRegion);
     }
 
-    void Buffer::copyInto(const Texture &other, VkCommandPool commandPool)
+    void Buffer::copyInto(const ImageAttachment &other, VkCommandPool commandPool)
     {
         CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
@@ -60,12 +60,12 @@ namespace brasio::renderer::vulkan
                                     .layerCount = 1 };
         region.imageOffset = { 0, 0, 0 };
         region.imageExtent = {
-            static_cast<uint32_t>(other.getTextureImage().getWidth()),
-            static_cast<uint32_t>(other.getTextureImage().getHeight()), 1
+            static_cast<uint32_t>(other.getWidth()),
+            static_cast<uint32_t>(other.getHeight()), 1
         };
 
         vkCmdCopyBufferToImage(
-            commandBuffer.getHandle(), getHandle(), other.getHandle(),
+            commandBuffer.getHandle(), getHandle(), other.getImage(),
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
     }
 

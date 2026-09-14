@@ -29,6 +29,7 @@ namespace brasio::renderer::vulkan::builders
         _colorBlendAttachmentBuilder.base();
         _colorBlendStateBuilder.base();
         _pipelineLayoutBuilder.base();
+        _depthStencilBuilder.base();
 
         _shaderBuilders.clear();
         _shaderInfos.clear();
@@ -91,6 +92,8 @@ namespace brasio::renderer::vulkan::builders
             _colorBlendStateBuilder
                 .withColorBlendAttachments({ colorBlendAttachment })
                 .build();
+        VkPipelineDepthStencilStateCreateInfo depthStencil =
+            _depthStencilBuilder.build();
 
         VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
         pipelineCreateInfo.sType = _structureType;
@@ -104,7 +107,7 @@ namespace brasio::renderer::vulkan::builders
         pipelineCreateInfo.pMultisampleState = &multisamplingCreateInfo;
         pipelineCreateInfo.pColorBlendState = &colorBlending;
         pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
-        pipelineCreateInfo.pDepthStencilState = nullptr;
+        pipelineCreateInfo.pDepthStencilState = &depthStencil;
 
         pipelineCreateInfo.layout = _pipelineLayout;
         pipelineCreateInfo.renderPass = _renderPass;

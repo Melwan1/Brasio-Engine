@@ -43,6 +43,7 @@ namespace brasio::renderer::vulkan::builders
         ColorBlendAttachmentBuilder _colorBlendAttachmentBuilder;
         ColorBlendStateBuilder _colorBlendStateBuilder;
         PipelineLayoutBuilder _pipelineLayoutBuilder;
+        DepthStencilBuilder _depthStencilBuilder;
 
         std::vector<fs::path> _shaderPaths;
 

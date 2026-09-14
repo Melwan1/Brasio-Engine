@@ -39,8 +39,15 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.sharingMode = _sharingMode;
 
+        VkImageViewCreateInfo imageViewInfo{};
+        imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        imageViewInfo.image = VK_NULL_HANDLE; // image is bound once the image is created inside the ImageAttachment from which Texture is derived
+        imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        imageViewInfo.format = _format;
+        imageViewInfo.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 1 };
+
         return std::make_unique<Texture>(_physicalDevice, _logicalDevice, _commandPool,
-                                         imageInfo, _textureImage,
+                                         imageInfo, imageViewInfo, _textureImage,
                                          _memoryProperties);
     }
 

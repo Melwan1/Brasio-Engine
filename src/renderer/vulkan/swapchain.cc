@@ -6,16 +6,16 @@
 
 namespace brasio::renderer::vulkan
 {
-    Swapchain::Swapchain(const VkDevice &logicalDevice,
+    Swapchain::Swapchain(const LogicalDeviceType &logicalDevice,
                          const VkSwapchainCreateInfoKHR &createInfo)
         : Handler("swapchain",
-                  [logicalDevice](const VkSwapchainKHR &swapchain) {
-                      vkDestroySwapchainKHR(logicalDevice, swapchain, nullptr);
+                  [&logicalDevice](const VkSwapchainKHR &swapchain) {
+                      vkDestroySwapchainKHR(logicalDevice->getHandle(), swapchain, nullptr);
                   })
         , _logicalDevice(logicalDevice)
     {
         BRASIO_LOG_TRACE("Creating swapchain", { "CREATE" });
-        if (vkCreateSwapchainKHR(_logicalDevice, &createInfo, nullptr,
+        if (vkCreateSwapchainKHR(_logicalDevice->getHandle(), &createInfo, nullptr,
                                  &getHandle())
             != VK_SUCCESS)
         {
@@ -84,14 +84,14 @@ namespace brasio::renderer::vulkan
     {
         std::vector<VkImage> rawImages;
         BRASIO_LOG_TRACE("Getting swapchain images", { "CREATE" });
-        vkGetSwapchainImagesKHR(_logicalDevice, getHandle(), &_imageCount,
+        vkGetSwapchainImagesKHR(_logicalDevice->getHandle(), getHandle(), &_imageCount,
                                 nullptr);
         BRASIO_LOG_TRACE("Getting " + std::to_string(_imageCount)
                              + " swapchain images",
                          { "CREATE" });
 
         rawImages.resize(_imageCount);
-        vkGetSwapchainImagesKHR(_logicalDevice, getHandle(), &_imageCount,
+        vkGetSwapchainImagesKHR(_logicalDevice->getHandle(), getHandle(), &_imageCount,
                                 rawImages.data());
         for (const auto &image : rawImages)
         {
@@ -102,15 +102,17 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Got swapchain images", { "CREATE" });
     }
 
-    void Swapchain::createFramebuffers(const VkRenderPass &renderPass)
+    void Swapchain::createFramebuffers(const VkRenderPass &renderPass, const std::vector<VkImageView> &additionalImageViews)
     {
         for (const auto &image : _images)
         {
-            _framebuffers.emplace_back(
-                builders::FramebufferBuilder(_logicalDevice, renderPass,
-                                             getExtent())
-                    .withAdditionalAttachment(image->getImageView())
-                    .build());
+            builders::FramebufferBuilder builder(_logicalDevice->getHandle(), renderPass, getExtent());
+            builder.withAdditionalAttachment(image->getImageView());
+            for (const VkImageView &imageView : additionalImageViews)
+            {
+                builder.withAdditionalAttachment(imageView);
+            }
+            _framebuffers.emplace_back(builder.build());
         }
     }
 
@@ -128,8 +130,9 @@ namespace brasio::renderer::vulkan
     {
         for (auto &framebuffer : _framebuffers)
         {
-            vkDestroyFramebuffer(_logicalDevice, framebuffer, nullptr);
+            vkDestroyFramebuffer(_logicalDevice->getHandle(), framebuffer, nullptr);
         }
-        _images.clear(); // destroy all images
+        _framebuffers.clear();
+        _images.clear();
     }
 } // namespace brasio::renderer::vulkan

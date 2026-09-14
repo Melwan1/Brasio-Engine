@@ -1,7 +1,7 @@
 #include <renderer/vulkan/memory.hh>
 
 #include <renderer/vulkan/buffer.hh>
-#include <renderer/vulkan/texture.hh>
+#include <renderer/vulkan/image-attachment.hh>
 
 #include <cstring>
 
@@ -42,24 +42,24 @@ namespace brasio::renderer::vulkan
     }
 
     Memory::Memory(const PhysicalDeviceType &physicalDevice,
-                   const VkDevice &logicalDevice, const Texture &texture,
+                   const VkDevice &logicalDevice, const ImageAttachment &imageAttachment,
                    VkMemoryPropertyFlags memoryProperties)
         : Handler("memory",
                   [logicalDevice](const VkDeviceMemory &bufferMemory) {
                       vkFreeMemory(logicalDevice, bufferMemory, nullptr);
                   })
         , _logicalDevice(logicalDevice)
-        , _size(texture.getTextureImage().getSize())
+        , _size(imageAttachment.getSize())
     {
         BRASIO_LOG_TRACE("Creating texture memory", { "CREATE" });
         VkMemoryRequirements memoryRequirements;
-        vkGetImageMemoryRequirements(logicalDevice, texture.getHandle(),
+        vkGetImageMemoryRequirements(logicalDevice, imageAttachment.getImage(),
                                      &memoryRequirements);
 
         allocate(physicalDevice, logicalDevice, memoryProperties,
                  memoryRequirements);
 
-        vkBindImageMemory(logicalDevice, texture.getHandle(), getHandle(), 0);
+        vkBindImageMemory(logicalDevice, imageAttachment.getImage(), getHandle(), 0);
         BRASIO_LOG_TRACE("Bound texture memory", { "CREATE" });
 
     }

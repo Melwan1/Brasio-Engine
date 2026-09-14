@@ -1,6 +1,6 @@
 application:
   window:
-    monitorIndex: 0
+    monitorIndex: 1
     width: 1920
     height: 1080
     title: Brasio Engine
@@ -108,11 +108,11 @@ renderer:
 
 logging:
   global_level: TRACE
-  specific_levels:
-    APPLICATION: DEBUG
-    CREATE: INFO
-    DESTROY: DEBUG
-    DEVICE: INFO
-    GENERAL: INFO
-    RENDER: DEBUG
-    SHADERS: INFO
+  #specific_levels:
+  #  APPLICATION: DEBUG
+  #  CREATE: INFO
+  #  DESTROY: DEBUG
+  #  DEVICE: INFO
+  #  GENERAL: INFO
+  #  RENDER: DEBUG
+  #  SHADERS: INFO

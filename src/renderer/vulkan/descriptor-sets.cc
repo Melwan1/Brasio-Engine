@@ -29,7 +29,7 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Allocated descriptor sets", { "CREATE" });
     }
 
-    void DescriptorSets::update(const std::vector<BufferType> &buffers, const ImageType &textureImageView, const TextureSamplerType &textureSampler)
+    void DescriptorSets::update(const std::vector<BufferType> &buffers, const VkImageView &textureImageView, const TextureSamplerType &textureSampler)
     {
         for (size_t i = 0; i < getHandle().size(); i++)
         {
@@ -40,7 +40,7 @@ namespace brasio::renderer::vulkan
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = textureImageView->getHandle();
+            imageInfo.imageView = textureImageView;
             imageInfo.sampler = textureSampler->getHandle();
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};

@@ -13,7 +13,7 @@ namespace brasio::renderer::vulkan::builders
         _structureType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         _subpasses.clear();
         _dependencies.clear();
-        _attachments.clear();
+        _attachmentDescriptions.clear();
         return *this;
     }
 
@@ -45,10 +45,9 @@ namespace brasio::renderer::vulkan::builders
     }
 
     RenderPassBuilder &
-    RenderPassBuilder::withAdditionalAttachment(const Attachment &attachment)
+    RenderPassBuilder::withAdditionalAttachmentDescription(const VkAttachmentDescription &attachmentDescription)
     {
-        _attachments.emplace_back(attachment);
-        _attachmentDescriptions.emplace_back(attachment.getDescription());
+        _attachmentDescriptions.emplace_back(attachmentDescription);
         return *this;
     }
 } // namespace brasio::renderer::vulkan::builders

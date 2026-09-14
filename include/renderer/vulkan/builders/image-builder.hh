@@ -11,14 +11,16 @@ namespace brasio::renderer::vulkan::builders
     class ImageBuilder : core::Builder<ImageType>
     {
     public:
-        ImageBuilder(const VkDevice &logicalDevice, const VkImage &image,
+        ImageBuilder(const LogicalDeviceType &logicalDevice, const VkImage &image,
                      const VkFormat &format);
 
         virtual ImageBuilder &base() override;
         virtual ImageType build() override;
 
+        ImageBuilder &withAspectMask(VkImageAspectFlags aspectFlags);
+
     private:
-        VkDevice _logicalDevice = VK_NULL_HANDLE;
+        const LogicalDeviceType &_logicalDevice;
         VkImage _image;
         VkFormat _format;
 

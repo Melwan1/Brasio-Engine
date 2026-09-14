@@ -11,6 +11,7 @@
 #include <renderer/vulkan/builders/command-pool-builder.hh>
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/depth-attachment.hh>
 #include <renderer/vulkan/descriptor-pool.hh>
 #include <renderer/vulkan/descriptor-set-layout.hh>
 #include <renderer/vulkan/descriptor-sets.hh>
@@ -94,8 +95,9 @@ namespace brasio::renderer::vulkan
         void createDescriptorPool();
         void createDescriptorSets();
         void createTexture();
-        void createTextureImageView();
         void createTextureSampler();
+
+        void createDepthResources();
 
         // getters
 
@@ -146,8 +148,9 @@ namespace brasio::renderer::vulkan
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
         TextureType _texture;
-        ImageType _textureImageView;
         TextureSamplerType _textureSampler;
+
+        DepthAttachmentType _depthAttachment;
 
         uint32_t _currentFrame = 0;
     };

@@ -1,4 +1,5 @@
 #include <renderer/vulkan/builders/subpass-description-builder.hh>
+#include <renderer/vulkan/depth-attachment.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -17,27 +18,34 @@ namespace brasio::renderer::vulkan::builders
     {
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = _bindPoint;
-        subpass.colorAttachmentCount = _attachmentReferences.size();
-        subpass.pColorAttachments = _attachmentReferences.data();
+        subpass.colorAttachmentCount = _colorAttachmentReferences.size();
+        subpass.pColorAttachments = _colorAttachmentReferences.data();
+        if (_depthAttachmentDescription.has_value())
+        {
+            subpass.pDepthStencilAttachment = &(*_depthAttachmentReference);
+        }
         return subpass;
     }
 
     SubpassDescriptionBuilder &
     SubpassDescriptionBuilder::withAdditionalAttachment(
-        const VkAttachmentDescription &description,
-        const VkAttachmentReference &reference)
+        const ImageAttachment &attachment, uint32_t attachmentId)
     {
-        _attachments.emplace_back(description, reference);
-        _attachmentReferences.emplace_back(reference);
-        return *this;
+        return withAdditionalAttachment(attachment.getAttachmentDescription(), attachment.getAttachmentReference(attachmentId));
     }
 
     SubpassDescriptionBuilder &
     SubpassDescriptionBuilder::withAdditionalAttachment(
-        const Attachment &attachment)
+            const VkAttachmentDescription &attachmentDescription, const VkAttachmentReference &attachmentReference)
     {
-        _attachments.emplace_back(attachment);
-        _attachmentReferences.emplace_back(attachment.getReference());
+        if (attachmentDescription.finalLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL || attachmentDescription.finalLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+        {
+            _depthAttachmentDescription = attachmentDescription;
+            _depthAttachmentReference = attachmentReference;
+            return *this;
+        }
+        _colorAttachmentDescriptions.emplace_back(attachmentDescription);
+        _colorAttachmentReferences.emplace_back(attachmentReference);
         return *this;
     }
 } // namespace brasio::renderer::vulkan::builders
