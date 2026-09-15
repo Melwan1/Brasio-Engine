@@ -54,7 +54,6 @@ namespace brasio::renderer::vulkan
         _swapchain->createFramebuffers(_renderPass->getHandle(), { _depthAttachment->getImageView() });
         createGraphicsPipelines();
         createTexture();
-        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -95,7 +94,6 @@ namespace brasio::renderer::vulkan
         _swapchain->createFramebuffers(_renderPass->getHandle(), { _depthAttachment->getImageView() });
         createGraphicsPipelines(config["pipelines"]);
         createTexture();
-        createTextureSampler();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -454,18 +452,13 @@ namespace brasio::renderer::vulkan
                 .withSetsCount(_maxFramesInFlight)
                 .withSetLayout(_descriptorSetLayout->getHandle())
                 .build();
-        _descriptorSets->update(_uniformBuffers, _texture->getImageView(), _textureSampler);
+        _descriptorSets->update(_uniformBuffers, _texture);
     }
 
     void VulkanRenderer::createTexture()
     {
         _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/mario.ppm")).withCommandPool(_commandPool->getHandle()).build();
 
-    }
-
-    void VulkanRenderer::createTextureSampler()
-    {
-        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
     }
 
     void VulkanRenderer::createDepthResources()

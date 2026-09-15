@@ -25,11 +25,11 @@
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
 #include <renderer/vulkan/texture.hh>
+#include <renderer/vulkan/texture-sampler.hh>
 #include <shaders/shader-manager.hh>
 #include <mesh/mesh.hh>
 
 #include <yaml-cpp/yaml.h>
-#include "renderer/vulkan/texture-sampler.hh"
 
 namespace brasio::renderer::vulkan
 {
@@ -95,7 +95,6 @@ namespace brasio::renderer::vulkan
         void createDescriptorPool();
         void createDescriptorSets();
         void createTexture();
-        void createTextureSampler();
 
         void createDepthResources();
 

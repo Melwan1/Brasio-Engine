@@ -7,6 +7,7 @@
 #include <memory>
 
 #include <renderer/vulkan/logical-device.hh>
+#include <renderer/vulkan/texture-sampler.hh>
 #include <images/p3-ppm.hh>
 
 namespace brasio::renderer::vulkan
@@ -25,8 +26,16 @@ namespace brasio::renderer::vulkan
 
         const images::P3PPM &getTextureImage() const;
 
+        void createTextureSampler();
+        
+        TextureSamplerType &getTextureSampler();
+        const TextureSamplerType &getTextureSampler() const;
+
     private:
+        const PhysicalDeviceType &_physicalDevice;
+        const LogicalDeviceType &_logicalDevice;
         const images::P3PPM _textureImage;
+        TextureSamplerType _textureSampler;
     };
 
     using TextureType = std::unique_ptr<Texture>;
