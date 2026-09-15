@@ -2,7 +2,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    ImageBuilder::ImageBuilder(const VkDevice &logicalDevice,
+    ImageBuilder::ImageBuilder(const LogicalDeviceType &logicalDevice,
                                const VkImage &image, const VkFormat &format)
         : _logicalDevice(logicalDevice)
         , _image(image)
@@ -19,19 +19,24 @@ namespace brasio::renderer::vulkan::builders
         _componentMapping.g = VK_COMPONENT_SWIZZLE_IDENTITY;
         _componentMapping.b = VK_COMPONENT_SWIZZLE_IDENTITY;
         _componentMapping.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-        _aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         _baseMipLevel = 0;
         _levelCount = 1;
         _baseArrayLayer = 0;
         _layerCount = 1;
 
+        return withAspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
+    }
+
+    ImageBuilder &ImageBuilder::withAspectMask(VkImageAspectFlags aspectFlags)
+    {
+        _aspectMask = aspectFlags;
         return *this;
     }
 
     ImageType ImageBuilder::build()
     {
         VkImageViewCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.sType = _structureType;
         createInfo.image = _image;
         createInfo.viewType = _imageViewType;
         createInfo.format = _format;
@@ -42,6 +47,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.subresourceRange.layerCount = _layerCount;
         createInfo.subresourceRange.levelCount = _levelCount;
 
-        return std::make_unique<Image>(_logicalDevice, _image, createInfo);
+        return std::make_unique<Image>(_logicalDevice->getHandle(), _image, createInfo);
     }
+
 } // namespace brasio::renderer::vulkan::builders

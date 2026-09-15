@@ -6,8 +6,7 @@
 
 #include <core/handler.hh>
 #include <renderer/vulkan/buffer.hh>
-#include <renderer/vulkan/image.hh>
-#include <renderer/vulkan/texture-sampler.hh>
+#include <renderer/vulkan/texture.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -18,7 +17,7 @@ namespace brasio::renderer::vulkan
         DescriptorSets(const VkDevice &logicalDevice,
                        const VkDescriptorSetAllocateInfo &allocateInfo);
 
-        void update(const std::vector<BufferType> &buffers, const ImageType &textureImageView, const TextureSamplerType &textureSampler);
+        void update(const std::vector<BufferType> &buffers, const TextureType &texture);
 
     private:
         const VkDevice &_logicalDevice;

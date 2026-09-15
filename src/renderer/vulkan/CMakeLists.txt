@@ -5,6 +5,7 @@ target_sources(librenderer PRIVATE
     command-buffer-array.cc
     command-pool.cc
     debug-messenger.cc
+    depth-attachment.cc
     descriptor-pool.cc
     descriptor-set-layout.cc
     descriptor-sets.cc
@@ -12,6 +13,7 @@ target_sources(librenderer PRIVATE
     fence.cc
     graphics-pipeline.cc
     image.cc
+    image-attachment.cc
     instance.cc
     logical-device.cc
     memory.cc

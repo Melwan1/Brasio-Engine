@@ -9,6 +9,7 @@
 #include <renderer/vulkan/physical-device.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/memory.hh>
+#include <renderer/vulkan/image-attachment.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -25,7 +26,7 @@ namespace brasio::renderer::vulkan
 
         void copyInto(const Buffer &other, VkCommandPool commandPool,
                       VkDeviceSize size);
-        void copyInto(const Texture &other, VkCommandPool commandPool);
+        void copyInto(const ImageAttachment &other, VkCommandPool commandPool);
 
         void mapMemory();
         void unmapMemory();

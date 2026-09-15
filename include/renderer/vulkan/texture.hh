@@ -1,39 +1,41 @@
 #pragma once
 
-#include <core/handler.hh>
+#include <renderer/vulkan/image-attachment.hh>
 
 #include <vulkan/vulkan_core.h>
 
 #include <memory>
 
 #include <renderer/vulkan/logical-device.hh>
-#include <renderer/vulkan/memory.hh>
+#include <renderer/vulkan/texture-sampler.hh>
 #include <images/p3-ppm.hh>
 
 namespace brasio::renderer::vulkan
 {
 
-    class Texture : public core::Handler<VkImage>
+    class Texture : public ImageAttachment
     {
     public:
         Texture(const PhysicalDeviceType &physicalDevice,
                 const LogicalDeviceType &logicalDevice,
                 const VkCommandPool &commandPool,
                 const VkImageCreateInfo &imageInfo,
+                VkImageViewCreateInfo imageViewInfo,
                 images::P3PPM &textureImage,
                 const VkMemoryPropertyFlags memoryProperties);
 
         const images::P3PPM &getTextureImage() const;
 
-        void transitionImageLayout(const VkCommandPool &commandPool,
-                                   [[maybe_unused]] const VkFormat &format,
-                                   const VkImageLayout &oldLayout,
-                                   const VkImageLayout &newLayout);
+        void createTextureSampler();
+        
+        TextureSamplerType &getTextureSampler();
+        const TextureSamplerType &getTextureSampler() const;
 
     private:
+        const PhysicalDeviceType &_physicalDevice;
         const LogicalDeviceType &_logicalDevice;
         const images::P3PPM _textureImage;
-        MemoryType _deviceMemory;
+        TextureSamplerType _textureSampler;
     };
 
     using TextureType = std::unique_ptr<Texture>;

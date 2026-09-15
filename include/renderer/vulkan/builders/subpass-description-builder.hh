@@ -6,7 +6,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/attachment.hh>
+#include <renderer/vulkan/image-attachment.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -19,18 +19,15 @@ namespace brasio::renderer::vulkan::builders
         virtual VkSubpassDescription build() override;
 
         SubpassDescriptionBuilder &
-        withAdditionalAttachment(const VkAttachmentDescription &description,
-                                 const VkAttachmentReference &reference);
+        withAdditionalAttachment(const ImageAttachment& attachment, uint32_t attachmentId);
 
-        SubpassDescriptionBuilder &
-        withAdditionalAttachment(const Attachment &attachment);
-
-        const Attachment &at(uint32_t index) const;
-        Attachment &at(uint32_t index);
+        SubpassDescriptionBuilder &withAdditionalAttachment(const VkAttachmentDescription &attachmentDescription, const VkAttachmentReference &attachmentReference);
 
     private:
         VkPipelineBindPoint _bindPoint;
-        std::vector<Attachment> _attachments;
-        std::vector<VkAttachmentReference> _attachmentReferences;
+        std::vector<VkAttachmentDescription> _colorAttachmentDescriptions;
+        std::vector<VkAttachmentReference> _colorAttachmentReferences;
+        std::optional<VkAttachmentDescription> _depthAttachmentDescription;
+        std::optional<VkAttachmentReference> _depthAttachmentReference;
     };
 } // namespace brasio::renderer::vulkan::builders

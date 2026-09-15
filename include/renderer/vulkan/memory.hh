@@ -12,7 +12,7 @@
 namespace brasio::renderer::vulkan
 {
     class Buffer;
-    class Texture;
+    class ImageAttachment;
 
     class Memory : public core::Handler<VkDeviceMemory>
     {
@@ -22,7 +22,7 @@ namespace brasio::renderer::vulkan
                VkMemoryPropertyFlags memoryProperties, void *data, size_t size);
 
         Memory(const PhysicalDeviceType &physicalDevice,
-               const VkDevice &logicalDevice, const Texture &texture,
+               const VkDevice &logicalDevice, const ImageAttachment &imageAttachment,
                VkMemoryPropertyFlags memoryProperties);
 
         void allocate(const PhysicalDeviceType &physicalDevice,

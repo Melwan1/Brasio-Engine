@@ -78,9 +78,11 @@ namespace brasio::renderer::vulkan
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
         renderPassBeginInfo.renderArea.extent = swapchain.getExtent();
 
-        VkClearValue clearColor = { { CLEAR_COLOR } };
-        renderPassBeginInfo.clearValueCount = 1;
-        renderPassBeginInfo.pClearValues = &clearColor;
+        std::array<VkClearValue, 2> clearValues{};
+        clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+        clearValues[1].depthStencil = { 1.0f, 0 };
+        renderPassBeginInfo.clearValueCount = clearValues.size();
+        renderPassBeginInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo,
                              VK_SUBPASS_CONTENTS_INLINE);

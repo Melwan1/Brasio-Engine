@@ -22,7 +22,7 @@ namespace brasio::renderer::vulkan
         const VkImageView &getImageView() const;
         VkImageView &getImageView();
 
-    private:
+    protected:
         VkImage _image;
     };
 

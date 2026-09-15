@@ -14,6 +14,12 @@ namespace brasio::renderer::vulkan::builders
         virtual SubpassDependencyBuilder &base() override;
         virtual VkSubpassDependency build() override;
 
+        SubpassDependencyBuilder &withSrcStageMask(const VkPipelineStageFlags &srcStageMask);
+        SubpassDependencyBuilder &withSrcAccessMask(const VkAccessFlags &srcAccessMask);
+
+        SubpassDependencyBuilder &withDstStageMask(const VkPipelineStageFlags &dstStageMask);
+        SubpassDependencyBuilder &withDstAccessMask(const VkAccessFlags &dstAccessMask);
+
     private:
         uint32_t _srcSubpass;
         uint32_t _dstSubpass;
