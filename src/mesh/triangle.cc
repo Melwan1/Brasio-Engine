@@ -7,7 +7,7 @@ namespace brasio::mesh
         : Mesh(Triangle::build())
     {}
 
-    std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+    std::pair<std::vector<geometry::Vertex>, std::vector<Mesh::IndexType>>
     Triangle::build()
     {
         return { { { { -0.5f, 0.0f, 0.0f } },

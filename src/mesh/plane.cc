@@ -7,11 +7,11 @@ namespace brasio::mesh
         : Mesh(Plane::build(horizontal_tessellation, vertical_tessellation))
     {}
 
-    std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+    std::pair<std::vector<geometry::Vertex>, std::vector<Mesh::IndexType>>
     Plane::build(int horizontal_tessellation, int vertical_tessellation)
     {
         std::vector<geometry::Vertex> vertices;
-        std::vector<uint16_t> indices;
+        std::vector<IndexType> indices;
         vertices.reserve((horizontal_tessellation + 1)
                          * (vertical_tessellation + 1));
         indices.reserve(

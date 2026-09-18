@@ -135,7 +135,7 @@ namespace brasio::renderer::vulkan
             BRASIO_LOG_TRACE("Rendering mesh 1", { "RENDER" });
             renderer.getMesh1().draw(commandBuffer, renderer);
             BRASIO_LOG_TRACE("Rendering mesh 2", { "RENDER" });
-            renderer.getMesh2().draw(commandBuffer, renderer);
+            //renderer.getMesh2().draw(commandBuffer, renderer);
         }
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });

@@ -21,6 +21,7 @@ target_link_libraries(librenderer PRIVATE
     libio
     libimages
     libmesh
+    libmodel
     libshaders
 )
 

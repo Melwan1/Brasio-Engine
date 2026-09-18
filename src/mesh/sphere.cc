@@ -7,11 +7,11 @@ namespace brasio::mesh
         : Mesh(Sphere::build(nSlices, nStacks))
     {}
 
-    std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+    std::pair<std::vector<geometry::Vertex>, std::vector<Mesh::IndexType>>
     Sphere::build(unsigned nSlices, unsigned nStacks)
     {
         std::vector<geometry::Vertex> vertices;
-        std::vector<uint16_t> indices;
+        std::vector<IndexType> indices;
 
         vertices.reserve(2 + (nStacks - 1) * nSlices); // wtf is this shit
         indices.reserve(3 * 2 * nSlices * nStacks);

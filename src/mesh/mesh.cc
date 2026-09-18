@@ -9,13 +9,13 @@ namespace brasio::mesh
 {
 
     Mesh::Mesh(const std::vector<geometry::Vertex> &vertices,
-               const std::vector<uint16_t> &indices)
+               const std::vector<IndexType> &indices)
         : _vertices(vertices)
         , _indices(indices)
     {}
 
     Mesh::Mesh(const std::pair<std::vector<geometry::Vertex>,
-                               std::vector<uint16_t>> &vertices_indices)
+                               std::vector<IndexType>> &vertices_indices)
         : Mesh(vertices_indices.first, vertices_indices.second)
     {}
 
@@ -29,7 +29,7 @@ namespace brasio::mesh
         return _vertices;
     }
 
-    const std::vector<uint16_t> &Mesh::getIndices() const
+    const std::vector<Mesh::IndexType> &Mesh::getIndices() const
     {
         return _indices;
     }
@@ -54,7 +54,7 @@ namespace brasio::mesh
         return _indexBuffer;
     }
 
-    std::vector<uint16_t> &Mesh::getIndices()
+    std::vector<Mesh::IndexType> &Mesh::getIndices()
     {
         return _indices;
     }
@@ -69,7 +69,7 @@ namespace brasio::mesh
         vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount,
                                vertexBuffers, offsets);
         vkCmdBindIndexBuffer(commandBuffer, getIndexBuffer()->getHandle(), 0,
-                             VK_INDEX_TYPE_UINT16);
+                             VK_INDEX_TYPE_UINT32);
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                                 renderer.getPipelineLayout().getHandle(), 0, 1,
                                 &renderer.getDescriptorSets().getHandle().at(

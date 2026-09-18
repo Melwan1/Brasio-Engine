@@ -15,7 +15,7 @@ namespace brasio::mesh
                  BRASIO_MESH_DISK_BASED_PYRAMID_DEFAULT_BASE_TESSELLATION,
              float height = BRASIO_MESH_DISK_BASED_PYRAMID_DEFAULT_HEIGHT);
 
-        static std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+        static std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>
         build(int base_tessellation, float height);
     };
 

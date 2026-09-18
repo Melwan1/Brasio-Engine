@@ -7,11 +7,11 @@ namespace brasio::mesh
         : Mesh(Cylinder::build(lateral_tessellation))
     {}
 
-    std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+    std::pair<std::vector<geometry::Vertex>, std::vector<Mesh::IndexType>>
     Cylinder::build(int lateral_tessellation)
     {
         std::vector<geometry::Vertex> vertices;
-        std::vector<uint16_t> indices;
+        std::vector<IndexType> indices;
 
         // 2 * lateral_tessellation vertices on both base disks
         // + 1 vertex on each disk base center
