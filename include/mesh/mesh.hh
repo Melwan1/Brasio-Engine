@@ -23,16 +23,18 @@ namespace brasio::mesh
     class Mesh
     {
     public:
+
+        using IndexType = uint32_t;
         Mesh(const std::vector<geometry::Vertex> &vertices,
-             const std::vector<uint16_t> &indices);
+             const std::vector<IndexType> &indices);
         Mesh(const std::pair<std::vector<geometry::Vertex>,
-                             std::vector<uint16_t>> &vertices_indices);
+                             std::vector<IndexType>> &vertices_indices);
 
         const std::vector<geometry::Vertex> &getVertices() const;
         std::vector<geometry::Vertex> &getVertices();
 
-        const std::vector<uint16_t> &getIndices() const;
-        std::vector<uint16_t> &getIndices();
+        const std::vector<IndexType> &getIndices() const;
+        std::vector<IndexType> &getIndices();
 
         const renderer::vulkan::BufferType &getVertexBuffer() const;
         renderer::vulkan::BufferType &getVertexBuffer();
@@ -78,7 +80,7 @@ namespace brasio::mesh
 
     private:
         std::vector<geometry::Vertex> _vertices;
-        std::vector<uint16_t> _indices;
+        std::vector<IndexType> _indices;
 
         renderer::vulkan::BufferType _vertexBuffer;
         renderer::vulkan::BufferType _indexBuffer;

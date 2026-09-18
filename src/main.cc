@@ -4,6 +4,7 @@
 #include <filesystem>
 
 #include <images/p3-ppm.hh>
+#include <io/files/obj-parser.hh>
 
 namespace fs = std::filesystem;
 
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     brasio::application::ApplicationType application =
         brasio::application::Application::fromConfig(
             YAML::LoadFile(config_path));
+
     application->loop();
     return 0;
 }

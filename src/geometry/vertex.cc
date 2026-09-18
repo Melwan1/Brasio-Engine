@@ -12,14 +12,15 @@ namespace brasio::geometry
         return bindingDescription;
     }
 
-    std::array<VkVertexInputAttributeDescription, 3>
+    std::array<VkVertexInputAttributeDescription, 4>
     Vertex::getAttributeDescriptions()
     {
-        std::array<VkVertexInputAttributeDescription, 3>
+        std::array<VkVertexInputAttributeDescription, 4>
             attributeDescriptions{};
         VkVertexInputAttributeDescription &position = attributeDescriptions[0];
         VkVertexInputAttributeDescription &color = attributeDescriptions[1];
-        VkVertexInputAttributeDescription &texCoord = attributeDescriptions[2];
+        VkVertexInputAttributeDescription &normal = attributeDescriptions[2];
+        VkVertexInputAttributeDescription &texCoord = attributeDescriptions[3];
 
         position.binding = 0;
         position.location = 0;
@@ -31,8 +32,13 @@ namespace brasio::geometry
         color.format = VK_FORMAT_R32G32B32_SFLOAT;
         color.offset = offsetof(Vertex, color);
 
+        normal.binding = 0;
+        normal.location = 2;
+        normal.format = VK_FORMAT_R32G32B32_SFLOAT;
+        normal.offset = offsetof(Vertex, normal);
+
         texCoord.binding = 0;
-        texCoord.location = 2;
+        texCoord.location = 3;
         texCoord.format = VK_FORMAT_R32G32_SFLOAT;
         texCoord.offset = offsetof(Vertex, texCoord);
 

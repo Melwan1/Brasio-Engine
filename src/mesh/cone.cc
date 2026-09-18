@@ -9,11 +9,11 @@ namespace brasio::mesh
         : Mesh(Cone::build(base_tessellation, height))
     {}
 
-    std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+    std::pair<std::vector<geometry::Vertex>, std::vector<Mesh::IndexType>>
     Cone::build(int base_tessellation, float height)
     {
         std::vector<geometry::Vertex> vertices;
-        std::vector<uint16_t> indices;
+        std::vector<IndexType> indices;
 
         // top = 0, base center = 1, then (base_tessellation + 1) vertices for
         // the base from 2 to (base_tessellation + 2) inclusive

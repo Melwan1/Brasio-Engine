@@ -9,7 +9,7 @@ namespace brasio::mesh
     {
     public:
         Triangle();
-        static std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+        static std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>
         build();
     };
 } // namespace brasio::mesh

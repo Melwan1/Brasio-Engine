@@ -13,7 +13,7 @@ namespace brasio::mesh
         Cylinder(int lateral_tessellation =
                      BRASIO_MESH_CYLINDER_DEFAULT_LATERAL_TESSELLATION);
 
-        static std::pair<std::vector<geometry::Vertex>, std::vector<uint16_t>>
+        static std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>
         build(int lateral_tessellation);
     };
 

@@ -9,9 +9,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <io/debug/vulkan-renderer-debug-printer.hh>
+#include <io/files/obj-parser.hh>
 #include <io/logging/logger.hh>
 #include <geometry/vertex.hh>
 #include <mesh/transform-mode.hh>
+#include <model/model.hh>
 #include <renderer/structs/uniform-buffer-object.hh>
 
 #include <renderer/vulkan/builders/all.hh>
@@ -40,12 +42,17 @@ namespace brasio::renderer::vulkan
         _shaderManager.compileAllShaders();
         createDescriptorSetLayout();
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Sphere>(16, 16);
-        _mesh1->applyTranslation(mesh::TransformMode::CPU,
-                                 { -1.0f, 0.0f, 1.0f });
+        io::files::OBJParser objParser("assets/models/viking_room.obj");
+        objParser.load();
+        model::Model model(objParser);
+        _mesh1 = model.toMesh();
+        //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
+        //_mesh1->applyTranslation(mesh::TransformMode::CPU,
+        //                         { -1.0f, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
-        _mesh2 = std::make_unique<mesh::Cone>();
+        _mesh2 = model.toMesh();
+        //_mesh2 = std::make_unique<mesh::Cone>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
@@ -79,12 +86,17 @@ namespace brasio::renderer::vulkan
         _shaderManager.compileAllShaders();
         createDescriptorSetLayout();
         createCommandPool();
-        _mesh1 = std::make_unique<mesh::Cube>();
-        _mesh1->applyTranslation(mesh::TransformMode::CPU,
-                                 { -1.0, 0.0f, 1.0f });
+        io::files::OBJParser objParser("assets/models/viking_room.obj");
+        objParser.load();
+        model::Model model(objParser);
+        _mesh1 = model.toMesh();
+        //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
+        //_mesh1->applyTranslation(mesh::TransformMode::CPU,
+        //                         { -1.0f, 0.0f, 1.0f });
         _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
-        _mesh2 = std::make_unique<mesh::Cube>();
+        _mesh2 = model.toMesh();
+        //_mesh2 = std::make_unique<mesh::Cone>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
@@ -416,16 +428,18 @@ namespace brasio::renderer::vulkan
         float time = std::chrono::duration<float, std::chrono::seconds::period>(
                          currentTime - startTime)
                          .count();
+        (void)time;
         structs::UniformBufferObject ubo{};
-        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
-                                glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.model = glm::rotate(ubo.model, time / 2 * glm::radians(90.0f),
-                                glm::vec3(0.0f, 1.0f, 0.0f));
-        ubo.model = glm::rotate(ubo.model, time / 4 * glm::radians(90.0f),
-                                glm::vec3(1.0f, 0.0f, 0.0f));
-        ubo.view = glm::lookAt(glm::vec3(-2.0f, 1.0f, -2.0f),
+        //ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
+        //                        glm::vec3(0.0f, 0.0f, 1.0f));
+        //ubo.model = glm::rotate(ubo.model, time / 2 * glm::radians(90.0f),
+        //                        glm::vec3(0.0f, 1.0f, 0.0f));
+        //ubo.model = glm::rotate(ubo.model, time / 4 * glm::radians(90.0f),
+        //                        glm::vec3(1.0f, 0.0f, 0.0f));
+        ubo.model = glm::mat4(1.0f);
+        ubo.view = glm::lookAt(glm::vec3(3.0f, 1.5f, 2.0f),
                                glm::vec3(0.0f, 0.0f, 0.0f),
-                               glm::vec3(0.0f, 1.0f, 0.0f));
+                               glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(
             glm::radians(45.0f),
             _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
@@ -457,7 +471,7 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createTexture()
     {
-        _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/mario.ppm")).withCommandPool(_commandPool->getHandle()).build();
+        _texture = builders::TextureBuilder(_physicalDevice, _logicalDevice).withTextureImage(images::P3PPM::load("assets/textures/viking_room.ppm")).withCommandPool(_commandPool->getHandle()).build();
 
     }
 
