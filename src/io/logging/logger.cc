@@ -1,6 +1,8 @@
 #include <io/logging/logger.hh>
 
 #include <chrono>
+#include <format>
+#include <iterator>
 
 #include <io/escapes/ansi-escapes.hh>
 
@@ -68,24 +70,19 @@ namespace brasio::io::logging
         {
             return;
         }
-        // print the message
-        std::chrono::system_clock::time_point now =
-            std::chrono::system_clock::now();
-        std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
-        std::tm local_time = *std::localtime(&currentTime);
-        auto microseconds =
-            std::chrono::duration_cast<std::chrono::microseconds>(
-                now.time_since_epoch())
-            % 1'000'000;
-        std::ostringstream oss;
-        oss << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+        auto now = std::chrono::floor<std::chrono::microseconds>(
+            std::chrono::current_zone()->to_local(
+                std::chrono::system_clock::now()));
 
-        _ostr << FG_ESC(244) << oss.str() << "."
-              << std::format("{:06}", microseconds.count()) << "   ";
-
-        _ostr << toColor(messageLevel) << "[" << toString(messageLevel) << "]";
-        _ostr << tagsToString(additionalTags);
-
+        _ostr << FG_ESC(244);
+        std::format_to(std::ostreambuf_iterator<char>(_ostr),
+                       "{:%Y-%m-%d %H:%M:%S}", now);
+        _ostr << "   " << toColor(messageLevel) << "[" << toString(messageLevel)
+              << "]";
+        for (const std::string &tag : additionalTags)
+        {
+            _ostr << "[" << tag << "]";
+        }
         _ostr << ESC_RESET << " " << message << "\n";
     }
 
@@ -174,6 +171,7 @@ namespace brasio::io::logging
 
     void Logger::fromConfig(const YAML::Node &config)
     {
+        std::ios::sync_with_stdio(false);
         Logger::sLogLevel =
             logLevelMap.at(config["global_level"].as<std::string>());
         Logger logger(std::cout, Logger::sLogLevel);

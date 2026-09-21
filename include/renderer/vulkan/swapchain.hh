@@ -24,6 +24,8 @@ namespace brasio::renderer::vulkan
 
         uint32_t getImageCount() const;
 
+        VkPresentModeKHR getPresentMode() const;
+
         const Image &imageAt(uint32_t index) const;
         Image &imageAt(uint32_t index);
 
@@ -40,6 +42,7 @@ namespace brasio::renderer::vulkan
         const LogicalDeviceType &_logicalDevice;
         VkFormat _format;
         VkExtent2D _extent;
+        VkPresentModeKHR _presentMode;
         uint32_t _imageCount;
         std::vector<ImageType> _images;
         std::vector<VkFramebuffer> _framebuffers;

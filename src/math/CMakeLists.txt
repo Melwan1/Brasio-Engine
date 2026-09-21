@@ -15,7 +15,7 @@ target_include_directories(libmath PRIVATE
 target_link_libraries(libmath PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
-    GLEW::GLEW
+    GLEW::glew
 )
 
 target_sources(libmath PRIVATE

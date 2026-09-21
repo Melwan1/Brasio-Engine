@@ -27,6 +27,7 @@ namespace brasio::renderer::vulkan
                          { "CREATE" });
         _format = createInfo.imageFormat;
         _extent = createInfo.imageExtent;
+        _presentMode = createInfo.presentMode;
         _imageCount = createInfo.minImageCount;
         BRASIO_LOG_TRACE("Set image format, extent and image count",
                          { "CREATE" });
@@ -58,6 +59,11 @@ namespace brasio::renderer::vulkan
     uint32_t Swapchain::getImageCount() const
     {
         return _imageCount;
+    }
+
+    VkPresentModeKHR Swapchain::getPresentMode() const
+    {
+        return _presentMode;
     }
 
     const Image &Swapchain::imageAt(uint32_t index) const

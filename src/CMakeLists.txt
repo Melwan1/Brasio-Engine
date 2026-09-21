@@ -16,7 +16,7 @@ target_link_libraries(brasio PRIVATE
     ${OPENGL_opengl_LIBRARY}
     ${YAML_CPP_LIBRARIES}
     glfw
-    GLEW::GLEW
+    GLEW::glew
 )
 
 add_subdirectory(application)

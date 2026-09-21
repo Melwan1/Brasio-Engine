@@ -15,7 +15,7 @@ target_include_directories(libevents PRIVATE
 target_link_libraries(libevents PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
-    GLEW::GLEW
+    GLEW::glew
 )
 
 target_sources(libevents PRIVATE
