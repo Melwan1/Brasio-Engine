@@ -15,7 +15,7 @@ target_include_directories(libutils PRIVATE
 target_link_libraries(libutils PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
-    GLEW::GLEW
+    GLEW::glew
 )
 
 target_link_libraries(libutils PRIVATE

@@ -71,6 +71,7 @@ namespace brasio::renderer::vulkan
         void createLogicalDevice();
 
         void createSwapChain();
+        void createSwapChain(VkPresentModeKHR presentMode);
         void createSwapChain(const YAML::Node &config);
 
         void createImageViews();

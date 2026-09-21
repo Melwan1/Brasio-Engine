@@ -15,7 +15,7 @@ target_include_directories(libapplication PRIVATE
 target_link_libraries(libapplication PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
-    GLEW::GLEW
+    GLEW::glew
 )
 
 target_link_libraries(libapplication PRIVATE

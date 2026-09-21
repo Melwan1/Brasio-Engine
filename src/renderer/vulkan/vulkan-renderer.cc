@@ -32,7 +32,9 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _instance = builders::InstanceBuilder()
+#ifdef BRASIO_ENABLE_VALIDATION_LAYERS
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
+#endif
                         .build();
         _surface =
             builders::SurfaceBuilder(_instance->getHandle(), _window).build();
@@ -76,7 +78,9 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _maxFramesInFlight = config["max_frames_in_flight"].as<unsigned>();
         _instance = builders::InstanceBuilder()
+#ifdef BRASIO_ENABLE_VALIDATION_LAYERS
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
+#endif
                         .build();
         _surface =
             builders::SurfaceBuilder(_instance->getHandle(), _window).build();
@@ -153,7 +157,7 @@ namespace brasio::renderer::vulkan
                 .build();
     }
 
-    void VulkanRenderer::createSwapChain()
+    void VulkanRenderer::createSwapChain(VkPresentModeKHR presentMode)
     {
         _swapchain =
             builders::SwapchainBuilder(_window, _physicalDevice,
@@ -162,8 +166,13 @@ namespace brasio::renderer::vulkan
                 .withSurfaceFormat(
                     { .format = VK_FORMAT_R8G8B8A8_SRGB,
                       .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-                .withPresentMode(VK_PRESENT_MODE_FIFO_KHR)
+                .withPresentMode(presentMode)
                 .build();
+    }
+
+    void VulkanRenderer::createSwapChain()
+    {
+        createSwapChain(VK_PRESENT_MODE_FIFO_KHR);
     }
 
     void VulkanRenderer::createSwapChain(const YAML::Node &config)
@@ -172,16 +181,8 @@ namespace brasio::renderer::vulkan
             { "FIFO", VK_PRESENT_MODE_FIFO_KHR },
             { "MAILBOX", VK_PRESENT_MODE_MAILBOX_KHR }
         };
-        _swapchain =
-            builders::SwapchainBuilder(_window, _physicalDevice,
-                                       _logicalDevice,
-                                       _surface->getHandle())
-                .withSurfaceFormat(
-                    { .format = VK_FORMAT_R8G8B8A8_SRGB,
-                      .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-                .withPresentMode(
-                    presentModeMap.at(config["present_mode"].as<std::string>()))
-                .build();
+        createSwapChain(
+            presentModeMap.at(config["present_mode"].as<std::string>()));
     }
 
     void VulkanRenderer::createRenderPass()
@@ -378,8 +379,9 @@ namespace brasio::renderer::vulkan
             glfwGetFramebufferSize(_window, &width, &height);
             glfwWaitEvents();
         }
+        VkPresentModeKHR presentMode = _swapchain->getPresentMode();
         cleanupSwapChain();
-        createSwapChain();
+        createSwapChain(presentMode);
         createDepthResources();
         _swapchain->createFramebuffers(_renderPass->getHandle(), { _depthAttachment->getImageView() });
     }
