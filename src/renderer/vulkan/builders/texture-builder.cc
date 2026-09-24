@@ -18,7 +18,8 @@ namespace brasio::renderer::vulkan::builders
         _structureType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         return withImageType(VK_IMAGE_TYPE_2D)
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-            .withUsage(VK_IMAGE_USAGE_TRANSFER_DST_BIT
+            .withUsage(VK_IMAGE_USAGE_TRANSFER_SRC_BIT
+                       | VK_IMAGE_USAGE_TRANSFER_DST_BIT
                        | VK_IMAGE_USAGE_SAMPLED_BIT)
             .withMemoryProperties(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
             .withTiling(VK_IMAGE_TILING_OPTIMAL);

@@ -32,6 +32,7 @@ namespace brasio::renderer::vulkan
                                    [[maybe_unused]] const VkFormat &format,
                                    const VkImageLayout &oldLayout,
                                    const VkImageLayout &newLayout);
+            void generateMipmaps(const VkCommandPool &commandPool);
 
             void initMemory(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool, size_t size, void *data, const VkMemoryPropertyFlags &memoryProperties);
             void initMemory(const PhysicalDeviceType &physicalDevice, const VkMemoryPropertyFlags &memoryProperties);
