@@ -164,13 +164,13 @@ namespace brasio::renderer::vulkan
         int32_t mipWidth = getWidth();
         int32_t mipHeight = getHeight();
 
-        for (uint32_t i = 1; i < mipLevels; i++)
+        for (uint32_t i = 0; i + 1 < mipLevels; i++)
         {
-            barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i - 1);
+            barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i);
 
-            std::tie(mipWidth, mipHeight) = blitToNextMipLevel(commandBuffer, i - 1, mipWidth, mipHeight);
+            std::tie(mipWidth, mipHeight) = blitToNextMipLevel(commandBuffer, i, mipWidth, mipHeight);
 
-            barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, i - 1);
+            barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, i);
 
         }
 
@@ -185,7 +185,6 @@ namespace brasio::renderer::vulkan
 
         transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
         stagingBuffer->copyInto(*this, commandPool);
-        // transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         generateMipmaps(physicalDevice, commandPool);
     }
 
