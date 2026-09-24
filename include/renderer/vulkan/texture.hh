@@ -27,7 +27,7 @@ namespace brasio::renderer::vulkan
         const images::P3PPM &getTextureImage() const;
 
         void createTextureSampler();
-        
+
         TextureSamplerType &getTextureSampler();
         const TextureSamplerType &getTextureSampler() const;
 

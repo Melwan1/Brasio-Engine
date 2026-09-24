@@ -122,13 +122,15 @@ namespace brasio::renderer::vulkan::builders
         const std::string &extension)
     {
         BRASIO_LOG_DEBUG("Checking " + extension + " extension against "
-                             + std::to_string(_shaderPaths.size()) + " shaders", { "SHADERS" });
+                             + std::to_string(_shaderPaths.size()) + " shaders",
+                         { "SHADERS" });
         int shaderCount = std::count_if(
             _shaderPaths.begin(), _shaderPaths.end(),
             [&extension](const fs::path &shaderPath) {
                 BRASIO_LOG_TRACE("shader path: " + shaderPath.string()
                                      + ", extension: "
-                                     + shaderPath.extension().string(), { "SHADERS" });
+                                     + shaderPath.extension().string(),
+                                 { "SHADERS" });
                 return shaderPath.extension().string() == extension;
             });
         BRASIO_LOG_TRACE("Found " + std::to_string(shaderCount)

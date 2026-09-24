@@ -14,8 +14,7 @@ namespace brasio::renderer::vulkan
                                 &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create command pool",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create command pool", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created command pool", { "CREATE" });
     }

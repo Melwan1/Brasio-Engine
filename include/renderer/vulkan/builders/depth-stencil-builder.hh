@@ -5,18 +5,16 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class DepthStencilBuilder : public core::Builder<VkPipelineDepthStencilStateCreateInfo>
+    class DepthStencilBuilder
+        : public core::Builder<VkPipelineDepthStencilStateCreateInfo>
     {
+    public:
+        DepthStencilBuilder();
 
-        public:
+        virtual DepthStencilBuilder &base() override;
+        virtual VkPipelineDepthStencilStateCreateInfo build() override;
 
-            DepthStencilBuilder();
-
-            virtual DepthStencilBuilder &base() override;
-            virtual VkPipelineDepthStencilStateCreateInfo build() override;
-
-        private:
-
-            VkStructureType _structureType;
+    private:
+        VkStructureType _structureType;
     };
-}
+} // namespace brasio::renderer::vulkan::builders

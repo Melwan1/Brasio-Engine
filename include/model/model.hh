@@ -18,21 +18,20 @@ namespace brasio::model
     using ElementIndexType = std::array<uint32_t, 3>;
     using FaceType = std::array<ElementIndexType, 3>;
 
-    using VertexInfoType = std::tuple<VertexType, TextureCoordinatesType, NormalType>;
+    using VertexInfoType =
+        std::tuple<VertexType, TextureCoordinatesType, NormalType>;
     using FaceIndicesType = std::array<uint32_t, 3>;
 
     class Model
     {
-        public:
-            Model();
-            Model(io::files::OBJParser &objParser);
+    public:
+        Model();
+        Model(io::files::OBJParser &objParser);
 
-            mesh::MeshType toMesh();
+        mesh::MeshType toMesh();
 
-        private:
-            
-            std::vector<VertexInfoType> _verticesInfo;
-            std::vector<FaceIndicesType> _faceIndices;
-
+    private:
+        std::vector<VertexInfoType> _verticesInfo;
+        std::vector<FaceIndicesType> _faceIndices;
     };
-}
+} // namespace brasio::model

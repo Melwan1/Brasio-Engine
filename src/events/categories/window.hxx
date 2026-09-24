@@ -2,7 +2,8 @@
 
 #include <events/categories/window.hh>
 
-namespace brasio::events::categories { 
+namespace brasio::events::categories
+{
 
     template <typename SubEventType>
     WindowCategoryEvent<SubEventType>::WindowCategoryEvent(

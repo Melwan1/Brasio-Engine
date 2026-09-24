@@ -22,8 +22,8 @@ namespace brasio::renderer::vulkan::builders
         withAdditionalSubpass(const VkSubpassDescription &subpass);
         RenderPassBuilder &
         withAdditionalSubpassDependency(const VkSubpassDependency &dependency);
-        RenderPassBuilder &
-        withAdditionalAttachmentDescription(const VkAttachmentDescription &attachmentDescription);
+        RenderPassBuilder &withAdditionalAttachmentDescription(
+            const VkAttachmentDescription &attachmentDescription);
 
     private:
         VkDevice _logicalDevice;

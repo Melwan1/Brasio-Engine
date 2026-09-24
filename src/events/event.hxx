@@ -7,7 +7,8 @@
 
 #include <events/event.hh>
 
-namespace brasio::events {
+namespace brasio::events
+{
     template <typename CategoryType, typename SubEventType>
     size_t Event<CategoryType, SubEventType>::_sequenceId = 0;
 
@@ -18,7 +19,8 @@ namespace brasio::events {
     }
 
     template <typename CategoryType, typename SubEventType>
-    Event<CategoryType, SubEventType>::Event(enum EventCategoryType categoryType, enum EventType eventType)
+    Event<CategoryType, SubEventType>::Event(
+        enum EventCategoryType categoryType, enum EventType eventType)
         : _id(generateId())
         , _creationTime(std::chrono::system_clock::now())
         , _categoryType(categoryType)
@@ -26,20 +28,22 @@ namespace brasio::events {
         , _handled(false)
     {}
 
-    template<typename CategoryType, typename SubEventType>
+    template <typename CategoryType, typename SubEventType>
     size_t Event<CategoryType, SubEventType>::getId() const
     {
         return _id;
     }
 
-    template<typename CategoryType, typename SubEventType>
-    std::chrono::system_clock::time_point Event<CategoryType, SubEventType>::getCreationTime() const
+    template <typename CategoryType, typename SubEventType>
+    std::chrono::system_clock::time_point
+    Event<CategoryType, SubEventType>::getCreationTime() const
     {
         return _creationTime;
     }
 
     template <typename CategoryType, typename SubEventType>
-    enum EventCategoryType Event<CategoryType, SubEventType>::getCategoryType() const
+    enum EventCategoryType
+    Event<CategoryType, SubEventType>::getCategoryType() const
     {
         return _categoryType;
     }
@@ -64,7 +68,7 @@ namespace brasio::events {
     }
 
     template <typename CategoryType, typename SubEventType>
-    void Event<CategoryType, SubEventType>::print(std::ostream& ostr)
+    void Event<CategoryType, SubEventType>::print(std::ostream &ostr)
     {
         std::chrono::system_clock::time_point now =
             std::chrono::system_clock::now();
@@ -73,9 +77,10 @@ namespace brasio::events {
             now - getCreationTime());
 
         std::ostringstream oss;
-        oss << "Duration: " << FG_ESC(76) << std::setw(5) << std::setfill(' ') << duration.count() << " us" << ESC_RESET;
-        io::logging::Logger::trace(ostr, "Handling " + getTypeName(), { "EVENT", oss.str()});
-        
+        oss << "Duration: " << FG_ESC(76) << std::setw(5) << std::setfill(' ')
+            << duration.count() << " us" << ESC_RESET;
+        io::logging::Logger::trace(ostr, "Handling " + getTypeName(),
+                                   { "EVENT", oss.str() });
     }
 
     template <typename CategoryType, typename SubEventType>
@@ -83,7 +88,10 @@ namespace brasio::events {
     {
         if (!_handled)
         {
-            BRASIO_LOG_WARNING("Destroying event of type " + std::to_string(getType()) + " without handling it", { "EVENT" } );
+            BRASIO_LOG_WARNING("Destroying event of type "
+                                   + std::to_string(getType())
+                                   + " without handling it",
+                               { "EVENT" });
         }
     }
 } // namespace brasio::events

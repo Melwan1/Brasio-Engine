@@ -20,7 +20,8 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
         , _textureImage(textureImage)
     {
-        initMemory(_physicalDevice, commandPool, textureImage.getSize(), textureImage.getData(), memoryProperties);
+        initMemory(_physicalDevice, commandPool, textureImage.getSize(),
+                   textureImage.getData(), memoryProperties);
         createImageView();
         createTextureSampler();
     }
@@ -32,7 +33,9 @@ namespace brasio::renderer::vulkan
 
     void Texture::createTextureSampler()
     {
-        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
+        _textureSampler =
+            builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice)
+                .build();
     }
 
     TextureSamplerType &Texture::getTextureSampler()

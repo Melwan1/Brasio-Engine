@@ -9,26 +9,24 @@ namespace brasio::renderer::vulkan::builders
 
     class DepthAttachmentBuilder : public core::Builder<DepthAttachmentType>
     {
+    public:
+        DepthAttachmentBuilder(const PhysicalDeviceType &physicalDevice,
+                               const LogicalDeviceType &logicalDevice);
 
-        public:
+        virtual DepthAttachmentBuilder &base() override;
+        virtual DepthAttachmentType build() override;
 
-            DepthAttachmentBuilder(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice);
+        DepthAttachmentBuilder &withWidth(uint32_t width);
+        DepthAttachmentBuilder &withHeight(uint32_t height);
+        DepthAttachmentBuilder &withExtent(uint32_t width, uint32_t height);
+        DepthAttachmentBuilder &withFormat(const VkFormat &format);
 
-            virtual DepthAttachmentBuilder &base() override;
-            virtual DepthAttachmentType build() override;
+    private:
+        const PhysicalDeviceType &_physicalDevice;
+        const LogicalDeviceType &_logicalDevice;
 
-            DepthAttachmentBuilder &withWidth(uint32_t width);
-            DepthAttachmentBuilder &withHeight(uint32_t height);
-            DepthAttachmentBuilder &withExtent(uint32_t width, uint32_t height);
-            DepthAttachmentBuilder &withFormat(const VkFormat &format);
-
-        private:
-
-            const PhysicalDeviceType &_physicalDevice;
-            const LogicalDeviceType &_logicalDevice;
-
-            uint32_t _width;
-            uint32_t _height;
-            VkFormat _format;
+        uint32_t _width;
+        uint32_t _height;
+        VkFormat _format;
     };
-}
+} // namespace brasio::renderer::vulkan::builders

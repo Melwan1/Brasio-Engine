@@ -27,9 +27,12 @@ namespace brasio::renderer::vulkan
         uint32_t findMemoryType(uint32_t typeFilter,
                                 VkMemoryPropertyFlags properties) const;
 
-        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) const;
+        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates,
+                                     VkImageTiling tiling,
+                                     VkFormatFeatureFlags features) const;
         VkFormat findDepthFormat() const;
         bool hasStencilComponent(VkFormat format) const;
+
     private:
         VkSurfaceKHR _surface;
         std::vector<const char *> _deviceExtensions;

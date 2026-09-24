@@ -49,8 +49,7 @@ namespace brasio::renderer::vulkan::builders
                                 &framebuffer)
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create framebuffer",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create framebuffer", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created framebuffer", { "CREATE" });
         return framebuffer;

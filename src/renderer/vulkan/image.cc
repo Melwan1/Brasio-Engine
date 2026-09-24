@@ -16,8 +16,7 @@ namespace brasio::renderer::vulkan
         if (vkCreateImageView(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create image view",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create image view", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }

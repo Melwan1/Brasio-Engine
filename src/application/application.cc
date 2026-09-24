@@ -36,7 +36,8 @@ namespace brasio::application
 
     void Application::initListeners()
     {
-        BRASIO_LOG_TRACE("Creating event listeners", { "APPLICATION", "SETUP" });
+        BRASIO_LOG_TRACE("Creating event listeners",
+                         { "APPLICATION", "SETUP" });
         ApplicationEventEmitter::addListener(*this);
         KeyboardEventEmitter::addListener(*this);
         MouseEventEmitter::addListener(*this);
@@ -50,7 +51,8 @@ namespace brasio::application
 
         if (!glfwInit())
         {
-            BRASIO_LOG_CRITICAL("Unable to initialize GLFW", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_CRITICAL("Unable to initialize GLFW",
+                                { "APPLICATION", "SETUP" });
             return false;
         }
 
@@ -61,7 +63,8 @@ namespace brasio::application
 
         if (!setupWindow(config["application"]["window"], useOpengl))
         {
-            BRASIO_LOG_ERROR("Could not setup window", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_ERROR("Could not setup window",
+                             { "APPLICATION", "SETUP" });
             return false;
         }
 
@@ -69,7 +72,8 @@ namespace brasio::application
 
         if (useOpengl && glewInit() != GLEW_OK)
         {
-            BRASIO_LOG_ERROR("Unable to initialize GLEW", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_ERROR("Unable to initialize GLEW",
+                             { "APPLICATION", "SETUP" });
             glfwDestroyWindow(_window);
             glfwTerminate();
             return false;
@@ -137,17 +141,21 @@ namespace brasio::application
         GLFWmonitor *monitor = monitors[monitorIndex];
         const GLFWvidmode *mode = glfwGetVideoMode(monitor);
         _title = windowConfig["title"].as<std::string>();
-        GLFWwindow *window = glfwCreateWindow(
-            windowConfig["width"].as<int>(), windowConfig["height"].as<int>(),
-            _title.c_str(), monitor, nullptr);
+        GLFWwindow *window = glfwCreateWindow(windowConfig["width"].as<int>(),
+                                              windowConfig["height"].as<int>(),
+                                              _title.c_str(), monitor, nullptr);
         (void)mode;
         if (!window)
         {
-            BRASIO_LOG_CRITICAL("Unable to create GLFW window.", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_CRITICAL("Unable to create GLFW window.",
+                                { "APPLICATION", "SETUP" });
             return false;
         }
         _window = window;
-        BRASIO_LOG_DEBUG("Created window at monitor index " + std::to_string(monitorIndex) + " out of " + std::to_string(monitorCount)  + " monitors", { "APPLICATION", "SETUP" });
+        BRASIO_LOG_DEBUG("Created window at monitor index "
+                             + std::to_string(monitorIndex) + " out of "
+                             + std::to_string(monitorCount) + " monitors",
+                         { "APPLICATION", "SETUP" });
 
         glfwMakeContextCurrent(window);
 
@@ -234,13 +242,16 @@ namespace brasio::application
         switch (versionControlType)
         {
         case VersionControlType::LATEST_GIT_TAG:
-            BRASIO_LOG_DEBUG("Setting application version from latest git tag", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_DEBUG("Setting application version from latest git tag",
+                             { "APPLICATION", "SETUP" });
             return setVersionFromGit();
         case VersionControlType::CONFIG_FILE:
-            BRASIO_LOG_DEBUG("Setting application version from config file", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_DEBUG("Setting application version from config file",
+                             { "APPLICATION", "SETUP" });
             return setVersionFromConfig(applicationConfig["version"]);
         default:
-            BRASIO_LOG_WARNING("Did not set application version", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_WARNING("Did not set application version",
+                               { "APPLICATION", "SETUP" });
             return false;
         }
     }
@@ -255,16 +266,16 @@ namespace brasio::application
         int returnCode = std::system(commandStr.c_str());
         if (returnCode != 0)
         {
-            BRASIO_LOG_WARNING(
-                "Could not execute git command to fetch tags",
-                { "APPLICATION", "SETUP" });
+            BRASIO_LOG_WARNING("Could not execute git command to fetch tags",
+                               { "APPLICATION", "SETUP" });
             return false;
         }
         std::ifstream tagFileContent(tagFilePath.string(), std::ios::ate);
         size_t fileSize = tagFileContent.tellg();
         if (fileSize == 0)
         {
-            BRASIO_LOG_WARNING("Could not find any tag", { "APPLICATION", "SETUP" });
+            BRASIO_LOG_WARNING("Could not find any tag",
+                               { "APPLICATION", "SETUP" });
             return false;
         }
         std::string tag(fileSize, 0);
@@ -272,7 +283,9 @@ namespace brasio::application
         tagFileContent.read(tag.data(),
                             fileSize - 1); // omit newline at end of file
         _version = utils::Version(tag);
-        BRASIO_LOG_DEBUG("Setting application version to " + _version.toString(), { "APPLICATION", "SETUP" });
+        BRASIO_LOG_DEBUG("Setting application version to "
+                             + _version.toString(),
+                         { "APPLICATION", "SETUP" });
         fs::remove(tagFilePath);
         return true;
     }

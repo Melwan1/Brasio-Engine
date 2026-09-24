@@ -82,7 +82,6 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_CRITICAL("No suitable memory type has been found",
                             { "DEVICE" });
         return -1;
-
     }
 
     bool PhysicalDevice::checkDeviceExtensionSupport() const
@@ -136,18 +135,26 @@ namespace brasio::renderer::vulkan
         return details;
     }
 
-    VkFormat PhysicalDevice::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) const
+    VkFormat
+    PhysicalDevice::findSupportedFormat(const std::vector<VkFormat> &candidates,
+                                        VkImageTiling tiling,
+                                        VkFormatFeatureFlags features) const
     {
         for (const VkFormat &format : candidates)
         {
             VkFormatProperties formatProperties;
-            vkGetPhysicalDeviceFormatProperties(getHandle(), format, &formatProperties);
+            vkGetPhysicalDeviceFormatProperties(getHandle(), format,
+                                                &formatProperties);
 
-            if (tiling == VK_IMAGE_TILING_LINEAR && (formatProperties.linearTilingFeatures & features) == features)
+            if (tiling == VK_IMAGE_TILING_LINEAR
+                && (formatProperties.linearTilingFeatures & features)
+                    == features)
             {
                 return format;
             }
-            if (tiling == VK_IMAGE_TILING_OPTIMAL && (formatProperties.optimalTilingFeatures & features) == features)
+            if (tiling == VK_IMAGE_TILING_OPTIMAL
+                && (formatProperties.optimalTilingFeatures & features)
+                    == features)
             {
                 return format;
             }
@@ -158,12 +165,17 @@ namespace brasio::renderer::vulkan
 
     VkFormat PhysicalDevice::findDepthFormat() const
     {
-        return findSupportedFormat({ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT }, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+        return findSupportedFormat(
+            { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT,
+              VK_FORMAT_D24_UNORM_S8_UINT },
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 
     bool PhysicalDevice::hasStencilComponent(VkFormat format) const
     {
-        return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
+        return format == VK_FORMAT_D32_SFLOAT_S8_UINT
+            || format == VK_FORMAT_D24_UNORM_S8_UINT;
     }
 
 } // namespace brasio::renderer::vulkan

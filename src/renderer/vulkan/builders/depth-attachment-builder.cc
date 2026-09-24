@@ -3,7 +3,9 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    DepthAttachmentBuilder::DepthAttachmentBuilder(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice)
+    DepthAttachmentBuilder::DepthAttachmentBuilder(
+        const PhysicalDeviceType &physicalDevice,
+        const LogicalDeviceType &logicalDevice)
         : _physicalDevice(physicalDevice)
         , _logicalDevice(logicalDevice)
     {
@@ -29,14 +31,20 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        
+
         VkImageViewCreateInfo imageViewInfo{};
         imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         imageViewInfo.format = _format;
-        imageViewInfo.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 1 };
+        imageViewInfo.subresourceRange = { .aspectMask =
+                                               VK_IMAGE_ASPECT_DEPTH_BIT,
+                                           .baseMipLevel = 0,
+                                           .levelCount = 1,
+                                           .baseArrayLayer = 0,
+                                           .layerCount = 1 };
 
-        return std::make_unique<DepthAttachment>(_physicalDevice, _logicalDevice, imageInfo, imageViewInfo);
+        return std::make_unique<DepthAttachment>(
+            _physicalDevice, _logicalDevice, imageInfo, imageViewInfo);
     }
 
     DepthAttachmentBuilder &DepthAttachmentBuilder::withWidth(uint32_t width)
@@ -51,14 +59,16 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    DepthAttachmentBuilder &DepthAttachmentBuilder::withExtent(uint32_t width, uint32_t height)
+    DepthAttachmentBuilder &DepthAttachmentBuilder::withExtent(uint32_t width,
+                                                               uint32_t height)
     {
         return withWidth(width).withHeight(height);
     }
 
-    DepthAttachmentBuilder &DepthAttachmentBuilder::withFormat(const VkFormat &format)
+    DepthAttachmentBuilder &
+    DepthAttachmentBuilder::withFormat(const VkFormat &format)
     {
         _format = format;
         return *this;
     }
-}
+} // namespace brasio::renderer::vulkan::builders

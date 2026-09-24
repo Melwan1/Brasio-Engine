@@ -51,8 +51,8 @@ namespace brasio::shaders
                 >= fs::last_write_time(resolvedPath))
         {
             BRASIO_LOG_DEBUG("Shader " + resolvedPath.string()
-                                + " does not need to be compiled again",
-                            { "SHADERS" });
+                                 + " does not need to be compiled again",
+                             { "SHADERS" });
             return true;
         }
 
@@ -62,7 +62,8 @@ namespace brasio::shaders
         int returnCode = system(commandStream.str().c_str());
         if (!returnCode)
         {
-            BRASIO_LOG_INFO("Compiled shader " + resolvedPath.string(), { "SHADERS" });
+            BRASIO_LOG_INFO("Compiled shader " + resolvedPath.string(),
+                            { "SHADERS" });
             return true;
         }
         // compilation failed
@@ -72,9 +73,9 @@ namespace brasio::shaders
         ifs.seekg(0);
         ifs.read(fileContent.data(), fileSize);
 
-        BRASIO_LOG_ERROR(
-            "Shader " + shaderPath.string() + ": compilation failed",
-            { "SHADERS" });
+        BRASIO_LOG_ERROR("Shader " + shaderPath.string()
+                             + ": compilation failed",
+                         { "SHADERS" });
         BRASIO_LOG_ERROR("Return code " + std::to_string(returnCode),
                          { "SHADERS" });
         BRASIO_LOG_ERROR("Error: " + fileContent, { "SHADERS" });

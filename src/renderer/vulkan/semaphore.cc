@@ -14,8 +14,7 @@ namespace brasio::renderer::vulkan
         if (vkCreateSemaphore(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create semaphore",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create semaphore", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created semaphore", { "CREATE" });
     }

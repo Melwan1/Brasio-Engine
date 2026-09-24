@@ -29,7 +29,8 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Allocated descriptor sets", { "CREATE" });
     }
 
-    void DescriptorSets::update(const std::vector<BufferType> &buffers, const TextureType &texture)
+    void DescriptorSets::update(const std::vector<BufferType> &buffers,
+                                const TextureType &texture)
     {
         for (size_t i = 0; i < getHandle().size(); i++)
         {
@@ -48,7 +49,8 @@ namespace brasio::renderer::vulkan
             descriptorWrites[0].dstSet = getHandle().at(i);
             descriptorWrites[0].dstBinding = 0;
             descriptorWrites[0].dstArrayElement = 0;
-            descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrites[0].descriptorType =
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
             descriptorWrites[0].descriptorCount = 1;
             descriptorWrites[0].pBufferInfo = &bufferInfo;
             descriptorWrites[0].pImageInfo = nullptr;
@@ -57,14 +59,15 @@ namespace brasio::renderer::vulkan
             descriptorWrites[1].dstSet = getHandle().at(i);
             descriptorWrites[1].dstBinding = 1;
             descriptorWrites[1].dstArrayElement = 0;
-            descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+            descriptorWrites[1].descriptorType =
+                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pBufferInfo = nullptr;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-
-            vkUpdateDescriptorSets(_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0,
-                                   nullptr);
+            vkUpdateDescriptorSets(
+                _logicalDevice, static_cast<uint32_t>(descriptorWrites.size()),
+                descriptorWrites.data(), 0, nullptr);
         }
     }
 } // namespace brasio::renderer::vulkan

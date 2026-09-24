@@ -116,8 +116,8 @@ namespace brasio::renderer::vulkan
         if (index >= _semaphores.size())
         {
             BRASIO_LOG_WARNING("Semaphore at index " + std::to_string(index)
-                                   + " is out of bounds for vector of size "
-                                   + std::to_string(_semaphores.size()));
+                               + " is out of bounds for vector of size "
+                               + std::to_string(_semaphores.size()));
             return true;
         }
         return false;
@@ -128,8 +128,8 @@ namespace brasio::renderer::vulkan
         if (index >= _semaphores.size())
         {
             BRASIO_LOG_WARNING("Fence at index " + std::to_string(index)
-                                   + " is out of bounds for vector of size "
-                                   + std::to_string(_semaphores.size()));
+                               + " is out of bounds for vector of size "
+                               + std::to_string(_semaphores.size()));
             return true;
         }
         return false;

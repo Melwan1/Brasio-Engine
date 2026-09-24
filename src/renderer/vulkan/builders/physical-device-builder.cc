@@ -26,13 +26,12 @@ namespace brasio::renderer::vulkan::builders
             _ratePhysicalDevices();
 
         BRASIO_LOG_TRACE("Best physical device has suitability score "
-                            + std::to_string(deviceMap.rbegin()->first),
-                        { "CREATE" });
+                             + std::to_string(deviceMap.rbegin()->first),
+                         { "CREATE" });
 
         if (deviceMap.rbegin()->first > 0)
         {
-            BRASIO_LOG_TRACE("Picking best physical device",
-                             { "CREATE" });
+            BRASIO_LOG_TRACE("Picking best physical device", { "CREATE" });
         }
         else
         {
@@ -92,7 +91,8 @@ namespace brasio::renderer::vulkan::builders
                 device.querySwapChainSupport();
             swapChainAdequate = swapChainSupport.isValid();
         }
-        return indices.isComplete() && extensionsSupported && swapChainAdequate && deviceFeatures.samplerAnisotropy;
+        return indices.isComplete() && extensionsSupported && swapChainAdequate
+            && deviceFeatures.samplerAnisotropy;
     }
 
     int

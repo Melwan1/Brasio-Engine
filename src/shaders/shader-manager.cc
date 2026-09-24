@@ -75,7 +75,8 @@ namespace brasio::shaders
         if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Failed to create shader module.", { "SHADERS" });
+            BRASIO_LOG_CRITICAL("Failed to create shader module.",
+                                { "SHADERS" });
         }
         BRASIO_LOG_TRACE("Created shader module", { "SHADERS" });
         return shaderModule;

@@ -19,9 +19,12 @@ namespace brasio::renderer::vulkan::builders
         virtual VkSubpassDescription build() override;
 
         SubpassDescriptionBuilder &
-        withAdditionalAttachment(const ImageAttachment& attachment, uint32_t attachmentId);
+        withAdditionalAttachment(const ImageAttachment &attachment,
+                                 uint32_t attachmentId);
 
-        SubpassDescriptionBuilder &withAdditionalAttachment(const VkAttachmentDescription &attachmentDescription, const VkAttachmentReference &attachmentReference);
+        SubpassDescriptionBuilder &withAdditionalAttachment(
+            const VkAttachmentDescription &attachmentDescription,
+            const VkAttachmentReference &attachmentReference);
 
     private:
         VkPipelineBindPoint _bindPoint;

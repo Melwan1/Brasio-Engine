@@ -16,8 +16,7 @@ namespace brasio::renderer::vulkan
                                &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create render pass",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create render pass", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created render pass", { "CREATE" });
     }

@@ -42,7 +42,8 @@ namespace brasio::renderer::vulkan
     }
 
     Memory::Memory(const PhysicalDeviceType &physicalDevice,
-                   const VkDevice &logicalDevice, const ImageAttachment &imageAttachment,
+                   const VkDevice &logicalDevice,
+                   const ImageAttachment &imageAttachment,
                    VkMemoryPropertyFlags memoryProperties)
         : Handler("memory",
                   [logicalDevice](const VkDeviceMemory &bufferMemory) {
@@ -59,9 +60,9 @@ namespace brasio::renderer::vulkan
         allocate(physicalDevice, logicalDevice, memoryProperties,
                  memoryRequirements);
 
-        vkBindImageMemory(logicalDevice, imageAttachment.getImage(), getHandle(), 0);
+        vkBindImageMemory(logicalDevice, imageAttachment.getImage(),
+                          getHandle(), 0);
         BRASIO_LOG_TRACE("Bound texture memory", { "CREATE" });
-
     }
 
     void Memory::allocate(const PhysicalDeviceType &physicalDevice,
@@ -79,8 +80,7 @@ namespace brasio::renderer::vulkan
                              &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not allocate memory",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not allocate memory", { "CREATE" });
         }
     }
 
