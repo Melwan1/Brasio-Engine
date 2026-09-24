@@ -31,14 +31,20 @@ namespace brasio::renderer::vulkan::builders
     SubpassDescriptionBuilder::withAdditionalAttachment(
         const ImageAttachment &attachment, uint32_t attachmentId)
     {
-        return withAdditionalAttachment(attachment.getAttachmentDescription(), attachment.getAttachmentReference(attachmentId));
+        return withAdditionalAttachment(
+            attachment.getAttachmentDescription(),
+            attachment.getAttachmentReference(attachmentId));
     }
 
     SubpassDescriptionBuilder &
     SubpassDescriptionBuilder::withAdditionalAttachment(
-            const VkAttachmentDescription &attachmentDescription, const VkAttachmentReference &attachmentReference)
+        const VkAttachmentDescription &attachmentDescription,
+        const VkAttachmentReference &attachmentReference)
     {
-        if (attachmentDescription.finalLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL || attachmentDescription.finalLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+        if (attachmentDescription.finalLayout
+                == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL
+            || attachmentDescription.finalLayout
+                == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
         {
             _depthAttachmentDescription = attachmentDescription;
             _depthAttachmentReference = attachmentReference;

@@ -23,8 +23,7 @@ namespace brasio::renderer::vulkan
                            &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create buffer",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create buffer", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created buffer", { "CREATE" });
         _deviceMemory = std::make_unique<Memory>(
@@ -43,7 +42,8 @@ namespace brasio::renderer::vulkan
                         other.getHandle(), 1, &copyRegion);
     }
 
-    void Buffer::copyInto(const ImageAttachment &other, VkCommandPool commandPool)
+    void Buffer::copyInto(const ImageAttachment &other,
+                          VkCommandPool commandPool)
     {
         CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
@@ -57,10 +57,8 @@ namespace brasio::renderer::vulkan
                                     .baseArrayLayer = 0,
                                     .layerCount = 1 };
         region.imageOffset = { 0, 0, 0 };
-        region.imageExtent = {
-            static_cast<uint32_t>(other.getWidth()),
-            static_cast<uint32_t>(other.getHeight()), 1
-        };
+        region.imageExtent = { static_cast<uint32_t>(other.getWidth()),
+                               static_cast<uint32_t>(other.getHeight()), 1 };
 
         vkCmdCopyBufferToImage(
             commandBuffer.getHandle(), getHandle(), other.getImage(),

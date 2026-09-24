@@ -61,8 +61,7 @@ namespace brasio::images
                 pixels[index++] = {
                     utils::pixel_to_unsigned_char(red, max_value),
                     utils::pixel_to_unsigned_char(green, max_value),
-                    utils::pixel_to_unsigned_char(blue, max_value),
-                    255
+                    utils::pixel_to_unsigned_char(blue, max_value), 255
                 };
             }
         }

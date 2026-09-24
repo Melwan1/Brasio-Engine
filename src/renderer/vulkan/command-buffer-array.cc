@@ -1,24 +1,20 @@
 #include <renderer/vulkan/command-buffer-array.hh>
 
-#define CLEAR_COLOR                                                            \
-    {                                                                          \
-        1.0f, 1.0f, 1.0f, 1.0f                                                 \
-    }
+#define CLEAR_COLOR { 1.0f, 1.0f, 1.0f, 1.0f }
 
 namespace brasio::renderer::vulkan
 {
     CommandBufferArray::CommandBufferArray(
         const VkDevice &logicalDevice,
         const VkCommandBufferAllocateInfo &allocateInfo)
-        : Handler(
-              "command buffer array", [](const std::vector<VkCommandBuffer> &) {
-                  BRASIO_LOG_TRACE(
-                      "Nothing to be done to destroy command buffer",
-                      { "DESTROY" });
-              })
+        : Handler("command buffer array",
+                  [](const std::vector<VkCommandBuffer> &) {
+                      BRASIO_LOG_TRACE(
+                          "Nothing to be done to destroy command buffer",
+                          { "DESTROY" });
+                  })
     {
-        BRASIO_LOG_TRACE("Allocating command buffer array",
-                         { "CREATE" });
+        BRASIO_LOG_TRACE("Allocating command buffer array", { "CREATE" });
         getHandle().resize(allocateInfo.commandBufferCount);
         if (vkAllocateCommandBuffers(logicalDevice, &allocateInfo,
                                      getHandle().data())
@@ -27,8 +23,7 @@ namespace brasio::renderer::vulkan
             BRASIO_LOG_CRITICAL("Could not allocate command buffer array",
                                 { "CREATE" });
         }
-        BRASIO_LOG_TRACE("Allocated command buffer array",
-                         { "CREATE" });
+        BRASIO_LOG_TRACE("Allocated command buffer array", { "CREATE" });
     }
 
     const VkCommandBuffer &CommandBufferArray::at(uint32_t index)
@@ -59,8 +54,7 @@ namespace brasio::renderer::vulkan
 
         if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
         {
-            BRASIO_LOG_ERROR("Could not begin command buffer",
-                             { "RENDER" });
+            BRASIO_LOG_ERROR("Could not begin command buffer", { "RENDER" });
         }
         BRASIO_LOG_TRACE("Began command buffer at index "
                              + std::to_string(commandBufferIndex)
@@ -135,7 +129,7 @@ namespace brasio::renderer::vulkan
             BRASIO_LOG_TRACE("Rendering mesh 1", { "RENDER" });
             renderer.getMesh1().draw(commandBuffer, renderer);
             BRASIO_LOG_TRACE("Rendering mesh 2", { "RENDER" });
-            //renderer.getMesh2().draw(commandBuffer, renderer);
+            // renderer.getMesh2().draw(commandBuffer, renderer);
         }
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });
@@ -145,7 +139,8 @@ namespace brasio::renderer::vulkan
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Failed to end command buffer recording", { "RENDER" });
+            BRASIO_LOG_CRITICAL("Failed to end command buffer recording",
+                                { "RENDER" });
         }
     }
 } // namespace brasio::renderer::vulkan

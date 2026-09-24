@@ -46,17 +46,17 @@ namespace brasio::renderer::vulkan::builders
         createInfo.ppEnabledExtensionNames =
             _physicalDevice.getDeviceExtensions().data();
 
-       /* if (_validationLayers.empty())
-        {
-            createInfo.enabledLayerCount = 0;
-        }
-        else
-        {
-            createInfo.enabledLayerCount =
-                static_cast<uint32_t>(_validationLayers.size());
-            createInfo.ppEnabledLayerNames = _validationLayers.data();
-        }
-        */ // FIXME
+        /* if (_validationLayers.empty())
+         {
+             createInfo.enabledLayerCount = 0;
+         }
+         else
+         {
+             createInfo.enabledLayerCount =
+                 static_cast<uint32_t>(_validationLayers.size());
+             createInfo.ppEnabledLayerNames = _validationLayers.data();
+         }
+         */ // FIXME
         createInfo.enabledLayerCount = 0;
 
         return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(),

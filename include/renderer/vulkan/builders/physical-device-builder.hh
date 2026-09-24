@@ -37,6 +37,5 @@ namespace brasio::renderer::vulkan::builders
         int _getDeviceSuitability(const PhysicalDevice &device);
 
         std::multimap<int, PhysicalDeviceType> _ratePhysicalDevices();
-
     };
 } // namespace brasio::renderer::vulkan::builders

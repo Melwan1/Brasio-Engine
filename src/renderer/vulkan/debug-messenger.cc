@@ -9,8 +9,7 @@ namespace brasio::renderer::vulkan
     void destroyDebugMessenger(const VkInstance &instance,
                                const VkDebugUtilsMessengerEXT &debugMessenger)
     {
-        BRASIO_LOG_TRACE("Destroying debug messenger",
-                         { "DESTROY" });
+        BRASIO_LOG_TRACE("Destroying debug messenger", { "DESTROY" });
         auto function = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
             vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if (function != nullptr)

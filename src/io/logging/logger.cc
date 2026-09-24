@@ -10,12 +10,12 @@ namespace brasio::io::logging
 {
 
     std::map<std::string, io::logging::LogLevel> Logger::logLevelMap = {
-            { "TRACE", io::logging::LogLevel::TRACE },
-            { "DEBUG", io::logging::LogLevel::DEBUG },
-            { "INFO", io::logging::LogLevel::INFO },
-            { "WARNING", io::logging::LogLevel::WARNING },
-            { "ERROR", io::logging::LogLevel::ERROR },
-            { "CRITICAL", io::logging::LogLevel::CRITICAL }
+        { "TRACE", io::logging::LogLevel::TRACE },
+        { "DEBUG", io::logging::LogLevel::DEBUG },
+        { "INFO", io::logging::LogLevel::INFO },
+        { "WARNING", io::logging::LogLevel::WARNING },
+        { "ERROR", io::logging::LogLevel::ERROR },
+        { "CRITICAL", io::logging::LogLevel::CRITICAL }
     };
 
     LogLevel Logger::sLogLevel = LogLevel::DEBUG;
@@ -26,12 +26,14 @@ namespace brasio::io::logging
         , _globalLogLevel(logLevel)
     {}
 
-    bool Logger::_shouldLog(const LogLevel messageLevel, const std::vector<std::string> &additionalTags)
+    bool Logger::_shouldLog(const LogLevel messageLevel,
+                            const std::vector<std::string> &additionalTags)
     {
         LogLevel minimalLogLevel = _globalLogLevel;
         for (unsigned i = 0; i < additionalTags.size(); i++)
         {
-            std::string tagsAsString = tagsToString(std::vector<std::string>(additionalTags.begin(), additionalTags.begin() + i + 1));
+            std::string tagsAsString = tagsToString(std::vector<std::string>(
+                additionalTags.begin(), additionalTags.begin() + i + 1));
             if (!specificLogLevelMap.contains(tagsAsString))
             {
                 return minimalLogLevel <= messageLevel;
@@ -39,7 +41,6 @@ namespace brasio::io::logging
             minimalLogLevel = specificLogLevelMap[tagsAsString];
         }
         return minimalLogLevel <= messageLevel;
-
     }
 
     std::string Logger::tagsToString(const std::vector<std::string> &tags)
@@ -52,7 +53,8 @@ namespace brasio::io::logging
         return oss.str();
     }
 
-    void Logger::setLogLevel(LogLevel logLevel, std::vector<std::string> specificTags)
+    void Logger::setLogLevel(LogLevel logLevel,
+                             std::vector<std::string> specificTags)
     {
         if (specificTags.empty())
         {
@@ -60,7 +62,8 @@ namespace brasio::io::logging
             return;
         }
 
-        specificLogLevelMap.insert_or_assign(tagsToString(specificTags), logLevel);
+        specificLogLevelMap.insert_or_assign(tagsToString(specificTags),
+                                             logLevel);
     }
 
     void Logger::_log(const std::string &message, const LogLevel messageLevel,
@@ -90,7 +93,8 @@ namespace brasio::io::logging
                      LogLevel messageLevel,
                      std::vector<std::string> additionalTags)
     {
-        Logger(ostr, Logger::sLogLevel)._log(message, messageLevel, additionalTags);
+        Logger(ostr, Logger::sLogLevel)
+            ._log(message, messageLevel, additionalTags);
     }
 
     void Logger::trace(const std::string &message,
@@ -179,7 +183,8 @@ namespace brasio::io::logging
         fromConfigRec(config["specific_levels"], {});
     }
 
-    void Logger::fromConfigRec(const YAML::Node &config, const std::vector<std::string> &tags)
+    void Logger::fromConfigRec(const YAML::Node &config,
+                               const std::vector<std::string> &tags)
     {
         for (YAML::const_iterator it = config.begin(); it != config.end(); ++it)
         {
@@ -190,23 +195,25 @@ namespace brasio::io::logging
                 newTags.emplace_back(name);
                 fromConfigRec(it->second, newTags);
             }
-            else {
-
+            else
+            {
                 if (!name.compare("global"))
                 {
                     std::string key = tagsToString(tags);
                     std::string value = it->second.as<std::string>();
-                    specificLogLevelMap.insert_or_assign(key, logLevelMap.at(value));
+                    specificLogLevelMap.insert_or_assign(key,
+                                                         logLevelMap.at(value));
                 }
-                else {
+                else
+                {
                     std::vector<std::string> newTags(tags.begin(), tags.end());
                     newTags.emplace_back(name);
                     std::string key = tagsToString(newTags);
                     std::string value = it->second.as<std::string>();
-                    specificLogLevelMap.insert_or_assign(key, logLevelMap.at(value));
+                    specificLogLevelMap.insert_or_assign(key,
+                                                         logLevelMap.at(value));
                 }
             }
-
         }
     }
 } // namespace brasio::io::logging

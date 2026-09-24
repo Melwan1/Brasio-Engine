@@ -4,17 +4,20 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace brasio::core {
+namespace brasio::core
+{
 
     template <typename T>
-    Handler<T>::Handler(const T& handle, const std::string &objectName, const std::function<void(const T &)>& destroyFunc)
+    Handler<T>::Handler(const T &handle, const std::string &objectName,
+                        const std::function<void(const T &)> &destroyFunc)
         : _handle(handle)
         , _objectName(objectName)
         , _destroyFunc(destroyFunc)
     {}
 
-    template<typename T>
-    Handler<T>::Handler(const std::string &objectName, const std::function<void(const T &)>& destroyFunc)
+    template <typename T>
+    Handler<T>::Handler(const std::string &objectName,
+                        const std::function<void(const T &)> &destroyFunc)
         : Handler(T{}, objectName, destroyFunc)
     {}
 
@@ -25,7 +28,7 @@ namespace brasio::core {
         , _destroyFunc(std::move(other._destroyFunc))
     {
         other._handle = VK_NULL_HANDLE;
-        other._destroyFunc = [](const T&){};
+        other._destroyFunc = [](const T &) {};
     }
 
     template <typename T>
@@ -37,13 +40,13 @@ namespace brasio::core {
     }
 
     template <typename T>
-    const T& Handler<T>::getHandle() const
+    const T &Handler<T>::getHandle() const
     {
         return _handle;
     }
 
     template <typename T>
-    T& Handler<T>::getHandle()
+    T &Handler<T>::getHandle()
     {
         return _handle;
     }

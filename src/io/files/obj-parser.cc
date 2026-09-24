@@ -69,7 +69,8 @@ namespace brasio::io::files
             std::istringstream iss(substr);
             if (!(iss >> u))
             {
-                _error("texture coordinates", _textureCoordinates.size() + 1, false);
+                _error("texture coordinates", _textureCoordinates.size() + 1,
+                       false);
             }
             iss >> v >> w;
             _textureCoordinates.emplace_back(std::array{ u, v, w });
@@ -120,7 +121,8 @@ namespace brasio::io::files
             std::istringstream iss(substr);
             if (!(iss >> u))
             {
-                _error("parameter vertices", _parameterVertices.size() + 1, false);
+                _error("parameter vertices", _parameterVertices.size() + 1,
+                       false);
             }
             iss >> v >> w;
             _parameterVertices.emplace_back(std::array{ u, v, w });
@@ -150,19 +152,26 @@ namespace brasio::io::files
         std::ofstream ofs(outputPath);
         for (const VertexType &vertex : _vertices)
         {
-            ofs << "v " << vertex.at(0) << " " << vertex.at(1) << " " << vertex.at(2) << " " << vertex.at(3) << "\n";
+            ofs << "v " << vertex.at(0) << " " << vertex.at(1) << " "
+                << vertex.at(2) << " " << vertex.at(3) << "\n";
         }
-        for (const TextureCoordinatesType &textureCoordinates : _textureCoordinates)
+        for (const TextureCoordinatesType &textureCoordinates :
+             _textureCoordinates)
         {
-            ofs << "vt " << textureCoordinates.at(0) << " " << textureCoordinates.at(1) << " " << textureCoordinates.at(2) << "\n";
+            ofs << "vt " << textureCoordinates.at(0) << " "
+                << textureCoordinates.at(1) << " " << textureCoordinates.at(2)
+                << "\n";
         }
         for (const NormalType &normal : _normals)
         {
-            ofs << "vn " << normal.at(0) << " " << normal.at(1) << " " << normal.at(2) << "\n";
+            ofs << "vn " << normal.at(0) << " " << normal.at(1) << " "
+                << normal.at(2) << "\n";
         }
         for (const ParameterVertexType &parameterVertex : _parameterVertices)
         {
-            ofs << "vp " << parameterVertex.at(0) << " " << parameterVertex.at(1) << " " << parameterVertex.at(2) << "\n";
+            ofs << "vp " << parameterVertex.at(0) << " "
+                << parameterVertex.at(1) << " " << parameterVertex.at(2)
+                << "\n";
         }
         for (const FaceType &face : _faces)
         {
@@ -172,7 +181,8 @@ namespace brasio::io::files
                 ofs << " " << elementIndex.at(0);
                 if (elementIndex.at(1) && elementIndex.at(2))
                 {
-                    ofs << "/" << elementIndex.at(1) << "/" << elementIndex.at(2);
+                    ofs << "/" << elementIndex.at(1) << "/"
+                        << elementIndex.at(2);
                 }
                 else if (elementIndex.at(1))
                 {
@@ -192,7 +202,8 @@ namespace brasio::io::files
         return _vertices;
     }
 
-    const std::vector<TextureCoordinatesType> &OBJParser::getTextureCoordinates() const
+    const std::vector<TextureCoordinatesType> &
+    OBJParser::getTextureCoordinates() const
     {
         return _textureCoordinates;
     }
@@ -202,7 +213,8 @@ namespace brasio::io::files
         return _normals;
     }
 
-    const std::vector<ParameterVertexType> &OBJParser::getParameterVertices() const
+    const std::vector<ParameterVertexType> &
+    OBJParser::getParameterVertices() const
     {
         return _parameterVertices;
     }
@@ -228,7 +240,12 @@ namespace brasio::io::files
         {
             _getNextLine();
         }
-        while (_ifs.good() && (_nextLine.empty() || _nextLine.starts_with("#") || _nextLine.starts_with("o") || _nextLine.starts_with("g") || _nextLine.starts_with("mtllib") || _nextLine.starts_with("usemtl") || _nextLine.starts_with("s")))
+        while (_ifs.good()
+               && (_nextLine.empty() || _nextLine.starts_with("#")
+                   || _nextLine.starts_with("o") || _nextLine.starts_with("g")
+                   || _nextLine.starts_with("mtllib")
+                   || _nextLine.starts_with("usemtl")
+                   || _nextLine.starts_with("s")))
         {
             _getNextLine();
         }
@@ -266,7 +283,8 @@ namespace brasio::io::files
         return index;
     }
 
-    ElementIndexType OBJParser::_parseElementIndex(const std::string &elementIndexDefinition)
+    ElementIndexType
+    OBJParser::_parseElementIndex(const std::string &elementIndexDefinition)
     {
         std::istringstream elementIndexStream(elementIndexDefinition);
         uint32_t vertexIndex = _parseIndex(elementIndexStream);
@@ -291,16 +309,21 @@ namespace brasio::io::files
         uint32_t normalIndex = _parseIndex(elementIndexStream);
         if (!elementIndexStream.eof())
         {
-            BRASIO_LOG_ERROR("OBJ file (" + _objPath.string() + ") at faces section, line " + std::to_string(_faces.size() + 1) + " is ill-formatted.", { "IO", "FILES" });
+            BRASIO_LOG_ERROR(
+                "OBJ file (" + _objPath.string() + ") at faces section, line "
+                    + std::to_string(_faces.size() + 1) + " is ill-formatted.",
+                { "IO", "FILES" });
         }
         return { vertexIndex, textureIndex, normalIndex };
-
     }
 
-    void OBJParser::_error(const std::string &section, unsigned line, bool isIndex)
+    void OBJParser::_error(const std::string &section, unsigned line,
+                           bool isIndex)
     {
         std::ostringstream oss;
-        oss << "OBJ file (" << _objPath.string() << ") at " << section << " section, line " << line << " is lacking mandatory " << (isIndex ? "indices" : "coordinates");
+        oss << "OBJ file (" << _objPath.string() << ") at " << section
+            << " section, line " << line << " is lacking mandatory "
+            << (isIndex ? "indices" : "coordinates");
         BRASIO_LOG_ERROR(oss.str(), { "IO", "FILES" });
     }
-}
+} // namespace brasio::io::files

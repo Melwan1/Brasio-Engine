@@ -44,8 +44,8 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    RenderPassBuilder &
-    RenderPassBuilder::withAdditionalAttachmentDescription(const VkAttachmentDescription &attachmentDescription)
+    RenderPassBuilder &RenderPassBuilder::withAdditionalAttachmentDescription(
+        const VkAttachmentDescription &attachmentDescription)
     {
         _attachmentDescriptions.emplace_back(attachmentDescription);
         return *this;

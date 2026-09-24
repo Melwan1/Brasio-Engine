@@ -6,19 +6,20 @@
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
 
-namespace brasio::renderer::vulkan {
+namespace brasio::renderer::vulkan
+{
 
-    class Device : public core::Handler<std::pair<PhysicalDevice, LogicalDevice>> {
+    class Device
+        : public core::Handler<std::pair<PhysicalDevice, LogicalDevice>>
+    {
+    public:
+        Device(PhysicalDevice &physicalDevice, LogicalDevice &logicalDevice);
 
-        public:
+        PhysicalDevice &getPhysicalDevice();
+        const PhysicalDevice &getPhysicalDevice() const;
 
-            Device(PhysicalDevice &physicalDevice, LogicalDevice &logicalDevice);
-
-            PhysicalDevice &getPhysicalDevice();
-            const PhysicalDevice &getPhysicalDevice() const;
-
-            LogicalDevice &getLogicalDevice();
-            const LogicalDevice &getLogicalDevice() const;
+        LogicalDevice &getLogicalDevice();
+        const LogicalDevice &getLogicalDevice() const;
     };
 
-}
+} // namespace brasio::renderer::vulkan

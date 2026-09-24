@@ -23,7 +23,6 @@ namespace brasio::mesh
     class Mesh
     {
     public:
-
         using IndexType = uint32_t;
         Mesh(const std::vector<geometry::Vertex> &vertices,
              const std::vector<IndexType> &indices);

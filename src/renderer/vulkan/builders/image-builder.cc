@@ -47,7 +47,8 @@ namespace brasio::renderer::vulkan::builders
         createInfo.subresourceRange.layerCount = _layerCount;
         createInfo.subresourceRange.levelCount = _levelCount;
 
-        return std::make_unique<Image>(_logicalDevice->getHandle(), _image, createInfo);
+        return std::make_unique<Image>(_logicalDevice->getHandle(), _image,
+                                       createInfo);
     }
 
 } // namespace brasio::renderer::vulkan::builders

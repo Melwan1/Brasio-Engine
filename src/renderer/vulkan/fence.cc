@@ -14,8 +14,7 @@ namespace brasio::renderer::vulkan
         if (vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_CRITICAL("Could not create fence",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Could not create fence", { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created fence", { "CREATE" });
     }

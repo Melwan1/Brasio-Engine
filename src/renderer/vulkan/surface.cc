@@ -15,8 +15,7 @@ namespace brasio::renderer::vulkan
         if (glfwCreateWindowSurface(instance, window, nullptr, &getHandle())
             != VK_SUCCESS)
         {
-            BRASIO_LOG_ERROR("Could not create surface",
-                             { "CREATE" });
+            BRASIO_LOG_ERROR("Could not create surface", { "CREATE" });
         }
         else
         {

@@ -20,49 +20,49 @@ namespace brasio::io::files
 
     class OBJParser
     {
-        public:
-            OBJParser(const fs::path &objPath);
+    public:
+        OBJParser(const fs::path &objPath);
 
-            void load();
-            void loadVertices();
-            void loadTextureCoordinates();
-            void loadNormals();
-            void loadParameterVertices();
-            void loadFaces();
+        void load();
+        void loadVertices();
+        void loadTextureCoordinates();
+        void loadNormals();
+        void loadParameterVertices();
+        void loadFaces();
 
-            void dump(const fs::path &outputPath);
+        void dump(const fs::path &outputPath);
 
-            const std::vector<VertexType> &getVertices() const;
-            const std::vector<TextureCoordinatesType> &getTextureCoordinates() const;
-            const std::vector<NormalType> &getNormals() const;
-            const std::vector<ParameterVertexType> &getParameterVertices() const;
-            const std::vector<FaceType> &getFaces() const;
+        const std::vector<VertexType> &getVertices() const;
+        const std::vector<TextureCoordinatesType> &
+        getTextureCoordinates() const;
+        const std::vector<NormalType> &getNormals() const;
+        const std::vector<ParameterVertexType> &getParameterVertices() const;
+        const std::vector<FaceType> &getFaces() const;
 
-            uint32_t getVertexCount() const;
-            uint32_t getFaceCount() const;
+        uint32_t getVertexCount() const;
+        uint32_t getFaceCount() const;
 
+    private:
+        fs::path _objPath;
+        std::ifstream _ifs;
 
-        private:
-            fs::path _objPath;
-            std::ifstream _ifs;
+        std::string _nextLine;
 
-            std::string _nextLine;
+        std::vector<VertexType> _vertices;
+        std::vector<TextureCoordinatesType> _textureCoordinates;
+        std::vector<NormalType> _normals;
+        std::vector<ParameterVertexType> _parameterVertices;
+        std::vector<FaceType> _faces;
 
-            std::vector<VertexType> _vertices;
-            std::vector<TextureCoordinatesType> _textureCoordinates;
-            std::vector<NormalType> _normals;
-            std::vector<ParameterVertexType> _parameterVertices;
-            std::vector<FaceType> _faces;
+        void _getNextLine();
+        void _skipIgnoredLines();
+        bool _checkLineType(const std::string &start);
 
-            void _getNextLine();
-            void _skipIgnoredLines();
-            bool _checkLineType(const std::string &start);
-
-            uint32_t _parseIndex(std::istringstream &elementIndexStream);
-            ElementIndexType _parseElementIndex(const std::string &elementIndexDefinition);
-            FaceType _parseFace(const std::string &faceDefinition);
-            void _error(const std::string &section, unsigned line, bool isIndex);
-
+        uint32_t _parseIndex(std::istringstream &elementIndexStream);
+        ElementIndexType
+        _parseElementIndex(const std::string &elementIndexDefinition);
+        FaceType _parseFace(const std::string &faceDefinition);
+        void _error(const std::string &section, unsigned line, bool isIndex);
     };
 
-}
+} // namespace brasio::io::files

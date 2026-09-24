@@ -22,7 +22,8 @@ namespace brasio::renderer::vulkan
                VkMemoryPropertyFlags memoryProperties, void *data, size_t size);
 
         Memory(const PhysicalDeviceType &physicalDevice,
-               const VkDevice &logicalDevice, const ImageAttachment &imageAttachment,
+               const VkDevice &logicalDevice,
+               const ImageAttachment &imageAttachment,
                VkMemoryPropertyFlags memoryProperties);
 
         void allocate(const PhysicalDeviceType &physicalDevice,
