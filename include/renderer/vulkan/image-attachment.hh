@@ -36,7 +36,7 @@ namespace brasio::renderer::vulkan
             void barrierTransfer(const CommandBuffer &commandBuffer, VkPipelineStageFlags sourceStage, VkPipelineStageFlags destinationStage, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccess, VkAccessFlags dstAccess, uint32_t mipLevel = 0, uint32_t mipLevelCount = 1);
             void barrierTransfer(const CommandBuffer &commandBuffer, VkPipelineStageFlags stage, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccess, VkAccessFlags dstAccess, uint32_t mipLevel = 0, uint32_t mipLevelCount = 1);
             std::pair<int32_t, int32_t> blitToNextMipLevel(const CommandBuffer &commandBuffer, uint32_t mipLevel, int32_t mipWidth, int32_t mipHeight);
-            void generateMipmaps(const VkCommandPool &commandPool);
+            void generateMipmaps(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool);
 
             void initMemory(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool, size_t size, void *data, const VkMemoryPropertyFlags &memoryProperties);
             void initMemory(const PhysicalDeviceType &physicalDevice, const VkMemoryPropertyFlags &memoryProperties);

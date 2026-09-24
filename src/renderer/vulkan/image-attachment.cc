@@ -148,8 +148,16 @@ namespace brasio::renderer::vulkan
 
     }
 
-    void ImageAttachment::generateMipmaps(const VkCommandPool &commandPool)
+    void ImageAttachment::generateMipmaps(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool)
     {
+
+        VkFormatProperties formatProperties;
+        vkGetPhysicalDeviceFormatProperties(physicalDevice->getHandle(), _format, &formatProperties);
+        if (!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
+        {
+            BRASIO_LOG_CRITICAL("Texture image format does not support linear blitting.", { "IMAGE" });
+        }
+
         CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
         uint32_t mipLevels = getMipLevels();
@@ -178,7 +186,7 @@ namespace brasio::renderer::vulkan
         transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
         stagingBuffer->copyInto(*this, commandPool);
         // transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        generateMipmaps(commandPool);
+        generateMipmaps(physicalDevice, commandPool);
     }
 
     void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice, const VkMemoryPropertyFlags &memoryProperties)
