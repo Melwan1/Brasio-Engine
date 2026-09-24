@@ -6,6 +6,7 @@
 
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
+#include <renderer/vulkan/command-buffer.hh>
 #include <renderer/vulkan/memory.hh>
 
 namespace brasio::renderer::vulkan
@@ -32,6 +33,9 @@ namespace brasio::renderer::vulkan
                                    [[maybe_unused]] const VkFormat &format,
                                    const VkImageLayout &oldLayout,
                                    const VkImageLayout &newLayout);
+            void barrierTransfer(const CommandBuffer &commandBuffer, VkPipelineStageFlags sourceStage, VkPipelineStageFlags destinationStage, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccess, VkAccessFlags dstAccess, uint32_t mipLevel = 0, uint32_t mipLevelCount = 1);
+            void barrierTransfer(const CommandBuffer &commandBuffer, VkPipelineStageFlags stage, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccess, VkAccessFlags dstAccess, uint32_t mipLevel = 0, uint32_t mipLevelCount = 1);
+            std::pair<int32_t, int32_t> blitToNextMipLevel(const CommandBuffer &commandBuffer, uint32_t mipLevel, int32_t mipWidth, int32_t mipHeight);
             void generateMipmaps(const VkCommandPool &commandPool);
 
             void initMemory(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool, size_t size, void *data, const VkMemoryPropertyFlags &memoryProperties);
