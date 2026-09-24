@@ -152,6 +152,7 @@ namespace brasio::renderer::vulkan
 
         DepthAttachmentType _depthAttachment;
 
+        VkSampleCountFlagBits _msaaSamples = VK_SAMPLE_COUNT_1_BIT;
         uint32_t _currentFrame = 0;
     };
 } // namespace brasio::renderer::vulkan

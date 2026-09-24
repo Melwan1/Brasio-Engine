@@ -149,6 +149,7 @@ namespace brasio::renderer::vulkan
                                             _surface->getHandle())
                 .withDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
                 .build();
+        _msaaSamples = _physicalDevice->getMaxUsableSampleCount();
     }
 
     void VulkanRenderer::createLogicalDevice()

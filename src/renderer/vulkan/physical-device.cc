@@ -178,4 +178,33 @@ namespace brasio::renderer::vulkan
             || format == VK_FORMAT_D24_UNORM_S8_UINT;
     }
 
+    VkSampleCountFlagBits PhysicalDevice::getMaxUsableSampleCount() const
+    {
+        VkPhysicalDeviceProperties physicalDeviceProperties;
+        vkGetPhysicalDeviceProperties(getHandle(), &physicalDeviceProperties);
+
+        VkSampleCountFlags counts =
+            physicalDeviceProperties.limits.framebufferColorSampleCounts
+            & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+        std::vector<VkSampleCountFlagBits> countOptionVector = {
+            VK_SAMPLE_COUNT_64_BIT, VK_SAMPLE_COUNT_32_BIT,
+            VK_SAMPLE_COUNT_16_BIT, VK_SAMPLE_COUNT_8_BIT,
+            VK_SAMPLE_COUNT_4_BIT,  VK_SAMPLE_COUNT_2_BIT,
+            VK_SAMPLE_COUNT_1_BIT
+        };
+        for (VkSampleCountFlagBits countOption : countOptionVector)
+        {
+            if (counts & countOption)
+            {
+                BRASIO_LOG_TRACE("Setting MSAA samples to "
+                                     + std::to_string(static_cast<unsigned int>(
+                                         countOption)),
+                                 { "DEVICE", "MSAA" });
+                return countOption;
+            }
+        }
+        BRASIO_LOG_TRACE("Setting MSAA samples to 1", { "DEVICE", "MSAA" });
+        return VK_SAMPLE_COUNT_1_BIT;
+    }
+
 } // namespace brasio::renderer::vulkan

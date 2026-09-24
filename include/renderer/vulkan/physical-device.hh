@@ -33,6 +33,8 @@ namespace brasio::renderer::vulkan
         VkFormat findDepthFormat() const;
         bool hasStencilComponent(VkFormat format) const;
 
+        VkSampleCountFlagBits getMaxUsableSampleCount() const;
+
     private:
         VkSurfaceKHR _surface;
         std::vector<const char *> _deviceExtensions;
