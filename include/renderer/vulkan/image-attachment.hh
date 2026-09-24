@@ -16,7 +16,7 @@ namespace brasio::renderer::vulkan
 
         public:
 
-            ImageAttachment(const LogicalDeviceType &logicalDevice, const VkImageCreateInfo &imageCreateInfo, VkImageViewCreateInfo imageViewCreateInfo);
+            ImageAttachment(const LogicalDeviceType &logicalDevice, VkImageCreateInfo imageCreateInfo, VkImageViewCreateInfo imageViewCreateInfo);
             ImageAttachment(const LogicalDeviceType &logicalDevice, const VkImage &image, const VkImageViewCreateInfo &imageViewCreateInfo);
 
             VkImage &getImage();
@@ -39,6 +39,7 @@ namespace brasio::renderer::vulkan
             size_t getWidth() const;
             size_t getHeight() const;
             size_t getSize() const;
+            uint32_t getMipLevels() const;
 
             virtual VkAttachmentDescription getAttachmentDescription() const;
             virtual VkAttachmentReference getAttachmentReference(uint32_t attachmentId) const;

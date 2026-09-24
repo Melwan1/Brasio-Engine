@@ -6,7 +6,7 @@
 namespace brasio::renderer::vulkan
 {
 
-    ImageAttachment::ImageAttachment(const LogicalDeviceType &logicalDevice, const VkImageCreateInfo &imageCreateInfo, VkImageViewCreateInfo imageViewCreateInfo)
+    ImageAttachment::ImageAttachment(const LogicalDeviceType &logicalDevice, VkImageCreateInfo imageCreateInfo, VkImageViewCreateInfo imageViewCreateInfo)
         : PairHandler("image view", "image", 
                 [&logicalDevice](const VkImageView &imageView) { vkDestroyImageView(logicalDevice->getHandle(), imageView, nullptr); },
                 [&logicalDevice](const VkImage &image) { vkDestroyImage(logicalDevice->getHandle(), image, nullptr); })
@@ -17,6 +17,7 @@ namespace brasio::renderer::vulkan
         , _width(imageCreateInfo.extent.width)
         , _height(imageCreateInfo.extent.height)
     {
+        imageCreateInfo.mipLevels = getMipLevels();
         createImage(imageCreateInfo);
         _imageViewCreateInfo.image = getImage();
     }
@@ -100,7 +101,7 @@ namespace brasio::renderer::vulkan
         barrier.image = getImage();
         barrier.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                                      .baseMipLevel = 0,
-                                     .levelCount = 1,
+                                     .levelCount = getMipLevels(),
                                      .baseArrayLayer = 0,
                                      .layerCount = 1 };
         if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
@@ -153,6 +154,11 @@ namespace brasio::renderer::vulkan
     size_t ImageAttachment::getSize() const
     {
         return _width * _height;
+    }
+
+    uint32_t ImageAttachment::getMipLevels() const
+    {
+        return 1 + static_cast<uint32_t>(std::floor(std::log2(std::max(getWidth(), getHeight()))));
     }
 
     VkAttachmentDescription ImageAttachment::getAttachmentDescription() const 
