@@ -24,7 +24,6 @@ namespace brasio::renderer::vulkan
         , _width(imageCreateInfo.extent.width)
         , _height(imageCreateInfo.extent.height)
     {
-        imageCreateInfo.mipLevels = getMipLevels();
         createImage(imageCreateInfo);
         _imageViewCreateInfo.image = getImage();
     }

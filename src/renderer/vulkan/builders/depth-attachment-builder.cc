@@ -29,7 +29,7 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.samples = _sampleCount;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VkImageViewCreateInfo imageViewInfo{};
@@ -69,6 +69,13 @@ namespace brasio::renderer::vulkan::builders
     DepthAttachmentBuilder::withFormat(const VkFormat &format)
     {
         _format = format;
+        return *this;
+    }
+
+    DepthAttachmentBuilder &DepthAttachmentBuilder::withSamples(
+        const VkSampleCountFlagBits &sampleCount)
+    {
+        _sampleCount = sampleCount;
         return *this;
     }
 } // namespace brasio::renderer::vulkan::builders

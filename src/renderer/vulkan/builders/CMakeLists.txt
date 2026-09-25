@@ -19,6 +19,7 @@ target_sources(librenderer PRIVATE
     framebuffer-builder.cc
     graphics-pipeline-builder.cc
     image-builder.cc
+    image-attachment-builder.cc
     input-assembly-builder.cc
     instance-builder.cc
     logical-device-builder.cc

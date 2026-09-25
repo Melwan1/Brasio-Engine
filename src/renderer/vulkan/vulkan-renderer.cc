@@ -58,6 +58,7 @@ namespace brasio::renderer::vulkan
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
@@ -106,6 +107,7 @@ namespace brasio::renderer::vulkan
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
+        createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
@@ -127,7 +129,6 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Destroying Vulkan renderer", { "DESTROY" });
         cleanupSwapChain();
-        _textureSampler.reset();
         _texture.reset();
         _mesh1.reset();
         _mesh2.reset();
@@ -137,6 +138,8 @@ namespace brasio::renderer::vulkan
         _graphicsPipelines.clear();
         _pipelineLayout.reset();
         _renderPass.reset();
+        _depthAttachment.reset();
+        _colorAttachment.reset();
         _syncObjects.reset();
 
         BRASIO_LOG_TRACE("Destroyed Vulkan renderer", { "DESTROY" });
@@ -511,7 +514,20 @@ namespace brasio::renderer::vulkan
         _depthAttachment =
             builders::DepthAttachmentBuilder(_physicalDevice, _logicalDevice)
                 .withExtent(swapchainExtent.width, swapchainExtent.height)
+                .withSamples(_msaaSamples)
                 .withFormat(_physicalDevice->findDepthFormat())
+                .build();
+    }
+
+    void VulkanRenderer::createColorResources()
+    {
+        VkFormat swapchainFormat = _swapchain->getFormat();
+        VkExtent2D swapchainExtent = _swapchain->getExtent();
+        _colorAttachment =
+            builders::ImageAttachmentBuilder(_physicalDevice, _logicalDevice)
+                .withExtent(swapchainExtent.width, swapchainExtent.height)
+                .withSamples(_msaaSamples)
+                .withFormat(swapchainFormat)
                 .build();
     }
 

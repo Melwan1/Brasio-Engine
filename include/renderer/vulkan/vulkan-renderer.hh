@@ -98,6 +98,7 @@ namespace brasio::renderer::vulkan
         void createTexture();
 
         void createDepthResources();
+        void createColorResources();
 
         // getters
 
@@ -148,9 +149,9 @@ namespace brasio::renderer::vulkan
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
         TextureType _texture;
-        TextureSamplerType _textureSampler;
 
         DepthAttachmentType _depthAttachment;
+        ImageAttachmentType _colorAttachment;
 
         VkSampleCountFlagBits _msaaSamples = VK_SAMPLE_COUNT_1_BIT;
         uint32_t _currentFrame = 0;

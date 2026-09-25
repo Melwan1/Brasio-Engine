@@ -83,4 +83,6 @@ namespace brasio::renderer::vulkan
         size_t _height;
     };
 
+    using ImageAttachmentType = std::unique_ptr<ImageAttachment>;
+
 } // namespace brasio::renderer::vulkan
