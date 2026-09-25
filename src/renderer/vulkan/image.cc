@@ -14,8 +14,7 @@ namespace brasio::renderer::vulkan
         , _image(image)
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
-        BRASIO_VULKAN_CHECK(vkCreateImageView(logicalDevice, &createInfo,
-                                              nullptr, &getHandle()),
+        BRASIO_VULKAN_CHECK(vkCreateImageView(logicalDevice, &createInfo, nullptr, &getHandle()),
                             "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }

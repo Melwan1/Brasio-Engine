@@ -19,8 +19,7 @@ namespace brasio::renderer::vulkan::builders
         virtual GraphicsPipelineType build() override;
         virtual GraphicsPipelineBuilder &base() override;
 
-        GraphicsPipelineBuilder &
-        withShaders(const std::vector<fs::path> &shaderPaths);
+        GraphicsPipelineBuilder &withShaders(const std::vector<fs::path> &shaderPaths);
         GraphicsPipelineBuilder &withConfig(const YAML::Node &config);
 
     private:

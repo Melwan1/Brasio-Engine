@@ -8,11 +8,10 @@ namespace brasio::core
 {
 
     template <typename T1, typename T2>
-    PairHandler<T1, T2>::PairHandler(
-        const T1 &handle1, const T2 &handle2, const std::string &objectName1,
-        const std::string &objectName2,
-        const std::function<void(const T1 &)> &destroyFunc1,
-        const std::function<void(const T2 &)> &destroyFunc2)
+    PairHandler<T1, T2>::PairHandler(const T1 &handle1, const T2 &handle2,
+                                     const std::string &objectName1, const std::string &objectName2,
+                                     const std::function<void(const T1 &)> &destroyFunc1,
+                                     const std::function<void(const T2 &)> &destroyFunc2)
         : _handle1(handle1)
         , _handle2(handle2)
         , _objectName1(objectName1)
@@ -22,12 +21,10 @@ namespace brasio::core
     {}
 
     template <typename T1, typename T2>
-    PairHandler<T1, T2>::PairHandler(
-        const std::string &objectName1, const std::string &objectName2,
-        const std::function<void(const T1 &)> &destroyFunc1,
-        const std::function<void(const T2 &)> &destroyFunc2)
-        : PairHandler(T1{}, T2{}, objectName1, objectName2, destroyFunc1,
-                      destroyFunc2)
+    PairHandler<T1, T2>::PairHandler(const std::string &objectName1, const std::string &objectName2,
+                                     const std::function<void(const T1 &)> &destroyFunc1,
+                                     const std::function<void(const T2 &)> &destroyFunc2)
+        : PairHandler(T1{}, T2{}, objectName1, objectName2, destroyFunc1, destroyFunc2)
     {}
 
     template <typename T1, typename T2>

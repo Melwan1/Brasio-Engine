@@ -18,12 +18,10 @@ namespace brasio::renderer::vulkan::builders
         virtual RenderPassBuilder &base() override;
         virtual RenderPassType build() override;
 
+        RenderPassBuilder &withAdditionalSubpass(const VkSubpassDescription &subpass);
+        RenderPassBuilder &withAdditionalSubpassDependency(const VkSubpassDependency &dependency);
         RenderPassBuilder &
-        withAdditionalSubpass(const VkSubpassDescription &subpass);
-        RenderPassBuilder &
-        withAdditionalSubpassDependency(const VkSubpassDependency &dependency);
-        RenderPassBuilder &withAdditionalAttachmentDescription(
-            const VkAttachmentDescription &attachmentDescription);
+        withAdditionalAttachmentDescription(const VkAttachmentDescription &attachmentDescription);
 
     private:
         VkDevice _logicalDevice;

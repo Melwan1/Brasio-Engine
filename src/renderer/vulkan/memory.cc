@@ -8,9 +8,8 @@
 
 namespace brasio::renderer::vulkan
 {
-    Memory::Memory(const PhysicalDeviceType &physicalDevice,
-                   const VkDevice &logicalDevice, const Buffer &buffer,
-                   VkMemoryPropertyFlags memoryProperties, void *data,
+    Memory::Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
+                   const Buffer &buffer, VkMemoryPropertyFlags memoryProperties, void *data,
                    size_t size)
         : Handler("memory",
                   [logicalDevice](const VkDeviceMemory &bufferMemory) {
@@ -21,11 +20,9 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating memory memory", { "CREATE" });
         VkMemoryRequirements memoryRequirements;
-        vkGetBufferMemoryRequirements(logicalDevice, buffer.getHandle(),
-                                      &memoryRequirements);
+        vkGetBufferMemoryRequirements(logicalDevice, buffer.getHandle(), &memoryRequirements);
 
-        allocate(physicalDevice, logicalDevice, memoryProperties,
-                 memoryRequirements);
+        allocate(physicalDevice, logicalDevice, memoryProperties, memoryRequirements);
 
         vkBindBufferMemory(logicalDevice, buffer.getHandle(), getHandle(), 0);
         BRASIO_LOG_TRACE("Bound buffer memory", { "CREATE" });
@@ -41,10 +38,8 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Transferred buffer memory to device", { "CREATE" });
     }
 
-    Memory::Memory(const PhysicalDeviceType &physicalDevice,
-                   const VkDevice &logicalDevice,
-                   const ImageAttachment &imageAttachment,
-                   VkMemoryPropertyFlags memoryProperties)
+    Memory::Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
+                   const ImageAttachment &imageAttachment, VkMemoryPropertyFlags memoryProperties)
         : Handler("memory",
                   [logicalDevice](const VkDeviceMemory &bufferMemory) {
                       vkFreeMemory(logicalDevice, bufferMemory, nullptr);
@@ -57,28 +52,25 @@ namespace brasio::renderer::vulkan
         vkGetImageMemoryRequirements(logicalDevice, imageAttachment.getImage(),
                                      &memoryRequirements);
 
-        allocate(physicalDevice, logicalDevice, memoryProperties,
-                 memoryRequirements);
+        allocate(physicalDevice, logicalDevice, memoryProperties, memoryRequirements);
 
-        vkBindImageMemory(logicalDevice, imageAttachment.getImage(),
-                          getHandle(), 0);
+        vkBindImageMemory(logicalDevice, imageAttachment.getImage(), getHandle(), 0);
         BRASIO_LOG_TRACE("Bound texture memory", { "CREATE" });
     }
 
-    void Memory::allocate(const PhysicalDeviceType &physicalDevice,
-                          const VkDevice &logicalDevice,
+    void Memory::allocate(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
                           const VkMemoryPropertyFlags &memoryProperties,
                           const VkMemoryRequirements &memoryRequirements)
     {
         VkMemoryAllocateInfo memoryAllocateInfo{};
         memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         memoryAllocateInfo.allocationSize = memoryRequirements.size;
-        memoryAllocateInfo.memoryTypeIndex = physicalDevice->findMemoryType(
-            memoryRequirements.memoryTypeBits, memoryProperties);
+        memoryAllocateInfo.memoryTypeIndex =
+            physicalDevice->findMemoryType(memoryRequirements.memoryTypeBits, memoryProperties);
 
-        BRASIO_VULKAN_CHECK(vkAllocateMemory(logicalDevice, &memoryAllocateInfo,
-                                             nullptr, &getHandle()),
-                            "allocate memory", { "CREATE" });
+        BRASIO_VULKAN_CHECK(
+            vkAllocateMemory(logicalDevice, &memoryAllocateInfo, nullptr, &getHandle()),
+            "allocate memory", { "CREATE" });
     }
 
     void Memory::map()

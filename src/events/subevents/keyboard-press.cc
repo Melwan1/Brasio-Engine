@@ -14,8 +14,7 @@ namespace brasio::events::subevents
         return _pressedKey;
     }
 
-    KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode,
-                                                  int mods)
+    KeyboardPressEvent KeyboardPressEvent::create(int key, int scancode, int mods)
     {
         std::string pressedKey = KeyGenerator::generate(key, scancode, mods);
         KeyboardPressEvent event(pressedKey);

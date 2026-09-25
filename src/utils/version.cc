@@ -17,18 +17,16 @@ namespace brasio::utils
         {
             fail();
         }
-        std::istringstream majorStream(versionStr.substr(
-            (versionStr[0] == 'v') ? 1 : 0, firstDotPosition));
-        std::istringstream minorStream(versionStr.substr(
-            firstDotPosition + 1, secondDotPosition - firstDotPosition - 1));
-        std::istringstream patchStream(
-            versionStr.substr(secondDotPosition + 1));
+        std::istringstream majorStream(
+            versionStr.substr((versionStr[0] == 'v') ? 1 : 0, firstDotPosition));
+        std::istringstream minorStream(
+            versionStr.substr(firstDotPosition + 1, secondDotPosition - firstDotPosition - 1));
+        std::istringstream patchStream(versionStr.substr(secondDotPosition + 1));
 
         int major = -1;
         int minor = -1;
         int patch = -1;
-        if (!((majorStream >> major) && (minorStream >> minor)
-              && (patchStream >> patch)))
+        if (!((majorStream >> major) && (minorStream >> minor) && (patchStream >> patch)))
         {
             fail();
         }
@@ -57,9 +55,8 @@ namespace brasio::utils
         _major = 0;
         _minor = 0;
         _patch = 0;
-        BRASIO_LOG_WARNING(
-            "Could not set version from string, setting version to 0.0.0",
-            { "VERSION" });
+        BRASIO_LOG_WARNING("Could not set version from string, setting version to 0.0.0",
+                           { "VERSION" });
     }
 
     int Version::getMajor() const

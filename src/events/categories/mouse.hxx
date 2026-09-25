@@ -5,9 +5,7 @@
 namespace brasio::events::categories
 {
     template <typename SubEventType>
-    MouseCategoryEvent<SubEventType>::MouseCategoryEvent(
-        enum EventType eventType)
-        : Event<MouseCategoryEvent<SubEventType>, SubEventType>(
-              EVENT_CATEGORY_MOUSE, eventType)
+    MouseCategoryEvent<SubEventType>::MouseCategoryEvent(enum EventType eventType)
+        : Event<MouseCategoryEvent<SubEventType>, SubEventType>(EVENT_CATEGORY_MOUSE, eventType)
     {}
 } // namespace brasio::events::categories

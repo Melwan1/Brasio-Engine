@@ -18,8 +18,7 @@ namespace brasio::renderer::vulkan
 
 namespace brasio::renderer::vulkan
 {
-    class CommandBufferArray
-        : public core::Handler<std::vector<VkCommandBuffer>>
+    class CommandBufferArray : public core::Handler<std::vector<VkCommandBuffer>>
     {
     public:
         CommandBufferArray(const VkDevice &logicalDevice,
@@ -29,14 +28,12 @@ namespace brasio::renderer::vulkan
 
         void reset(uint32_t commandBufferIndex);
 
-        void begin(uint32_t commandBufferIndex, uint32_t imageIndex,
-                   const VkRenderPass &renderPass, const Swapchain &swapchain);
+        void begin(uint32_t commandBufferIndex, uint32_t imageIndex, const VkRenderPass &renderPass,
+                   const Swapchain &swapchain);
 
-        void setViewport(uint32_t commandBufferIndex,
-                         const Swapchain &swapchain);
+        void setViewport(uint32_t commandBufferIndex, const Swapchain &swapchain);
 
-        void setScissor(uint32_t commandBufferIndex,
-                        const Swapchain &swapchain);
+        void setScissor(uint32_t commandBufferIndex, const Swapchain &swapchain);
 
         void record(const VulkanRenderer &renderer, uint32_t commandBufferIndex,
                     uint32_t imageIndex);

@@ -5,8 +5,7 @@
 namespace brasio::events::subevents
 {
 
-    class MouseReleaseEvent
-        : public categories::MouseCategoryEvent<MouseReleaseEvent>
+    class MouseReleaseEvent : public categories::MouseCategoryEvent<MouseReleaseEvent>
     {
     public:
         enum MouseReleaseType

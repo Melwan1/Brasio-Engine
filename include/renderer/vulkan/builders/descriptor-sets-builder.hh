@@ -20,8 +20,7 @@ namespace brasio::renderer::vulkan::builders
         virtual DescriptorSetsType build() override;
 
         DescriptorSetsBuilder &withSetsCount(uint32_t setsCount);
-        DescriptorSetsBuilder &
-        withSetLayout(const VkDescriptorSetLayout &descriptorSetLayout);
+        DescriptorSetsBuilder &withSetLayout(const VkDescriptorSetLayout &descriptorSetLayout);
 
     private:
         const VkDevice &_logicalDevice;

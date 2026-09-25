@@ -13,8 +13,7 @@ namespace brasio::math
     public:
         using container_type = ElementType[lines][columns];
         Matrix(const container_type &elements);
-        Matrix(
-            std::initializer_list<std::initializer_list<ElementType>> elements);
+        Matrix(std::initializer_list<std::initializer_list<ElementType>> elements);
         Matrix();
 
         /**
@@ -40,8 +39,7 @@ namespace brasio::math
         Matrix<ElementType, lines, columns> operator*(ElementType scalar) const;
         Matrix<ElementType, lines, columns> operator*=(ElementType scalar);
 
-        Vector<ElementType, lines>
-        operator*(const Vector<ElementType, columns> &rhs) const;
+        Vector<ElementType, lines> operator*(const Vector<ElementType, columns> &rhs) const;
 
         static ElementType &get_element_base();
         static Matrix<ElementType, lines, columns> identity()
@@ -60,8 +58,7 @@ namespace brasio::math
     using Matrix4 = SquaredMatrix<float, 4>;
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    std::ostream &operator<<(std::ostream &ostr,
-                             const Matrix<ElementType, lines, columns> &matrix);
+    std::ostream &operator<<(std::ostream &ostr, const Matrix<ElementType, lines, columns> &matrix);
 } // namespace brasio::math
 
 #include <math/matrix.hxx>

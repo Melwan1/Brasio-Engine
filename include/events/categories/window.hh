@@ -5,8 +5,7 @@
 namespace brasio::events::categories
 {
     template <typename SubEventType>
-    class WindowCategoryEvent
-        : public Event<WindowCategoryEvent<SubEventType>, SubEventType>
+    class WindowCategoryEvent : public Event<WindowCategoryEvent<SubEventType>, SubEventType>
     {
     public:
         WindowCategoryEvent(enum EventType eventType);

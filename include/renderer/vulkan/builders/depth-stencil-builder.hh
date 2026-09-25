@@ -5,8 +5,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class DepthStencilBuilder
-        : public core::Builder<VkPipelineDepthStencilStateCreateInfo>
+    class DepthStencilBuilder : public core::Builder<VkPipelineDepthStencilStateCreateInfo>
     {
     public:
         DepthStencilBuilder();

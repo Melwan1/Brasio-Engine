@@ -14,27 +14,21 @@ namespace brasio::math
     {
         float c = std::cos(rad_angle);
         float s = std::sin(rad_angle);
-        return {
-            { 1, 0, 0, 0 }, { 0, c, s, 0 }, { 0, -s, c, 0 }, { 0, 0, 0, 1 }
-        };
+        return { { 1, 0, 0, 0 }, { 0, c, s, 0 }, { 0, -s, c, 0 }, { 0, 0, 0, 1 } };
     }
 
     Matrix4 matrix_rotate_around_y_by(double rad_angle)
     {
         float c = std::cos(rad_angle);
         float s = std::sin(rad_angle);
-        return {
-            { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 }
-        };
+        return { { c, 0, s, 0 }, { 0, 1, 0, 0 }, { -s, 0, c, 0 }, { 0, 0, 0, 1 } };
     }
 
     Matrix4 matrix_rotate_around_z_by(double rad_angle)
     {
         float c = std::cos(rad_angle);
         float s = std::sin(rad_angle);
-        return {
-            { c, s, 0, 0 }, { -s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 }
-        };
+        return { { c, s, 0, 0 }, { -s, c, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
     }
 
     Matrix4 matrix_look_at(const Vector3 &forward, const Vector3 &up)
@@ -49,8 +43,7 @@ namespace brasio::math
         return R;
     }
 
-    Matrix4 matrix_look_at(const Vector3 &eye, const Vector3 &focus_point,
-                           const Vector3 &up)
+    Matrix4 matrix_look_at(const Vector3 &eye, const Vector3 &focus_point, const Vector3 &up)
     {
         (void)up;
         (void)focus_point;
@@ -67,11 +60,9 @@ namespace brasio::math
         return T * R;
     }
 
-    Matrix4 matrix_look_at(const GLfloat &eyeX, const GLfloat &eyeY,
-                           const GLfloat &eyeZ, const GLfloat &centerX,
-                           const GLfloat &centerY, const GLfloat &centerZ,
-                           const GLfloat &upX, const GLfloat &upY,
-                           const GLfloat &upZ)
+    Matrix4 matrix_look_at(const GLfloat &eyeX, const GLfloat &eyeY, const GLfloat &eyeZ,
+                           const GLfloat &centerX, const GLfloat &centerY, const GLfloat &centerZ,
+                           const GLfloat &upX, const GLfloat &upY, const GLfloat &upZ)
     {
         const Vector3 &eye = { eyeX, eyeY, eyeZ };
         const Vector3 &center = { centerX, centerY, centerZ };
@@ -79,9 +70,8 @@ namespace brasio::math
         return matrix_look_at(eye, center, up);
     }
 
-    Matrix4 matrix_frustum(const GLfloat &left, const GLfloat &right,
-                           const GLfloat &bottom, const GLfloat &top,
-                           const GLfloat &near, const GLfloat &far)
+    Matrix4 matrix_frustum(const GLfloat &left, const GLfloat &right, const GLfloat &bottom,
+                           const GLfloat &top, const GLfloat &near, const GLfloat &far)
     {
         GLfloat A = (right + left) / (right - left);
         GLfloat B = (top + bottom) / (top - bottom);
@@ -91,15 +81,12 @@ namespace brasio::math
         GLfloat I1 = (2 * near) / (right - left);
         GLfloat I2 = (2 * near) / (top - bottom);
 
-        return {
-            { I1, 0, A, 0 }, { 0, I2, B, 0 }, { 0, 0, C, D }, { 0, 0, -1, 0 }
-        };
+        return { { I1, 0, A, 0 }, { 0, I2, B, 0 }, { 0, 0, C, D }, { 0, 0, -1, 0 } };
     }
 
-    Matrix4
-    matrix_orthographic_projection(const GLfloat &left, const GLfloat &right,
-                                   const GLfloat &bottom, const GLfloat &top,
-                                   const GLfloat &near, const GLfloat &far)
+    Matrix4 matrix_orthographic_projection(const GLfloat &left, const GLfloat &right,
+                                           const GLfloat &bottom, const GLfloat &top,
+                                           const GLfloat &near, const GLfloat &far)
     {
         GLfloat tx = -(right + left) / (right - left);
         GLfloat ty = -(top + bottom) / (top - bottom);
@@ -109,9 +96,7 @@ namespace brasio::math
         GLfloat I2 = 2 / (top - bottom);
         GLfloat I3 = -2 / (far - near);
 
-        return {
-            { I1, 0, 0, tx }, { 0, I2, 0, ty }, { 0, 0, I3, tz }, { 0, 0, 0, 1 }
-        };
+        return { { I1, 0, 0, tx }, { 0, I2, 0, ty }, { 0, 0, I3, tz }, { 0, 0, 0, 1 } };
     }
 
     double angle_degrees_to_radians(const double degree_angle)

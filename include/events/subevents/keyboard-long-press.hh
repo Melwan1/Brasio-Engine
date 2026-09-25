@@ -4,12 +4,10 @@
 
 namespace brasio::events::subevents
 {
-    class KeyboardLongPressEvent
-        : public categories::KeyboardCategoryEvent<KeyboardLongPressEvent>
+    class KeyboardLongPressEvent : public categories::KeyboardCategoryEvent<KeyboardLongPressEvent>
     {
     public:
-        KeyboardLongPressEvent(const std::string &pressedKey,
-                               unsigned numPresses);
+        KeyboardLongPressEvent(const std::string &pressedKey, unsigned numPresses);
 
         const std::string &getPressedKey() const;
         unsigned getNumPresses() const;

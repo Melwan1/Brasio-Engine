@@ -12,14 +12,12 @@ namespace brasio::core
     class PairHandler
     {
     public:
-        PairHandler(const T1 &handle1, const T2 &handle2,
-                    const std::string &objectName1,
+        PairHandler(const T1 &handle1, const T2 &handle2, const std::string &objectName1,
                     const std::string &objectName2,
                     const std::function<void(const T1 &)> &destroyFunc1,
                     const std::function<void(const T2 &)> &destroyFunc2);
 
-        PairHandler(const std::string &objectName1,
-                    const std::string &objectName2,
+        PairHandler(const std::string &objectName1, const std::string &objectName2,
                     const std::function<void(const T1 &)> &destroyFunc1,
                     const std::function<void(const T2 &)> &destroyFunc2);
 

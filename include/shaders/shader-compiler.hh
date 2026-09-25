@@ -9,12 +9,10 @@ namespace brasio::shaders
     class ShaderCompiler
     {
     public:
-        ShaderCompiler(const fs::path &baseShaderDirectoryPath,
-                       const fs::path &logPath);
+        ShaderCompiler(const fs::path &baseShaderDirectoryPath, const fs::path &logPath);
 
         bool compileShader(const fs::path &shaderPath) const;
-        std::pair<const fs::path, const fs::path>
-        getEntryPaths(const fs::path &entry) const;
+        std::pair<const fs::path, const fs::path> getEntryPaths(const fs::path &entry) const;
 
     private:
         fs::path _baseShaderDirectoryPath;

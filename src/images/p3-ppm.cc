@@ -21,8 +21,7 @@ namespace brasio::images
         std::string format;
         if (!(std::getline(ifs, format)))
         {
-            BRASIO_LOG_WARNING("Unknown PPM format, assuming P3.",
-                               { "IMAGES", "PPM", "LOAD" });
+            BRASIO_LOG_WARNING("Unknown PPM format, assuming P3.", { "IMAGES", "PPM", "LOAD" });
             format = "P3";
         }
         unsigned width, height, max_value;
@@ -52,24 +51,20 @@ namespace brasio::images
                 if (!(ifs >> red >> green >> blue))
                 {
                     std::ostringstream oss;
-                    oss << "Could not read pixel at coordinates (" << line
-                        << ", " << col
+                    oss << "Could not read pixel at coordinates (" << line << ", " << col
                         << "), the image result might be corrupted";
                     BRASIO_LOG_ERROR(oss.str(), { "IMAGES", "PPM", "LOAD" });
                 }
 
-                pixels[index++] = {
-                    utils::pixel_to_unsigned_char(red, max_value),
-                    utils::pixel_to_unsigned_char(green, max_value),
-                    utils::pixel_to_unsigned_char(blue, max_value), 255
-                };
+                pixels[index++] = { utils::pixel_to_unsigned_char(red, max_value),
+                                    utils::pixel_to_unsigned_char(green, max_value),
+                                    utils::pixel_to_unsigned_char(blue, max_value), 255 };
             }
         }
         unsigned thrown_unsigned;
         if (ifs >> thrown_unsigned)
         {
-            BRASIO_LOG_ERROR("Image file is longer than "
-                                 + std::to_string(num_pixels) + " pixels",
+            BRASIO_LOG_ERROR("Image file is longer than " + std::to_string(num_pixels) + " pixels",
                              { "IMAGES", "PPM", "LOAD" });
         }
         return { width, height, pixels };
@@ -86,9 +81,8 @@ namespace brasio::images
         unsigned cur_width = 0;
         for (const PixelType &pixel : _pixels)
         {
-            ostr << static_cast<unsigned>(pixel.at(0)) << " "
-                 << static_cast<unsigned>(pixel.at(1)) << " "
-                 << static_cast<unsigned>(pixel.at(2));
+            ostr << static_cast<unsigned>(pixel.at(0)) << " " << static_cast<unsigned>(pixel.at(1))
+                 << " " << static_cast<unsigned>(pixel.at(2));
             if (cur_width++ == _width - 1)
             {
                 ostr << "\n";

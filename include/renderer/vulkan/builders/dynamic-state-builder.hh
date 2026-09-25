@@ -10,8 +10,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class DynamicStateBuilder
-        : public core::Builder<VkPipelineDynamicStateCreateInfo>
+    class DynamicStateBuilder : public core::Builder<VkPipelineDynamicStateCreateInfo>
     {
     public:
         DynamicStateBuilder();
@@ -19,8 +18,7 @@ namespace brasio::renderer::vulkan::builders
         virtual VkPipelineDynamicStateCreateInfo build() override;
         virtual DynamicStateBuilder &base() override;
 
-        DynamicStateBuilder &
-        withDynamicStates(const std::vector<VkDynamicState> &dynamicStates);
+        DynamicStateBuilder &withDynamicStates(const std::vector<VkDynamicState> &dynamicStates);
 
         DynamicStateBuilder &withConfig(const YAML::Node &config);
 

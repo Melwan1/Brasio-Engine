@@ -113,8 +113,7 @@ namespace brasio::renderer::vulkan
         const DescriptorSets &getDescriptorSets() const;
         uint32_t getCurrentFrame() const;
 
-        static VulkanRendererType fromConfig(const YAML::Node &config,
-                                             GLFWwindow *window);
+        static VulkanRendererType fromConfig(const YAML::Node &config, GLFWwindow *window);
 
     private:
         GLFWwindow *_window;

@@ -10,12 +10,11 @@ namespace brasio::renderer::vulkan::builders
     static VKAPI_ATTR VkBool32 VKAPI_CALL
     debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                   VkDebugUtilsMessageTypeFlagsEXT messageType,
-                  const VkDebugUtilsMessengerCallbackDataEXT *callbackData,
-                  void *userData)
+                  const VkDebugUtilsMessengerCallbackDataEXT *callbackData, void *userData)
     {
         (void)userData;
-        io::debug::VulkanRendererDebugPrinter::printDebugMessage(
-            std::cout, messageSeverity, messageType, callbackData);
+        io::debug::VulkanRendererDebugPrinter::printDebugMessage(std::cout, messageSeverity,
+                                                                 messageType, callbackData);
         return VK_FALSE;
     }
 
@@ -27,8 +26,7 @@ namespace brasio::renderer::vulkan::builders
 
     DebugMessengerBuilder &DebugMessengerBuilder::base()
     {
-        _structureType =
-            VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        _structureType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
         _messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
             | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
             | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
@@ -39,8 +37,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    DebugMessengerBuilder &
-    DebugMessengerBuilder::withInstance(VkInstance &instance)
+    DebugMessengerBuilder &DebugMessengerBuilder::withInstance(VkInstance &instance)
     {
         _instance = instance;
         return *this;
@@ -52,8 +49,7 @@ namespace brasio::renderer::vulkan::builders
         return std::make_unique<DebugMessenger>(_instance, createInfo);
     }
 
-    VkDebugUtilsMessengerCreateInfoEXT
-    DebugMessengerBuilder::getCreateInfo() const
+    VkDebugUtilsMessengerCreateInfoEXT DebugMessengerBuilder::getCreateInfo() const
     {
         VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
         createInfo.sType = _structureType;

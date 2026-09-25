@@ -4,24 +4,21 @@
 
 namespace brasio::events::listeners
 {
-    void
-    ApplicationEventListener::onEvent(subevents::ApplicationRenderEvent &event)
+    void ApplicationEventListener::onEvent(subevents::ApplicationRenderEvent &event)
     {
         event.print(std::cout);
         std::cout << "\n";
         event.handle();
     }
 
-    void
-    ApplicationEventListener::onEvent(subevents::ApplicationTickEvent &event)
+    void ApplicationEventListener::onEvent(subevents::ApplicationTickEvent &event)
     {
         event.print(std::cout);
         std::cout << "\n";
         event.handle();
     }
 
-    void
-    ApplicationEventListener::onEvent(subevents::ApplicationUpdateEvent &event)
+    void ApplicationEventListener::onEvent(subevents::ApplicationUpdateEvent &event)
     {
         event.print(std::cout);
         std::cout << "\n";

@@ -64,8 +64,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size>::Vector(
-        std::initializer_list<ElementType> elements)
+    Vector<ElementType, size>::Vector(std::initializer_list<ElementType> elements)
     {
         if (elements.size() != size)
         {
@@ -93,8 +92,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    const ElementType &
-    Vector<ElementType, size>::operator[](unsigned index) const
+    const ElementType &Vector<ElementType, size>::operator[](unsigned index) const
     {
         if (index >= size)
         {
@@ -106,8 +104,8 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size> Vector<ElementType, size>::operator-(
-        const Vector<ElementType, size> &rhs) const
+    Vector<ElementType, size>
+    Vector<ElementType, size>::operator-(const Vector<ElementType, size> &rhs) const
     {
         Vector result;
         for (unsigned index = 0; index < size; index++)
@@ -118,8 +116,8 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size> Vector<ElementType, size>::operator+(
-        const Vector<ElementType, size> &rhs) const
+    Vector<ElementType, size>
+    Vector<ElementType, size>::operator+(const Vector<ElementType, size> &rhs) const
     {
         Vector result;
         for (unsigned index = 0; index < size; index++)
@@ -141,8 +139,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    ElementType Vector<ElementType, size>::operator*(
-        const Vector<ElementType, size> &rhs) const
+    ElementType Vector<ElementType, size>::operator*(const Vector<ElementType, size> &rhs) const
     {
         ElementType result = ElementType();
         for (unsigned index = 0; index < size; index++)
@@ -153,8 +150,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size>
-    Vector<ElementType, size>::operator*(const ElementType &scalar) const
+    Vector<ElementType, size> Vector<ElementType, size>::operator*(const ElementType &scalar) const
     {
         Vector result;
         for (unsigned index = 0; index < size; index++)
@@ -165,8 +161,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size>
-    Vector<ElementType, size>::operator*=(const ElementType &scalar)
+    Vector<ElementType, size> Vector<ElementType, size>::operator*=(const ElementType &scalar)
     {
         for (unsigned index = 0; index < size; index++)
         {
@@ -176,8 +171,8 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    Vector<ElementType, size> Vector<ElementType, size>::cross_product(
-        const Vector<ElementType, size> &rhs) const
+    Vector<ElementType, size>
+    Vector<ElementType, size>::cross_product(const Vector<ElementType, size> &rhs) const
         requires(size == 3)
     {
         return { (*this)[1] * rhs[2] - (*this)[2] * rhs[1],
@@ -221,8 +216,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    bool Vector<ElementType, size>::operator==(
-        const Vector<ElementType, size> &vector) const
+    bool Vector<ElementType, size>::operator==(const Vector<ElementType, size> &vector) const
     {
         for (unsigned index = 0; index < size; index++)
         {
@@ -235,8 +229,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned size>
-    std::ostream &operator<<(std::ostream &ostr,
-                             const Vector<ElementType, size> &vector)
+    std::ostream &operator<<(std::ostream &ostr, const Vector<ElementType, size> &vector)
     {
         ostr << "( ";
         for (unsigned index = 0; index < size; index++)

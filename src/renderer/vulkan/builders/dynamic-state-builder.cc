@@ -11,19 +11,17 @@ namespace brasio::renderer::vulkan::builders
     DynamicStateBuilder &DynamicStateBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-        return withDynamicStates(
-            { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR });
+        return withDynamicStates({ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR });
     }
 
-    DynamicStateBuilder &DynamicStateBuilder::withDynamicStates(
-        const std::vector<VkDynamicState> &dynamicStates)
+    DynamicStateBuilder &
+    DynamicStateBuilder::withDynamicStates(const std::vector<VkDynamicState> &dynamicStates)
     {
         _dynamicStates = dynamicStates;
         return *this;
     }
 
-    DynamicStateBuilder &
-    DynamicStateBuilder::withConfig(const YAML::Node &config)
+    DynamicStateBuilder &DynamicStateBuilder::withConfig(const YAML::Node &config)
     {
         std::map<std::string, VkDynamicState> map = {
             { "VIEWPORT", VK_DYNAMIC_STATE_VIEWPORT },
@@ -33,8 +31,7 @@ namespace brasio::renderer::vulkan::builders
         std::vector<VkDynamicState> dynamicStates{};
         for (const YAML::Node &dynamicStateStr : config)
         {
-            dynamicStates.emplace_back(
-                map.at(dynamicStateStr.as<std::string>()));
+            dynamicStates.emplace_back(map.at(dynamicStateStr.as<std::string>()));
         }
         return withDynamicStates(dynamicStates);
     }
@@ -44,8 +41,7 @@ namespace brasio::renderer::vulkan::builders
         VkPipelineDynamicStateCreateInfo createInfo{};
 
         createInfo.sType = _structureType;
-        createInfo.dynamicStateCount =
-            static_cast<uint32_t>(_dynamicStates.size());
+        createInfo.dynamicStateCount = static_cast<uint32_t>(_dynamicStates.size());
         createInfo.pDynamicStates = _dynamicStates.data();
         return createInfo;
     }

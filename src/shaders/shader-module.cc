@@ -8,8 +8,7 @@ namespace brasio::shaders
                                const VkShaderStageFlagBits &shaderType)
         : core::Handler<VkShaderModule>(module, "shader module",
                                         [device](const VkShaderModule &module) {
-                                            vkDestroyShaderModule(
-                                                device, module, nullptr);
+                                            vkDestroyShaderModule(device, module, nullptr);
                                         })
         , _shaderType(shaderType)
     {}

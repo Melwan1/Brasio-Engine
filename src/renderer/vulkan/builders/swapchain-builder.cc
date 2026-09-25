@@ -9,8 +9,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    SwapchainBuilder::SwapchainBuilder(GLFWwindow *window,
-                                       const PhysicalDeviceType &physicalDevice,
+    SwapchainBuilder::SwapchainBuilder(GLFWwindow *window, const PhysicalDeviceType &physicalDevice,
                                        const LogicalDeviceType &logicalDevice,
                                        const VkSurfaceKHR &surface)
         : _window(window)
@@ -23,8 +22,7 @@ namespace brasio::renderer::vulkan::builders
 
     SwapchainBuilder &SwapchainBuilder::base()
     {
-        SwapChainSupportDetails swapchainSupportDetails =
-            _physicalDevice->querySwapChainSupport();
+        SwapChainSupportDetails swapchainSupportDetails = _physicalDevice->querySwapChainSupport();
 
         _availableSurfaceFormats = swapchainSupportDetails.formats;
         BRASIO_LOG_DEBUG("Available surface formats: "
@@ -37,29 +35,25 @@ namespace brasio::renderer::vulkan::builders
                          { "CREATE" });
 
         _availableCapabilities = swapchainSupportDetails.capabilities;
-        BRASIO_LOG_DEBUG(
-            "Available capabilities: "
-                + std::to_string(_availableCapabilities.currentExtent.width)
-                + " x "
-                + std::to_string(_availableCapabilities.currentExtent.height),
-            { "CREATE" });
+        BRASIO_LOG_DEBUG("Available capabilities: "
+                             + std::to_string(_availableCapabilities.currentExtent.width) + " x "
+                             + std::to_string(_availableCapabilities.currentExtent.height),
+                         { "CREATE" });
 
         _surfaceFormat = _availableSurfaceFormats[0];
         _presentMode = VK_PRESENT_MODE_FIFO_KHR;
         _extent = _getExtent(_availableCapabilities);
 
         _imageCount = swapchainSupportDetails.capabilities.minImageCount + 1;
-        BRASIO_LOG_DEBUG("Setting swapchain image count to "
-                             + std::to_string(_imageCount),
+        BRASIO_LOG_DEBUG("Setting swapchain image count to " + std::to_string(_imageCount),
                          { "CREATE" });
         if (swapchainSupportDetails.capabilities.maxImageCount > 0
             && _imageCount > swapchainSupportDetails.capabilities.maxImageCount)
         {
             _imageCount = swapchainSupportDetails.capabilities.maxImageCount;
-            BRASIO_LOG_WARNING(
-                "Swapchain image count was too large, reducing to "
-                    + std::to_string(_imageCount),
-                { "CREATE " });
+            BRASIO_LOG_WARNING("Swapchain image count was too large, reducing to "
+                                   + std::to_string(_imageCount),
+                               { "CREATE " });
         }
         return *this;
     }
@@ -79,17 +73,14 @@ namespace brasio::renderer::vulkan::builders
         QueueFamilyIndices indices = _physicalDevice->findQueueFamilies();
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(),
                                           indices.presentFamily.value() };
-        bool areIndicesSame =
-            indices.graphicsFamily.value() == indices.presentFamily.value();
+        bool areIndicesSame = indices.graphicsFamily.value() == indices.presentFamily.value();
 
-        createInfo.imageSharingMode = areIndicesSame
-            ? VK_SHARING_MODE_EXCLUSIVE
-            : VK_SHARING_MODE_CONCURRENT;
+        createInfo.imageSharingMode =
+            areIndicesSame ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = areIndicesSame ? 0 : 2;
-        createInfo.pQueueFamilyIndices =
-            areIndicesSame ? nullptr : queueFamilyIndices;
-        createInfo.preTransform = _physicalDevice->querySwapChainSupport()
-                                      .capabilities.currentTransform;
+        createInfo.pQueueFamilyIndices = areIndicesSame ? nullptr : queueFamilyIndices;
+        createInfo.preTransform =
+            _physicalDevice->querySwapChainSupport().capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
         createInfo.presentMode = _presentMode;
         createInfo.clipped = VK_TRUE;
@@ -98,16 +89,13 @@ namespace brasio::renderer::vulkan::builders
         return std::make_unique<Swapchain>(_logicalDevice, createInfo);
     }
 
-    SwapchainBuilder &
-    SwapchainBuilder::withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat)
+    SwapchainBuilder &SwapchainBuilder::withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat)
     {
         BRASIO_LOG_TRACE("Searching for surface format", { "CREATE" });
-        if (std::find_if(_availableSurfaceFormats.begin(),
-                         _availableSurfaceFormats.end(),
+        if (std::find_if(_availableSurfaceFormats.begin(), _availableSurfaceFormats.end(),
                          [&surfaceFormat](auto &other) {
                              return other.format == surfaceFormat.format
-                                 && other.colorSpace
-                                 == surfaceFormat.colorSpace;
+                                 && other.colorSpace == surfaceFormat.colorSpace;
                          })
             != _availableSurfaceFormats.end())
         {
@@ -116,20 +104,17 @@ namespace brasio::renderer::vulkan::builders
         }
         else
         {
-            BRASIO_LOG_WARNING(
-                "Surface format not found, defaulting to the previous "
-                "selected format",
-                { "CREATE" });
+            BRASIO_LOG_WARNING("Surface format not found, defaulting to the previous "
+                               "selected format",
+                               { "CREATE" });
         }
         return *this;
     }
 
-    SwapchainBuilder &
-    SwapchainBuilder::withPresentMode(const VkPresentModeKHR &presentMode)
+    SwapchainBuilder &SwapchainBuilder::withPresentMode(const VkPresentModeKHR &presentMode)
     {
         BRASIO_LOG_TRACE("Searching for present mode", { "CREATE" });
-        if (std::find(_availablePresentModes.begin(),
-                      _availablePresentModes.end(), presentMode)
+        if (std::find(_availablePresentModes.begin(), _availablePresentModes.end(), presentMode)
             != _availablePresentModes.end())
         {
             BRASIO_LOG_TRACE("Present mode found", { "CREATE" });
@@ -144,15 +129,12 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    VkExtent2D
-    SwapchainBuilder::_getExtent(const VkSurfaceCapabilitiesKHR &capabilities)
+    VkExtent2D SwapchainBuilder::_getExtent(const VkSurfaceCapabilitiesKHR &capabilities)
     {
         BRASIO_LOG_TRACE("Searching for extent", { "CREATE" });
-        if (capabilities.currentExtent.width
-            != std::numeric_limits<uint32_t>::max())
+        if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {
-            BRASIO_LOG_TRACE("Extent found in swapchain support details",
-                             { "CREATE" });
+            BRASIO_LOG_TRACE("Extent found in swapchain support details", { "CREATE" });
             return capabilities.currentExtent;
         }
         BRASIO_LOG_TRACE("Extent not found in swapchain support details, "

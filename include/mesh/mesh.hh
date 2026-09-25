@@ -24,10 +24,9 @@ namespace brasio::mesh
     {
     public:
         using IndexType = uint32_t;
-        Mesh(const std::vector<geometry::Vertex> &vertices,
-             const std::vector<IndexType> &indices);
-        Mesh(const std::pair<std::vector<geometry::Vertex>,
-                             std::vector<IndexType>> &vertices_indices);
+        Mesh(const std::vector<geometry::Vertex> &vertices, const std::vector<IndexType> &indices);
+        Mesh(const std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>
+                 &vertices_indices);
 
         const std::vector<geometry::Vertex> &getVertices() const;
         std::vector<geometry::Vertex> &getVertices();
@@ -43,37 +42,30 @@ namespace brasio::mesh
 
         void draw(const VkCommandBuffer &commandBuffer,
                   const renderer::vulkan::VulkanRenderer &renderer) const;
-        void
-        drawWireframe(const VkCommandBuffer &commandBuffer,
-                      const renderer::vulkan::VulkanRenderer &renderer) const;
+        void drawWireframe(const VkCommandBuffer &commandBuffer,
+                           const renderer::vulkan::VulkanRenderer &renderer) const;
 
-        void applyTransform(TransformMode transformMode,
-                            const glm::mat4 &transform);
+        void applyTransform(TransformMode transformMode, const glm::mat4 &transform);
 
-        void applyRotate(TransformMode transformMode,
-                         const glm::vec3 &eulerAngles);
+        void applyRotate(TransformMode transformMode, const glm::vec3 &eulerAngles);
 
-        void applyTranslation(TransformMode transformMode,
-                              const glm::vec3 &translation);
+        void applyTranslation(TransformMode transformMode, const glm::vec3 &translation);
 
         void applyScale(TransformMode transformMode, const glm::vec3 &scale);
 
         void setUniformColor(const glm::vec3 &color);
 
-        void createVertexBuffer(
-            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-            const renderer::vulkan::LogicalDeviceType &logicalDevice,
-            const renderer::vulkan::CommandPoolType &commandPool);
+        void createVertexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+                                const renderer::vulkan::LogicalDeviceType &logicalDevice,
+                                const renderer::vulkan::CommandPoolType &commandPool);
 
-        void createIndexBuffer(
-            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-            const renderer::vulkan::LogicalDeviceType &logicalDevice,
-            const renderer::vulkan::CommandPoolType &commandPool);
+        void createIndexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+                               const renderer::vulkan::LogicalDeviceType &logicalDevice,
+                               const renderer::vulkan::CommandPoolType &commandPool);
 
-        void createBuffers(
-            const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-            const renderer::vulkan::LogicalDeviceType &logicalDevice,
-            const renderer::vulkan::CommandPoolType &commandPool);
+        void createBuffers(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
+                           const renderer::vulkan::LogicalDeviceType &logicalDevice,
+                           const renderer::vulkan::CommandPoolType &commandPool);
 
         void print(std::ostream &ostr) const;
 

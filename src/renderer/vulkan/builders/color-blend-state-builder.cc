@@ -10,39 +10,33 @@ namespace brasio::renderer::vulkan::builders
 
     ColorBlendStateBuilder &ColorBlendStateBuilder::base()
     {
-        _structureType =
-            VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+        _structureType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         _colorBlendAttachments.clear();
         return withLogicOpEnable(VK_FALSE).withLogicOp(VK_LOGIC_OP_COPY);
     }
 
-    ColorBlendStateBuilder &
-    ColorBlendStateBuilder::withLogicOpEnable(const VkBool32 &logicOpEnable)
+    ColorBlendStateBuilder &ColorBlendStateBuilder::withLogicOpEnable(const VkBool32 &logicOpEnable)
     {
         _logicOpEnable = logicOpEnable;
         return *this;
     }
 
-    ColorBlendStateBuilder &
-    ColorBlendStateBuilder::withLogicOp(const VkLogicOp &logicOp)
+    ColorBlendStateBuilder &ColorBlendStateBuilder::withLogicOp(const VkLogicOp &logicOp)
     {
         _logicOp = logicOp;
         return *this;
     }
 
     ColorBlendStateBuilder &ColorBlendStateBuilder::withColorBlendAttachments(
-        const std::vector<VkPipelineColorBlendAttachmentState>
-            &colorBlendAttachments)
+        const std::vector<VkPipelineColorBlendAttachmentState> &colorBlendAttachments)
     {
         _colorBlendAttachments = colorBlendAttachments;
         return *this;
     }
 
-    ColorBlendStateBuilder &
-    ColorBlendStateBuilder::withConfig(const YAML::Node &config)
+    ColorBlendStateBuilder &ColorBlendStateBuilder::withConfig(const YAML::Node &config)
     {
-        std::map<std::string, VkLogicOp> logicOpMap = { { "COPY",
-                                                          VK_LOGIC_OP_COPY } };
+        std::map<std::string, VkLogicOp> logicOpMap = { { "COPY", VK_LOGIC_OP_COPY } };
 
         return withLogicOpEnable(config["logic_op_enabled"].as<bool>())
             .withLogicOp(logicOpMap.at(config["logic_op"].as<std::string>()));

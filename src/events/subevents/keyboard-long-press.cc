@@ -4,10 +4,9 @@
 
 namespace brasio::events::subevents
 {
-    KeyboardLongPressEvent::KeyboardLongPressEvent(
-        const std::string &pressedKey, unsigned numPresses)
-        : KeyboardCategoryEvent<KeyboardLongPressEvent>(
-              EVENT_KEYBOARD_LONG_PRESS)
+    KeyboardLongPressEvent::KeyboardLongPressEvent(const std::string &pressedKey,
+                                                   unsigned numPresses)
+        : KeyboardCategoryEvent<KeyboardLongPressEvent>(EVENT_KEYBOARD_LONG_PRESS)
         , _pressedKey(pressedKey)
         , _numPresses(numPresses)
     {}
@@ -22,8 +21,7 @@ namespace brasio::events::subevents
         return _numPresses;
     }
 
-    KeyboardLongPressEvent KeyboardLongPressEvent::create(int key, int scancode,
-                                                          int mods)
+    KeyboardLongPressEvent KeyboardLongPressEvent::create(int key, int scancode, int mods)
     {
         std::string pressedKey = KeyGenerator::generate(key, scancode, mods);
         KeyboardLongPressEvent event(pressedKey, 1);

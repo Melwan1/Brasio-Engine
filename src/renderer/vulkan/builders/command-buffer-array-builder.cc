@@ -2,8 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    CommandBufferArrayBuilder::CommandBufferArrayBuilder(
-        const VkDevice &logicalDevice, const VkCommandPool &commandPool)
+    CommandBufferArrayBuilder::CommandBufferArrayBuilder(const VkDevice &logicalDevice,
+                                                         const VkCommandPool &commandPool)
         : _logicalDevice(logicalDevice)
         , _commandPool(commandPool)
     {
@@ -24,8 +24,7 @@ namespace brasio::renderer::vulkan::builders
     }
 
     CommandBufferArrayBuilder &
-    CommandBufferArrayBuilder::withCommandBufferCount(
-        uint32_t commandBufferCount)
+    CommandBufferArrayBuilder::withCommandBufferCount(uint32_t commandBufferCount)
     {
         _commandBufferCount = commandBufferCount;
         return *this;
@@ -38,7 +37,6 @@ namespace brasio::renderer::vulkan::builders
         allocateInfo.commandBufferCount = _commandBufferCount;
         allocateInfo.commandPool = _commandPool;
 
-        return std::make_unique<CommandBufferArray>(_logicalDevice,
-                                                    allocateInfo);
+        return std::make_unique<CommandBufferArray>(_logicalDevice, allocateInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

@@ -15,7 +15,6 @@ namespace brasio::events::emitters
         void addListener(listeners::KeyboardEventListener &listener);
 
     private:
-        std::vector<std::reference_wrapper<listeners::KeyboardEventListener>>
-            _listeners;
+        std::vector<std::reference_wrapper<listeners::KeyboardEventListener>> _listeners;
     };
 } // namespace brasio::events::emitters

@@ -9,8 +9,7 @@
 namespace brasio::renderer::vulkan
 {
 
-    class Device
-        : public core::Handler<std::pair<PhysicalDevice, LogicalDevice>>
+    class Device : public core::Handler<std::pair<PhysicalDevice, LogicalDevice>>
     {
     public:
         Device(PhysicalDevice &physicalDevice, LogicalDevice &logicalDevice);

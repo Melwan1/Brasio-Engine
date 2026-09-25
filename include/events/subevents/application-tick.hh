@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class ApplicationTickEvent
-        : public categories::ApplicationCategoryEvent<ApplicationTickEvent>
+    class ApplicationTickEvent : public categories::ApplicationCategoryEvent<ApplicationTickEvent>
     {
     public:
         ApplicationTickEvent();

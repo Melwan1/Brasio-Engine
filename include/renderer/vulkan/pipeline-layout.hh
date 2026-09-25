@@ -10,8 +10,7 @@ namespace brasio::renderer::vulkan
     class PipelineLayout : public core::Handler<VkPipelineLayout>
     {
     public:
-        PipelineLayout(const VkDevice &logicalDevice,
-                       const VkPipelineLayoutCreateInfo &createInfo);
+        PipelineLayout(const VkDevice &logicalDevice, const VkPipelineLayoutCreateInfo &createInfo);
     };
 
     using PipelineLayoutType = std::unique_ptr<PipelineLayout>;

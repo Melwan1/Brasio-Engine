@@ -16,10 +16,9 @@ namespace brasio::renderer::vulkan::builders
         virtual PipelineLayoutBuilder &base() override;
         virtual PipelineLayoutType build() override;
 
+        PipelineLayoutBuilder &withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts);
         PipelineLayoutBuilder &
-        withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts);
-        PipelineLayoutBuilder &withPushConstantRanges(
-            const std::vector<VkPushConstantRange> &pushConstantRanges);
+        withPushConstantRanges(const std::vector<VkPushConstantRange> &pushConstantRanges);
 
     private:
         VkStructureType _structureType;

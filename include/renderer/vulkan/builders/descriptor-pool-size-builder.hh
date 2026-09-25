@@ -15,11 +15,9 @@ namespace brasio::renderer::vulkan::builders
         virtual DescriptorPoolSizeBuilder &base() override;
         virtual VkDescriptorPoolSize build() override;
 
-        DescriptorPoolSizeBuilder &
-        withDescriptorCount(uint32_t descriptorCount);
+        DescriptorPoolSizeBuilder &withDescriptorCount(uint32_t descriptorCount);
 
-        DescriptorPoolSizeBuilder &
-        withDescriptorType(VkDescriptorType descriptorType);
+        DescriptorPoolSizeBuilder &withDescriptorType(VkDescriptorType descriptorType);
 
     private:
         uint32_t _descriptorCount;

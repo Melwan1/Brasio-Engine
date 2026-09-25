@@ -54,18 +54,12 @@ namespace brasio::application
 
         void loop();
 
-        virtual void
-        onEvent(events::subevents::ApplicationRenderEvent &event) override;
-        virtual void
-        onEvent(events::subevents::ApplicationTickEvent &event) override;
-        virtual void
-        onEvent(events::subevents::ApplicationUpdateEvent &event) override;
-        virtual void
-        onEvent(events::subevents::KeyboardPressEvent &event) override;
-        virtual void
-        onEvent(events::subevents::WindowCloseEvent &event) override;
-        virtual void
-        onEvent(events::subevents::WindowResizeEvent &event) override;
+        virtual void onEvent(events::subevents::ApplicationRenderEvent &event) override;
+        virtual void onEvent(events::subevents::ApplicationTickEvent &event) override;
+        virtual void onEvent(events::subevents::ApplicationUpdateEvent &event) override;
+        virtual void onEvent(events::subevents::KeyboardPressEvent &event) override;
+        virtual void onEvent(events::subevents::WindowCloseEvent &event) override;
+        virtual void onEvent(events::subevents::WindowResizeEvent &event) override;
 
         static ApplicationType fromConfig(const YAML::Node &node);
         bool setVersion(enum VersionControlType versionControlType,

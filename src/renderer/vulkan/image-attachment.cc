@@ -12,8 +12,7 @@ namespace brasio::renderer::vulkan
         : PairHandler(
               "image view", "image",
               [&logicalDevice](const VkImageView &imageView) {
-                  vkDestroyImageView(logicalDevice->getHandle(), imageView,
-                                     nullptr);
+                  vkDestroyImageView(logicalDevice->getHandle(), imageView, nullptr);
               },
               [&logicalDevice](const VkImage &image) {
                   vkDestroyImage(logicalDevice->getHandle(), image, nullptr);
@@ -30,18 +29,15 @@ namespace brasio::renderer::vulkan
         _imageViewCreateInfo.image = getImage();
     }
 
-    ImageAttachment::ImageAttachment(
-        const LogicalDeviceType &logicalDevice, const VkImage &image,
-        const VkImageViewCreateInfo &imageViewCreateInfo)
+    ImageAttachment::ImageAttachment(const LogicalDeviceType &logicalDevice, const VkImage &image,
+                                     const VkImageViewCreateInfo &imageViewCreateInfo)
         : PairHandler(
               VK_NULL_HANDLE, image, "image view", "image",
               [&logicalDevice](const VkImageView &imageView) {
-                  vkDestroyImageView(logicalDevice->getHandle(), imageView,
-                                     nullptr);
+                  vkDestroyImageView(logicalDevice->getHandle(), imageView, nullptr);
               },
               [](const VkImage &) {
-                  BRASIO_LOG_TRACE("Nothing to be done to destroy image",
-                                   { "DESTROY" });
+                  BRASIO_LOG_TRACE("Nothing to be done to destroy image", { "DESTROY" });
               })
         , _logicalDevice(logicalDevice)
         , _deviceMemory(nullptr)
@@ -77,10 +73,9 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating image", { "CREATE" });
 
-        BRASIO_VULKAN_CHECK(vkCreateImage(_logicalDevice->getHandle(),
-                                          &imageCreateInfo, nullptr,
-                                          &getImage()),
-                            "create image", { "CREATE" });
+        BRASIO_VULKAN_CHECK(
+            vkCreateImage(_logicalDevice->getHandle(), &imageCreateInfo, nullptr, &getImage()),
+            "create image", { "CREATE" });
         BRASIO_LOG_TRACE("Created image", { "CREATE" });
     }
 
@@ -89,22 +84,20 @@ namespace brasio::renderer::vulkan
         createImageView(_imageViewCreateInfo);
     }
 
-    void
-    ImageAttachment::createImageView(VkImageViewCreateInfo imageViewCreateInfo)
+    void ImageAttachment::createImageView(VkImageViewCreateInfo imageViewCreateInfo)
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
 
-        BRASIO_VULKAN_CHECK(vkCreateImageView(_logicalDevice->getHandle(),
-                                              &imageViewCreateInfo, nullptr,
-                                              &getImageView()),
+        BRASIO_VULKAN_CHECK(vkCreateImageView(_logicalDevice->getHandle(), &imageViewCreateInfo,
+                                              nullptr, &getImageView()),
                             "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 
-    void ImageAttachment::transitionImageLayout(
-        const VkCommandPool &commandPool,
-        [[maybe_unused]] const VkFormat &format, const VkImageLayout &oldLayout,
-        const VkImageLayout &newLayout)
+    void ImageAttachment::transitionImageLayout(const VkCommandPool &commandPool,
+                                                [[maybe_unused]] const VkFormat &format,
+                                                const VkImageLayout &oldLayout,
+                                                const VkImageLayout &newLayout)
     {
         CommandBuffer commandBuffer(_logicalDevice, commandPool);
 
@@ -112,31 +105,30 @@ namespace brasio::renderer::vulkan
             && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         {
             barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                            VK_PIPELINE_STAGE_TRANSFER_BIT, oldLayout,
-                            newLayout, 0, VK_ACCESS_TRANSFER_WRITE_BIT, 0,
-                            getMipLevels());
+                            VK_PIPELINE_STAGE_TRANSFER_BIT, oldLayout, newLayout, 0,
+                            VK_ACCESS_TRANSFER_WRITE_BIT, 0, getMipLevels());
         }
         else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
                  && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
         {
             barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, oldLayout,
-                            newLayout, VK_ACCESS_TRANSFER_WRITE_BIT,
-                            VK_ACCESS_SHADER_READ_BIT, 0, getMipLevels());
+                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, oldLayout, newLayout,
+                            VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, 0,
+                            getMipLevels());
         }
         else
         {
-            BRASIO_LOG_ERROR("Unsupported layout transition",
-                             { "CREATE", "TEXTURE" });
+            BRASIO_LOG_ERROR("Unsupported layout transition", { "CREATE", "TEXTURE" });
         }
     }
 
-    void ImageAttachment::barrierTransfer(
-        const CommandBuffer &commandBuffer, VkPipelineStageFlags sourceStage,
-        VkPipelineStageFlags destinationStage, VkImageLayout oldLayout,
-        VkImageLayout newLayout, VkAccessFlags sourceAccess,
-        VkAccessFlags destinationAccess, uint32_t mipLevel,
-        uint32_t mipLevelCount)
+    void ImageAttachment::barrierTransfer(const CommandBuffer &commandBuffer,
+                                          VkPipelineStageFlags sourceStage,
+                                          VkPipelineStageFlags destinationStage,
+                                          VkImageLayout oldLayout, VkImageLayout newLayout,
+                                          VkAccessFlags sourceAccess,
+                                          VkAccessFlags destinationAccess, uint32_t mipLevel,
+                                          uint32_t mipLevelCount)
     {
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -153,25 +145,23 @@ namespace brasio::renderer::vulkan
         barrier.srcAccessMask = sourceAccess;
         barrier.dstAccessMask = destinationAccess;
 
-        vkCmdPipelineBarrier(commandBuffer.getHandle(), sourceStage,
-                             destinationStage, 0, 0, nullptr, 0, nullptr, 1,
-                             &barrier);
+        vkCmdPipelineBarrier(commandBuffer.getHandle(), sourceStage, destinationStage, 0, 0,
+                             nullptr, 0, nullptr, 1, &barrier);
     }
 
-    void ImageAttachment::barrierTransfer(
-        const CommandBuffer &commandBuffer, VkPipelineStageFlags stage,
-        VkImageLayout oldLayout, VkImageLayout newLayout,
-        VkAccessFlags srcAccess, VkAccessFlags dstAccess, uint32_t mipLevel,
-        uint32_t mipLevelCount)
+    void ImageAttachment::barrierTransfer(const CommandBuffer &commandBuffer,
+                                          VkPipelineStageFlags stage, VkImageLayout oldLayout,
+                                          VkImageLayout newLayout, VkAccessFlags srcAccess,
+                                          VkAccessFlags dstAccess, uint32_t mipLevel,
+                                          uint32_t mipLevelCount)
     {
-        barrierTransfer(commandBuffer, stage, stage, oldLayout, newLayout,
-                        srcAccess, dstAccess, mipLevel, mipLevelCount);
+        barrierTransfer(commandBuffer, stage, stage, oldLayout, newLayout, srcAccess, dstAccess,
+                        mipLevel, mipLevelCount);
     }
 
     std::pair<int32_t, int32_t>
-    ImageAttachment::blitToNextMipLevel(const CommandBuffer &commandBuffer,
-                                        uint32_t mipLevel, int32_t mipWidth,
-                                        int32_t mipHeight)
+    ImageAttachment::blitToNextMipLevel(const CommandBuffer &commandBuffer, uint32_t mipLevel,
+                                        int32_t mipWidth, int32_t mipHeight)
     {
         int32_t newWidth = mipWidth > 1 ? mipWidth / 2 : 1;
         int32_t newHeight = mipHeight > 1 ? mipHeight / 2 : 1;
@@ -190,27 +180,24 @@ namespace brasio::renderer::vulkan
                                 .baseArrayLayer = 0,
                                 .layerCount = 1 };
 
-        vkCmdBlitImage(commandBuffer.getHandle(), getImage(),
-                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, getImage(),
-                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit,
+        vkCmdBlitImage(commandBuffer.getHandle(), getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit,
                        VK_FILTER_LINEAR);
 
         return { newWidth, newHeight };
     }
 
-    void
-    ImageAttachment::generateMipmaps(const PhysicalDeviceType &physicalDevice,
-                                     const VkCommandPool &commandPool)
+    void ImageAttachment::generateMipmaps(const PhysicalDeviceType &physicalDevice,
+                                          const VkCommandPool &commandPool)
     {
         VkFormatProperties formatProperties;
-        vkGetPhysicalDeviceFormatProperties(physicalDevice->getHandle(),
-                                            _format, &formatProperties);
+        vkGetPhysicalDeviceFormatProperties(physicalDevice->getHandle(), _format,
+                                            &formatProperties);
         if (!(formatProperties.optimalTilingFeatures
               & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
         {
-            BRASIO_LOG_CRITICAL(
-                "Texture image format does not support linear blitting.",
-                { "IMAGE" });
+            BRASIO_LOG_CRITICAL("Texture image format does not support linear blitting.",
+                                { "IMAGE" });
         }
 
         CommandBuffer commandBuffer(_logicalDevice, commandPool);
@@ -223,8 +210,7 @@ namespace brasio::renderer::vulkan
         {
             barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
                             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                            VK_ACCESS_TRANSFER_WRITE_BIT,
+                            VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT,
                             VK_ACCESS_TRANSFER_READ_BIT, i);
 
             std::tie(mipWidth, mipHeight) =
@@ -233,33 +219,27 @@ namespace brasio::renderer::vulkan
             barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
                             VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
                             VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                            VK_ACCESS_TRANSFER_READ_BIT,
+                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT,
                             VK_ACCESS_SHADER_READ_BIT, i);
         }
 
         barrierTransfer(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT,
-                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                        VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
-                        mipLevels - 1);
+                        VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT,
+                        VK_ACCESS_SHADER_READ_BIT, mipLevels - 1);
     }
 
-    void
-    ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
-                                const VkCommandPool &commandPool, size_t size,
-                                void *data,
-                                const VkMemoryPropertyFlags &memoryProperties)
+    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
+                                     const VkCommandPool &commandPool, size_t size, void *data,
+                                     const VkMemoryPropertyFlags &memoryProperties)
     {
         initMemory(physicalDevice, memoryProperties);
         builders::BufferBuilder stagingBuilder(physicalDevice, _logicalDevice);
-        BufferType stagingBuffer =
-            stagingBuilder.withSize(size)
-                .withData(data)
-                .withUsage(VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
-                .withMemoryProperties(memoryProperties)
-                .build();
+        BufferType stagingBuffer = stagingBuilder.withSize(size)
+                                       .withData(data)
+                                       .withUsage(VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
+                                       .withMemoryProperties(memoryProperties)
+                                       .build();
 
         transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_UNDEFINED,
                               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -267,13 +247,11 @@ namespace brasio::renderer::vulkan
         generateMipmaps(physicalDevice, commandPool);
     }
 
-    void
-    ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
-                                const VkMemoryPropertyFlags &memoryProperties)
+    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
+                                     const VkMemoryPropertyFlags &memoryProperties)
     {
-        _deviceMemory = std::make_unique<Memory>(physicalDevice,
-                                                 _logicalDevice->getHandle(),
-                                                 *this, memoryProperties);
+        _deviceMemory = std::make_unique<Memory>(physicalDevice, _logicalDevice->getHandle(), *this,
+                                                 memoryProperties);
     }
 
     size_t ImageAttachment::getWidth() const
@@ -293,9 +271,7 @@ namespace brasio::renderer::vulkan
 
     uint32_t ImageAttachment::getMipLevels() const
     {
-        return 1
-            + static_cast<uint32_t>(
-                   std::floor(std::log2(std::max(getWidth(), getHeight()))));
+        return 1 + static_cast<uint32_t>(std::floor(std::log2(std::max(getWidth(), getHeight()))));
     }
 
     VkAttachmentDescription ImageAttachment::getAttachmentDescription() const
@@ -308,19 +284,16 @@ namespace brasio::renderer::vulkan
         attachmentDescription.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         attachmentDescription.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         attachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        attachmentDescription.finalLayout =
-            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        attachmentDescription.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
         return attachmentDescription;
     }
 
-    VkAttachmentReference
-    ImageAttachment::getAttachmentReference(uint32_t attachmentId) const
+    VkAttachmentReference ImageAttachment::getAttachmentReference(uint32_t attachmentId) const
     {
         return sGetAttachmentReference(attachmentId);
     }
 
-    VkAttachmentDescription
-    ImageAttachment::sGetAttachmentDescription(const VkFormat &format)
+    VkAttachmentDescription ImageAttachment::sGetAttachmentDescription(const VkFormat &format)
     {
         VkAttachmentDescription attachmentDescription{};
         attachmentDescription.format = format;
@@ -335,8 +308,7 @@ namespace brasio::renderer::vulkan
         return attachmentDescription;
     }
 
-    VkAttachmentReference
-    ImageAttachment::sGetAttachmentReference(uint32_t attachmentId)
+    VkAttachmentReference ImageAttachment::sGetAttachmentReference(uint32_t attachmentId)
     {
         VkAttachmentReference attachmentReference{};
         attachmentReference.attachment = attachmentId;

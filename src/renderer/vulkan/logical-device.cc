@@ -8,23 +8,20 @@ namespace brasio::renderer::vulkan
     LogicalDevice::LogicalDevice(const VkPhysicalDevice &physicalDevice,
                                  const VkDeviceCreateInfo &createInfo,
                                  const QueueFamilyIndices &indices)
-        : Handler(
-              "logical device",
-              [](const VkDevice &device) { vkDestroyDevice(device, nullptr); })
+        : Handler("logical device",
+                  [](const VkDevice &device) { vkDestroyDevice(device, nullptr); })
         , _queueFamilyIndices(indices)
     {
         BRASIO_LOG_TRACE("Creating logical device", { "CREATE" });
-        BRASIO_VULKAN_CHECK(
-            vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle()),
-            "create logical device", { "CREATE" });
+        BRASIO_VULKAN_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle()),
+                            "create logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Created logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Setting up device queues", { "CREATE" });
 
-        vkGetDeviceQueue(getHandle(),
-                         _queueFamilyIndices.graphicsFamily.value(), 0,
+        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.graphicsFamily.value(), 0,
                          &_graphicsQueue);
-        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(),
-                         0, &_presentationQueue);
+        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(), 0,
+                         &_presentationQueue);
         BRASIO_LOG_TRACE("Set up device queues", { "CREATE" });
     }
 

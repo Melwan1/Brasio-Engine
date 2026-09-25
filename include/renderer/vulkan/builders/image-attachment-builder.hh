@@ -20,13 +20,10 @@ namespace brasio::renderer::vulkan::builders
         ImageAttachmentBuilder &withImageType(const VkImageType &imageType);
         ImageAttachmentBuilder &withFormat(const VkFormat &format);
         ImageAttachmentBuilder &withUsage(const VkImageUsageFlags &usage);
-        ImageAttachmentBuilder &
-        withSharingMode(const VkSharingMode &sharingMode);
-        ImageAttachmentBuilder &
-        withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
+        ImageAttachmentBuilder &withSharingMode(const VkSharingMode &sharingMode);
+        ImageAttachmentBuilder &withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
         ImageAttachmentBuilder &withTiling(const VkImageTiling &tiling);
-        ImageAttachmentBuilder &
-        withSamples(const VkSampleCountFlagBits &sampleCount);
+        ImageAttachmentBuilder &withSamples(const VkSampleCountFlagBits &sampleCount);
 
     private:
         const PhysicalDeviceType &_physicalDevice;

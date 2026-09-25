@@ -5,9 +5,7 @@
 namespace brasio::events::categories
 {
     template <typename SubEventType>
-    UnknownCategoryEvent<SubEventType>::UnknownCategoryEvent(
-        enum EventType eventType)
-        : Event<UnknownCategoryEvent<SubEventType>, SubEventType>(
-              EVENT_CATEGORY_UNKNOWN, eventType)
+    UnknownCategoryEvent<SubEventType>::UnknownCategoryEvent(enum EventType eventType)
+        : Event<UnknownCategoryEvent<SubEventType>, SubEventType>(EVENT_CATEGORY_UNKNOWN, eventType)
     {}
 } // namespace brasio::events::categories

@@ -22,17 +22,15 @@ namespace brasio::mesh
         // vertices per stack and slice
         for (unsigned stack = 1; stack < nStacks; stack++)
         {
-            float phi = std::numbers::pi * static_cast<float>(stack)
-                / static_cast<float>(nStacks);
+            float phi = std::numbers::pi * static_cast<float>(stack) / static_cast<float>(nStacks);
 
             for (unsigned slice = 0; slice < nSlices; slice++)
             {
-                auto theta = 2 * std::numbers::pi * static_cast<float>(slice)
-                    / static_cast<float>(nSlices);
-                vertices.emplace_back(geometry::Vertex(
-                    { 0.5f * std::sin(phi) * std::cos(theta),
-                      0.5f * std::cos(phi),
-                      0.5f * std::sin(phi) * std::sin(theta) }));
+                auto theta =
+                    2 * std::numbers::pi * static_cast<float>(slice) / static_cast<float>(nSlices);
+                vertices.emplace_back(
+                    geometry::Vertex({ 0.5f * std::sin(phi) * std::cos(theta), 0.5f * std::cos(phi),
+                                       0.5f * std::sin(phi) * std::sin(theta) }));
             }
         }
 
@@ -48,8 +46,7 @@ namespace brasio::mesh
 
             indices.emplace_back(slice + (nStacks - 2) * nSlices + 2);
             indices.emplace_back(1);
-            indices.emplace_back((slice + 1) % nSlices + (nStacks - 2) * nSlices
-                                 + 2);
+            indices.emplace_back((slice + 1) % nSlices + (nStacks - 2) * nSlices + 2);
         }
 
         // triangles per stack / slice

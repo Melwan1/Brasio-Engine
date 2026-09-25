@@ -2,8 +2,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    AttachmentDescriptionBuilder::AttachmentDescriptionBuilder(
-        const VkFormat &format)
+    AttachmentDescriptionBuilder::AttachmentDescriptionBuilder(const VkFormat &format)
         : _format(format)
     {
         base();

@@ -4,8 +4,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    LogicalDeviceBuilder::LogicalDeviceBuilder(
-        const PhysicalDevice &physicalDevice)
+    LogicalDeviceBuilder::LogicalDeviceBuilder(const PhysicalDevice &physicalDevice)
         : _physicalDevice(physicalDevice)
         , _queuePriority(1.0f)
     {
@@ -15,9 +14,8 @@ namespace brasio::renderer::vulkan::builders
     LogicalDeviceBuilder &LogicalDeviceBuilder::base()
     {
         _indices = _physicalDevice.findQueueFamilies();
-        std::set<uint32_t> uniqueQueueFamilies = {
-            _indices.graphicsFamily.value(), _indices.presentFamily.value()
-        };
+        std::set<uint32_t> uniqueQueueFamilies = { _indices.graphicsFamily.value(),
+                                                   _indices.presentFamily.value() };
         for (const uint32_t queueFamilyIndex : uniqueQueueFamilies)
         {
             VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -39,14 +37,12 @@ namespace brasio::renderer::vulkan::builders
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         createInfo.pQueueCreateInfos = _queueCreateInfos.data();
-        createInfo.queueCreateInfoCount =
-            static_cast<uint32_t>(_queueCreateInfos.size());
+        createInfo.queueCreateInfoCount = static_cast<uint32_t>(_queueCreateInfos.size());
         createInfo.pEnabledFeatures = &deviceFeatures;
 
         createInfo.enabledExtensionCount =
             static_cast<uint32_t>(_physicalDevice.getDeviceExtensions().size());
-        createInfo.ppEnabledExtensionNames =
-            _physicalDevice.getDeviceExtensions().data();
+        createInfo.ppEnabledExtensionNames = _physicalDevice.getDeviceExtensions().data();
 
         /* if (_validationLayers.empty())
          {
@@ -61,7 +57,6 @@ namespace brasio::renderer::vulkan::builders
          */ // FIXME
         createInfo.enabledLayerCount = 0;
 
-        return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(),
-                                               createInfo, _indices);
+        return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(), createInfo, _indices);
     }
 } // namespace brasio::renderer::vulkan::builders

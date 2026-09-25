@@ -7,8 +7,7 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    class DescriptorSetLayoutBindingBuilder
-        : public core::Builder<VkDescriptorSetLayoutBinding>
+    class DescriptorSetLayoutBindingBuilder : public core::Builder<VkDescriptorSetLayoutBinding>
     {
     public:
         DescriptorSetLayoutBindingBuilder();
@@ -16,16 +15,12 @@ namespace brasio::renderer::vulkan::builders
         virtual VkDescriptorSetLayoutBinding build() override;
         virtual DescriptorSetLayoutBindingBuilder &base() override;
 
-        DescriptorSetLayoutBindingBuilder &
-        withBindingIndex(uint32_t bindingIndex);
+        DescriptorSetLayoutBindingBuilder &withBindingIndex(uint32_t bindingIndex);
         DescriptorSetLayoutBindingBuilder &
         withDescriptorType(const VkDescriptorType &descriptorType);
-        DescriptorSetLayoutBindingBuilder &
-        withDescriptorCount(uint32_t descriptorCount);
-        DescriptorSetLayoutBindingBuilder &
-        withShaderStages(const VkShaderStageFlags &shaderStages);
-        DescriptorSetLayoutBindingBuilder &
-        withImmutableSamplers(VkSampler *samplers);
+        DescriptorSetLayoutBindingBuilder &withDescriptorCount(uint32_t descriptorCount);
+        DescriptorSetLayoutBindingBuilder &withShaderStages(const VkShaderStageFlags &shaderStages);
+        DescriptorSetLayoutBindingBuilder &withImmutableSamplers(VkSampler *samplers);
 
     private:
         uint32_t _bindingIndex;

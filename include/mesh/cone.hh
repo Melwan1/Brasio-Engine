@@ -11,8 +11,7 @@ namespace brasio::mesh
     class Cone : public Mesh
     {
     public:
-        Cone(int base_tessellation =
-                 BRASIO_MESH_DISK_BASED_PYRAMID_DEFAULT_BASE_TESSELLATION,
+        Cone(int base_tessellation = BRASIO_MESH_DISK_BASED_PYRAMID_DEFAULT_BASE_TESSELLATION,
              float height = BRASIO_MESH_DISK_BASED_PYRAMID_DEFAULT_HEIGHT);
 
         static std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>

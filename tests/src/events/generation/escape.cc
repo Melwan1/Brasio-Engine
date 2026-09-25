@@ -13,7 +13,6 @@ TEST(Events_KeyGenerator_Generate_Escape, escape)
     int scancode = -1;
     int mods = 0;
     std::string expected = "ESC";
-    std::string actual =
-        brasio::events::KeyGenerator::generate(key, scancode, mods);
+    std::string actual = brasio::events::KeyGenerator::generate(key, scancode, mods);
     EXPECT_EQ(expected, actual);
 }

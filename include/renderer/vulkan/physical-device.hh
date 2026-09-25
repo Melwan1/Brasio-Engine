@@ -14,8 +14,7 @@ namespace brasio::renderer::vulkan
     class PhysicalDevice : public core::Handler<VkPhysicalDevice>
     {
     public:
-        PhysicalDevice(const VkPhysicalDevice &device,
-                       const VkSurfaceKHR &surface,
+        PhysicalDevice(const VkPhysicalDevice &device, const VkSurfaceKHR &surface,
                        std::vector<const char *> extensions = {});
 
         const std::vector<const char *> &getDeviceExtensions() const;
@@ -24,11 +23,9 @@ namespace brasio::renderer::vulkan
         QueueFamilyIndices findQueueFamilies() const;
         bool checkDeviceExtensionSupport() const;
         SwapChainSupportDetails querySwapChainSupport() const;
-        uint32_t findMemoryType(uint32_t typeFilter,
-                                VkMemoryPropertyFlags properties) const;
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 
-        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates,
-                                     VkImageTiling tiling,
+        VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
                                      VkFormatFeatureFlags features) const;
         VkFormat findDepthFormat() const;
         bool hasStencilComponent(VkFormat format) const;

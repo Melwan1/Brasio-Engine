@@ -9,8 +9,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class ColorBlendStateBuilder
-        : public core::Builder<VkPipelineColorBlendStateCreateInfo>
+    class ColorBlendStateBuilder : public core::Builder<VkPipelineColorBlendStateCreateInfo>
     {
     public:
         ColorBlendStateBuilder();
@@ -18,12 +17,10 @@ namespace brasio::renderer::vulkan::builders
         virtual ColorBlendStateBuilder &base() override;
         virtual VkPipelineColorBlendStateCreateInfo build() override;
 
-        ColorBlendStateBuilder &
-        withLogicOpEnable(const VkBool32 &logicOpEnable);
+        ColorBlendStateBuilder &withLogicOpEnable(const VkBool32 &logicOpEnable);
         ColorBlendStateBuilder &withLogicOp(const VkLogicOp &logicOp);
         ColorBlendStateBuilder &withColorBlendAttachments(
-            const std::vector<VkPipelineColorBlendAttachmentState>
-                &colorBlendAttachments);
+            const std::vector<VkPipelineColorBlendAttachmentState> &colorBlendAttachments);
 
         ColorBlendStateBuilder &withConfig(const YAML::Node &config);
 

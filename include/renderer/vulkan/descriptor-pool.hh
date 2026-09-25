@@ -11,8 +11,7 @@ namespace brasio::renderer::vulkan
     class DescriptorPool : public core::Handler<VkDescriptorPool>
     {
     public:
-        DescriptorPool(const VkDevice &logicalDevice,
-                       const VkDescriptorPoolCreateInfo &createInfo);
+        DescriptorPool(const VkDevice &logicalDevice, const VkDescriptorPoolCreateInfo &createInfo);
     };
 
     using DescriptorPoolType = std::unique_ptr<DescriptorPool>;

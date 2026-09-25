@@ -9,19 +9,16 @@ namespace brasio::renderer::vulkan
 {
 
     Texture::Texture(const PhysicalDeviceType &physicalDevice,
-                     const LogicalDeviceType &logicalDevice,
-                     const VkCommandPool &commandPool,
-                     const VkImageCreateInfo &imageInfo,
-                     VkImageViewCreateInfo imageViewInfo,
-                     images::P3PPM &textureImage,
-                     const VkMemoryPropertyFlags memoryProperties)
+                     const LogicalDeviceType &logicalDevice, const VkCommandPool &commandPool,
+                     const VkImageCreateInfo &imageInfo, VkImageViewCreateInfo imageViewInfo,
+                     images::P3PPM &textureImage, const VkMemoryPropertyFlags memoryProperties)
         : ImageAttachment(logicalDevice, imageInfo, imageViewInfo)
         , _physicalDevice(physicalDevice)
         , _logicalDevice(logicalDevice)
         , _textureImage(textureImage)
     {
-        initMemory(_physicalDevice, commandPool, textureImage.getSize(),
-                   textureImage.getData(), memoryProperties);
+        initMemory(_physicalDevice, commandPool, textureImage.getSize(), textureImage.getData(),
+                   memoryProperties);
         createImageView();
         createTextureSampler();
     }
@@ -33,9 +30,7 @@ namespace brasio::renderer::vulkan
 
     void Texture::createTextureSampler()
     {
-        _textureSampler =
-            builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice)
-                .build();
+        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
     }
 
     TextureSamplerType &Texture::getTextureSampler()

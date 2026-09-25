@@ -44,8 +44,7 @@ namespace brasio::io::logging
          * @param   specificTags specify a log level for certain message tags.
          * @return  void
          */
-        void setLogLevel(LogLevel logLevel,
-                         std::vector<std::string> specificTags = {});
+        void setLogLevel(LogLevel logLevel, std::vector<std::string> specificTags = {});
 
         /**
          * Log a trace message using the logger object.
@@ -59,8 +58,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void trace(const std::string &message,
-                   std::vector<std::string> additionalTags = {});
+        void trace(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /**
          * Log a debug message using the logger object.
@@ -73,8 +71,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void debug(const std::string &message,
-                   std::vector<std::string> additionalTags = {});
+        void debug(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /**
          * Log an info message using the logger object.
@@ -87,8 +84,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void info(const std::string &message,
-                  std::vector<std::string> additionalTags = {});
+        void info(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /**
          * Log a warning message using the logger object.
@@ -101,8 +97,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void warning(const std::string &message,
-                     std::vector<std::string> additionalTags = {});
+        void warning(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /**
          * Log an error message using the logger object.
@@ -115,8 +110,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void error(const std::string &message,
-                   std::vector<std::string> additionalTags = {});
+        void error(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /**
          * Log a critical message using the logger object.
@@ -130,8 +124,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        void critical(const std::string &message,
-                      std::vector<std::string> additionalTags = {});
+        void critical(const std::string &message, std::vector<std::string> additionalTags = {});
 
         /*
          * The list of all log levels.
@@ -169,8 +162,7 @@ namespace brasio::io::logging
          * @return  void
          * @see     LogLevel
          */
-        static void log(std::ostream &ostr, const std::string &message,
-                        LogLevel messageLevel,
+        static void log(std::ostream &ostr, const std::string &message, LogLevel messageLevel,
                         std::vector<std::string> additionalTags = {});
 
         /**
@@ -295,8 +287,7 @@ namespace brasio::io::logging
          * specificLogLevelMap.
          * @return  void
          */
-        static void fromConfigRec(const YAML::Node &config,
-                                  const std::vector<std::string> &tags);
+        static void fromConfigRec(const YAML::Node &config, const std::vector<std::string> &tags);
 
     private:
         std::ostream &_ostr;
@@ -325,50 +316,44 @@ namespace brasio::io::logging
     };
 } // namespace brasio::io::logging
 
-#define BRASIO_LOG_TRACE(...)                                                  \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::TRACE)                         \
-            ::brasio::io::logging::Logger::trace(std::cout, __VA_ARGS__);      \
+#define BRASIO_LOG_TRACE(...)                                                                      \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::TRACE)    \
+            ::brasio::io::logging::Logger::trace(std::cout, __VA_ARGS__);                          \
     } while (0)
 
-#define BRASIO_LOG_DEBUG(...)                                                  \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::DEBUG)                         \
-            ::brasio::io::logging::Logger::debug(std::cout, __VA_ARGS__);      \
+#define BRASIO_LOG_DEBUG(...)                                                                      \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::DEBUG)    \
+            ::brasio::io::logging::Logger::debug(std::cout, __VA_ARGS__);                          \
     } while (0)
 
-#define BRASIO_LOG_INFO(...)                                                   \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::INFO)                          \
-            ::brasio::io::logging::Logger::info(std::cout, __VA_ARGS__);       \
+#define BRASIO_LOG_INFO(...)                                                                       \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::INFO)     \
+            ::brasio::io::logging::Logger::info(std::cout, __VA_ARGS__);                           \
     } while (0)
 
-#define BRASIO_LOG_WARNING(...)                                                \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::WARNING)                       \
-            ::brasio::io::logging::Logger::warning(std::cout, __VA_ARGS__);    \
+#define BRASIO_LOG_WARNING(...)                                                                    \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::WARNING)  \
+            ::brasio::io::logging::Logger::warning(std::cout, __VA_ARGS__);                        \
     } while (0)
 
-#define BRASIO_LOG_ERROR(...)                                                  \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::ERROR)                         \
-            ::brasio::io::logging::Logger::error(std::cout, __VA_ARGS__);      \
+#define BRASIO_LOG_ERROR(...)                                                                      \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::ERROR)    \
+            ::brasio::io::logging::Logger::error(std::cout, __VA_ARGS__);                          \
     } while (0)
 
-#define BRASIO_LOG_CRITICAL(...)                                               \
-    do                                                                         \
-    {                                                                          \
-        if (::brasio::io::logging::Logger::sLogLevel                           \
-            <= ::brasio::io::logging::LogLevel::CRITICAL)                      \
-            ::brasio::io::logging::Logger::critical(std::cout, __VA_ARGS__);   \
+#define BRASIO_LOG_CRITICAL(...)                                                                   \
+    do                                                                                             \
+    {                                                                                              \
+        if (::brasio::io::logging::Logger::sLogLevel <= ::brasio::io::logging::LogLevel::CRITICAL) \
+            ::brasio::io::logging::Logger::critical(std::cout, __VA_ARGS__);                       \
     } while (0)

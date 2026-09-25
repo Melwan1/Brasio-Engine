@@ -2,9 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    ImageAttachmentBuilder::ImageAttachmentBuilder(
-        const PhysicalDeviceType &physicalDevice,
-        const LogicalDeviceType &logicalDevice)
+    ImageAttachmentBuilder::ImageAttachmentBuilder(const PhysicalDeviceType &physicalDevice,
+                                                   const LogicalDeviceType &logicalDevice)
         : _physicalDevice(physicalDevice)
         , _logicalDevice(logicalDevice)
     {
@@ -33,28 +32,24 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    ImageAttachmentBuilder &ImageAttachmentBuilder::withExtent(uint32_t width,
-                                                               uint32_t height)
+    ImageAttachmentBuilder &ImageAttachmentBuilder::withExtent(uint32_t width, uint32_t height)
     {
         return withWidth(width).withHeight(height);
     }
 
-    ImageAttachmentBuilder &
-    ImageAttachmentBuilder::withImageType(const VkImageType &imageType)
+    ImageAttachmentBuilder &ImageAttachmentBuilder::withImageType(const VkImageType &imageType)
     {
         _imageType = imageType;
         return *this;
     }
 
-    ImageAttachmentBuilder &
-    ImageAttachmentBuilder::withFormat(const VkFormat &format)
+    ImageAttachmentBuilder &ImageAttachmentBuilder::withFormat(const VkFormat &format)
     {
         _format = format;
         return *this;
     }
 
-    ImageAttachmentBuilder &
-    ImageAttachmentBuilder::withUsage(const VkImageUsageFlags &usage)
+    ImageAttachmentBuilder &ImageAttachmentBuilder::withUsage(const VkImageUsageFlags &usage)
     {
         _usage = usage;
         return *this;
@@ -67,22 +62,21 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    ImageAttachmentBuilder &ImageAttachmentBuilder::withMemoryProperties(
-        const VkMemoryPropertyFlags &memoryProperties)
+    ImageAttachmentBuilder &
+    ImageAttachmentBuilder::withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties)
     {
         _memoryProperties = memoryProperties;
         return *this;
     }
 
-    ImageAttachmentBuilder &
-    ImageAttachmentBuilder::withTiling(const VkImageTiling &tiling)
+    ImageAttachmentBuilder &ImageAttachmentBuilder::withTiling(const VkImageTiling &tiling)
     {
         _tiling = tiling;
         return *this;
     }
 
-    ImageAttachmentBuilder &ImageAttachmentBuilder::withSamples(
-        const VkSampleCountFlagBits &sampleCount)
+    ImageAttachmentBuilder &
+    ImageAttachmentBuilder::withSamples(const VkSampleCountFlagBits &sampleCount)
     {
         _sampleCount = sampleCount;
         return *this;
@@ -105,19 +99,17 @@ namespace brasio::renderer::vulkan::builders
 
         VkImageViewCreateInfo imageViewCreateInfo{};
         imageViewCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        imageViewCreateInfo.image =
-            VK_NULL_HANDLE; // created in the image attachment constructor
+        imageViewCreateInfo.image = VK_NULL_HANDLE; // created in the image attachment constructor
         imageViewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         imageViewCreateInfo.format = _format;
-        imageViewCreateInfo.subresourceRange = { .aspectMask =
-                                                     VK_IMAGE_ASPECT_COLOR_BIT,
+        imageViewCreateInfo.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                                                  .baseMipLevel = 0,
                                                  .levelCount = 1,
                                                  .baseArrayLayer = 0,
                                                  .layerCount = 1 };
 
-        ImageAttachmentType imageAttachment = std::make_unique<ImageAttachment>(
-            _logicalDevice, imageCreateInfo, imageViewCreateInfo);
+        ImageAttachmentType imageAttachment =
+            std::make_unique<ImageAttachment>(_logicalDevice, imageCreateInfo, imageViewCreateInfo);
         imageAttachment->initMemory(_physicalDevice, _memoryProperties);
         imageAttachment->createImageView();
         return imageAttachment;

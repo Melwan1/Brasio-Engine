@@ -33,8 +33,7 @@ namespace brasio::io::files
         void dump(const fs::path &outputPath);
 
         const std::vector<VertexType> &getVertices() const;
-        const std::vector<TextureCoordinatesType> &
-        getTextureCoordinates() const;
+        const std::vector<TextureCoordinatesType> &getTextureCoordinates() const;
         const std::vector<NormalType> &getNormals() const;
         const std::vector<ParameterVertexType> &getParameterVertices() const;
         const std::vector<FaceType> &getFaces() const;
@@ -59,8 +58,7 @@ namespace brasio::io::files
         bool _checkLineType(const std::string &start);
 
         uint32_t _parseIndex(std::istringstream &elementIndexStream);
-        ElementIndexType
-        _parseElementIndex(const std::string &elementIndexDefinition);
+        ElementIndexType _parseElementIndex(const std::string &elementIndexDefinition);
         FaceType _parseFace(const std::string &faceDefinition);
         void _error(const std::string &section, unsigned line, bool isIndex);
     };

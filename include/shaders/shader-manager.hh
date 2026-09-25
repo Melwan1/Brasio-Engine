@@ -14,8 +14,7 @@ namespace brasio::shaders
     class ShaderManager
     {
     public:
-        ShaderManager(const fs::path &baseShaderDirectoryPath,
-                      const fs::path &logPath);
+        ShaderManager(const fs::path &baseShaderDirectoryPath, const fs::path &logPath);
         ~ShaderManager();
 
         bool compileAllShaders();
@@ -23,11 +22,9 @@ namespace brasio::shaders
 
         const std::string &getSpirVFileContent(const fs::path &entry) const;
 
-        VkShaderModule
-        createShaderModuleFromByteCode(VkDevice &device,
-                                       const std::string &shaderByteCode) const;
-        VkShaderModule createShaderModuleFromPath(VkDevice &device,
-                                                  const fs::path &entry) const;
+        VkShaderModule createShaderModuleFromByteCode(VkDevice &device,
+                                                      const std::string &shaderByteCode) const;
+        VkShaderModule createShaderModuleFromPath(VkDevice &device, const fs::path &entry) const;
 
     private:
         ShaderCompiler _shaderCompiler;

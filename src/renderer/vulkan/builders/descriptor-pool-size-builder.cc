@@ -10,8 +10,7 @@ namespace brasio::renderer::vulkan::builders
 
     DescriptorPoolSizeBuilder &DescriptorPoolSizeBuilder::base()
     {
-        return withDescriptorCount(0).withDescriptorType(
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+        return withDescriptorCount(0).withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
     }
 
     VkDescriptorPoolSize DescriptorPoolSizeBuilder::build()
@@ -29,8 +28,8 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    DescriptorPoolSizeBuilder &DescriptorPoolSizeBuilder::withDescriptorType(
-        VkDescriptorType descriptorType)
+    DescriptorPoolSizeBuilder &
+    DescriptorPoolSizeBuilder::withDescriptorType(VkDescriptorType descriptorType)
     {
         _descriptorType = descriptorType;
         return *this;

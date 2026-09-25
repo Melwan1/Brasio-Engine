@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class WindowCloseEvent
-        : public categories::WindowCategoryEvent<WindowCloseEvent>
+    class WindowCloseEvent : public categories::WindowCategoryEvent<WindowCloseEvent>
     {
     public:
         WindowCloseEvent();

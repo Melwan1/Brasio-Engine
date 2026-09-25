@@ -13,8 +13,7 @@ namespace brasio::renderer::vulkan
     class SyncObjects
     {
     public:
-        SyncObjects(const VkDevice &logicalDevice, uint32_t semaphoreCount,
-                    uint32_t fenceCount,
+        SyncObjects(const VkDevice &logicalDevice, uint32_t semaphoreCount, uint32_t fenceCount,
                     const VkSemaphoreCreateInfo &semaphoreCreateInfo,
                     const VkFenceCreateInfo &fenceCreateInfo);
 
@@ -30,8 +29,7 @@ namespace brasio::renderer::vulkan
         const VkFence &fenceAt(uint32_t index) const;
         VkFence &fenceAt(uint32_t index);
 
-        std::vector<VkFence>
-        toFenceVector(const std::vector<uint32_t> &indices) const;
+        std::vector<VkFence> toFenceVector(const std::vector<uint32_t> &indices) const;
 
         void resetSingleFence(uint32_t index);
         void resetFences(const std::vector<uint32_t> &indices);

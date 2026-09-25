@@ -14,15 +14,13 @@ namespace brasio::renderer::vulkan::builders
         return withViewports(1).withScissors(1);
     }
 
-    ViewportStateBuilder &
-    ViewportStateBuilder::withViewports(uint32_t viewportCount)
+    ViewportStateBuilder &ViewportStateBuilder::withViewports(uint32_t viewportCount)
     {
         _viewportCount = viewportCount;
         return *this;
     }
 
-    ViewportStateBuilder &
-    ViewportStateBuilder::withScissors(uint32_t scissorCount)
+    ViewportStateBuilder &ViewportStateBuilder::withScissors(uint32_t scissorCount)
     {
         _scissorCount = scissorCount;
         return *this;

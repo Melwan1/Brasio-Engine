@@ -11,9 +11,8 @@ namespace brasio::renderer::vulkan
         })
     {
         BRASIO_LOG_TRACE("Creating surface", { "CREATE" });
-        BRASIO_VULKAN_CHECK(
-            glfwCreateWindowSurface(instance, window, nullptr, &getHandle()),
-            "create surface", { "CREATE" });
+        BRASIO_VULKAN_CHECK(glfwCreateWindowSurface(instance, window, nullptr, &getHandle()),
+                            "create surface", { "CREATE" });
         BRASIO_LOG_TRACE("Created surface", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

@@ -24,52 +24,35 @@ namespace brasio::mesh
         vertices.emplace_back(geometry::Vertex({ 0.0f, 0.0f, 0.0f }));
         vertices.emplace_back(geometry::Vertex({ 0.0f, 1.0f, 0.0f }));
 
-        for (int lateral_tessellation_index = 0;
-             lateral_tessellation_index < lateral_tessellation;
+        for (int lateral_tessellation_index = 0; lateral_tessellation_index < lateral_tessellation;
              lateral_tessellation_index++)
         {
-            float angle = 2 * std::numbers::pi
-                * static_cast<float>(lateral_tessellation_index)
+            float angle = 2 * std::numbers::pi * static_cast<float>(lateral_tessellation_index)
                 / lateral_tessellation;
-            vertices.emplace_back(geometry::Vertex(
-                { 0.5f * std::cos(angle), 0.0f, 0.5f * std::sin(angle) }));
-            vertices.emplace_back(geometry::Vertex(
-                { 0.5f * std::cos(angle), 1.0f, 0.5f * std::sin(angle) }));
+            vertices.emplace_back(
+                geometry::Vertex({ 0.5f * std::cos(angle), 0.0f, 0.5f * std::sin(angle) }));
+            vertices.emplace_back(
+                geometry::Vertex({ 0.5f * std::cos(angle), 1.0f, 0.5f * std::sin(angle) }));
 
             // bottom triangle
             indices.emplace_back(2 * (lateral_tessellation_index + 1));
-            indices.emplace_back(
-                2
-                * ((lateral_tessellation_index + 1) % lateral_tessellation
-                   + 1));
+            indices.emplace_back(2 * ((lateral_tessellation_index + 1) % lateral_tessellation + 1));
             indices.emplace_back(0);
 
             // top triangle
-            indices.emplace_back(
-                2
-                    * ((lateral_tessellation_index + 1) % lateral_tessellation
-                       + 1)
-                + 1);
+            indices.emplace_back(2 * ((lateral_tessellation_index + 1) % lateral_tessellation + 1)
+                                 + 1);
             indices.emplace_back(2 * (lateral_tessellation_index + 1) + 1);
             indices.emplace_back(1);
 
             // lateral face
-            indices.emplace_back(
-                2
-                * ((lateral_tessellation_index + 1) % lateral_tessellation
-                   + 1));
+            indices.emplace_back(2 * ((lateral_tessellation_index + 1) % lateral_tessellation + 1));
             indices.emplace_back(2 * (lateral_tessellation_index + 1));
-            indices.emplace_back(
-                2
-                    * ((lateral_tessellation_index + 1) % lateral_tessellation
-                       + 1)
-                + 1);
+            indices.emplace_back(2 * ((lateral_tessellation_index + 1) % lateral_tessellation + 1)
+                                 + 1);
             indices.emplace_back(2 * (lateral_tessellation_index + 1) + 1);
-            indices.emplace_back(
-                2
-                    * ((lateral_tessellation_index + 1) % lateral_tessellation
-                       + 1)
-                + 1);
+            indices.emplace_back(2 * ((lateral_tessellation_index + 1) % lateral_tessellation + 1)
+                                 + 1);
             indices.emplace_back(2 * (lateral_tessellation_index + 1));
         }
 

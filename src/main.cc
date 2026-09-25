@@ -16,8 +16,7 @@ int main(int argc, char *argv[])
         config_path = argv[1];
     }
     brasio::application::ApplicationType application =
-        brasio::application::Application::fromConfig(
-            YAML::LoadFile(config_path));
+        brasio::application::Application::fromConfig(YAML::LoadFile(config_path));
 
     application->loop();
     return 0;

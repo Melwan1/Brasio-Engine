@@ -4,9 +4,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    FramebufferBuilder::FramebufferBuilder(
-        const LogicalDeviceType &logicalDevice, const VkRenderPass &renderPass,
-        const VkExtent2D &extent)
+    FramebufferBuilder::FramebufferBuilder(const LogicalDeviceType &logicalDevice,
+                                           const VkRenderPass &renderPass, const VkExtent2D &extent)
         : _logicalDevice(logicalDevice)
         , _renderPass(renderPass)
         , _extent(extent)
@@ -23,8 +22,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    FramebufferBuilder &
-    FramebufferBuilder::withAdditionalAttachment(const VkImageView &imageView)
+    FramebufferBuilder &FramebufferBuilder::withAdditionalAttachment(const VkImageView &imageView)
     {
         _attachments.emplace_back(imageView);
         return *this;

@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class KeyboardPressEvent
-        : public categories::KeyboardCategoryEvent<KeyboardPressEvent>
+    class KeyboardPressEvent : public categories::KeyboardCategoryEvent<KeyboardPressEvent>
     {
     public:
         KeyboardPressEvent(const std::string &pressedKey);

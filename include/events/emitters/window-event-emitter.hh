@@ -17,7 +17,6 @@ namespace brasio::events::emitters
         void addListener(listeners::WindowEventListener &listener);
 
     private:
-        std::vector<std::reference_wrapper<listeners::WindowEventListener>>
-            _listeners;
+        std::vector<std::reference_wrapper<listeners::WindowEventListener>> _listeners;
     };
 } // namespace brasio::events::emitters

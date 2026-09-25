@@ -21,8 +21,7 @@ namespace brasio::renderer::vulkan::builders
         BufferBuilder &withSize(uint32_t size);
         BufferBuilder &withUsage(const VkBufferUsageFlags &usage);
         BufferBuilder &withSharingMode(const VkSharingMode &sharingMode);
-        BufferBuilder &
-        withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
+        BufferBuilder &withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
 
         BufferBuilder &withData(void *data);
 

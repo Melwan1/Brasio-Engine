@@ -26,8 +26,7 @@ namespace brasio::renderer::vulkan::builders
         TextureBuilder &withTextureImage(const images::P3PPM &textureImage);
         TextureBuilder &withUsage(const VkImageUsageFlags &usage);
         TextureBuilder &withSharingMode(const VkSharingMode &sharingMode);
-        TextureBuilder &
-        withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
+        TextureBuilder &withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
         TextureBuilder &withTiling(const VkImageTiling &tiling);
 
         TextureBuilder &withCommandPool(const VkCommandPool &commandPool);

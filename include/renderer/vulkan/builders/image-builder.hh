@@ -11,8 +11,8 @@ namespace brasio::renderer::vulkan::builders
     class ImageBuilder : core::Builder<ImageType>
     {
     public:
-        ImageBuilder(const LogicalDeviceType &logicalDevice,
-                     const VkImage &image, const VkFormat &format);
+        ImageBuilder(const LogicalDeviceType &logicalDevice, const VkImage &image,
+                     const VkFormat &format);
 
         virtual ImageBuilder &base() override;
         virtual ImageType build() override;

@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class MouseClickEvent
-        : public categories::MouseCategoryEvent<MouseClickEvent>
+    class MouseClickEvent : public categories::MouseCategoryEvent<MouseClickEvent>
     {
     public:
         enum MouseClickType

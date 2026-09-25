@@ -14,11 +14,9 @@ namespace brasio::events::subevents
         return _pressedKey;
     }
 
-    KeyboardReleaseEvent KeyboardReleaseEvent::create(int key, int scancode,
-                                                      int mods)
+    KeyboardReleaseEvent KeyboardReleaseEvent::create(int key, int scancode, int mods)
     {
-        const std::string pressedKey =
-            KeyGenerator::generate(key, scancode, mods);
+        const std::string pressedKey = KeyGenerator::generate(key, scancode, mods);
         KeyboardReleaseEvent event(pressedKey);
         return event;
     }

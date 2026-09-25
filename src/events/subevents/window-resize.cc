@@ -2,8 +2,7 @@
 
 namespace brasio::events::subevents
 {
-    WindowResizeEvent::WindowResizeEvent(bool toggleFullscreen, unsigned sizeX,
-                                         unsigned sizeY)
+    WindowResizeEvent::WindowResizeEvent(bool toggleFullscreen, unsigned sizeX, unsigned sizeY)
         : WindowCategoryEvent<WindowResizeEvent>(EVENT_WINDOW_RESIZE)
         , _toggleFullscreen(toggleFullscreen)
         , _sizeX(sizeX)

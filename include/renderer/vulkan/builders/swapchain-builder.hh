@@ -15,15 +15,12 @@ namespace brasio::renderer::vulkan::builders
     class SwapchainBuilder : public core::Builder<SwapchainType>
     {
     public:
-        SwapchainBuilder(GLFWwindow *window,
-                         const PhysicalDeviceType &physicalDevice,
-                         const LogicalDeviceType &logicalDevice,
-                         const VkSurfaceKHR &surface);
+        SwapchainBuilder(GLFWwindow *window, const PhysicalDeviceType &physicalDevice,
+                         const LogicalDeviceType &logicalDevice, const VkSurfaceKHR &surface);
 
         virtual SwapchainBuilder &base() override;
 
-        SwapchainBuilder &
-        withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat);
+        SwapchainBuilder &withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat);
         SwapchainBuilder &withPresentMode(const VkPresentModeKHR &presentMode);
 
         virtual SwapchainType build() override;

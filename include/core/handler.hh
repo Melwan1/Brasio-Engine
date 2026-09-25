@@ -14,8 +14,7 @@ namespace brasio::core
         Handler(const T &handle, const std::string &objectName,
                 const std::function<void(const T &)> &destroyFunc);
 
-        Handler(const std::string &objectName,
-                const std::function<void(const T &)> &destroyFunc);
+        Handler(const std::string &objectName, const std::function<void(const T &)> &destroyFunc);
 
         // Provide a custom move constructor
         Handler(Handler &&other) noexcept;
