@@ -62,7 +62,8 @@ namespace brasio::renderer::vulkan
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
         createGraphicsPipelines();
         createTexture();
         createUniformBuffers();
@@ -111,7 +112,8 @@ namespace brasio::renderer::vulkan
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
         createGraphicsPipelines(config["pipelines"]);
         createTexture();
         createUniformBuffers();
@@ -191,26 +193,34 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createRenderPass()
     {
         VkAttachmentDescription colorAttachmentDescription =
-            ImageAttachment::sGetAttachmentDescription(_swapchain->getFormat());
+            _colorAttachment->getAttachmentDescription();
         VkAttachmentReference colorAttachmentReference =
-            ImageAttachment::sGetAttachmentReference(0);
+            _colorAttachment->getAttachmentReference(0);
         VkAttachmentDescription depthAttachmentDescription =
             _depthAttachment->getAttachmentDescription();
         VkAttachmentReference depthAttachmentReference =
             _depthAttachment->getAttachmentReference(1);
+        VkAttachmentDescription colorAttachmentResolveDescription =
+            ImageAttachment::sGetAttachmentDescription(_swapchain->getFormat());
+        VkAttachmentReference colorAttachmentResolveReference =
+            ImageAttachment::sGetAttachmentReference(2);
         builders::SubpassDescriptionBuilder subpassBuilder =
             builders::SubpassDescriptionBuilder()
                 .withAdditionalAttachment(colorAttachmentDescription,
                                           colorAttachmentReference)
                 .withAdditionalAttachment(depthAttachmentDescription,
-                                          depthAttachmentReference);
+                                          depthAttachmentReference)
+                .withAdditionalResolveAttachment(
+                    colorAttachmentResolveReference);
         VkSubpassDescription subpass = subpassBuilder.build();
 
         VkSubpassDependency dependency =
             builders::SubpassDependencyBuilder()
                 .withSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
                                   | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
-                .withSrcAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
+                .withSrcAccessMask(
+                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+                    | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
                 .withDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
                                   | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
                 .withDstAccessMask(
@@ -222,6 +232,8 @@ namespace brasio::renderer::vulkan
             builders::RenderPassBuilder(_logicalDevice->getHandle())
                 .withAdditionalAttachmentDescription(colorAttachmentDescription)
                 .withAdditionalAttachmentDescription(depthAttachmentDescription)
+                .withAdditionalAttachmentDescription(
+                    colorAttachmentResolveDescription)
                 .withAdditionalSubpass(subpass)
                 .withAdditionalSubpassDependency(dependency);
 

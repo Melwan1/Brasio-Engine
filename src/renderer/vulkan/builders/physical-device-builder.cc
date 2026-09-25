@@ -77,8 +77,8 @@ namespace brasio::renderer::vulkan::builders
         VkPhysicalDeviceFeatures deviceFeatures;
         vkGetPhysicalDeviceFeatures(device.getHandle(), &deviceFeatures);
 
-        if (!deviceFeatures.geometryShader
-            || !deviceFeatures.tessellationShader)
+        if (!deviceFeatures.geometryShader || !deviceFeatures.tessellationShader
+            || !deviceFeatures.fillModeNonSolid || !deviceFeatures.wideLines)
         {
             return false;
         }

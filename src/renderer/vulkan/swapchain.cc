@@ -116,11 +116,11 @@ namespace brasio::renderer::vulkan
         {
             builders::FramebufferBuilder builder(_logicalDevice->getHandle(),
                                                  renderPass, getExtent());
-            builder.withAdditionalAttachment(image->getImageView());
             for (const VkImageView &imageView : additionalImageViews)
             {
                 builder.withAdditionalAttachment(imageView);
             }
+            builder.withAdditionalAttachment(image->getImageView());
             _framebuffers.emplace_back(builder.build());
         }
     }

@@ -119,6 +119,7 @@ namespace brasio::renderer::vulkan::builders
         ImageAttachmentType imageAttachment = std::make_unique<ImageAttachment>(
             _logicalDevice, imageCreateInfo, imageViewCreateInfo);
         imageAttachment->initMemory(_physicalDevice, _memoryProperties);
+        imageAttachment->createImageView();
         return imageAttachment;
     }
 } // namespace brasio::renderer::vulkan::builders
