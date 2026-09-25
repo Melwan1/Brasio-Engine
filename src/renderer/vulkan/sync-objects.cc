@@ -5,16 +5,14 @@
 
 namespace brasio::renderer::vulkan
 {
-    SyncObjects::SyncObjects(const VkDevice &logicalDevice,
-                             uint32_t semaphoreCount, uint32_t fenceCount,
-                             const VkSemaphoreCreateInfo &semaphoreCreateInfo,
+    SyncObjects::SyncObjects(const VkDevice &logicalDevice, uint32_t semaphoreCount,
+                             uint32_t fenceCount, const VkSemaphoreCreateInfo &semaphoreCreateInfo,
                              const VkFenceCreateInfo &fenceCreateInfo)
         : _logicalDevice(logicalDevice)
     {
         _semaphores.reserve(semaphoreCount);
         _fences.reserve(semaphoreCount);
-        for (uint32_t semaphoreIndex = 0; semaphoreIndex < semaphoreCount;
-             semaphoreIndex++)
+        for (uint32_t semaphoreIndex = 0; semaphoreIndex < semaphoreCount; semaphoreIndex++)
         {
             _semaphores.emplace_back(_logicalDevice, semaphoreCreateInfo);
         }
@@ -46,8 +44,7 @@ namespace brasio::renderer::vulkan
     void SyncObjects::waitFences(const std::vector<uint32_t> &indices)
     {
         std::vector<VkFence> fencesToWait = toFenceVector(indices);
-        vkWaitForFences(_logicalDevice, indices.size(), fencesToWait.data(),
-                        VK_TRUE, UINT64_MAX);
+        vkWaitForFences(_logicalDevice, indices.size(), fencesToWait.data(), VK_TRUE, UINT64_MAX);
     }
 
     const VkSemaphore &SyncObjects::semaphoreAt(uint32_t index) const
@@ -74,8 +71,7 @@ namespace brasio::renderer::vulkan
         return _fences[index].getHandle();
     }
 
-    std::vector<VkFence>
-    SyncObjects::toFenceVector(const std::vector<uint32_t> &indices) const
+    std::vector<VkFence> SyncObjects::toFenceVector(const std::vector<uint32_t> &indices) const
     {
         std::vector<uint32_t> newIndices = indices;
 

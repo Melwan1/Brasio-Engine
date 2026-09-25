@@ -11,8 +11,7 @@ namespace brasio::renderer::vulkan
     class RenderPass : public core::Handler<VkRenderPass>
     {
     public:
-        RenderPass(const VkDevice &logicalDevice,
-                   const VkRenderPassCreateInfo &createInfo);
+        RenderPass(const VkDevice &logicalDevice, const VkRenderPassCreateInfo &createInfo);
 
     private:
     };

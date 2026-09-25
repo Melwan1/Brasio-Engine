@@ -6,14 +6,13 @@ namespace brasio::renderer::vulkan
     CommandBuffer::CommandBuffer(const LogicalDeviceType &logicalDevice,
                                  const VkCommandPool &commandPool)
         : Handler("command buffer",
-                  [this, &logicalDevice,
-                   commandPool](const VkCommandBuffer &commandBuffer) {
+                  [this, &logicalDevice, commandPool](const VkCommandBuffer &commandBuffer) {
                       if (!_ended)
                       {
                           end();
                       }
-                      vkFreeCommandBuffers(logicalDevice->getHandle(),
-                                           commandPool, 1, &commandBuffer);
+                      vkFreeCommandBuffers(logicalDevice->getHandle(), commandPool, 1,
+                                           &commandBuffer);
                   })
         , _ended(false)
         , _logicalDevice(logicalDevice)
@@ -30,8 +29,7 @@ namespace brasio::renderer::vulkan
         allocateInfo.commandPool = _commandPool;
         allocateInfo.commandBufferCount = 1;
 
-        vkAllocateCommandBuffers(_logicalDevice->getHandle(), &allocateInfo,
-                                 &getHandle());
+        vkAllocateCommandBuffers(_logicalDevice->getHandle(), &allocateInfo, &getHandle());
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -48,8 +46,7 @@ namespace brasio::renderer::vulkan
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &getHandle();
 
-        vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1, &submitInfo,
-                      VK_NULL_HANDLE);
+        vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
         vkQueueWaitIdle(_logicalDevice->getGraphicsQueue());
         _ended = true;
     }

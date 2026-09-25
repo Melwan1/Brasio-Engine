@@ -3,10 +3,10 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    GraphicsPipelineBuilder::GraphicsPipelineBuilder(
-        const VkDevice &logicalDevice,
-        const shaders::ShaderManager &shaderManager,
-        const VkPipelineLayout &pipelineLayout, const VkRenderPass &renderPass)
+    GraphicsPipelineBuilder::GraphicsPipelineBuilder(const VkDevice &logicalDevice,
+                                                     const shaders::ShaderManager &shaderManager,
+                                                     const VkPipelineLayout &pipelineLayout,
+                                                     const VkRenderPass &renderPass)
         : _logicalDevice(logicalDevice)
         , _shaderManager(shaderManager)
         , _pipelineLayout(pipelineLayout)
@@ -37,8 +37,8 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    GraphicsPipelineBuilder &GraphicsPipelineBuilder::withShaders(
-        const std::vector<fs::path> &shaderPaths)
+    GraphicsPipelineBuilder &
+    GraphicsPipelineBuilder::withShaders(const std::vector<fs::path> &shaderPaths)
     {
         _shaderBuilders.clear();
         _shaderInfos.clear();
@@ -54,46 +54,35 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    GraphicsPipelineBuilder &
-    GraphicsPipelineBuilder::withConfig(const YAML::Node &config)
+    GraphicsPipelineBuilder &GraphicsPipelineBuilder::withConfig(const YAML::Node &config)
     {
         _dynamicStateBuilder.withConfig(config["dynamic_states"]);
         _inputAssemblyBuilder.withConfig(config["input_assembly"]);
         _rasterizerBuilder.withConfig(config["rasterizer"]);
         _multisamplingBuilder.withConfig(config["multisampling"]);
-        _colorBlendAttachmentBuilder.withConfig(
-            config["color_blend_attachment"]);
+        _colorBlendAttachmentBuilder.withConfig(config["color_blend_attachment"]);
         _colorBlendStateBuilder.withConfig(config["color_blend_state"]);
 
-        std::vector<fs::path> shaders = {
-            config["shaders"]["vertex"].as<std::string>(),
-            config["shaders"]["fragment"].as<std::string>()
-        };
+        std::vector<fs::path> shaders = { config["shaders"]["vertex"].as<std::string>(),
+                                          config["shaders"]["fragment"].as<std::string>() };
         return withShaders(shaders);
     }
 
     GraphicsPipelineType GraphicsPipelineBuilder::build()
     {
-        VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo =
-            _dynamicStateBuilder.build();
-        VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo =
-            _vertexInputBuilder.build();
+        VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = _dynamicStateBuilder.build();
+        VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo = _vertexInputBuilder.build();
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyCreateInfo =
             _inputAssemblyBuilder.build();
-        VkPipelineViewportStateCreateInfo viewportStateCreateInfo =
-            _viewportStateBuilder.build();
-        VkPipelineRasterizationStateCreateInfo rasterizerCreateInfo =
-            _rasterizerBuilder.build();
+        VkPipelineViewportStateCreateInfo viewportStateCreateInfo = _viewportStateBuilder.build();
+        VkPipelineRasterizationStateCreateInfo rasterizerCreateInfo = _rasterizerBuilder.build();
         VkPipelineMultisampleStateCreateInfo multisamplingCreateInfo =
             _multisamplingBuilder.build();
         VkPipelineColorBlendAttachmentState colorBlendAttachment =
             _colorBlendAttachmentBuilder.build();
         VkPipelineColorBlendStateCreateInfo colorBlending =
-            _colorBlendStateBuilder
-                .withColorBlendAttachments({ colorBlendAttachment })
-                .build();
-        VkPipelineDepthStencilStateCreateInfo depthStencil =
-            _depthStencilBuilder.build();
+            _colorBlendStateBuilder.withColorBlendAttachments({ colorBlendAttachment }).build();
+        VkPipelineDepthStencilStateCreateInfo depthStencil = _depthStencilBuilder.build();
 
         VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
         pipelineCreateInfo.sType = _structureType;
@@ -115,33 +104,27 @@ namespace brasio::renderer::vulkan::builders
         pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
         pipelineCreateInfo.basePipelineIndex = -1;
 
-        return std::make_unique<GraphicsPipeline>(_logicalDevice,
-                                                  pipelineCreateInfo);
+        return std::make_unique<GraphicsPipeline>(_logicalDevice, pipelineCreateInfo);
     }
-    bool GraphicsPipelineBuilder::_checkUniqueShaderType(
-        const std::string &extension)
+    bool GraphicsPipelineBuilder::_checkUniqueShaderType(const std::string &extension)
     {
         BRASIO_LOG_DEBUG("Checking " + extension + " extension against "
                              + std::to_string(_shaderPaths.size()) + " shaders",
                          { "SHADERS" });
         int shaderCount = std::count_if(
-            _shaderPaths.begin(), _shaderPaths.end(),
-            [&extension](const fs::path &shaderPath) {
+            _shaderPaths.begin(), _shaderPaths.end(), [&extension](const fs::path &shaderPath) {
                 BRASIO_LOG_TRACE("shader path: " + shaderPath.string()
-                                     + ", extension: "
-                                     + shaderPath.extension().string(),
+                                     + ", extension: " + shaderPath.extension().string(),
                                  { "SHADERS" });
                 return shaderPath.extension().string() == extension;
             });
-        BRASIO_LOG_TRACE("Found " + std::to_string(shaderCount)
-                             + " shaders with the " + extension
+        BRASIO_LOG_TRACE("Found " + std::to_string(shaderCount) + " shaders with the " + extension
                              + " extension in the graphics pipeline",
                          { "SHADERS" });
         bool res = shaderCount == 1;
         if (!res)
         {
-            BRASIO_LOG_ERROR("Should have exactly 1 shader with the "
-                                 + extension + " extension",
+            BRASIO_LOG_ERROR("Should have exactly 1 shader with the " + extension + " extension",
                              { "SHADERS" });
         }
         return res;

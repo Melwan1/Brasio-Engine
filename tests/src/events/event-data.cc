@@ -54,8 +54,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, upperA)
 {
     const std::string pressedKey = "A";
     unsigned numPresses = 1;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
     event.handle();
 }
@@ -64,8 +63,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, digit3)
 {
     const std::string pressedKey = "3";
     unsigned numPresses = 1;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
     event.handle();
 }
@@ -74,8 +72,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, lowerF)
 {
     const std::string pressedKey = "f";
     unsigned numPresses = 1;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
     event.handle();
 }
@@ -84,8 +81,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_PressedKey, plus)
 {
     const std::string pressedKey = "+";
     unsigned numPresses = 1;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getPressedKey(), pressedKey);
     event.handle();
 }
@@ -94,8 +90,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, one)
 {
     const std::string pressedKey = "A";
     unsigned numPresses = 1;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
     event.handle();
 }
@@ -104,8 +99,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, zero)
 {
     const std::string pressedKey = "A";
     unsigned numPresses = 0;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
     event.handle();
 }
@@ -114,8 +108,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, three)
 {
     const std::string pressedKey = "A";
     unsigned numPresses = 3;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
     event.handle();
 }
@@ -124,8 +117,7 @@ TEST(Events_Event_Data_Keyboard_LongPress_NumPresses, oneHundred)
 {
     const std::string pressedKey = "A";
     unsigned numPresses = 100;
-    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey,
-                                                            numPresses);
+    brasio::events::subevents::KeyboardLongPressEvent event(pressedKey, numPresses);
     EXPECT_EQ(event.getNumPresses(), numPresses);
     event.handle();
 }
@@ -172,9 +164,8 @@ TEST(Events_Event_Data_Keyboard_Release, sharp)
 
 TEST(Events_Event_Data_Mouse_Click, left)
 {
-    enum brasio::events::subevents::MouseClickEvent::MouseClickType
-        mouseClickType =
-            brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_LEFT;
+    enum brasio::events::subevents::MouseClickEvent::MouseClickType mouseClickType =
+        brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_LEFT;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
     event.handle();
@@ -182,9 +173,8 @@ TEST(Events_Event_Data_Mouse_Click, left)
 
 TEST(Events_Event_Data_Mouse_Click, middle)
 {
-    enum brasio::events::subevents::MouseClickEvent::MouseClickType
-        mouseClickType =
-            brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_MIDDLE;
+    enum brasio::events::subevents::MouseClickEvent::MouseClickType mouseClickType =
+        brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_MIDDLE;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
     event.handle();
@@ -192,9 +182,8 @@ TEST(Events_Event_Data_Mouse_Click, middle)
 
 TEST(Events_Event_Data_Mouse_Click, right)
 {
-    enum brasio::events::subevents::MouseClickEvent::MouseClickType
-        mouseClickType =
-            brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_RIGHT;
+    enum brasio::events::subevents::MouseClickEvent::MouseClickType mouseClickType =
+        brasio::events::subevents::MouseClickEvent::MOUSE_CLICK_RIGHT;
     brasio::events::subevents::MouseClickEvent event(mouseClickType);
     EXPECT_EQ(event.getClickType(), mouseClickType);
     event.handle();
@@ -256,9 +245,8 @@ TEST(Events_Event_Data_Mouse_Move_PositionY, borderUp)
 
 TEST(Events_Event_Data_Mouse_Release, left)
 {
-    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType
-        mouseReleaseType =
-            brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_LEFT;
+    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_LEFT;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
     event.handle();
@@ -266,9 +254,8 @@ TEST(Events_Event_Data_Mouse_Release, left)
 
 TEST(Events_Event_Data_Mouse_Release, middle)
 {
-    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType
-        mouseReleaseType =
-            brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_MIDDLE;
+    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_MIDDLE;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
     event.handle();
@@ -276,9 +263,8 @@ TEST(Events_Event_Data_Mouse_Release, middle)
 
 TEST(Events_Event_Data_Mouse_Release, right)
 {
-    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType
-        mouseReleaseType =
-            brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_RIGHT;
+    enum brasio::events::subevents::MouseReleaseEvent::MouseReleaseType mouseReleaseType =
+        brasio::events::subevents::MouseReleaseEvent::MOUSE_RELEASE_RIGHT;
     brasio::events::subevents::MouseReleaseEvent event(mouseReleaseType);
     EXPECT_EQ(event.getReleaseType(), mouseReleaseType);
     event.handle();
@@ -286,9 +272,8 @@ TEST(Events_Event_Data_Mouse_Release, right)
 
 TEST(Events_Event_Data_Mouse_Scroll, up)
 {
-    enum brasio::events::subevents::MouseScrollEvent::MouseScrollDirection
-        mouseScrollDirection =
-            brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_UP;
+    enum brasio::events::subevents::MouseScrollEvent::MouseScrollDirection mouseScrollDirection =
+        brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_UP;
     brasio::events::subevents::MouseScrollEvent event(mouseScrollDirection);
     EXPECT_EQ(event.getDirection(), mouseScrollDirection);
     event.handle();
@@ -296,9 +281,8 @@ TEST(Events_Event_Data_Mouse_Scroll, up)
 
 TEST(Events_Event_Data_Mouse_Scroll, down)
 {
-    enum brasio::events::subevents::MouseScrollEvent::MouseScrollDirection
-        mouseScrollDirection =
-            brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_DOWN;
+    enum brasio::events::subevents::MouseScrollEvent::MouseScrollDirection mouseScrollDirection =
+        brasio::events::subevents::MouseScrollEvent::MOUSE_SCROLL_DOWN;
     brasio::events::subevents::MouseScrollEvent event(mouseScrollDirection);
     EXPECT_EQ(event.getDirection(), mouseScrollDirection);
     event.handle();
@@ -597,8 +581,7 @@ TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, toggle)
     bool toggleFullScreen = true;
     unsigned sizeX = 0;
     unsigned sizeY = 0;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
     event.handle();
 }
@@ -608,8 +591,7 @@ TEST(Events_Event_Data_Window_Resize_ToggleFullscreen, noToggle)
     bool toggleFullScreen = false;
     unsigned sizeX = 0;
     unsigned sizeY = 0;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getToggleFullscreen(), toggleFullScreen);
     event.handle();
 }
@@ -619,8 +601,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, zero)
     bool toggleFullScreen = false;
     unsigned sizeX = 0;
     unsigned sizeY = 0;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
     event.handle();
 }
@@ -630,8 +611,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, classic)
     bool toggleFullScreen = false;
     unsigned sizeX = 1920;
     unsigned sizeY = 1080;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
     event.handle();
 }
@@ -641,8 +621,7 @@ TEST(Events_Event_Data_Window_Resize_SizeX, reduce)
     bool toggleFullScreen = false;
     unsigned sizeX = 640;
     unsigned sizeY = 480;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeX(), sizeX);
     event.handle();
 }
@@ -652,8 +631,7 @@ TEST(Events_Event_Data_Window_Resize_SizeY, zero)
     bool toggleFullScreen = false;
     unsigned sizeX = 0;
     unsigned sizeY = 0;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
     event.handle();
 }
@@ -663,8 +641,7 @@ TEST(Events_Event_Data_Window_Resize_SizeY, classic)
     bool toggleFullScreen = false;
     unsigned sizeX = 1920;
     unsigned sizeY = 1080;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
     event.handle();
 }
@@ -674,8 +651,7 @@ TEST(Events_Event_Data_Window_Resize_SizeY, reduce)
     bool toggleFullScreen = false;
     unsigned sizeX = 640;
     unsigned sizeY = 480;
-    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX,
-                                                       sizeY);
+    brasio::events::subevents::WindowResizeEvent event(toggleFullScreen, sizeX, sizeY);
     EXPECT_EQ(event.getSizeY(), sizeY);
     event.handle();
 }

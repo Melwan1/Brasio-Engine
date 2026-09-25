@@ -14,45 +14,39 @@ namespace brasio::renderer::vulkan
             vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
         if (function != nullptr)
         {
-            BRASIO_LOG_TRACE(
-                "Vulkan function found for destroying the debug messenger",
-                { "DESTROY" });
+            BRASIO_LOG_TRACE("Vulkan function found for destroying the debug messenger",
+                             { "DESTROY" });
             function(instance, debugMessenger, nullptr);
         }
         else
         {
-            BRASIO_LOG_WARNING(
-                "Vulkan function NOT found for destroying the debug "
-                "messenger, skipping",
-                { "DESTROY" });
+            BRASIO_LOG_WARNING("Vulkan function NOT found for destroying the debug "
+                               "messenger, skipping",
+                               { "DESTROY" });
         }
         BRASIO_LOG_TRACE("Destroyed debug messenger", { "DESTROY" });
     }
 
-    DebugMessenger::DebugMessenger(
-        const VkInstance &instance,
-        const VkDebugUtilsMessengerCreateInfoEXT &createInfo)
-        : Handler("debug messenger",
-                  [instance](const VkDebugUtilsMessengerEXT &debugMessenger) {
-                      destroyDebugMessenger(instance, debugMessenger);
-                  })
+    DebugMessenger::DebugMessenger(const VkInstance &instance,
+                                   const VkDebugUtilsMessengerCreateInfoEXT &createInfo)
+        : Handler("debug messenger", [instance](const VkDebugUtilsMessengerEXT &debugMessenger) {
+            destroyDebugMessenger(instance, debugMessenger);
+        })
     {
         BRASIO_LOG_TRACE("Creating debug messenger", { "CREATE" });
         auto function = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(
             vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
         if (function != nullptr)
         {
-            BRASIO_LOG_TRACE(
-                "Vulkan function found for creating the debug messenger",
-                { "CREATE" });
+            BRASIO_LOG_TRACE("Vulkan function found for creating the debug messenger",
+                             { "CREATE" });
             function(instance, &createInfo, nullptr, &getHandle());
         }
         else
         {
-            BRASIO_LOG_WARNING(
-                "Vulkan function NOT found for creating the debug "
-                "messenger, skipping",
-                { "CREATE" });
+            BRASIO_LOG_WARNING("Vulkan function NOT found for creating the debug "
+                               "messenger, skipping",
+                               { "CREATE" });
         }
         BRASIO_LOG_TRACE("Created debug messenger", { "CREATE" });
     }

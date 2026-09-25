@@ -6,8 +6,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class RasterizerBuilder
-        : public core::Builder<VkPipelineRasterizationStateCreateInfo>
+    class RasterizerBuilder : public core::Builder<VkPipelineRasterizationStateCreateInfo>
     {
     public:
         RasterizerBuilder();
@@ -22,8 +21,7 @@ namespace brasio::renderer::vulkan::builders
         RasterizerBuilder &withCullMode(const VkCullModeFlags &cullMode);
         RasterizerBuilder &withFrontFace(const VkFrontFace &frontFace);
         RasterizerBuilder &withDepthBiasEnable(const VkBool32 &enabled);
-        RasterizerBuilder &
-        withDepthBiasConstantFactor(float depthBiasConstantFactor);
+        RasterizerBuilder &withDepthBiasConstantFactor(float depthBiasConstantFactor);
         RasterizerBuilder &withDepthBiasClamp(float depthBiasClamp);
         RasterizerBuilder &withDepthBiasSlopeFactor(float depthBiasSlopeFactor);
 

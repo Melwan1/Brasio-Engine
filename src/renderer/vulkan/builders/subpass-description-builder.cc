@@ -29,21 +29,18 @@ namespace brasio::renderer::vulkan::builders
     }
 
     SubpassDescriptionBuilder &
-    SubpassDescriptionBuilder::withAdditionalAttachment(
-        const ImageAttachment &attachment, uint32_t attachmentId)
+    SubpassDescriptionBuilder::withAdditionalAttachment(const ImageAttachment &attachment,
+                                                        uint32_t attachmentId)
     {
-        return withAdditionalAttachment(
-            attachment.getAttachmentDescription(),
-            attachment.getAttachmentReference(attachmentId));
+        return withAdditionalAttachment(attachment.getAttachmentDescription(),
+                                        attachment.getAttachmentReference(attachmentId));
     }
 
-    SubpassDescriptionBuilder &
-    SubpassDescriptionBuilder::withAdditionalAttachment(
+    SubpassDescriptionBuilder &SubpassDescriptionBuilder::withAdditionalAttachment(
         const VkAttachmentDescription &attachmentDescription,
         const VkAttachmentReference &attachmentReference)
     {
-        if (attachmentDescription.finalLayout
-                == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL
+        if (attachmentDescription.finalLayout == VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL
             || attachmentDescription.finalLayout
                 == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
         {
@@ -56,8 +53,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    SubpassDescriptionBuilder &
-    SubpassDescriptionBuilder::withAdditionalResolveAttachment(
+    SubpassDescriptionBuilder &SubpassDescriptionBuilder::withAdditionalResolveAttachment(
         const VkAttachmentReference &attachmentReference)
     {
         _resolveAttachmentReferences.emplace_back(attachmentReference);

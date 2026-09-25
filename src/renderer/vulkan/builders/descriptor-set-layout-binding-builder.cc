@@ -24,32 +24,28 @@ namespace brasio::renderer::vulkan::builders
     }
 
     DescriptorSetLayoutBindingBuilder &
-    DescriptorSetLayoutBindingBuilder::withDescriptorType(
-        const VkDescriptorType &descriptorType)
+    DescriptorSetLayoutBindingBuilder::withDescriptorType(const VkDescriptorType &descriptorType)
     {
         _descriptorType = descriptorType;
         return *this;
     }
 
     DescriptorSetLayoutBindingBuilder &
-    DescriptorSetLayoutBindingBuilder::withDescriptorCount(
-        uint32_t descriptorCount)
+    DescriptorSetLayoutBindingBuilder::withDescriptorCount(uint32_t descriptorCount)
     {
         _descriptorCount = descriptorCount;
         return *this;
     }
 
     DescriptorSetLayoutBindingBuilder &
-    DescriptorSetLayoutBindingBuilder::withShaderStages(
-        const VkShaderStageFlags &shaderStages)
+    DescriptorSetLayoutBindingBuilder::withShaderStages(const VkShaderStageFlags &shaderStages)
     {
         _shaderStages = shaderStages;
         return *this;
     }
 
     DescriptorSetLayoutBindingBuilder &
-    DescriptorSetLayoutBindingBuilder::withImmutableSamplers(
-        VkSampler *samplers)
+    DescriptorSetLayoutBindingBuilder::withImmutableSamplers(VkSampler *samplers)
     {
         _samplers = samplers;
         return *this;

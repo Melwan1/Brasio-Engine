@@ -22,8 +22,7 @@ namespace brasio::renderer::vulkan::builders
 
     PhysicalDeviceType PhysicalDeviceBuilder::build()
     {
-        std::multimap<int, std::unique_ptr<PhysicalDevice>> deviceMap =
-            _ratePhysicalDevices();
+        std::multimap<int, std::unique_ptr<PhysicalDevice>> deviceMap = _ratePhysicalDevices();
 
         BRASIO_LOG_TRACE("Best physical device has suitability score "
                              + std::to_string(deviceMap.rbegin()->first),
@@ -35,30 +34,27 @@ namespace brasio::renderer::vulkan::builders
         }
         else
         {
-            BRASIO_LOG_CRITICAL(
-                "No physical device has a positive suitability score",
-                { "CREATE" });
+            BRASIO_LOG_CRITICAL("No physical device has a positive suitability score",
+                                { "CREATE" });
         }
         return std::move(deviceMap.rbegin()->second);
     }
 
-    PhysicalDeviceBuilder &PhysicalDeviceBuilder::withDeviceExtensions(
-        const std::vector<const char *> &extensions)
+    PhysicalDeviceBuilder &
+    PhysicalDeviceBuilder::withDeviceExtensions(const std::vector<const char *> &extensions)
     {
         _deviceExtensions = extensions;
         return *this;
     }
 
-    std::vector<PhysicalDeviceType>
-    PhysicalDeviceBuilder::_getAvailablePhysicalDevices()
+    std::vector<PhysicalDeviceType> PhysicalDeviceBuilder::_getAvailablePhysicalDevices()
     {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(_instance, &deviceCount, nullptr);
 
         if (deviceCount == 0)
         {
-            BRASIO_LOG_CRITICAL("Found no GPU with Vulkan support",
-                                { "CREATE" });
+            BRASIO_LOG_CRITICAL("Found no GPU with Vulkan support", { "CREATE" });
         }
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -66,8 +62,8 @@ namespace brasio::renderer::vulkan::builders
         std::vector<PhysicalDeviceType> physicalDevices;
         for (const auto &device : devices)
         {
-            physicalDevices.emplace_back(std::make_unique<PhysicalDevice>(
-                device, _surface, _deviceExtensions));
+            physicalDevices.emplace_back(
+                std::make_unique<PhysicalDevice>(device, _surface, _deviceExtensions));
         }
         return physicalDevices;
     }
@@ -87,16 +83,14 @@ namespace brasio::renderer::vulkan::builders
         bool swapChainAdequate = false;
         if (extensionsSupported)
         {
-            SwapChainSupportDetails swapChainSupport =
-                device.querySwapChainSupport();
+            SwapChainSupportDetails swapChainSupport = device.querySwapChainSupport();
             swapChainAdequate = swapChainSupport.isValid();
         }
         return indices.isComplete() && extensionsSupported && swapChainAdequate
             && deviceFeatures.samplerAnisotropy;
     }
 
-    int
-    PhysicalDeviceBuilder::_getDeviceSuitability(const PhysicalDevice &device)
+    int PhysicalDeviceBuilder::_getDeviceSuitability(const PhysicalDevice &device)
     {
         if (!_isDeviceSuitable(device))
         {
@@ -115,8 +109,7 @@ namespace brasio::renderer::vulkan::builders
         {
             score += 1000;
         }
-        else if (deviceProperties.deviceType
-                 == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+        else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
         {
             score += 500;
         }
@@ -124,17 +117,14 @@ namespace brasio::renderer::vulkan::builders
         return score;
     }
 
-    std::multimap<int, PhysicalDeviceType>
-    PhysicalDeviceBuilder::_ratePhysicalDevices()
+    std::multimap<int, PhysicalDeviceType> PhysicalDeviceBuilder::_ratePhysicalDevices()
     {
-        std::vector<PhysicalDeviceType> devices =
-            _getAvailablePhysicalDevices();
+        std::vector<PhysicalDeviceType> devices = _getAvailablePhysicalDevices();
         std::multimap<int, PhysicalDeviceType> candidates;
 
         for (auto &device : devices)
         {
-            candidates.emplace(_getDeviceSuitability(*device),
-                               std::move(device));
+            candidates.emplace(_getDeviceSuitability(*device), std::move(device));
             // can't use devices anymore
         }
         return candidates;

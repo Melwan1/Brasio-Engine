@@ -33,9 +33,8 @@ namespace brasio::renderer::vulkan
         VkFramebuffer &framebufferAt(uint32_t index);
 
         void createImages();
-        void createFramebuffers(
-            const VkRenderPass &renderPass,
-            const std::vector<VkImageView> &additionalImageViews);
+        void createFramebuffers(const VkRenderPass &renderPass,
+                                const std::vector<VkImageView> &additionalImageViews);
 
         float getWidth() const;
         float getHeight() const;

@@ -29,29 +29,29 @@ namespace brasio::renderer::vulkan::builders
         return dependency;
     }
 
-    SubpassDependencyBuilder &SubpassDependencyBuilder::withSrcStageMask(
-        const VkPipelineStageFlags &srcStageMask)
+    SubpassDependencyBuilder &
+    SubpassDependencyBuilder::withSrcStageMask(const VkPipelineStageFlags &srcStageMask)
     {
         _srcStageMask = srcStageMask;
         return *this;
     }
 
-    SubpassDependencyBuilder &SubpassDependencyBuilder::withSrcAccessMask(
-        const VkAccessFlags &srcAccessMask)
+    SubpassDependencyBuilder &
+    SubpassDependencyBuilder::withSrcAccessMask(const VkAccessFlags &srcAccessMask)
     {
         _srcAccessMask = srcAccessMask;
         return *this;
     }
 
-    SubpassDependencyBuilder &SubpassDependencyBuilder::withDstStageMask(
-        const VkPipelineStageFlags &dstStageMask)
+    SubpassDependencyBuilder &
+    SubpassDependencyBuilder::withDstStageMask(const VkPipelineStageFlags &dstStageMask)
     {
         _dstStageMask = dstStageMask;
         return *this;
     }
 
-    SubpassDependencyBuilder &SubpassDependencyBuilder::withDstAccessMask(
-        const VkAccessFlags &dstAccessMask)
+    SubpassDependencyBuilder &
+    SubpassDependencyBuilder::withDstAccessMask(const VkAccessFlags &dstAccessMask)
     {
         _dstAccessMask = dstAccessMask;
         return *this;

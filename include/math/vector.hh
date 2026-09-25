@@ -25,12 +25,9 @@ namespace brasio::math
 
         ElementType &operator[](unsigned index);
         const ElementType &operator[](unsigned index) const;
-        Vector<ElementType, size>
-        operator-(const Vector<ElementType, size> &rhs) const;
-        Vector<ElementType, size>
-        operator+(const Vector<ElementType, size> &rhs) const;
-        Vector<ElementType, size>
-        operator+=(const Vector<ElementType, size> &rhs);
+        Vector<ElementType, size> operator-(const Vector<ElementType, size> &rhs) const;
+        Vector<ElementType, size> operator+(const Vector<ElementType, size> &rhs) const;
+        Vector<ElementType, size> operator+=(const Vector<ElementType, size> &rhs);
 
         ElementType operator*(const Vector<ElementType, size> &rhs) const;
 
@@ -38,8 +35,7 @@ namespace brasio::math
         Vector<ElementType, size> operator*(const ElementType &scalar) const;
         Vector<ElementType, size> operator*=(const ElementType &scalar);
 
-        Vector<ElementType, size>
-        cross_product(const Vector<ElementType, size> &rhs) const
+        Vector<ElementType, size> cross_product(const Vector<ElementType, size> &rhs) const
             requires(size == 3);
 
         Vector<ElementType, size> normalize() const;
@@ -63,8 +59,7 @@ namespace brasio::math
     using IntVector4 = Vector<int, 4>;
 
     template <typename ElementType, unsigned size>
-    std::ostream &operator<<(std::ostream &ostr,
-                             const Vector<ElementType, size> &vector);
+    std::ostream &operator<<(std::ostream &ostr, const Vector<ElementType, size> &vector);
 } // namespace brasio::math
 
 #include <math/vector.hxx>

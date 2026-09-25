@@ -15,7 +15,6 @@ namespace brasio::geometry
         glm::vec2 texCoord = { 0.0f, 0.0f };
 
         static VkVertexInputBindingDescription getBindingDescription();
-        static std::array<VkVertexInputAttributeDescription, 4>
-        getAttributeDescriptions();
+        static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions();
     };
 } // namespace brasio::geometry

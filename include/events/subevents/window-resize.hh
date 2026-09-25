@@ -4,12 +4,10 @@
 
 namespace brasio::events::subevents
 {
-    class WindowResizeEvent
-        : public categories::WindowCategoryEvent<WindowResizeEvent>
+    class WindowResizeEvent : public categories::WindowCategoryEvent<WindowResizeEvent>
     {
     public:
-        WindowResizeEvent(bool toggleFullscreen, unsigned sizeX,
-                          unsigned sizeY);
+        WindowResizeEvent(bool toggleFullscreen, unsigned sizeX, unsigned sizeY);
 
         bool getToggleFullscreen() const;
         unsigned getSizeX() const;

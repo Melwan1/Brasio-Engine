@@ -12,11 +12,9 @@ namespace brasio::geometry
         return bindingDescription;
     }
 
-    std::array<VkVertexInputAttributeDescription, 4>
-    Vertex::getAttributeDescriptions()
+    std::array<VkVertexInputAttributeDescription, 4> Vertex::getAttributeDescriptions()
     {
-        std::array<VkVertexInputAttributeDescription, 4>
-            attributeDescriptions{};
+        std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
         VkVertexInputAttributeDescription &position = attributeDescriptions[0];
         VkVertexInputAttributeDescription &color = attributeDescriptions[1];
         VkVertexInputAttributeDescription &normal = attributeDescriptions[2];

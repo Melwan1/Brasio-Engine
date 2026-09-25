@@ -7,8 +7,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class MultisamplingBuilder
-        : public core::Builder<VkPipelineMultisampleStateCreateInfo>
+    class MultisamplingBuilder : public core::Builder<VkPipelineMultisampleStateCreateInfo>
     {
     public:
         MultisamplingBuilder();
@@ -16,15 +15,11 @@ namespace brasio::renderer::vulkan::builders
         virtual MultisamplingBuilder &base() override;
         virtual VkPipelineMultisampleStateCreateInfo build() override;
 
-        MultisamplingBuilder &
-        withSampleShadingEnable(const VkBool32 &sampleShadingEnable);
-        MultisamplingBuilder &
-        withRasterizationSamples(const VkSampleCountFlagBits &sampleCount);
+        MultisamplingBuilder &withSampleShadingEnable(const VkBool32 &sampleShadingEnable);
+        MultisamplingBuilder &withRasterizationSamples(const VkSampleCountFlagBits &sampleCount);
         MultisamplingBuilder &withMinSampleShading(float minSampleShading);
-        MultisamplingBuilder &
-        withAlphaToCoverageEnable(const VkBool32 &alphaToCoverageEnable);
-        MultisamplingBuilder &
-        withAlphaToOneEnable(const VkBool32 &alphaToOneEnable);
+        MultisamplingBuilder &withAlphaToCoverageEnable(const VkBool32 &alphaToCoverageEnable);
+        MultisamplingBuilder &withAlphaToOneEnable(const VkBool32 &alphaToOneEnable);
 
         MultisamplingBuilder &withConfig(const YAML::Node &config);
 

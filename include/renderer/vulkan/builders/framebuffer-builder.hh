@@ -12,14 +12,12 @@ namespace brasio::renderer::vulkan::builders
     class FramebufferBuilder : public core::Builder<FramebufferType>
     {
     public:
-        FramebufferBuilder(const LogicalDeviceType &logicalDevice,
-                           const VkRenderPass &renderPass,
+        FramebufferBuilder(const LogicalDeviceType &logicalDevice, const VkRenderPass &renderPass,
                            const VkExtent2D &extent);
 
         virtual FramebufferBuilder &base() override;
 
-        FramebufferBuilder &
-        withAdditionalAttachment(const VkImageView &imageView);
+        FramebufferBuilder &withAdditionalAttachment(const VkImageView &imageView);
 
         virtual FramebufferType build() override;
 

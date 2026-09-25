@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class WindowLostFocusEvent
-        : public categories::WindowCategoryEvent<WindowLostFocusEvent>
+    class WindowLostFocusEvent : public categories::WindowCategoryEvent<WindowLostFocusEvent>
     {
     public:
         WindowLostFocusEvent();

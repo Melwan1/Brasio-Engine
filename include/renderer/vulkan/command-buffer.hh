@@ -11,8 +11,7 @@ namespace brasio::renderer::vulkan
     class CommandBuffer : public core::Handler<VkCommandBuffer>
     {
     public:
-        CommandBuffer(const LogicalDeviceType &logicalDevice,
-                      const VkCommandPool &comandPool);
+        CommandBuffer(const LogicalDeviceType &logicalDevice, const VkCommandPool &comandPool);
 
         void begin();
         void end();

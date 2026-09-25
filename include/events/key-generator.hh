@@ -29,13 +29,10 @@ namespace brasio::events
 
         // key generators
 
-        static std::function<std::string(int, int, int)>
-            keyGeneratorLowercaseLetters;
-        static std::function<std::string(int, int, int)>
-            keyGeneratorUppercaseLetters;
+        static std::function<std::string(int, int, int)> keyGeneratorLowercaseLetters;
+        static std::function<std::string(int, int, int)> keyGeneratorUppercaseLetters;
         static std::function<std::string(int, int, int)> keyGeneratorDigits;
-        static std::function<std::string(int, int, int)>
-            keyGeneratorNumpadDigits;
+        static std::function<std::string(int, int, int)> keyGeneratorNumpadDigits;
         static std::function<std::string(int, int, int)> keyGeneratorFunctions;
         static std::function<std::string(int, int, int)> keyGeneratorEscape;
 

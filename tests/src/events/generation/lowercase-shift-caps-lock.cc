@@ -15,8 +15,7 @@ std::vector<KeyParam> generateLowercaseShiftCapsLockParams()
     for (char c = first; c <= last; c++)
     {
         std::string res(1, c);
-        params.emplace_back(GLFW_KEY_A + (c - first), -1,
-                            GLFW_MOD_CAPS_LOCK | GLFW_MOD_SHIFT, res);
+        params.emplace_back(GLFW_KEY_A + (c - first), -1, GLFW_MOD_CAPS_LOCK | GLFW_MOD_SHIFT, res);
     }
     return params;
 }
@@ -31,11 +30,9 @@ TEST_P(Lowercase_ShiftCapsLock, keyGeneration)
     int scancode = param.scancode;
     int mods = param.mods;
     std::string expected = param.expected;
-    std::string actual =
-        brasio::events::KeyGenerator::generate(key, scancode, mods);
+    std::string actual = brasio::events::KeyGenerator::generate(key, scancode, mods);
     EXPECT_EQ(expected, actual);
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    Events_KeyGenerator_Generate, Lowercase_ShiftCapsLock,
-    ::testing::ValuesIn(generateLowercaseShiftCapsLockParams()));
+INSTANTIATE_TEST_SUITE_P(Events_KeyGenerator_Generate, Lowercase_ShiftCapsLock,
+                         ::testing::ValuesIn(generateLowercaseShiftCapsLockParams()));

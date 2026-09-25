@@ -6,8 +6,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class ViewportStateBuilder
-        : public core::Builder<VkPipelineViewportStateCreateInfo>
+    class ViewportStateBuilder : public core::Builder<VkPipelineViewportStateCreateInfo>
     {
     public:
         ViewportStateBuilder();

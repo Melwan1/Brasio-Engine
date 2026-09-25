@@ -13,14 +13,12 @@ namespace brasio::renderer::vulkan::builders
     class PhysicalDeviceBuilder : public core::Builder<PhysicalDeviceType>
     {
     public:
-        PhysicalDeviceBuilder(const VkInstance &instance,
-                              const VkSurfaceKHR &surface);
+        PhysicalDeviceBuilder(const VkInstance &instance, const VkSurfaceKHR &surface);
 
         virtual PhysicalDeviceType build() override;
         virtual PhysicalDeviceBuilder &base() override;
 
-        PhysicalDeviceBuilder &
-        withDeviceExtensions(const std::vector<const char *> &extensions);
+        PhysicalDeviceBuilder &withDeviceExtensions(const std::vector<const char *> &extensions);
 
         PhysicalDeviceBuilder &
         withValidationLayers(const std::vector<const char *> validationLayers);

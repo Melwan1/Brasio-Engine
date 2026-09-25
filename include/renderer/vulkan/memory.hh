@@ -17,17 +17,14 @@ namespace brasio::renderer::vulkan
     class Memory : public core::Handler<VkDeviceMemory>
     {
     public:
-        Memory(const PhysicalDeviceType &physicalDevice,
-               const VkDevice &logicalDevice, const Buffer &buffer,
-               VkMemoryPropertyFlags memoryProperties, void *data, size_t size);
+        Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
+               const Buffer &buffer, VkMemoryPropertyFlags memoryProperties, void *data,
+               size_t size);
 
-        Memory(const PhysicalDeviceType &physicalDevice,
-               const VkDevice &logicalDevice,
-               const ImageAttachment &imageAttachment,
-               VkMemoryPropertyFlags memoryProperties);
+        Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
+               const ImageAttachment &imageAttachment, VkMemoryPropertyFlags memoryProperties);
 
-        void allocate(const PhysicalDeviceType &physicalDevice,
-                      const VkDevice &logicalDevice,
+        void allocate(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
                       const VkMemoryPropertyFlags &memoryProperties,
                       const VkMemoryRequirements &memoryRequirements);
 

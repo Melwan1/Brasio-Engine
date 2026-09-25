@@ -8,8 +8,7 @@ namespace brasio::events::subevents
         , _mouseScrollDirection(mouseScrollDirection)
     {}
 
-    enum MouseScrollEvent::MouseScrollDirection
-    MouseScrollEvent::getDirection() const
+    enum MouseScrollEvent::MouseScrollDirection MouseScrollEvent::getDirection() const
     {
         return _mouseScrollDirection;
     }

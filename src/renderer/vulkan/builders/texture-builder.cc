@@ -21,8 +21,7 @@ namespace brasio::renderer::vulkan::builders
         _structureType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         return withImageType(VK_IMAGE_TYPE_2D)
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
-            .withUsage(VK_IMAGE_USAGE_TRANSFER_SRC_BIT
-                       | VK_IMAGE_USAGE_TRANSFER_DST_BIT
+            .withUsage(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
                        | VK_IMAGE_USAGE_SAMPLED_BIT)
             .withMemoryProperties(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
             .withTiling(VK_IMAGE_TILING_OPTIMAL);
@@ -34,9 +33,8 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.sType = _structureType;
         imageInfo.imageType = _imageType;
         imageInfo.extent = { .width = _width, .height = _height, .depth = 1 };
-        uint32_t mipLevels = 1
-            + static_cast<uint32_t>(std::floor(
-                std::log2(std::max(_width, _height))));
+        uint32_t mipLevels =
+            1 + static_cast<uint32_t>(std::floor(std::log2(std::max(_width, _height))));
         imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1;
         imageInfo.format = _format;
@@ -48,21 +46,18 @@ namespace brasio::renderer::vulkan::builders
 
         VkImageViewCreateInfo imageViewInfo{};
         imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        imageViewInfo.image =
-            VK_NULL_HANDLE; // image is bound once the image is created inside
-                            // the ImageAttachment from which Texture is derived
+        imageViewInfo.image = VK_NULL_HANDLE; // image is bound once the image is created inside
+                                              // the ImageAttachment from which Texture is derived
         imageViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         imageViewInfo.format = _format;
-        imageViewInfo.subresourceRange = { .aspectMask =
-                                               VK_IMAGE_ASPECT_COLOR_BIT,
+        imageViewInfo.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
                                            .baseMipLevel = 0,
                                            .levelCount = mipLevels,
                                            .baseArrayLayer = 0,
                                            .layerCount = 1 };
 
-        return std::make_unique<Texture>(_physicalDevice, _logicalDevice,
-                                         _commandPool, imageInfo, imageViewInfo,
-                                         _textureImage, _memoryProperties);
+        return std::make_unique<Texture>(_physicalDevice, _logicalDevice, _commandPool, imageInfo,
+                                         imageViewInfo, _textureImage, _memoryProperties);
     }
 
     TextureBuilder &TextureBuilder::withWidth(uint32_t width)
@@ -89,8 +84,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    TextureBuilder &
-    TextureBuilder::withTextureImage(const images::P3PPM &textureImage)
+    TextureBuilder &TextureBuilder::withTextureImage(const images::P3PPM &textureImage)
     {
         _textureImage = textureImage;
         return withWidth(textureImage.getWidth())
@@ -105,15 +99,14 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    TextureBuilder &
-    TextureBuilder::withSharingMode(const VkSharingMode &sharingMode)
+    TextureBuilder &TextureBuilder::withSharingMode(const VkSharingMode &sharingMode)
     {
         _sharingMode = sharingMode;
         return *this;
     }
 
-    TextureBuilder &TextureBuilder::withMemoryProperties(
-        const VkMemoryPropertyFlags &memoryProperties)
+    TextureBuilder &
+    TextureBuilder::withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties)
     {
         _memoryProperties = memoryProperties;
         return *this;
@@ -125,8 +118,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    TextureBuilder &
-    TextureBuilder::withCommandPool(const VkCommandPool &commandPool)
+    TextureBuilder &TextureBuilder::withCommandPool(const VkCommandPool &commandPool)
     {
         _commandPool = commandPool;
         return *this;

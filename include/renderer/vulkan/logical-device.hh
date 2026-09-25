@@ -10,8 +10,7 @@ namespace brasio::renderer::vulkan
     class LogicalDevice : public core::Handler<VkDevice>
     {
     public:
-        LogicalDevice(const VkPhysicalDevice &physicalDevice,
-                      const VkDeviceCreateInfo &createInfo,
+        LogicalDevice(const VkPhysicalDevice &physicalDevice, const VkDeviceCreateInfo &createInfo,
                       const QueueFamilyIndices &indices);
 
         const VkQueue &getGraphicsQueue() const;

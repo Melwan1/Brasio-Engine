@@ -9,8 +9,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class VertexInputBuilder
-        : public core::Builder<VkPipelineVertexInputStateCreateInfo>
+    class VertexInputBuilder : public core::Builder<VkPipelineVertexInputStateCreateInfo>
     {
     public:
         VertexInputBuilder();
@@ -19,12 +18,10 @@ namespace brasio::renderer::vulkan::builders
         virtual VkPipelineVertexInputStateCreateInfo build() override;
 
         VertexInputBuilder &withBindingDescriptions(
-            const std::vector<VkVertexInputBindingDescription>
-                &bindingDescriptions);
+            const std::vector<VkVertexInputBindingDescription> &bindingDescriptions);
 
         VertexInputBuilder &withAttributeDescriptions(
-            const std::array<VkVertexInputAttributeDescription, 4>
-                &attributeDescriptions);
+            const std::array<VkVertexInputAttributeDescription, 4> &attributeDescriptions);
 
     private:
         VkStructureType _structureType;

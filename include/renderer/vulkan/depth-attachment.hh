@@ -11,13 +11,11 @@ namespace brasio::renderer::vulkan
     {
     public:
         DepthAttachment(const PhysicalDeviceType &physicalDevice,
-                        const LogicalDeviceType &logicalDevice,
-                        const VkImageCreateInfo &imageInfo,
+                        const LogicalDeviceType &logicalDevice, const VkImageCreateInfo &imageInfo,
                         const VkImageViewCreateInfo &imageViewInfo);
 
         VkAttachmentDescription getAttachmentDescription() const override;
-        VkAttachmentReference
-        getAttachmentReference(uint32_t attachmentId) const override;
+        VkAttachmentReference getAttachmentReference(uint32_t attachmentId) const override;
     };
 
     using DepthAttachmentType = std::unique_ptr<DepthAttachment>;

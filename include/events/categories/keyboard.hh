@@ -6,8 +6,7 @@ namespace brasio::events::categories
 {
 
     template <typename SubEventType>
-    class KeyboardCategoryEvent
-        : public Event<KeyboardCategoryEvent<SubEventType>, SubEventType>
+    class KeyboardCategoryEvent : public Event<KeyboardCategoryEvent<SubEventType>, SubEventType>
     {
     public:
         KeyboardCategoryEvent(enum EventType eventType);

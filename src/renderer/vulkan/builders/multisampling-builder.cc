@@ -9,8 +9,7 @@ namespace brasio::renderer::vulkan::builders
 
     MultisamplingBuilder &MultisamplingBuilder::base()
     {
-        _structureType =
-            VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+        _structureType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         return withSampleShadingEnable(VK_FALSE)
             .withRasterizationSamples(VK_SAMPLE_COUNT_1_BIT)
             .withMinSampleShading(1.0f)
@@ -18,29 +17,28 @@ namespace brasio::renderer::vulkan::builders
             .withAlphaToOneEnable(VK_FALSE);
     }
 
-    MultisamplingBuilder &MultisamplingBuilder::withSampleShadingEnable(
-        const VkBool32 &sampleShadingEnable)
+    MultisamplingBuilder &
+    MultisamplingBuilder::withSampleShadingEnable(const VkBool32 &sampleShadingEnable)
     {
         _sampleShadingEnable = sampleShadingEnable;
         return *this;
     }
 
-    MultisamplingBuilder &MultisamplingBuilder::withRasterizationSamples(
-        const VkSampleCountFlagBits &sampleCount)
+    MultisamplingBuilder &
+    MultisamplingBuilder::withRasterizationSamples(const VkSampleCountFlagBits &sampleCount)
     {
         _sampleCount = sampleCount;
         return *this;
     }
 
-    MultisamplingBuilder &
-    MultisamplingBuilder::withMinSampleShading(float minSampleShading)
+    MultisamplingBuilder &MultisamplingBuilder::withMinSampleShading(float minSampleShading)
     {
         _minSampleShading = minSampleShading;
         return *this;
     }
 
-    MultisamplingBuilder &MultisamplingBuilder::withAlphaToCoverageEnable(
-        const VkBool32 &alphaToCoverageEnable)
+    MultisamplingBuilder &
+    MultisamplingBuilder::withAlphaToCoverageEnable(const VkBool32 &alphaToCoverageEnable)
     {
         _alphaToCoverageEnable = alphaToCoverageEnable;
         return *this;
@@ -53,12 +51,11 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    MultisamplingBuilder &
-    MultisamplingBuilder::withConfig(const YAML::Node &config)
+    MultisamplingBuilder &MultisamplingBuilder::withConfig(const YAML::Node &config)
     {
         return withSampleShadingEnable(config["sample_shading"].as<bool>())
-            .withRasterizationSamples(static_cast<VkSampleCountFlagBits>(
-                config["rasterization_samples"].as<unsigned>()));
+            .withRasterizationSamples(
+                static_cast<VkSampleCountFlagBits>(config["rasterization_samples"].as<unsigned>()));
     }
 
     VkPipelineMultisampleStateCreateInfo MultisamplingBuilder::build()

@@ -8,8 +8,7 @@
 
 namespace brasio::shaders
 {
-    ShaderCompiler::ShaderCompiler(const fs::path &baseShaderDirectoryPath,
-                                   const fs::path &logPath)
+    ShaderCompiler::ShaderCompiler(const fs::path &baseShaderDirectoryPath, const fs::path &logPath)
         : _baseShaderDirectoryPath(baseShaderDirectoryPath)
         , _logPath(logPath)
     {}
@@ -19,36 +18,30 @@ namespace brasio::shaders
     {
         const fs::path destDirectoryPath("compiled-shaders/");
         const fs::path destPath =
-            (destDirectoryPath
-             / entry) // fs::relative(entry, _baseShaderDirectoryPath))
+            (destDirectoryPath / entry) // fs::relative(entry, _baseShaderDirectoryPath))
                 .replace_extension(".spv");
         return { entry, destPath };
     }
 
     bool ShaderCompiler::compileShader(const fs::path &shaderPath) const
     {
-        BRASIO_LOG_DEBUG("Compiling shader: " + shaderPath.string(),
-                         { "SHADERS" });
+        BRASIO_LOG_DEBUG("Compiling shader: " + shaderPath.string(), { "SHADERS" });
         const fs::path destDirectoryPath("compiled-shaders/");
         const fs::path resolvedPath = _baseShaderDirectoryPath / shaderPath;
         const fs::path destPath =
-            (destDirectoryPath
-             / fs::relative(resolvedPath, _baseShaderDirectoryPath))
+            (destDirectoryPath / fs::relative(resolvedPath, _baseShaderDirectoryPath))
                 .replace_extension(".spv");
         fs::create_directories(destPath.parent_path());
 
-        BRASIO_LOG_TRACE(
-            "Shader " + resolvedPath.string() + " write time: "
-                + io::files::StatUtils::writeTimeToString(resolvedPath),
-            { "SHADERS" });
-        BRASIO_LOG_TRACE(
-            "Compiled shader " + destPath.string() + " write time: "
-                + io::files::StatUtils::writeTimeToString(destPath),
-            { "SHADERS" });
+        BRASIO_LOG_TRACE("Shader " + resolvedPath.string() + " write time: "
+                             + io::files::StatUtils::writeTimeToString(resolvedPath),
+                         { "SHADERS" });
+        BRASIO_LOG_TRACE("Compiled shader " + destPath.string()
+                             + " write time: " + io::files::StatUtils::writeTimeToString(destPath),
+                         { "SHADERS" });
 
         if (fs::exists(destPath)
-            && fs::last_write_time(destPath)
-                >= fs::last_write_time(resolvedPath))
+            && fs::last_write_time(destPath) >= fs::last_write_time(resolvedPath))
         {
             BRASIO_LOG_DEBUG("Shader " + resolvedPath.string()
                                  + " does not need to be compiled again",
@@ -57,13 +50,11 @@ namespace brasio::shaders
         }
 
         std::ostringstream commandStream;
-        commandStream << "glslc " << resolvedPath << " -o " << destPath << " 2>"
-                      << _logPath;
+        commandStream << "glslc " << resolvedPath << " -o " << destPath << " 2>" << _logPath;
         int returnCode = system(commandStream.str().c_str());
         if (!returnCode)
         {
-            BRASIO_LOG_INFO("Compiled shader " + resolvedPath.string(),
-                            { "SHADERS" });
+            BRASIO_LOG_INFO("Compiled shader " + resolvedPath.string(), { "SHADERS" });
             return true;
         }
         // compilation failed
@@ -73,11 +64,8 @@ namespace brasio::shaders
         ifs.seekg(0);
         ifs.read(fileContent.data(), fileSize);
 
-        BRASIO_LOG_ERROR("Shader " + shaderPath.string()
-                             + ": compilation failed",
-                         { "SHADERS" });
-        BRASIO_LOG_ERROR("Return code " + std::to_string(returnCode),
-                         { "SHADERS" });
+        BRASIO_LOG_ERROR("Shader " + shaderPath.string() + ": compilation failed", { "SHADERS" });
+        BRASIO_LOG_ERROR("Return code " + std::to_string(returnCode), { "SHADERS" });
         BRASIO_LOG_ERROR("Error: " + fileContent, { "SHADERS" });
         return false;
     }

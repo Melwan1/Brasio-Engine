@@ -15,8 +15,7 @@ std::vector<KeyParam> generateUppercaseCapsLockParams()
     for (char c = first; c <= last; c++)
     {
         std::string res(1, c);
-        params.emplace_back(GLFW_KEY_A + (c - first), -1, GLFW_MOD_CAPS_LOCK,
-                            res);
+        params.emplace_back(GLFW_KEY_A + (c - first), -1, GLFW_MOD_CAPS_LOCK, res);
     }
     return params;
 }
@@ -31,11 +30,9 @@ TEST_P(Uppercase_CapsLock, keyGeneration)
     int scancode = param.scancode;
     int mods = param.mods;
     std::string expected = param.expected;
-    std::string actual =
-        brasio::events::KeyGenerator::generate(key, scancode, mods);
+    std::string actual = brasio::events::KeyGenerator::generate(key, scancode, mods);
     EXPECT_EQ(expected, actual);
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    Events_KeyGenerator_Generate, Uppercase_CapsLock,
-    ::testing::ValuesIn(generateUppercaseCapsLockParams()));
+INSTANTIATE_TEST_SUITE_P(Events_KeyGenerator_Generate, Uppercase_CapsLock,
+                         ::testing::ValuesIn(generateUppercaseCapsLockParams()));

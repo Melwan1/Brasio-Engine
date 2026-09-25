@@ -28,19 +28,17 @@ namespace brasio::renderer::vulkan::builders
         _instanceCreateInfo.enabledExtensionCount = extensions.size();
         _instanceCreateInfo.ppEnabledExtensionNames = extensions.data();
 
-        vkEnumerateInstanceExtensionProperties(
-            nullptr, &_instanceExtensionCount, nullptr);
+        vkEnumerateInstanceExtensionProperties(nullptr, &_instanceExtensionCount, nullptr);
         _instanceExtensions.resize(_instanceExtensionCount);
-        vkEnumerateInstanceExtensionProperties(
-            nullptr, &_instanceExtensionCount, _instanceExtensions.data());
+        vkEnumerateInstanceExtensionProperties(nullptr, &_instanceExtensionCount,
+                                               _instanceExtensions.data());
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo =
             DebugMessengerBuilder().getCreateInfo();
 
         if (_enableValidationLayers)
         {
-            _instanceCreateInfo.enabledLayerCount =
-                static_cast<uint32_t>(_validationLayers.size());
+            _instanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(_validationLayers.size());
             _instanceCreateInfo.ppEnabledLayerNames = _validationLayers.data();
 
             _instanceCreateInfo.pNext = &debugCreateInfo;
@@ -64,15 +62,14 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    InstanceBuilder &InstanceBuilder::withValidationLayers(
-        std::vector<const char *> validationLayers)
+    InstanceBuilder &
+    InstanceBuilder::withValidationLayers(std::vector<const char *> validationLayers)
     {
         bool enableValidationLayers = !validationLayers.empty();
         this->_enableValidationLayers = enableValidationLayers;
         if (this->_enableValidationLayers && !_checkValidationLayerSupport())
         {
-            BRASIO_LOG_ERROR("Validation layers requested but not found",
-                             { "DEBUGGING" });
+            BRASIO_LOG_ERROR("Validation layers requested but not found", { "DEBUGGING" });
         }
         this->_validationLayers = validationLayers;
         return *this;
@@ -81,10 +78,8 @@ namespace brasio::renderer::vulkan::builders
     std::vector<const char *> InstanceBuilder::_getExtensions()
     {
         uint32_t extensionCount = 0;
-        const char **glfwExtensions =
-            glfwGetRequiredInstanceExtensions(&extensionCount);
-        std::vector<const char *> extensions(glfwExtensions,
-                                             glfwExtensions + extensionCount);
+        const char **glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+        std::vector<const char *> extensions(glfwExtensions, glfwExtensions + extensionCount);
         if (_enableValidationLayers)
         {
             extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);

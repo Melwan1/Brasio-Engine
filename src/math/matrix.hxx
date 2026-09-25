@@ -32,16 +32,14 @@ namespace brasio::math
         {
             if (elements.begin()[line].size() != columns)
             {
-                std::cerr << "Matrix constructor initializer_list at index "
-                          << line << " has wrong number of elements. Expected: "
-                          << columns
+                std::cerr << "Matrix constructor initializer_list at index " << line
+                          << " has wrong number of elements. Expected: " << columns
                           << ", got: " << elements.begin()[line].size() << "\n";
                 return;
             }
             for (unsigned column = 0; column < columns; column++)
             {
-                elements_[line][column] =
-                    elements.begin()[line].begin()[column];
+                elements_[line][column] = elements.begin()[line].begin()[column];
             }
         }
     }
@@ -65,52 +63,44 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    ElementType &
-    Matrix<ElementType, lines, columns>::operator()(unsigned line,
-                                                    unsigned column)
+    ElementType &Matrix<ElementType, lines, columns>::operator()(unsigned line, unsigned column)
     {
         if (line >= lines)
         {
-            std::cerr
-                << "Matrix element query outside of bounds. Number of lines: "
-                << lines << ", line queried: " << line << "\n";
+            std::cerr << "Matrix element query outside of bounds. Number of lines: " << lines
+                      << ", line queried: " << line << "\n";
             return get_element_base();
         }
         if (column >= columns)
         {
-            std::cerr
-                << "Matrix element query outside of bounds. Number of columns: "
-                << columns << ", column queried: " << column << "\n";
+            std::cerr << "Matrix element query outside of bounds. Number of columns: " << columns
+                      << ", column queried: " << column << "\n";
             return get_element_base();
         }
         return elements_[line][column];
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    const ElementType &
-    Matrix<ElementType, lines, columns>::operator()(unsigned line,
-                                                    unsigned column) const
+    const ElementType &Matrix<ElementType, lines, columns>::operator()(unsigned line,
+                                                                       unsigned column) const
     {
         if (line >= lines)
         {
-            std::cerr
-                << "Matrix element query outside of bounds. Number of lines: "
-                << lines << ", line queried: " << line << "\n";
+            std::cerr << "Matrix element query outside of bounds. Number of lines: " << lines
+                      << ", line queried: " << line << "\n";
             return get_element_base();
         }
         if (column >= columns)
         {
-            std::cerr
-                << "Matrix element query outside of bounds. Number of columns: "
-                << columns << ", column queried: " << column << "\n";
+            std::cerr << "Matrix element query outside of bounds. Number of columns: " << columns
+                      << ", column queried: " << column << "\n";
             return get_element_base();
         }
         return elements_[line][column];
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    Matrix<ElementType, lines, columns>
-    Matrix<ElementType, lines, columns>::operator+(
+    Matrix<ElementType, lines, columns> Matrix<ElementType, lines, columns>::operator+(
         const Matrix<ElementType, lines, columns> &rhs) const
     {
         Matrix result;
@@ -118,8 +108,7 @@ namespace brasio::math
         {
             for (unsigned column = 0; column < columns; column++)
             {
-                result(line, column) =
-                    (*this)(line, column) + rhs(line, column);
+                result(line, column) = (*this)(line, column) + rhs(line, column);
             }
         }
         return result;
@@ -127,8 +116,7 @@ namespace brasio::math
 
     template <typename ElementType, unsigned lines, unsigned columns>
     Matrix<ElementType, lines, columns>
-    Matrix<ElementType, lines, columns>::operator+=(
-        const Matrix<ElementType, lines, columns> &rhs)
+    Matrix<ElementType, lines, columns>::operator+=(const Matrix<ElementType, lines, columns> &rhs)
     {
         for (unsigned line = 0; line < lines; line++)
         {
@@ -142,8 +130,7 @@ namespace brasio::math
 
     template <typename ElementType, unsigned lines, unsigned columns>
     template <unsigned rhs_columns>
-    Matrix<ElementType, lines, rhs_columns>
-    Matrix<ElementType, lines, columns>::operator*(
+    Matrix<ElementType, lines, rhs_columns> Matrix<ElementType, lines, columns>::operator*(
         const Matrix<ElementType, columns, rhs_columns> &rhs) const
     {
         Matrix result;
@@ -192,8 +179,8 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    Vector<ElementType, lines> Matrix<ElementType, lines, columns>::operator*(
-        const Vector<ElementType, columns> &rhs) const
+    Vector<ElementType, lines>
+    Matrix<ElementType, lines, columns>::operator*(const Vector<ElementType, columns> &rhs) const
     {
         Vector<ElementType, lines> result;
         for (unsigned line = 0; line < lines; line++)
@@ -214,8 +201,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    Matrix<ElementType, lines, columns>
-    Matrix<ElementType, lines, columns>::identity()
+    Matrix<ElementType, lines, columns> Matrix<ElementType, lines, columns>::identity()
         requires(lines == columns)
     {
         Matrix result;
@@ -227,8 +213,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    Matrix<ElementType, columns, lines>
-    Matrix<ElementType, lines, columns>::transpose() const
+    Matrix<ElementType, columns, lines> Matrix<ElementType, lines, columns>::transpose() const
     {
         Matrix<ElementType, columns, lines> result;
         for (unsigned i = 0; i < lines; ++i)
@@ -242,8 +227,7 @@ namespace brasio::math
     }
 
     template <typename ElementType, unsigned lines, unsigned columns>
-    std::ostream &operator<<(std::ostream &ostr,
-                             const Matrix<ElementType, lines, columns> &matrix)
+    std::ostream &operator<<(std::ostream &ostr, const Matrix<ElementType, lines, columns> &matrix)
     {
         for (unsigned line = 0; line < lines; line++)
         {

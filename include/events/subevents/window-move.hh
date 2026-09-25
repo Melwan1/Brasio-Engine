@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class WindowMoveEvent
-        : public categories::WindowCategoryEvent<WindowMoveEvent>
+    class WindowMoveEvent : public categories::WindowCategoryEvent<WindowMoveEvent>
     {
     public:
         WindowMoveEvent(int downBy, int rightBy);

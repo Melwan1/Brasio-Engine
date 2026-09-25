@@ -10,8 +10,7 @@ namespace brasio::renderer::vulkan::builders
 
     DepthStencilBuilder &DepthStencilBuilder::base()
     {
-        _structureType =
-            VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        _structureType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
         return *this;
     }
 

@@ -15,8 +15,7 @@ namespace brasio::renderer::vulkan::builders
         return withQueueFamilyIndex(-1); // should not stay at -1
     }
 
-    CommandPoolBuilder &
-    CommandPoolBuilder::withQueueFamilyIndex(uint32_t queueFamilyIndex)
+    CommandPoolBuilder &CommandPoolBuilder::withQueueFamilyIndex(uint32_t queueFamilyIndex)
     {
         _queueFamilyIndex = queueFamilyIndex;
         return *this;

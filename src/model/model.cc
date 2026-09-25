@@ -35,18 +35,14 @@ namespace brasio::model
                         ? objParser.getTextureCoordinates()[face[i][1] - 1]
                         : defaultTexture;
 
-                    std::array<float, 3> defaultNormal = {
-                        0.0f, 0.0f, 0.0f
-                    }; // careful, norm is 0!!
-                    const auto &normal = (face[i][2] > 0)
-                        ? objParser.getNormals()[face[i][2] - 1]
-                        : defaultNormal;
+                    std::array<float, 3> defaultNormal = { 0.0f, 0.0f,
+                                                           0.0f }; // careful, norm is 0!!
+                    const auto &normal =
+                        (face[i][2] > 0) ? objParser.getNormals()[face[i][2] - 1] : defaultNormal;
 
-                    _verticesInfo[vertexIndex] = {
-                        { vertex[0], vertex[1], vertex[2] },
-                        { textureCoordinate[0], textureCoordinate[1] },
-                        normal
-                    };
+                    _verticesInfo[vertexIndex] = { { vertex[0], vertex[1], vertex[2] },
+                                                   { textureCoordinate[0], textureCoordinate[1] },
+                                                   normal };
                 }
             }
             _faceIndices.emplace_back(indices);
@@ -65,10 +61,8 @@ namespace brasio::model
             const VertexType &position = std::get<0>(vertex);
             shaderVertex.position = { position[0], position[1], position[2] };
 
-            const TextureCoordinatesType &textureCoordinates =
-                std::get<1>(vertex);
-            shaderVertex.texCoord = { textureCoordinates[0],
-                                      1.0f - textureCoordinates[1] };
+            const TextureCoordinatesType &textureCoordinates = std::get<1>(vertex);
+            shaderVertex.texCoord = { textureCoordinates[0], 1.0f - textureCoordinates[1] };
 
             const NormalType &normal = std::get<2>(vertex);
             shaderVertex.normal = { normal[0], normal[1], normal[2] };

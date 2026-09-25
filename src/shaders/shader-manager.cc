@@ -8,8 +8,7 @@
 
 namespace brasio::shaders
 {
-    ShaderManager::ShaderManager(const fs::path &baseShaderDirectoryPath,
-                                 const fs::path &logPath)
+    ShaderManager::ShaderManager(const fs::path &baseShaderDirectoryPath, const fs::path &logPath)
         : _shaderCompiler(baseShaderDirectoryPath, logPath)
         , _baseShaderDirectoryPath(baseShaderDirectoryPath)
         , _logPath(logPath)
@@ -18,15 +17,13 @@ namespace brasio::shaders
     bool ShaderManager::compileAllShaders()
     {
         const fs::path destDirectoryPath("compiled-shaders/");
-        for (const auto &entry :
-             fs::recursive_directory_iterator(_baseShaderDirectoryPath))
+        for (const auto &entry : fs::recursive_directory_iterator(_baseShaderDirectoryPath))
         {
             if (!entry.is_regular_file())
             {
                 continue;
             }
-            fs::path relative_entry =
-                fs::relative(entry, _baseShaderDirectoryPath);
+            fs::path relative_entry = fs::relative(entry, _baseShaderDirectoryPath);
             if (!_shaderCompiler.compileShader(relative_entry))
             {
                 return false;
@@ -39,8 +36,7 @@ namespace brasio::shaders
 
     void ShaderManager::readSpirVFile(const fs::path &outputPath)
     {
-        std::ifstream ifs(outputPath.string(),
-                          std::ios::ate | std::ios::binary);
+        std::ifstream ifs(outputPath.string(), std::ios::ate | std::ios::binary);
         size_t fileSize = ifs.tellg();
         ifs.seekg(0);
         std::string fileContent(fileSize, 0);
@@ -48,44 +44,37 @@ namespace brasio::shaders
         _shaderLocationToContent.insert({ outputPath.string(), fileContent });
     }
 
-    const std::string &
-    ShaderManager::getSpirVFileContent(const fs::path &entry) const
+    const std::string &ShaderManager::getSpirVFileContent(const fs::path &entry) const
     {
-        return _shaderLocationToContent.at(
-            _shaderCompiler.getEntryPaths(entry).second);
+        return _shaderLocationToContent.at(_shaderCompiler.getEntryPaths(entry).second);
     }
 
-    VkShaderModule ShaderManager::createShaderModuleFromByteCode(
-        VkDevice &device, const std::string &shaderByteCode) const
+    VkShaderModule
+    ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
+                                                  const std::string &shaderByteCode) const
     {
         BRASIO_LOG_TRACE("Creating shader module", { "SHADERS" });
         // the shaderByteCode string is cast to a uint32_t, so it needs to be
         // realloced in order to be aligned on 4 bytes.
         size_t alignment = 4;
-        size_t paddingToAdd =
-            (alignment - shaderByteCode.size() % alignment) % alignment;
-        const std::string finalShaderByteCode =
-            shaderByteCode + std::string(paddingToAdd, 0);
+        size_t paddingToAdd = (alignment - shaderByteCode.size() % alignment) % alignment;
+        const std::string finalShaderByteCode = shaderByteCode + std::string(paddingToAdd, 0);
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
         createInfo.codeSize = finalShaderByteCode.length();
-        createInfo.pCode =
-            reinterpret_cast<const uint32_t *>(finalShaderByteCode.data());
+        createInfo.pCode = reinterpret_cast<const uint32_t *>(finalShaderByteCode.data());
 
         VkShaderModule shaderModule;
-        BRASIO_VULKAN_CHECK(
-            vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule),
-            "create shader module", { "SHADERS" });
+        BRASIO_VULKAN_CHECK(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule),
+                            "create shader module", { "SHADERS" });
         BRASIO_LOG_TRACE("Created shader module", { "SHADERS" });
         return shaderModule;
     }
 
-    VkShaderModule
-    ShaderManager::createShaderModuleFromPath(VkDevice &device,
-                                              const fs::path &entry) const
+    VkShaderModule ShaderManager::createShaderModuleFromPath(VkDevice &device,
+                                                             const fs::path &entry) const
     {
-        return createShaderModuleFromByteCode(device,
-                                              getSpirVFileContent(entry));
+        return createShaderModuleFromByteCode(device, getSpirVFileContent(entry));
     }
 
     ShaderManager::~ShaderManager()

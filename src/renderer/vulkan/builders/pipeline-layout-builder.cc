@@ -16,8 +16,8 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    PipelineLayoutBuilder &PipelineLayoutBuilder::withSetLayouts(
-        const std::vector<VkDescriptorSetLayout> &setLayouts)
+    PipelineLayoutBuilder &
+    PipelineLayoutBuilder::withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts)
     {
         _setLayouts = setLayouts;
         return *this;

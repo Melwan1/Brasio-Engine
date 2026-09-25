@@ -31,15 +31,14 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    BufferBuilder &BufferBuilder::withMemoryProperties(
-        const VkMemoryPropertyFlags &memoryProperties)
+    BufferBuilder &
+    BufferBuilder::withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties)
     {
         _memoryProperties = memoryProperties;
         return *this;
     }
 
-    BufferBuilder &
-    BufferBuilder::withSharingMode(const VkSharingMode &sharingMode)
+    BufferBuilder &BufferBuilder::withSharingMode(const VkSharingMode &sharingMode)
     {
         _sharingMode = sharingMode;
         return *this;
@@ -59,8 +58,7 @@ namespace brasio::renderer::vulkan::builders
         bufferCreateInfo.usage = _usage;
         bufferCreateInfo.sharingMode = _sharingMode;
 
-        return std::make_unique<Buffer>(_physicalDevice, _logicalDevice,
-                                        bufferCreateInfo, _memoryProperties,
-                                        _data);
+        return std::make_unique<Buffer>(_physicalDevice, _logicalDevice, bufferCreateInfo,
+                                        _memoryProperties, _data);
     }
 } // namespace brasio::renderer::vulkan::builders

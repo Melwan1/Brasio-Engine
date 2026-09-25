@@ -4,8 +4,7 @@
 
 namespace brasio::events::listeners
 {
-    void
-    KeyboardEventListener::onEvent(subevents::KeyboardLongPressEvent &event)
+    void KeyboardEventListener::onEvent(subevents::KeyboardLongPressEvent &event)
     {
         event.print(std::cout);
         event.handle();

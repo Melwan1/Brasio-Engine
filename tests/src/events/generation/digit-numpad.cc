@@ -15,8 +15,7 @@ std::vector<KeyParam> generateDigitNumpadParams()
     for (char c = first; c <= last; c++)
     {
         std::string res(1, c);
-        params.emplace_back(GLFW_KEY_KP_0 + (c - first), -1, GLFW_MOD_NUM_LOCK,
-                            res);
+        params.emplace_back(GLFW_KEY_KP_0 + (c - first), -1, GLFW_MOD_NUM_LOCK, res);
     }
     return params;
 }
@@ -31,8 +30,7 @@ TEST_P(Digit_Numpad, keyGeneration)
     int scancode = param.scancode;
     int mods = param.mods;
     std::string expected = param.expected;
-    std::string actual =
-        brasio::events::KeyGenerator::generate(key, scancode, mods);
+    std::string actual = brasio::events::KeyGenerator::generate(key, scancode, mods);
     EXPECT_EQ(expected, actual);
 }
 

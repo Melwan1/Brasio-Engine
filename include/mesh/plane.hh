@@ -11,10 +11,8 @@ namespace brasio::mesh
     class Plane : public Mesh
     {
     public:
-        Plane(int horizontal_tessellation =
-                  BRASIO_MESH_PLANE_DEFAULT_HORIZONTAL_TESSELLATION,
-              int vertical_tessellation =
-                  BRASIO_MESH_PLANE_DEFAULT_VERTICAL_TESSELLATION);
+        Plane(int horizontal_tessellation = BRASIO_MESH_PLANE_DEFAULT_HORIZONTAL_TESSELLATION,
+              int vertical_tessellation = BRASIO_MESH_PLANE_DEFAULT_VERTICAL_TESSELLATION);
 
         static std::pair<std::vector<geometry::Vertex>, std::vector<IndexType>>
         build(int horizontal_tessellation, int vertical_tessellation);

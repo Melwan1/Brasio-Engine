@@ -19,13 +19,11 @@ namespace brasio::renderer::vulkan
     class Buffer : public core::Handler<VkBuffer>
     {
     public:
-        Buffer(const PhysicalDeviceType &physicalDevice,
-               const LogicalDeviceType &logicalDevice,
-               const VkBufferCreateInfo &createInfo,
-               const VkMemoryPropertyFlags memoryProperties, void *data);
+        Buffer(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
+               const VkBufferCreateInfo &createInfo, const VkMemoryPropertyFlags memoryProperties,
+               void *data);
 
-        void copyInto(const Buffer &other, VkCommandPool commandPool,
-                      VkDeviceSize size);
+        void copyInto(const Buffer &other, VkCommandPool commandPool, VkDeviceSize size);
         void copyInto(const ImageAttachment &other, VkCommandPool commandPool);
 
         void mapMemory();

@@ -29,30 +29,26 @@ namespace brasio::mesh
         // base center vertex
         vertices.emplace_back(geometry::Vertex({ 0.0f, 0.0f, 0.0f }));
 
-        for (int base_tessellation_index = 0;
-             base_tessellation_index <= base_tessellation;
+        for (int base_tessellation_index = 0; base_tessellation_index <= base_tessellation;
              base_tessellation_index++)
         {
             // rest of base vertex
-            vertices.emplace_back(geometry::Vertex(
-                { 0.5f
-                      * std::cos(static_cast<float>(base_tessellation_index)
-                                 / base_tessellation * 2 * std::numbers::pi),
-                  0.0f,
-                  0.5f
-                      * std::sin(static_cast<float>(base_tessellation_index)
-                                 / base_tessellation * 2
-                                 * std::numbers::pi) }));
+            vertices.emplace_back(
+                geometry::Vertex({ 0.5f
+                                       * std::cos(static_cast<float>(base_tessellation_index)
+                                                  / base_tessellation * 2 * std::numbers::pi),
+                                   0.0f,
+                                   0.5f
+                                       * std::sin(static_cast<float>(base_tessellation_index)
+                                                  / base_tessellation * 2 * std::numbers::pi) }));
 
             // lateral triangle
             indices.emplace_back(base_tessellation_index + 2);
-            indices.emplace_back(
-                (base_tessellation_index + 1) % (base_tessellation + 1) + 2);
+            indices.emplace_back((base_tessellation_index + 1) % (base_tessellation + 1) + 2);
             indices.emplace_back(0);
 
             // base triangle
-            indices.emplace_back(
-                (base_tessellation_index + 1) % (base_tessellation + 1) + 2);
+            indices.emplace_back((base_tessellation_index + 1) % (base_tessellation + 1) + 2);
             indices.emplace_back(base_tessellation_index + 2);
             indices.emplace_back(1);
         }

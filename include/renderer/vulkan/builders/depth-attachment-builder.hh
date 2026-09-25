@@ -20,8 +20,7 @@ namespace brasio::renderer::vulkan::builders
         DepthAttachmentBuilder &withHeight(uint32_t height);
         DepthAttachmentBuilder &withExtent(uint32_t width, uint32_t height);
         DepthAttachmentBuilder &withFormat(const VkFormat &format);
-        DepthAttachmentBuilder &
-        withSamples(const VkSampleCountFlagBits &sampleCount);
+        DepthAttachmentBuilder &withSamples(const VkSampleCountFlagBits &sampleCount);
 
     private:
         const PhysicalDeviceType &_physicalDevice;

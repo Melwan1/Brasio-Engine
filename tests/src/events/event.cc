@@ -27,8 +27,7 @@ TEST(Events_Event_Identifiers, generation)
 
 TEST(Events_Event_CategoryType, keyboard)
 {
-    enum brasio::events::EventCategoryType categoryType =
-        brasio::events::EVENT_CATEGORY_KEYBOARD;
+    enum brasio::events::EventCategoryType categoryType = brasio::events::EVENT_CATEGORY_KEYBOARD;
     brasio::events::subevents::KeyboardPressEvent event("A");
     EXPECT_EQ(event.getCategoryType(), categoryType);
     event.handle();
@@ -36,8 +35,7 @@ TEST(Events_Event_CategoryType, keyboard)
 
 TEST(Events_Event_CategoryType, unknown)
 {
-    enum brasio::events::EventCategoryType categoryType =
-        brasio::events::EVENT_CATEGORY_UNKNOWN;
+    enum brasio::events::EventCategoryType categoryType = brasio::events::EVENT_CATEGORY_UNKNOWN;
     brasio::events::subevents::UnknownEvent event;
     EXPECT_EQ(event.getCategoryType(), categoryType);
     event.handle();
@@ -45,8 +43,7 @@ TEST(Events_Event_CategoryType, unknown)
 
 TEST(Events_Event_EventType, keyboardPress)
 {
-    enum brasio::events::EventType eventType =
-        brasio::events::EVENT_KEYBOARD_PRESS;
+    enum brasio::events::EventType eventType = brasio::events::EVENT_KEYBOARD_PRESS;
     brasio::events::subevents::KeyboardPressEvent event("A");
     EXPECT_EQ(event.getType(), eventType);
     event.handle();
@@ -62,13 +59,11 @@ TEST(Events_Event_EventType, unknown)
 
 TEST(Events_Event_CreationTime, unknown)
 {
-    std::chrono::system_clock::time_point start =
-        std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
     brasio::events::subevents::UnknownEvent event;
 
-    std::chrono::system_clock::time_point end =
-        std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
     EXPECT_GE(event.getCreationTime(), start);
     EXPECT_LE(event.getCreationTime(), end);
@@ -78,13 +73,11 @@ TEST(Events_Event_CreationTime, unknown)
 
 TEST(Events_Event_CreationTime, keyboardLongPress)
 {
-    std::chrono::system_clock::time_point start =
-        std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
 
     brasio::events::subevents::KeyboardLongPressEvent event("A", 1);
 
-    std::chrono::system_clock::time_point end =
-        std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
 
     EXPECT_GE(event.getCreationTime(), start);
     EXPECT_LE(event.getCreationTime(), end);

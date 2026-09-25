@@ -7,8 +7,7 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    class AttachmentDescriptionBuilder
-        : public core::Builder<VkAttachmentDescription>
+    class AttachmentDescriptionBuilder : public core::Builder<VkAttachmentDescription>
     {
     public:
         AttachmentDescriptionBuilder(const VkFormat &format);

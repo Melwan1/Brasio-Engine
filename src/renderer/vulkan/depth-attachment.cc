@@ -15,22 +15,18 @@ namespace brasio::renderer::vulkan
 
     VkAttachmentDescription DepthAttachment::getAttachmentDescription() const
     {
-        VkAttachmentDescription attachmentDescription =
-            ImageAttachment::getAttachmentDescription();
+        VkAttachmentDescription attachmentDescription = ImageAttachment::getAttachmentDescription();
         attachmentDescription.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        attachmentDescription.finalLayout =
-            VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        attachmentDescription.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         return attachmentDescription;
     }
 
-    VkAttachmentReference
-    DepthAttachment::getAttachmentReference(uint32_t attachmentId) const
+    VkAttachmentReference DepthAttachment::getAttachmentReference(uint32_t attachmentId) const
     {
         VkAttachmentReference attachmentReference =
             ImageAttachment::getAttachmentReference(attachmentId);
-        attachmentReference.layout =
-            VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        attachmentReference.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         return attachmentReference;
     }

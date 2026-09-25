@@ -8,8 +8,7 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    class InputAssemblyBuilder
-        : public core::Builder<VkPipelineInputAssemblyStateCreateInfo>
+    class InputAssemblyBuilder : public core::Builder<VkPipelineInputAssemblyStateCreateInfo>
     {
     public:
         InputAssemblyBuilder();
@@ -17,10 +16,8 @@ namespace brasio::renderer::vulkan::builders
         virtual InputAssemblyBuilder &base() override;
         virtual VkPipelineInputAssemblyStateCreateInfo build() override;
 
-        InputAssemblyBuilder &
-        withPrimitiveTopology(const VkPrimitiveTopology &topology);
-        InputAssemblyBuilder &
-        withPrimitiveRestartEnable(const VkBool32 &enabled);
+        InputAssemblyBuilder &withPrimitiveTopology(const VkPrimitiveTopology &topology);
+        InputAssemblyBuilder &withPrimitiveRestartEnable(const VkBool32 &enabled);
 
         InputAssemblyBuilder &withConfig(const YAML::Node &config);
 

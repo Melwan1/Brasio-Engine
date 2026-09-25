@@ -10,8 +10,7 @@ namespace brasio::renderer::vulkan::builders
 
     RasterizerBuilder &RasterizerBuilder::base()
     {
-        _structureType =
-            VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+        _structureType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         return withDepthClampEnable(VK_FALSE)
             .withDiscardEnable(VK_FALSE)
             .withPolygonMode(VK_POLYGON_MODE_FILL)
@@ -41,22 +40,19 @@ namespace brasio::renderer::vulkan::builders
         return createInfo;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withDepthClampEnable(const VkBool32 &depthClampEnable)
+    RasterizerBuilder &RasterizerBuilder::withDepthClampEnable(const VkBool32 &depthClampEnable)
     {
         _depthClampEnable = depthClampEnable;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withDiscardEnable(const VkBool32 &discardEnable)
+    RasterizerBuilder &RasterizerBuilder::withDiscardEnable(const VkBool32 &discardEnable)
     {
         _discardEnable = discardEnable;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withPolygonMode(const VkPolygonMode &polygonMode)
+    RasterizerBuilder &RasterizerBuilder::withPolygonMode(const VkPolygonMode &polygonMode)
     {
         _polygonMode = polygonMode;
         return *this;
@@ -68,43 +64,37 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withCullMode(const VkCullModeFlags &cullMode)
+    RasterizerBuilder &RasterizerBuilder::withCullMode(const VkCullModeFlags &cullMode)
     {
         _cullMode = cullMode;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withFrontFace(const VkFrontFace &frontFace)
+    RasterizerBuilder &RasterizerBuilder::withFrontFace(const VkFrontFace &frontFace)
     {
         _frontFace = frontFace;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withDepthBiasEnable(const VkBool32 &depthBiasEnable)
+    RasterizerBuilder &RasterizerBuilder::withDepthBiasEnable(const VkBool32 &depthBiasEnable)
     {
         _depthBiasEnable = depthBiasEnable;
         return *this;
     }
 
-    RasterizerBuilder &RasterizerBuilder::withDepthBiasConstantFactor(
-        float depthBiasConstantFactor)
+    RasterizerBuilder &RasterizerBuilder::withDepthBiasConstantFactor(float depthBiasConstantFactor)
     {
         _depthBiasConstantFactor = depthBiasConstantFactor;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withDepthBiasClamp(float depthBiasClamp)
+    RasterizerBuilder &RasterizerBuilder::withDepthBiasClamp(float depthBiasClamp)
     {
         _depthBiasClamp = depthBiasClamp;
         return *this;
     }
 
-    RasterizerBuilder &
-    RasterizerBuilder::withDepthBiasSlopeFactor(float depthBiasSlopeFactor)
+    RasterizerBuilder &RasterizerBuilder::withDepthBiasSlopeFactor(float depthBiasSlopeFactor)
     {
         _depthBiasSlopeFactor = depthBiasSlopeFactor;
         return *this;
@@ -126,17 +116,13 @@ namespace brasio::renderer::vulkan::builders
         };
         return withDepthClampEnable(config["depth_clamp"].as<bool>())
             .withDiscardEnable(config["discard"].as<bool>())
-            .withPolygonMode(
-                polygonModeMap.at(config["polygon_mode"].as<std::string>()))
+            .withPolygonMode(polygonModeMap.at(config["polygon_mode"].as<std::string>()))
             .withLineWidth(config["line_width"].as<float>())
             .withCullMode(cullModeMap.at(config["cull_mode"].as<std::string>()))
-            .withFrontFace(
-                frontFaceMap.at(config["front_face"].as<std::string>()))
+            .withFrontFace(frontFaceMap.at(config["front_face"].as<std::string>()))
             .withDepthBiasEnable(config["depth_bias"].as<bool>())
-            .withDepthBiasConstantFactor(
-                config["depth_bias_constant_factor"].as<float>())
+            .withDepthBiasConstantFactor(config["depth_bias_constant_factor"].as<float>())
             .withDepthBiasClamp(config["depth_bias_clamp"].as<float>())
-            .withDepthBiasSlopeFactor(
-                config["depth_bias_slope_factor"].as<float>());
+            .withDepthBiasSlopeFactor(config["depth_bias_slope_factor"].as<float>());
     }
 } // namespace brasio::renderer::vulkan::builders

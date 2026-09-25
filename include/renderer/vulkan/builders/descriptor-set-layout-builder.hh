@@ -10,8 +10,7 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    class DescriptorSetLayoutBuilder
-        : public core::Builder<DescriptorSetLayoutType>
+    class DescriptorSetLayoutBuilder : public core::Builder<DescriptorSetLayoutType>
     {
     public:
         DescriptorSetLayoutBuilder(const VkDevice &logicalDevice);

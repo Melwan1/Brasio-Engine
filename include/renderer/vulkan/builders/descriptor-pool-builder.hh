@@ -16,8 +16,8 @@ namespace brasio::renderer::vulkan::builders
         virtual DescriptorPoolBuilder &base() override;
         virtual DescriptorPoolType build() override;
 
-        DescriptorPoolBuilder &withDescriptorPoolSizes(
-            const std::vector<VkDescriptorPoolSize> &poolSizes);
+        DescriptorPoolBuilder &
+        withDescriptorPoolSizes(const std::vector<VkDescriptorPoolSize> &poolSizes);
 
         DescriptorPoolBuilder &withMaxSets(uint32_t maxSets);
 

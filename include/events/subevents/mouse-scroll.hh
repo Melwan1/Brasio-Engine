@@ -4,8 +4,7 @@
 
 namespace brasio::events::subevents
 {
-    class MouseScrollEvent
-        : public categories::MouseCategoryEvent<MouseScrollEvent>
+    class MouseScrollEvent : public categories::MouseCategoryEvent<MouseScrollEvent>
     {
     public:
         enum MouseScrollDirection

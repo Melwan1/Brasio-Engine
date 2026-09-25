@@ -10,9 +10,8 @@ namespace brasio::renderer::vulkan::builders
 
     ColorBlendAttachmentBuilder &ColorBlendAttachmentBuilder::base()
     {
-        return withColorWriteMask(
-                   VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT
-                   | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT)
+        return withColorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT
+                                  | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT)
             .withBlendEnable(VK_FALSE)
             .withSrcColorBlendFactor(VK_BLEND_FACTOR_ONE)
             .withDstColorBlendFactor(VK_BLEND_FACTOR_ZERO)
@@ -23,8 +22,7 @@ namespace brasio::renderer::vulkan::builders
     }
 
     ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withColorWriteMask(
-        const VkColorComponentFlags &colorWriteMask)
+    ColorBlendAttachmentBuilder::withColorWriteMask(const VkColorComponentFlags &colorWriteMask)
     {
         _colorWriteMask = colorWriteMask;
         return *this;
@@ -38,16 +36,14 @@ namespace brasio::renderer::vulkan::builders
     }
 
     ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withSrcColorBlendFactor(
-        const VkBlendFactor &srcColorBlendFactor)
+    ColorBlendAttachmentBuilder::withSrcColorBlendFactor(const VkBlendFactor &srcColorBlendFactor)
     {
         _srcColorBlendFactor = srcColorBlendFactor;
         return *this;
     }
 
     ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withDstColorBlendFactor(
-        const VkBlendFactor &dstColorBlendFactor)
+    ColorBlendAttachmentBuilder::withDstColorBlendFactor(const VkBlendFactor &dstColorBlendFactor)
     {
         _dstColorBlendFactor = dstColorBlendFactor;
         return *this;
@@ -61,16 +57,14 @@ namespace brasio::renderer::vulkan::builders
     }
 
     ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withSrcAlphaBlendFactor(
-        const VkBlendFactor &srcAlphaBlendFactor)
+    ColorBlendAttachmentBuilder::withSrcAlphaBlendFactor(const VkBlendFactor &srcAlphaBlendFactor)
     {
         _srcAlphaBlendFactor = srcAlphaBlendFactor;
         return *this;
     }
 
     ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withDstAlphaBlendFactor(
-        const VkBlendFactor &dstAlphaBlendFactor)
+    ColorBlendAttachmentBuilder::withDstAlphaBlendFactor(const VkBlendFactor &dstAlphaBlendFactor)
     {
         _dstAlphaBlendFactor = dstAlphaBlendFactor;
         return *this;
@@ -83,42 +77,35 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    ColorBlendAttachmentBuilder &
-    ColorBlendAttachmentBuilder::withConfig(const YAML::Node &config)
+    ColorBlendAttachmentBuilder &ColorBlendAttachmentBuilder::withConfig(const YAML::Node &config)
     {
-        std::map<char, VkColorComponentFlags> sampleMaskMap = {
-            { 'R', VK_COLOR_COMPONENT_R_BIT },
-            { 'G', VK_COLOR_COMPONENT_G_BIT },
-            { 'B', VK_COLOR_COMPONENT_B_BIT },
-            { 'A', VK_COLOR_COMPONENT_A_BIT }
-        };
+        std::map<char, VkColorComponentFlags> sampleMaskMap = { { 'R', VK_COLOR_COMPONENT_R_BIT },
+                                                                { 'G', VK_COLOR_COMPONENT_G_BIT },
+                                                                { 'B', VK_COLOR_COMPONENT_B_BIT },
+                                                                { 'A', VK_COLOR_COMPONENT_A_BIT } };
         VkColorComponentFlags colorMask = 0;
         for (char c : config["writeMask"].as<std::string>())
         {
             colorMask |= sampleMaskMap.at(c);
         }
 
-        std::map<std::string, VkBlendFactor> blendFactorMap = {
-            { "ZERO", VK_BLEND_FACTOR_ZERO }, { "ONE", VK_BLEND_FACTOR_ONE }
-        };
+        std::map<std::string, VkBlendFactor> blendFactorMap = { { "ZERO", VK_BLEND_FACTOR_ZERO },
+                                                                { "ONE", VK_BLEND_FACTOR_ONE } };
 
-        std::map<std::string, VkBlendOp> blendOpMap = { { "ADD",
-                                                          VK_BLEND_OP_ADD } };
+        std::map<std::string, VkBlendOp> blendOpMap = { { "ADD", VK_BLEND_OP_ADD } };
 
         return withColorWriteMask(colorMask)
             .withBlendEnable(config["blend"].as<bool>())
-            .withSrcColorBlendFactor(blendFactorMap.at(
-                config["src_color_blend_factor"].as<std::string>()))
-            .withDstColorBlendFactor(blendFactorMap.at(
-                config["dst_color_blend_factor"].as<std::string>()))
-            .withColorBlendOp(
-                blendOpMap.at(config["color_blend_op"].as<std::string>()))
-            .withSrcAlphaBlendFactor(blendFactorMap.at(
-                config["src_alpha_blend_factor"].as<std::string>()))
-            .withDstAlphaBlendFactor(blendFactorMap.at(
-                config["dst_alpha_blend_factor"].as<std::string>()))
-            .withAlphaBlendOp(
-                blendOpMap.at(config["alpha_blend_op"].as<std::string>()));
+            .withSrcColorBlendFactor(
+                blendFactorMap.at(config["src_color_blend_factor"].as<std::string>()))
+            .withDstColorBlendFactor(
+                blendFactorMap.at(config["dst_color_blend_factor"].as<std::string>()))
+            .withColorBlendOp(blendOpMap.at(config["color_blend_op"].as<std::string>()))
+            .withSrcAlphaBlendFactor(
+                blendFactorMap.at(config["src_alpha_blend_factor"].as<std::string>()))
+            .withDstAlphaBlendFactor(
+                blendFactorMap.at(config["dst_alpha_blend_factor"].as<std::string>()))
+            .withAlphaBlendOp(blendOpMap.at(config["alpha_blend_op"].as<std::string>()));
     }
 
     VkPipelineColorBlendAttachmentState ColorBlendAttachmentBuilder::build()
