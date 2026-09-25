@@ -415,9 +415,11 @@ namespace brasio::renderer::vulkan
         VkPresentModeKHR presentMode = _swapchain->getPresentMode();
         cleanupSwapChain();
         createSwapChain(presentMode);
+        createColorResources();
         createDepthResources();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
     }
 
     void VulkanRenderer::createUniformBuffers()
