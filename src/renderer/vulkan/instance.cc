@@ -1,8 +1,8 @@
 #include <renderer/vulkan/instance.hh>
 
 #include <renderer/vulkan/builders/debug-messenger-builder.hh>
-
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -12,11 +12,9 @@ namespace brasio::renderer::vulkan
         })
     {
         BRASIO_LOG_TRACE("Creating Vulkan instance", { "CREATE" });
-        if (vkCreateInstance(&createInfo, nullptr, &getHandle()) != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create Vulkan instance",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(
+            vkCreateInstance(&createInfo, nullptr, &getHandle()),
+            "create Vulkan instance", { "CREATE" });
         BRASIO_LOG_TRACE("Created Vulkan instance", { "CREATE" });
         _debugMessenger =
             builders::DebugMessengerBuilder().withInstance(getHandle()).build();

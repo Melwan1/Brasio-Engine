@@ -1,4 +1,5 @@
 #include <renderer/vulkan/command-pool.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -10,12 +11,9 @@ namespace brasio::renderer::vulkan
                   })
     {
         BRASIO_LOG_TRACE("Creating command pool", { "CREATE" });
-        if (vkCreateCommandPool(logicalDevice, &createInfo, nullptr,
-                                &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create command pool", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateCommandPool(logicalDevice, &createInfo,
+                                                nullptr, &getHandle()),
+                            "create command pool", { "CREATE" });
         BRASIO_LOG_TRACE("Created command pool", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

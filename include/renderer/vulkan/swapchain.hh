@@ -4,8 +4,8 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/image.hh>
+#include <renderer/vulkan/framebuffer.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -47,7 +47,7 @@ namespace brasio::renderer::vulkan
         VkPresentModeKHR _presentMode;
         uint32_t _imageCount;
         std::vector<ImageType> _images;
-        std::vector<VkFramebuffer> _framebuffers;
+        std::vector<FramebufferType> _framebuffers;
     };
 
     using SwapchainType = std::unique_ptr<Swapchain>;

@@ -1,4 +1,5 @@
 #include <renderer/vulkan/graphics-pipeline.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -13,13 +14,11 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Creating graphics pipeline", { "CREATE" });
 
         uint32_t pipelineCreateInfoCount = 1;
-        if (vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE,
+        BRASIO_VULKAN_CHECK(
+            vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE,
                                       pipelineCreateInfoCount, &createInfo,
-                                      nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create graphics pipeline");
-        }
+                                      nullptr, &getHandle()),
+            "create graphics pipeline", { "CREATE" });
         BRASIO_LOG_TRACE("Created graphics pipeline", { "CREATE" });
     }
 

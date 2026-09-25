@@ -4,9 +4,9 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    FramebufferBuilder::FramebufferBuilder(const VkDevice &logicalDevice,
-                                           const VkRenderPass &renderPass,
-                                           const VkExtent2D &extent)
+    FramebufferBuilder::FramebufferBuilder(
+        const LogicalDeviceType &logicalDevice, const VkRenderPass &renderPass,
+        const VkExtent2D &extent)
         : _logicalDevice(logicalDevice)
         , _renderPass(renderPass)
         , _extent(extent)
@@ -30,7 +30,7 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    VkFramebuffer FramebufferBuilder::build()
+    FramebufferType FramebufferBuilder::build()
     {
         VkFramebufferCreateInfo createInfo{};
         createInfo.sType = _structureType;
@@ -41,17 +41,6 @@ namespace brasio::renderer::vulkan::builders
         createInfo.height = _extent.height;
         createInfo.layers = _layers;
 
-        BRASIO_LOG_TRACE("Creating framebuffer", { "CREATE" });
-
-        VkFramebuffer framebuffer;
-
-        if (vkCreateFramebuffer(_logicalDevice, &createInfo, nullptr,
-                                &framebuffer)
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create framebuffer", { "CREATE" });
-        }
-        BRASIO_LOG_TRACE("Created framebuffer", { "CREATE" });
-        return framebuffer;
+        return std::make_unique<Framebuffer>(_logicalDevice, createInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

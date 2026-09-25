@@ -1,6 +1,7 @@
 #include <renderer/vulkan/semaphore.hh>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -11,11 +12,9 @@ namespace brasio::renderer::vulkan
         })
     {
         BRASIO_LOG_TRACE("Creating semaphore", { "CREATE" });
-        if (vkCreateSemaphore(logicalDevice, &createInfo, nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create semaphore", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateSemaphore(logicalDevice, &createInfo,
+                                              nullptr, &getHandle()),
+                            "create semaphore", { "CREATE" });
         BRASIO_LOG_TRACE("Created semaphore", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

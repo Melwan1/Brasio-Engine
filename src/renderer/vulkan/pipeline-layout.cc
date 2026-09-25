@@ -1,4 +1,5 @@
 #include <renderer/vulkan/pipeline-layout.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -11,14 +12,9 @@ namespace brasio::renderer::vulkan
                   })
     {
         BRASIO_LOG_TRACE("Creating pipeline layout", { "CREATE" });
-        if (vkCreatePipelineLayout(logicalDevice, &createInfo, nullptr,
-                                   &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create pipelineLayout",
-                                { "CREATE" });
-        }
-
+        BRASIO_VULKAN_CHECK(vkCreatePipelineLayout(logicalDevice, &createInfo,
+                                                   nullptr, &getHandle()),
+                            "pipeline layout", { "CREATE" });
         BRASIO_LOG_TRACE("Created pipeline layout", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan
