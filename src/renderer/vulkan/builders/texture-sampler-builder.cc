@@ -28,7 +28,7 @@ namespace brasio::renderer::vulkan::builders
         _compareOp = VK_COMPARE_OP_ALWAYS;
         _mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
         _mipLodBias = 0.0f;
-        _minLod = 4.0f;
+        _minLod = 0.0f;
         _maxLod = VK_LOD_CLAMP_NONE;
         return *this;
     }
