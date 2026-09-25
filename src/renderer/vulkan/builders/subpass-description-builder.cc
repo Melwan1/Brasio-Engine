@@ -24,6 +24,7 @@ namespace brasio::renderer::vulkan::builders
         {
             subpass.pDepthStencilAttachment = &(*_depthAttachmentReference);
         }
+        subpass.pResolveAttachments = _resolveAttachmentReferences.data();
         return subpass;
     }
 
@@ -52,6 +53,14 @@ namespace brasio::renderer::vulkan::builders
         }
         _colorAttachmentDescriptions.emplace_back(attachmentDescription);
         _colorAttachmentReferences.emplace_back(attachmentReference);
+        return *this;
+    }
+
+    SubpassDescriptionBuilder &
+    SubpassDescriptionBuilder::withAdditionalResolveAttachment(
+        const VkAttachmentReference &attachmentReference)
+    {
+        _resolveAttachmentReferences.emplace_back(attachmentReference);
         return *this;
     }
 } // namespace brasio::renderer::vulkan::builders

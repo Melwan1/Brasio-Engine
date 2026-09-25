@@ -19,6 +19,7 @@
 #include <renderer/vulkan/builders/dynamic-state-builder.hh>
 #include <renderer/vulkan/builders/framebuffer-builder.hh>
 #include <renderer/vulkan/builders/image-builder.hh>
+#include <renderer/vulkan/builders/image-attachment-builder.hh>
 #include <renderer/vulkan/builders/input-assembly-builder.hh>
 #include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/builders/logical-device-builder.hh>

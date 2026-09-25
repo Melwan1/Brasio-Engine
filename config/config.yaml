@@ -41,7 +41,7 @@ renderer:
 
       multisampling:
         sample_shading: false
-        rasterization_samples: 1
+        rasterization_samples: 16
         min_sample_shading: 1
         alpha_to_coverage: false
         alpha_to_one: false
@@ -87,7 +87,7 @@ renderer:
 
       multisampling:
         sample_shading: false
-        rasterization_samples: 1
+        rasterization_samples: 16
         min_sample_shading: 1
         alpha_to_coverage: false
         alpha_to_one: false
@@ -113,7 +113,7 @@ logging:
     CREATE: INFO
     DESTROY: DEBUG
     DEVICE: INFO
-    # EVENT: DEBUG
+    EVENT: TRACE
     GENERAL: INFO
     RENDER: DEBUG
     SHADERS: INFO

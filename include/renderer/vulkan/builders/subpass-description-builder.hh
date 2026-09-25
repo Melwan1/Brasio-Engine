@@ -26,10 +26,14 @@ namespace brasio::renderer::vulkan::builders
             const VkAttachmentDescription &attachmentDescription,
             const VkAttachmentReference &attachmentReference);
 
+        SubpassDescriptionBuilder &withAdditionalResolveAttachment(
+            const VkAttachmentReference &attachmentReference);
+
     private:
         VkPipelineBindPoint _bindPoint;
         std::vector<VkAttachmentDescription> _colorAttachmentDescriptions;
         std::vector<VkAttachmentReference> _colorAttachmentReferences;
+        std::vector<VkAttachmentReference> _resolveAttachmentReferences;
         std::optional<VkAttachmentDescription> _depthAttachmentDescription;
         std::optional<VkAttachmentReference> _depthAttachmentReference;
     };

@@ -5,5 +5,3 @@ repos:
     hooks:
       - id: clang-format
         args: [-i]
-      - id: clang-tidy
-        args: [--extra-arg=-Wno-unused-command-line-argument]

@@ -23,8 +23,8 @@ namespace brasio::renderer::vulkan
         , _imageViewCreateInfo(imageViewCreateInfo)
         , _width(imageCreateInfo.extent.width)
         , _height(imageCreateInfo.extent.height)
+        , _sampleCount(imageCreateInfo.samples)
     {
-        imageCreateInfo.mipLevels = getMipLevels();
         createImage(imageCreateInfo);
         _imageViewCreateInfo.image = getImage();
     }
@@ -47,6 +47,7 @@ namespace brasio::renderer::vulkan
         , _format(imageViewCreateInfo.format)
         , _width(0)
         , _height(0)
+        , _sampleCount(VK_SAMPLE_COUNT_1_BIT)
     {
         createImageView(imageViewCreateInfo);
     }
@@ -302,7 +303,17 @@ namespace brasio::renderer::vulkan
 
     VkAttachmentDescription ImageAttachment::getAttachmentDescription() const
     {
-        return sGetAttachmentDescription(_format);
+        VkAttachmentDescription attachmentDescription{};
+        attachmentDescription.format = _format;
+        attachmentDescription.samples = _sampleCount;
+        attachmentDescription.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        attachmentDescription.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        attachmentDescription.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        attachmentDescription.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        attachmentDescription.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        attachmentDescription.finalLayout =
+            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        return attachmentDescription;
     }
 
     VkAttachmentReference

@@ -58,10 +58,12 @@ namespace brasio::renderer::vulkan
         _mesh2->applyTranslation(mesh::TransformMode::CPU,
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
         createGraphicsPipelines();
         createTexture();
         createUniformBuffers();
@@ -106,10 +108,12 @@ namespace brasio::renderer::vulkan
                                  { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
 
+        createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
         createGraphicsPipelines(config["pipelines"]);
         createTexture();
         createUniformBuffers();
@@ -127,7 +131,6 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Destroying Vulkan renderer", { "DESTROY" });
         cleanupSwapChain();
-        _textureSampler.reset();
         _texture.reset();
         _mesh1.reset();
         _mesh2.reset();
@@ -137,6 +140,8 @@ namespace brasio::renderer::vulkan
         _graphicsPipelines.clear();
         _pipelineLayout.reset();
         _renderPass.reset();
+        _depthAttachment.reset();
+        _colorAttachment.reset();
         _syncObjects.reset();
 
         BRASIO_LOG_TRACE("Destroyed Vulkan renderer", { "DESTROY" });
@@ -149,6 +154,7 @@ namespace brasio::renderer::vulkan
                                             _surface->getHandle())
                 .withDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
                 .build();
+        _msaaSamples = _physicalDevice->getMaxUsableSampleCount();
     }
 
     void VulkanRenderer::createLogicalDevice()
@@ -187,26 +193,34 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createRenderPass()
     {
         VkAttachmentDescription colorAttachmentDescription =
-            ImageAttachment::sGetAttachmentDescription(_swapchain->getFormat());
+            _colorAttachment->getAttachmentDescription();
         VkAttachmentReference colorAttachmentReference =
-            ImageAttachment::sGetAttachmentReference(0);
+            _colorAttachment->getAttachmentReference(0);
         VkAttachmentDescription depthAttachmentDescription =
             _depthAttachment->getAttachmentDescription();
         VkAttachmentReference depthAttachmentReference =
             _depthAttachment->getAttachmentReference(1);
+        VkAttachmentDescription colorAttachmentResolveDescription =
+            ImageAttachment::sGetAttachmentDescription(_swapchain->getFormat());
+        VkAttachmentReference colorAttachmentResolveReference =
+            ImageAttachment::sGetAttachmentReference(2);
         builders::SubpassDescriptionBuilder subpassBuilder =
             builders::SubpassDescriptionBuilder()
                 .withAdditionalAttachment(colorAttachmentDescription,
                                           colorAttachmentReference)
                 .withAdditionalAttachment(depthAttachmentDescription,
-                                          depthAttachmentReference);
+                                          depthAttachmentReference)
+                .withAdditionalResolveAttachment(
+                    colorAttachmentResolveReference);
         VkSubpassDescription subpass = subpassBuilder.build();
 
         VkSubpassDependency dependency =
             builders::SubpassDependencyBuilder()
                 .withSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
                                   | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
-                .withSrcAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
+                .withSrcAccessMask(
+                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+                    | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
                 .withDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
                                   | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
                 .withDstAccessMask(
@@ -218,6 +232,8 @@ namespace brasio::renderer::vulkan
             builders::RenderPassBuilder(_logicalDevice->getHandle())
                 .withAdditionalAttachmentDescription(colorAttachmentDescription)
                 .withAdditionalAttachmentDescription(depthAttachmentDescription)
+                .withAdditionalAttachmentDescription(
+                    colorAttachmentResolveDescription)
                 .withAdditionalSubpass(subpass)
                 .withAdditionalSubpassDependency(dependency);
 
@@ -399,9 +415,11 @@ namespace brasio::renderer::vulkan
         VkPresentModeKHR presentMode = _swapchain->getPresentMode();
         cleanupSwapChain();
         createSwapChain(presentMode);
+        createColorResources();
         createDepthResources();
         _swapchain->createFramebuffers(_renderPass->getHandle(),
-                                       { _depthAttachment->getImageView() });
+                                       { _colorAttachment->getImageView(),
+                                         _depthAttachment->getImageView() });
     }
 
     void VulkanRenderer::createUniformBuffers()
@@ -510,7 +528,20 @@ namespace brasio::renderer::vulkan
         _depthAttachment =
             builders::DepthAttachmentBuilder(_physicalDevice, _logicalDevice)
                 .withExtent(swapchainExtent.width, swapchainExtent.height)
+                .withSamples(_msaaSamples)
                 .withFormat(_physicalDevice->findDepthFormat())
+                .build();
+    }
+
+    void VulkanRenderer::createColorResources()
+    {
+        VkFormat swapchainFormat = _swapchain->getFormat();
+        VkExtent2D swapchainExtent = _swapchain->getExtent();
+        _colorAttachment =
+            builders::ImageAttachmentBuilder(_physicalDevice, _logicalDevice)
+                .withExtent(swapchainExtent.width, swapchainExtent.height)
+                .withSamples(_msaaSamples)
+                .withFormat(swapchainFormat)
                 .build();
     }
 

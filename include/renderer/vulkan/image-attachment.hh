@@ -81,6 +81,9 @@ namespace brasio::renderer::vulkan
         VkImageViewCreateInfo _imageViewCreateInfo{};
         size_t _width;
         size_t _height;
+        VkSampleCountFlagBits _sampleCount;
     };
+
+    using ImageAttachmentType = std::unique_ptr<ImageAttachment>;
 
 } // namespace brasio::renderer::vulkan
