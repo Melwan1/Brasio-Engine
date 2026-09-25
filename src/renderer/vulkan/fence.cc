@@ -1,6 +1,7 @@
 #include <renderer/vulkan/fence.hh>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -11,11 +12,9 @@ namespace brasio::renderer::vulkan
         })
     {
         BRASIO_LOG_TRACE("Creating fence", { "CREATE" });
-        if (vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create fence", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(
+            vkCreateFence(logicalDevice, &createInfo, nullptr, &getHandle()),
+            "create fence", { "CREATE" });
         BRASIO_LOG_TRACE("Created fence", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

@@ -11,6 +11,7 @@ target_sources(librenderer PRIVATE
     descriptor-sets.cc
     #device.cc
     fence.cc
+    framebuffer.cc
     graphics-pipeline.cc
     image.cc
     image-attachment.cc

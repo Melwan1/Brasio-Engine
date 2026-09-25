@@ -3,6 +3,7 @@
 #include <io/logging/logger.hh>
 #include <renderer/vulkan/builders/image-builder.hh>
 #include <renderer/vulkan/builders/framebuffer-builder.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -16,12 +17,10 @@ namespace brasio::renderer::vulkan
         , _logicalDevice(logicalDevice)
     {
         BRASIO_LOG_TRACE("Creating swapchain", { "CREATE" });
-        if (vkCreateSwapchainKHR(_logicalDevice->getHandle(), &createInfo,
-                                 nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create swapchain", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateSwapchainKHR(_logicalDevice->getHandle(),
+                                                 &createInfo, nullptr,
+                                                 &getHandle()),
+                            "create swapchain", { "CREATE" });
         BRASIO_LOG_TRACE("Created swapchain", { "CREATE" });
         BRASIO_LOG_TRACE("Setting image format, extent and image count",
                          { "CREATE" });
@@ -78,12 +77,12 @@ namespace brasio::renderer::vulkan
 
     const VkFramebuffer &Swapchain::framebufferAt(uint32_t index) const
     {
-        return _framebuffers.at(index);
+        return _framebuffers.at(index)->getHandle();
     }
 
     VkFramebuffer &Swapchain::framebufferAt(uint32_t index)
     {
-        return _framebuffers.at(index);
+        return _framebuffers.at(index)->getHandle();
     }
 
     void Swapchain::createImages()
@@ -114,8 +113,8 @@ namespace brasio::renderer::vulkan
     {
         for (const auto &image : _images)
         {
-            builders::FramebufferBuilder builder(_logicalDevice->getHandle(),
-                                                 renderPass, getExtent());
+            builders::FramebufferBuilder builder(_logicalDevice, renderPass,
+                                                 getExtent());
             for (const VkImageView &imageView : additionalImageViews)
             {
                 builder.withAdditionalAttachment(imageView);
@@ -137,11 +136,6 @@ namespace brasio::renderer::vulkan
 
     Swapchain::~Swapchain()
     {
-        for (auto &framebuffer : _framebuffers)
-        {
-            vkDestroyFramebuffer(_logicalDevice->getHandle(), framebuffer,
-                                 nullptr);
-        }
         _framebuffers.clear();
         _images.clear();
     }

@@ -1,6 +1,5 @@
 #include <renderer/vulkan/command-buffer-array.hh>
-
-#define CLEAR_COLOR { 1.0f, 1.0f, 1.0f, 1.0f }
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -16,13 +15,10 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Allocating command buffer array", { "CREATE" });
         getHandle().resize(allocateInfo.commandBufferCount);
-        if (vkAllocateCommandBuffers(logicalDevice, &allocateInfo,
-                                     getHandle().data())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not allocate command buffer array",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkAllocateCommandBuffers(logicalDevice,
+                                                     &allocateInfo,
+                                                     getHandle().data()),
+                            "allocate command buffer array", { "CREATE" });
         BRASIO_LOG_TRACE("Allocated command buffer array", { "CREATE" });
     }
 
@@ -52,10 +48,8 @@ namespace brasio::renderer::vulkan
 
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
 
-        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
-        {
-            BRASIO_LOG_ERROR("Could not begin command buffer", { "RENDER" });
-        }
+        BRASIO_VULKAN_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo),
+                            "begin command buffer", { "RENDER" });
         BRASIO_LOG_TRACE("Began command buffer at index "
                              + std::to_string(commandBufferIndex)
                              + " for image " + std::to_string(imageIndex),
@@ -138,10 +132,7 @@ namespace brasio::renderer::vulkan
 
         BRASIO_LOG_TRACE("Ending command buffer", { "RENDER" });
 
-        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Failed to end command buffer recording",
-                                { "RENDER" });
-        }
+        BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer),
+                            "end command buffer record", { "RENDER" });
     }
 } // namespace brasio::renderer::vulkan

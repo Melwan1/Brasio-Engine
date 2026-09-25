@@ -1,6 +1,7 @@
 #include <renderer/vulkan/image.hh>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -13,11 +14,9 @@ namespace brasio::renderer::vulkan
         , _image(image)
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
-        if (vkCreateImageView(logicalDevice, &createInfo, nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create image view", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateImageView(logicalDevice, &createInfo,
+                                              nullptr, &getHandle()),
+                            "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 

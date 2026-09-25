@@ -1,5 +1,6 @@
 #include <renderer/vulkan/descriptor-set-layout.hh>
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -14,13 +15,9 @@ namespace brasio::renderer::vulkan
                   })
     {
         BRASIO_LOG_TRACE("Creating descriptor set layout", { "CREATE" });
-        if (vkCreateDescriptorSetLayout(device, &createInfo, nullptr,
-                                        &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create descriptor set layout",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateDescriptorSetLayout(device, &createInfo,
+                                                        nullptr, &getHandle()),
+                            "create descriptor set layout", { "CREATE" });
         BRASIO_LOG_TRACE("Created descriptor set layout", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

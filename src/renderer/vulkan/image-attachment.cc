@@ -1,6 +1,7 @@
 #include <renderer/vulkan/image-attachment.hh>
 #include <renderer/vulkan/builders/buffer-builder.hh>
 #include <vulkan/vulkan_core.h>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -76,12 +77,10 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating image", { "CREATE" });
 
-        if (vkCreateImage(_logicalDevice->getHandle(), &imageCreateInfo,
-                          nullptr, &getImage())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create image", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateImage(_logicalDevice->getHandle(),
+                                          &imageCreateInfo, nullptr,
+                                          &getImage()),
+                            "create image", { "CREATE" });
         BRASIO_LOG_TRACE("Created image", { "CREATE" });
     }
 
@@ -95,12 +94,10 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
 
-        if (vkCreateImageView(_logicalDevice->getHandle(), &imageViewCreateInfo,
-                              nullptr, &getImageView())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create image view", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateImageView(_logicalDevice->getHandle(),
+                                              &imageViewCreateInfo, nullptr,
+                                              &getImageView()),
+                            "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 

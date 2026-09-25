@@ -1,5 +1,6 @@
 #include <renderer/vulkan/texture-sampler.hh>
-#include "io/logging/logger.hh"
+#include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -14,13 +15,10 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating texture sampler", { "CREATE" });
 
-        if (vkCreateSampler(logicalDevice->getHandle(), &samplerInfo, nullptr,
-                            &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create texture sampler",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateSampler(logicalDevice->getHandle(),
+                                            &samplerInfo, nullptr,
+                                            &getHandle()),
+                            "create texture sampler", { "CREATE" });
         BRASIO_LOG_TRACE("Created texture sampler", { "CREATE" });
     }
 

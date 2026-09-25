@@ -2,6 +2,7 @@
 
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/image-attachment.hh>
+#include <utils/libutils.hh>
 
 #include <cstring>
 
@@ -29,16 +30,15 @@ namespace brasio::renderer::vulkan
         vkBindBufferMemory(logicalDevice, buffer.getHandle(), getHandle(), 0);
         BRASIO_LOG_TRACE("Bound buffer memory", { "CREATE" });
 
-        if (data != nullptr)
+        if (data == nullptr)
         {
-            BRASIO_LOG_TRACE("Transferring buffer memory to device",
-                             { "CREATE" });
-            map();
-            setContent(data);
-            unmap();
-            BRASIO_LOG_TRACE("Transferred buffer memory to device",
-                             { "CREATE" });
+            return;
         }
+        BRASIO_LOG_TRACE("Transferring buffer memory to device", { "CREATE" });
+        map();
+        setContent(data);
+        unmap();
+        BRASIO_LOG_TRACE("Transferred buffer memory to device", { "CREATE" });
     }
 
     Memory::Memory(const PhysicalDeviceType &physicalDevice,
@@ -76,12 +76,9 @@ namespace brasio::renderer::vulkan
         memoryAllocateInfo.memoryTypeIndex = physicalDevice->findMemoryType(
             memoryRequirements.memoryTypeBits, memoryProperties);
 
-        if (vkAllocateMemory(logicalDevice, &memoryAllocateInfo, nullptr,
-                             &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not allocate memory", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkAllocateMemory(logicalDevice, &memoryAllocateInfo,
+                                             nullptr, &getHandle()),
+                            "allocate memory", { "CREATE" });
     }
 
     void Memory::map()

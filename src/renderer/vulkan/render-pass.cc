@@ -1,6 +1,7 @@
 #include <renderer/vulkan/render-pass.hh>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -12,12 +13,9 @@ namespace brasio::renderer::vulkan
                   })
     {
         BRASIO_LOG_TRACE("Creating render pass", { "CREATE" });
-        if (vkCreateRenderPass(logicalDevice, &createInfo, nullptr,
-                               &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create render pass", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateRenderPass(logicalDevice, &createInfo,
+                                               nullptr, &getHandle()),
+                            "create render pass", { "CREATE" });
         BRASIO_LOG_TRACE("Created render pass", { "CREATE" });
     }
 } // namespace brasio::renderer::vulkan

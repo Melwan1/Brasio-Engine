@@ -1,6 +1,7 @@
 #include <renderer/vulkan/descriptor-sets.hh>
 
 #include <renderer/structs/uniform-buffer-object.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -19,13 +20,10 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Allocating descriptor sets", { "CREATE" });
         getHandle().clear();
         getHandle().resize(allocateInfo.descriptorSetCount);
-        if (vkAllocateDescriptorSets(logicalDevice, &allocateInfo,
-                                     getHandle().data())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not allocate descriptor sets",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkAllocateDescriptorSets(logicalDevice,
+                                                     &allocateInfo,
+                                                     getHandle().data()),
+                            "allocate descriptor sets", { "CREATE" });
         BRASIO_LOG_TRACE("Allocated descriptor sets", { "CREATE" });
     }
 

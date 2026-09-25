@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::shaders
 {
@@ -72,12 +73,9 @@ namespace brasio::shaders
             reinterpret_cast<const uint32_t *>(finalShaderByteCode.data());
 
         VkShaderModule shaderModule;
-        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Failed to create shader module.",
-                                { "SHADERS" });
-        }
+        BRASIO_VULKAN_CHECK(
+            vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule),
+            "create shader module", { "SHADERS" });
         BRASIO_LOG_TRACE("Created shader module", { "SHADERS" });
         return shaderModule;
     }

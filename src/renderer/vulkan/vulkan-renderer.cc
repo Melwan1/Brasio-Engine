@@ -12,7 +12,6 @@
 #include <io/files/obj-parser.hh>
 #include <io/logging/logger.hh>
 #include <geometry/vertex.hh>
-#include <mesh/transform-mode.hh>
 #include <model/model.hh>
 #include <renderer/structs/uniform-buffer-object.hh>
 
@@ -20,6 +19,7 @@
 
 #include <shaders/shader-module.hh>
 #include <mesh/fwd.hh>
+#include <utils/libutils.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
 
@@ -359,14 +359,10 @@ namespace brasio::renderer::vulkan
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        if (vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1, &submitInfo,
-                          _syncObjects->fenceAt(_currentFrame))
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Failed to submit draw command buffer.",
-                                { "RENDER" });
-        }
-
+        BRASIO_VULKAN_CHECK(vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1,
+                                          &submitInfo,
+                                          _syncObjects->fenceAt(_currentFrame)),
+                            "submit draw command buffer", { "RENDER" });
         VkSwapchainKHR swapchains[] = { _swapchain->getHandle() };
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;

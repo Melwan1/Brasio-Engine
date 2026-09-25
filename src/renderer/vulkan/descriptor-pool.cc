@@ -1,4 +1,5 @@
 #include <renderer/vulkan/descriptor-pool.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -12,13 +13,9 @@ namespace brasio::renderer::vulkan
                   })
     {
         BRASIO_LOG_TRACE("Creating descriptor pool", { "CREATE" });
-        if (vkCreateDescriptorPool(logicalDevice, &createInfo, nullptr,
-                                   &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create descriptor pool",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateDescriptorPool(logicalDevice, &createInfo,
+                                                   nullptr, &getHandle()),
+                            "create descriptor pool", { "CREATE" });
         BRASIO_LOG_TRACE("Created descriptor pool", { "CREATE" });
     }
 

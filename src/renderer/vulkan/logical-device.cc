@@ -1,6 +1,7 @@
 #include <renderer/vulkan/logical-device.hh>
 
 #include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -13,12 +14,9 @@ namespace brasio::renderer::vulkan
         , _queueFamilyIndices(indices)
     {
         BRASIO_LOG_TRACE("Creating logical device", { "CREATE" });
-        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create logical device",
-                                { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(
+            vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle()),
+            "create logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Created logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Setting up device queues", { "CREATE" });
 

@@ -3,6 +3,7 @@
 #include <renderer/vulkan/memory.hh>
 #include <renderer/vulkan/texture.hh>
 #include <renderer/vulkan/command-buffer.hh>
+#include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -19,12 +20,9 @@ namespace brasio::renderer::vulkan
         , _deviceMemory(nullptr)
     {
         BRASIO_LOG_TRACE("Creating buffer", { "CREATE" });
-        if (vkCreateBuffer(logicalDevice->getHandle(), &createInfo, nullptr,
-                           &getHandle())
-            != VK_SUCCESS)
-        {
-            BRASIO_LOG_CRITICAL("Could not create buffer", { "CREATE" });
-        }
+        BRASIO_VULKAN_CHECK(vkCreateBuffer(logicalDevice->getHandle(),
+                                           &createInfo, nullptr, &getHandle()),
+                            "create buffer", { "CREATE" });
         BRASIO_LOG_TRACE("Created buffer", { "CREATE" });
         _deviceMemory = std::make_unique<Memory>(
             physicalDevice, logicalDevice->getHandle(), *this, memoryProperties,
