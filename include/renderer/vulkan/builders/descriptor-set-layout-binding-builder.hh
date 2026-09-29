@@ -22,8 +22,10 @@ namespace brasio::renderer::vulkan::builders
         DescriptorSetLayoutBindingBuilder &withShaderStages(const VkShaderStageFlags &shaderStages);
         DescriptorSetLayoutBindingBuilder &withImmutableSamplers(VkSampler *samplers);
 
+        static void resetIndex();
+
     private:
-        uint32_t _bindingIndex;
+        static uint32_t _bindingIndex;
         VkDescriptorType _descriptorType;
         uint32_t _descriptorCount;
         VkShaderStageFlags _shaderStages;

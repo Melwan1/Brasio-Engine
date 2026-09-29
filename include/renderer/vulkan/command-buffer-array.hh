@@ -8,7 +8,6 @@
 
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
-#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -37,6 +36,9 @@ namespace brasio::renderer::vulkan
 
         void record(const VulkanRenderer &renderer, uint32_t commandBufferIndex,
                     uint32_t imageIndex);
+
+        void recordCompute(const VulkanRenderer &renderer, uint32_t commandBufferIndex,
+                           uint32_t workGroupCount);
     };
 
     using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;

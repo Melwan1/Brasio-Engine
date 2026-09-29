@@ -31,7 +31,8 @@ namespace brasio::renderer::vulkan::builders
     InputAssemblyBuilder &InputAssemblyBuilder::withConfig(const YAML::Node &config)
     {
         std::map<std::string, VkPrimitiveTopology> primitiveTopologyMap = {
-            { "TRIANGLE_LIST", VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST }
+            { "TRIANGLE_LIST", VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST },
+            { "POINT_LIST", VK_PRIMITIVE_TOPOLOGY_POINT_LIST }
         };
         return withPrimitiveRestartEnable(config["primitive_restart"].as<bool>())
             .withPrimitiveTopology(

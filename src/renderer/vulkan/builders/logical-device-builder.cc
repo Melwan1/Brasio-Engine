@@ -14,7 +14,7 @@ namespace brasio::renderer::vulkan::builders
     LogicalDeviceBuilder &LogicalDeviceBuilder::base()
     {
         _indices = _physicalDevice.findQueueFamilies();
-        std::set<uint32_t> uniqueQueueFamilies = { _indices.graphicsFamily.value(),
+        std::set<uint32_t> uniqueQueueFamilies = { _indices.graphicsComputeFamily.value(),
                                                    _indices.presentFamily.value() };
         for (const uint32_t queueFamilyIndex : uniqueQueueFamilies)
         {

@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #include <io/logging/logger.hh>
 #include <utils/libutils.hh>
@@ -17,6 +18,7 @@ namespace brasio::shaders
     bool ShaderManager::compileAllShaders()
     {
         const fs::path destDirectoryPath("compiled-shaders/");
+        std::vector<fs::path> failedShaders;
         for (const auto &entry : fs::recursive_directory_iterator(_baseShaderDirectoryPath))
         {
             if (!entry.is_regular_file())
@@ -26,10 +28,27 @@ namespace brasio::shaders
             fs::path relative_entry = fs::relative(entry, _baseShaderDirectoryPath);
             if (!_shaderCompiler.compileShader(relative_entry))
             {
-                return false;
+                failedShaders.push_back(relative_entry);
+                continue;
             }
             auto outputEntry = _shaderCompiler.getEntryPaths(relative_entry);
             readSpirVFile(outputEntry.second);
+        }
+        if (!failedShaders.empty())
+        {
+            std::string shaderList;
+            for (const fs::path &failedShader : failedShaders)
+            {
+                if (!shaderList.empty())
+                {
+                    shaderList += ", ";
+                }
+                shaderList += failedShader.string();
+            }
+            BRASIO_LOG_ERROR(std::to_string(failedShaders.size())
+                                 + " shader(s) could not be compiled: " + shaderList,
+                             { "SHADERS" });
+            return false;
         }
         return true;
     }

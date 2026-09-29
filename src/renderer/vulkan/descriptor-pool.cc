@@ -17,4 +17,14 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Created descriptor pool", { "CREATE" });
     }
 
+    void DescriptorPool::setDescriptorSets(DescriptorSetsType descriptorSets)
+    {
+        _descriptorSets = std::move(descriptorSets);
+    }
+
+    const DescriptorSets &DescriptorPool::getDescriptorSets() const
+    {
+        return *_descriptorSets;
+    }
+
 } // namespace brasio::renderer::vulkan

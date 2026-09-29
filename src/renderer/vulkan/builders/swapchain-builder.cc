@@ -71,9 +71,10 @@ namespace brasio::renderer::vulkan::builders
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
         QueueFamilyIndices indices = _physicalDevice->findQueueFamilies();
-        uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(),
+        uint32_t queueFamilyIndices[] = { indices.graphicsComputeFamily.value(),
                                           indices.presentFamily.value() };
-        bool areIndicesSame = indices.graphicsFamily.value() == indices.presentFamily.value();
+        bool areIndicesSame =
+            indices.graphicsComputeFamily.value() == indices.presentFamily.value();
 
         createInfo.imageSharingMode =
             areIndicesSame ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;

@@ -52,6 +52,10 @@ namespace brasio::renderer::vulkan::builders
 
     BufferType BufferBuilder::build()
     {
+        if (_size == 0)
+        {
+            BRASIO_LOG_WARNING("Buffer has size == 0", { "BUFFER" });
+        }
         VkBufferCreateInfo bufferCreateInfo{};
         bufferCreateInfo.sType = _structureType;
         bufferCreateInfo.size = _size;
@@ -59,6 +63,6 @@ namespace brasio::renderer::vulkan::builders
         bufferCreateInfo.sharingMode = _sharingMode;
 
         return std::make_unique<Buffer>(_physicalDevice, _logicalDevice, bufferCreateInfo,
-                                        _memoryProperties, _data);
+                                        _memoryProperties, _data, _size);
     }
 } // namespace brasio::renderer::vulkan::builders

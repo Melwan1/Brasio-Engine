@@ -11,15 +11,15 @@ namespace brasio::renderer::vulkan::builders
     PipelineLayoutBuilder &PipelineLayoutBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        _setLayouts.clear();
+        _descriptorSetLayout.reset();
         _pushConstantRanges.clear();
         return *this;
     }
 
     PipelineLayoutBuilder &
-    PipelineLayoutBuilder::withSetLayouts(const std::vector<VkDescriptorSetLayout> &setLayouts)
+    PipelineLayoutBuilder::withDescriptorSetLayout(DescriptorSetLayoutType descriptorSetLayout)
     {
-        _setLayouts = setLayouts;
+        _descriptorSetLayout = std::move(descriptorSetLayout);
         return *this;
     }
 
@@ -32,13 +32,20 @@ namespace brasio::renderer::vulkan::builders
 
     PipelineLayoutType PipelineLayoutBuilder::build()
     {
+        std::vector<VkDescriptorSetLayout> setLayouts;
+        if (_descriptorSetLayout)
+        {
+            setLayouts.push_back(_descriptorSetLayout->getHandle());
+        }
+
         VkPipelineLayoutCreateInfo createInfo{};
         createInfo.sType = _structureType;
-        createInfo.setLayoutCount = _setLayouts.size();
-        createInfo.pSetLayouts = _setLayouts.data();
+        createInfo.setLayoutCount = setLayouts.size();
+        createInfo.pSetLayouts = setLayouts.data();
         createInfo.pushConstantRangeCount = _pushConstantRanges.size();
         createInfo.pPushConstantRanges = _pushConstantRanges.data();
 
-        return std::make_unique<PipelineLayout>(_logicalDevice, createInfo);
+        return std::make_unique<PipelineLayout>(_logicalDevice, std::move(_descriptorSetLayout),
+                                                createInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

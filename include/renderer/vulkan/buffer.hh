@@ -21,19 +21,22 @@ namespace brasio::renderer::vulkan
     public:
         Buffer(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
                const VkBufferCreateInfo &createInfo, const VkMemoryPropertyFlags memoryProperties,
-               void *data);
+               void *data, VkDeviceSize size);
 
-        void copyInto(const Buffer &other, VkCommandPool commandPool, VkDeviceSize size);
+        void copyInto(const Buffer &other, VkCommandPool commandPool);
         void copyInto(const ImageAttachment &other, VkCommandPool commandPool);
 
         void mapMemory();
         void unmapMemory();
         void setContent(void *content);
 
+        VkDeviceSize getSize() const;
+
     private:
         const LogicalDeviceType &_logicalDevice;
         MemoryType _deviceMemory;
         void *_deviceData;
+        VkDeviceSize _size;
     };
 
     using BufferType = std::unique_ptr<Buffer>;

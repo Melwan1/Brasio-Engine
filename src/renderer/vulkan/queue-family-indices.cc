@@ -4,6 +4,6 @@ namespace brasio::renderer::vulkan
 {
     bool QueueFamilyIndices::isComplete()
     {
-        return graphicsFamily.has_value() && presentFamily.has_value();
+        return graphicsComputeFamily.has_value() && presentFamily.has_value();
     }
 } // namespace brasio::renderer::vulkan

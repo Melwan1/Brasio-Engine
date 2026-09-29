@@ -3,6 +3,8 @@
 namespace brasio::renderer::vulkan::builders
 {
 
+    uint32_t DescriptorSetLayoutBindingBuilder::_bindingIndex = 0;
+
     DescriptorSetLayoutBindingBuilder::DescriptorSetLayoutBindingBuilder()
     {
         base();
@@ -10,17 +12,9 @@ namespace brasio::renderer::vulkan::builders
 
     DescriptorSetLayoutBindingBuilder &DescriptorSetLayoutBindingBuilder::base()
     {
-        return withBindingIndex(0)
-            .withDescriptorType(VK_DESCRIPTOR_TYPE_MAX_ENUM)
+        return withDescriptorType(VK_DESCRIPTOR_TYPE_MAX_ENUM)
             .withDescriptorCount(1)
             .withImmutableSamplers(nullptr);
-    }
-
-    DescriptorSetLayoutBindingBuilder &
-    DescriptorSetLayoutBindingBuilder::withBindingIndex(uint32_t bindingIndex)
-    {
-        _bindingIndex = bindingIndex;
-        return *this;
     }
 
     DescriptorSetLayoutBindingBuilder &
@@ -54,11 +48,16 @@ namespace brasio::renderer::vulkan::builders
     VkDescriptorSetLayoutBinding DescriptorSetLayoutBindingBuilder::build()
     {
         VkDescriptorSetLayoutBinding binding{};
-        binding.binding = _bindingIndex;
+        binding.binding = _bindingIndex++;
         binding.descriptorType = _descriptorType;
         binding.descriptorCount = _descriptorCount;
         binding.stageFlags = _shaderStages;
         binding.pImmutableSamplers = _samplers;
         return binding;
+    }
+
+    void DescriptorSetLayoutBindingBuilder::resetIndex()
+    {
+        _bindingIndex = 0;
     }
 } // namespace brasio::renderer::vulkan::builders

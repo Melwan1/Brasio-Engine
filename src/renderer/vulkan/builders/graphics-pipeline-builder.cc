@@ -5,15 +5,20 @@ namespace brasio::renderer::vulkan::builders
 {
     GraphicsPipelineBuilder::GraphicsPipelineBuilder(const VkDevice &logicalDevice,
                                                      const shaders::ShaderManager &shaderManager,
-                                                     const VkPipelineLayout &pipelineLayout,
                                                      const VkRenderPass &renderPass)
         : _logicalDevice(logicalDevice)
         , _shaderManager(shaderManager)
-        , _pipelineLayout(pipelineLayout)
         , _renderPass(renderPass)
         , _pipelineLayoutBuilder(logicalDevice)
     {
         base();
+    }
+
+    GraphicsPipelineBuilder &
+    GraphicsPipelineBuilder::withDescriptorSetLayout(DescriptorSetLayoutType descriptorSetLayout)
+    {
+        _pipelineLayoutBuilder.withDescriptorSetLayout(std::move(descriptorSetLayout));
+        return *this;
     }
 
     GraphicsPipelineBuilder &GraphicsPipelineBuilder::base()
@@ -57,6 +62,10 @@ namespace brasio::renderer::vulkan::builders
     GraphicsPipelineBuilder &GraphicsPipelineBuilder::withConfig(const YAML::Node &config)
     {
         _dynamicStateBuilder.withConfig(config["dynamic_states"]);
+        if (config["vertex_input"] && !config["vertex_input"].as<std::string>().compare("PARTICLE"))
+        {
+            _vertexInputBuilder.withParticleInput();
+        }
         _inputAssemblyBuilder.withConfig(config["input_assembly"]);
         _rasterizerBuilder.withConfig(config["rasterizer"]);
         _multisamplingBuilder.withConfig(config["multisampling"]);
@@ -98,13 +107,16 @@ namespace brasio::renderer::vulkan::builders
         pipelineCreateInfo.pDynamicState = &dynamicStateCreateInfo;
         pipelineCreateInfo.pDepthStencilState = &depthStencil;
 
-        pipelineCreateInfo.layout = _pipelineLayout;
+        PipelineLayoutType pipelineLayout = _pipelineLayoutBuilder.build();
+
+        pipelineCreateInfo.layout = pipelineLayout->getHandle();
         pipelineCreateInfo.renderPass = _renderPass;
         pipelineCreateInfo.subpass = 0;
         pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
         pipelineCreateInfo.basePipelineIndex = -1;
 
-        return std::make_unique<GraphicsPipeline>(_logicalDevice, pipelineCreateInfo);
+        return std::make_unique<GraphicsPipeline>(_logicalDevice, pipelineCreateInfo,
+                                                  std::move(pipelineLayout));
     }
     bool GraphicsPipelineBuilder::_checkUniqueShaderType(const std::string &extension)
     {
