@@ -16,7 +16,6 @@ namespace brasio::renderer::vulkan::builders
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
             .withUsage(VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT
                        | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)
-            .withMemoryProperties(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
             .withTiling(VK_IMAGE_TILING_OPTIMAL);
     }
 
@@ -62,13 +61,6 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    ImageAttachmentBuilder &
-    ImageAttachmentBuilder::withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties)
-    {
-        _memoryProperties = memoryProperties;
-        return *this;
-    }
-
     ImageAttachmentBuilder &ImageAttachmentBuilder::withTiling(const VkImageTiling &tiling)
     {
         _tiling = tiling;
@@ -110,7 +102,7 @@ namespace brasio::renderer::vulkan::builders
 
         ImageAttachmentType imageAttachment =
             std::make_unique<ImageAttachment>(_logicalDevice, imageCreateInfo, imageViewCreateInfo);
-        imageAttachment->initMemory(_physicalDevice, _memoryProperties);
+        imageAttachment->initMemory(_physicalDevice);
         imageAttachment->createImageView();
         return imageAttachment;
     }

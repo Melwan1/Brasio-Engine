@@ -48,9 +48,8 @@ namespace brasio::renderer::vulkan
                              const VkCommandPool &commandPool);
 
         void initMemory(const PhysicalDeviceType &physicalDevice, const VkCommandPool &commandPool,
-                        size_t size, void *data, const VkMemoryPropertyFlags &memoryProperties);
-        void initMemory(const PhysicalDeviceType &physicalDevice,
-                        const VkMemoryPropertyFlags &memoryProperties);
+                        size_t size, void *data);
+        void initMemory(const PhysicalDeviceType &physicalDevice);
 
         size_t getWidth() const;
         size_t getHeight() const;

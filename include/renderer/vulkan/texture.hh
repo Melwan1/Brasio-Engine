@@ -18,8 +18,7 @@ namespace brasio::renderer::vulkan
     public:
         Texture(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
                 const VkCommandPool &commandPool, const VkImageCreateInfo &imageInfo,
-                VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage,
-                const VkMemoryPropertyFlags memoryProperties);
+                VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage);
 
         const images::P3PPM &getTextureImage() const;
 

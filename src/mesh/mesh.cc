@@ -2,9 +2,7 @@
 
 #include <glm/gtx/transform.hpp>
 
-#include <renderer/vulkan/builders/index-buffer-builder.hh>
-#include <renderer/vulkan/builders/staging-buffer-builder.hh>
-#include <renderer/vulkan/builders/vertex-buffer-builder.hh>
+#include <renderer/vulkan/builders/buffer-builder.hh>
 #include <io/logging/logger.hh>
 
 namespace brasio::mesh
