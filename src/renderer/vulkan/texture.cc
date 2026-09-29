@@ -11,14 +11,13 @@ namespace brasio::renderer::vulkan
     Texture::Texture(const PhysicalDeviceType &physicalDevice,
                      const LogicalDeviceType &logicalDevice, const VkCommandPool &commandPool,
                      const VkImageCreateInfo &imageInfo, VkImageViewCreateInfo imageViewInfo,
-                     images::P3PPM &textureImage, const VkMemoryPropertyFlags memoryProperties)
+                     images::P3PPM &textureImage)
         : ImageAttachment(logicalDevice, imageInfo, imageViewInfo)
         , _physicalDevice(physicalDevice)
         , _logicalDevice(logicalDevice)
         , _textureImage(textureImage)
     {
-        initMemory(_physicalDevice, commandPool, textureImage.getSize(), textureImage.getData(),
-                   memoryProperties);
+        initMemory(_physicalDevice, commandPool, textureImage.getSize(), textureImage.getData());
         createImageView();
         createTextureSampler();
     }

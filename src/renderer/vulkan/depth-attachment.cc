@@ -9,7 +9,7 @@ namespace brasio::renderer::vulkan
                                      const VkImageViewCreateInfo &imageViewInfo)
         : ImageAttachment(logicalDevice, imageInfo, imageViewInfo)
     {
-        initMemory(physicalDevice, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        initMemory(physicalDevice);
         createImageView();
     }
 

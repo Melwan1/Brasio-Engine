@@ -26,7 +26,6 @@ namespace brasio::renderer::vulkan::builders
         TextureBuilder &withTextureImage(const images::P3PPM &textureImage);
         TextureBuilder &withUsage(const VkImageUsageFlags &usage);
         TextureBuilder &withSharingMode(const VkSharingMode &sharingMode);
-        TextureBuilder &withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
         TextureBuilder &withTiling(const VkImageTiling &tiling);
 
         TextureBuilder &withCommandPool(const VkCommandPool &commandPool);
@@ -43,7 +42,6 @@ namespace brasio::renderer::vulkan::builders
         images::P3PPM _textureImage;
         VkImageUsageFlags _usage;
         VkSharingMode _sharingMode;
-        VkMemoryPropertyFlags _memoryProperties;
         VkImageTiling _tiling;
 
         VkCommandPool _commandPool;

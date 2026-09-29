@@ -23,7 +23,6 @@ namespace brasio::renderer::vulkan::builders
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
             .withUsage(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
                        | VK_IMAGE_USAGE_SAMPLED_BIT)
-            .withMemoryProperties(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
             .withTiling(VK_IMAGE_TILING_OPTIMAL);
     }
 
@@ -57,7 +56,7 @@ namespace brasio::renderer::vulkan::builders
                                            .layerCount = 1 };
 
         return std::make_unique<Texture>(_physicalDevice, _logicalDevice, _commandPool, imageInfo,
-                                         imageViewInfo, _textureImage, _memoryProperties);
+                                         imageViewInfo, _textureImage);
     }
 
     TextureBuilder &TextureBuilder::withWidth(uint32_t width)
@@ -102,13 +101,6 @@ namespace brasio::renderer::vulkan::builders
     TextureBuilder &TextureBuilder::withSharingMode(const VkSharingMode &sharingMode)
     {
         _sharingMode = sharingMode;
-        return *this;
-    }
-
-    TextureBuilder &
-    TextureBuilder::withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties)
-    {
-        _memoryProperties = memoryProperties;
         return *this;
     }
 

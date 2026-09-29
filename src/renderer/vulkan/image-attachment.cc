@@ -230,16 +230,11 @@ namespace brasio::renderer::vulkan
     }
 
     void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
-                                     const VkCommandPool &commandPool, size_t size, void *data,
-                                     const VkMemoryPropertyFlags &memoryProperties)
+                                     const VkCommandPool &commandPool, size_t size, void *data)
     {
-        initMemory(physicalDevice, memoryProperties);
-        builders::BufferBuilder stagingBuilder(physicalDevice, _logicalDevice);
-        BufferType stagingBuffer = stagingBuilder.withSize(size)
-                                       .withData(data)
-                                       .withUsage(VK_BUFFER_USAGE_TRANSFER_SRC_BIT)
-                                       .withMemoryProperties(memoryProperties)
-                                       .build();
+        initMemory(physicalDevice);
+        builders::StagingBufferBuilder stagingBuilder(physicalDevice, _logicalDevice);
+        BufferType stagingBuffer = stagingBuilder.withSize(size).withData(data).build();
 
         transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_UNDEFINED,
                               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
@@ -247,11 +242,10 @@ namespace brasio::renderer::vulkan
         generateMipmaps(physicalDevice, commandPool);
     }
 
-    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
-                                     const VkMemoryPropertyFlags &memoryProperties)
+    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice)
     {
         _deviceMemory = std::make_unique<Memory>(physicalDevice, _logicalDevice->getHandle(), *this,
-                                                 memoryProperties);
+                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     }
 
     size_t ImageAttachment::getWidth() const

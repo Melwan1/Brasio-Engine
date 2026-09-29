@@ -21,7 +21,6 @@ namespace brasio::renderer::vulkan::builders
         ImageAttachmentBuilder &withFormat(const VkFormat &format);
         ImageAttachmentBuilder &withUsage(const VkImageUsageFlags &usage);
         ImageAttachmentBuilder &withSharingMode(const VkSharingMode &sharingMode);
-        ImageAttachmentBuilder &withMemoryProperties(const VkMemoryPropertyFlags &memoryProperties);
         ImageAttachmentBuilder &withTiling(const VkImageTiling &tiling);
         ImageAttachmentBuilder &withSamples(const VkSampleCountFlagBits &sampleCount);
 
@@ -35,7 +34,6 @@ namespace brasio::renderer::vulkan::builders
         VkFormat _format;
         VkImageUsageFlags _usage;
         VkSharingMode _sharingMode;
-        VkMemoryPropertyFlags _memoryProperties;
         VkImageTiling _tiling;
         VkSampleCountFlagBits _sampleCount;
     };
