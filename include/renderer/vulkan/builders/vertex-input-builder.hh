@@ -21,11 +21,13 @@ namespace brasio::renderer::vulkan::builders
             const std::vector<VkVertexInputBindingDescription> &bindingDescriptions);
 
         VertexInputBuilder &withAttributeDescriptions(
-            const std::array<VkVertexInputAttributeDescription, 4> &attributeDescriptions);
+            const std::vector<VkVertexInputAttributeDescription> &attributeDescriptions);
+
+        VertexInputBuilder &withParticleInput();
 
     private:
         VkStructureType _structureType;
         std::vector<VkVertexInputBindingDescription> _bindingDescriptions;
-        std::array<VkVertexInputAttributeDescription, 4> _attributeDescriptions;
+        std::vector<VkVertexInputAttributeDescription> _attributeDescriptions;
     };
 } // namespace brasio::renderer::vulkan::builders

@@ -1,4 +1,5 @@
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
@@ -105,10 +106,11 @@ namespace brasio::renderer::vulkan
         {
             BRASIO_LOG_TRACE("Binding graphics pipeline", { "RENDER" });
             graphicsPipeline->bind(commandBuffer);
-            BRASIO_LOG_TRACE("Rendering mesh 1", { "RENDER" });
-            renderer.getMesh1().draw(commandBuffer, renderer);
-            BRASIO_LOG_TRACE("Rendering mesh 2", { "RENDER" });
-            // renderer.getMesh2().draw(commandBuffer, renderer);
+            BRASIO_LOG_TRACE("Rendering particles", { "RENDER" });
+            VkBuffer vertexBuffers[] = { renderer.getParticleVertexBuffer() };
+            VkDeviceSize offsets[] = { 0 };
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+            vkCmdDraw(commandBuffer, renderer.getParticleCount(), 1, 0, 0);
         }
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });
@@ -118,5 +120,36 @@ namespace brasio::renderer::vulkan
 
         BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end command buffer record",
                             { "RENDER" });
+    }
+
+    void CommandBufferArray::recordCompute(const VulkanRenderer &renderer,
+                                           uint32_t commandBufferIndex, uint32_t workGroupCount)
+    {
+        BRASIO_LOG_TRACE("Starting compute command buffer record", { "COMPUTE" });
+
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = 0;
+        beginInfo.pInheritanceInfo = nullptr;
+
+        VkCommandBuffer commandBuffer = at(commandBufferIndex);
+        BRASIO_VULKAN_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo),
+                            "begin compute command buffer", { "COMPUTE" });
+
+        for (const ComputePipelineType &computePipeline : renderer.getComputePipelines())
+        {
+            BRASIO_LOG_TRACE("Binding compute pipeline", { "COMPUTE" });
+            computePipeline->bind(commandBuffer);
+            vkCmdBindDescriptorSets(
+                commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
+                computePipeline->getPipelineLayout().getHandle(), 0, 1,
+                &renderer.getComputeDescriptorSets().getHandle().at(renderer.getCurrentFrame()), 0,
+                nullptr);
+            BRASIO_LOG_TRACE("Dispatching compute", { "COMPUTE" });
+            vkCmdDispatch(commandBuffer, workGroupCount, 1, 1);
+        }
+
+        BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end compute command buffer record",
+                            { "COMPUTE" });
     }
 } // namespace brasio::renderer::vulkan

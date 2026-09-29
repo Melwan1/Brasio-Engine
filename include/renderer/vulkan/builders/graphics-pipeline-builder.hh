@@ -13,7 +13,6 @@ namespace brasio::renderer::vulkan::builders
     public:
         GraphicsPipelineBuilder(const VkDevice &logicalDevice,
                                 const shaders::ShaderManager &shaderManager,
-                                const VkPipelineLayout &pipelineLayout,
                                 const VkRenderPass &renderPass);
 
         virtual GraphicsPipelineType build() override;
@@ -21,11 +20,12 @@ namespace brasio::renderer::vulkan::builders
 
         GraphicsPipelineBuilder &withShaders(const std::vector<fs::path> &shaderPaths);
         GraphicsPipelineBuilder &withConfig(const YAML::Node &config);
+        GraphicsPipelineBuilder &
+        withDescriptorSetLayout(DescriptorSetLayoutType descriptorSetLayout);
 
     private:
         VkDevice _logicalDevice;
         const shaders::ShaderManager &_shaderManager;
-        const VkPipelineLayout &_pipelineLayout;
         const VkRenderPass &_renderPass;
 
         VkStructureType _structureType;

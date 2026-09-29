@@ -7,6 +7,7 @@ target_sources(librenderer PRIVATE
     color-blend-state-builder.cc
     command-buffer-array-builder.cc
     command-pool-builder.cc
+    compute-pipeline-builder.cc
     debug-messenger-builder.cc
     depth-attachment-builder.cc
     depth-stencil-builder.cc
@@ -20,6 +21,7 @@ target_sources(librenderer PRIVATE
     graphics-pipeline-builder.cc
     image-builder.cc
     image-attachment-builder.cc
+    index-buffer-builder.cc
     input-assembly-builder.cc
     instance-builder.cc
     logical-device-builder.cc
@@ -29,12 +31,16 @@ target_sources(librenderer PRIVATE
     pipeline-shader-info-builder.cc
     rasterizer-builder.cc
     render-pass-builder.cc
+    staging-buffer-builder.cc
+    storage-buffer-builder.cc
     subpass-description-builder.cc
     subpass-dependency-builder.cc
     surface-builder.cc
     swapchain-builder.cc
     texture-builder.cc
     texture-sampler-builder.cc
+    uniform-buffer-builder.cc
+    vertex-buffer-builder.cc
     vertex-input-builder.cc
     viewport-state-builder.cc
 )

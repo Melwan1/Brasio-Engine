@@ -18,10 +18,12 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Created logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Setting up device queues", { "CREATE" });
 
-        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.graphicsFamily.value(), 0,
+        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.graphicsComputeFamily.value(), 0,
                          &_graphicsQueue);
         vkGetDeviceQueue(getHandle(), _queueFamilyIndices.presentFamily.value(), 0,
                          &_presentationQueue);
+        vkGetDeviceQueue(getHandle(), _queueFamilyIndices.graphicsComputeFamily.value(), 0,
+                         &_computeQueue);
         BRASIO_LOG_TRACE("Set up device queues", { "CREATE" });
     }
 
@@ -43,6 +45,16 @@ namespace brasio::renderer::vulkan
     VkQueue &LogicalDevice::getPresentationQueue()
     {
         return _presentationQueue;
+    }
+
+    const VkQueue &LogicalDevice::getComputeQueue() const
+    {
+        return _computeQueue;
+    }
+
+    VkQueue &LogicalDevice::getComputeQueue()
+    {
+        return _computeQueue;
     }
 
     void LogicalDevice::waitIdle() const

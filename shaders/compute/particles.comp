@@ -1,0 +1,47 @@
+#version 450
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+  vec4 color;
+};
+
+layout(std140, binding = 0) uniform ParameterUBO {
+  float deltaTime;
+} ubo;
+
+layout(std140, binding = 1) readonly buffer ParticleSSBOIn {
+  Particle particlesIn[ ];
+};
+
+layout(std140, binding = 2) buffer ParticleSSBOOut {
+  Particle particlesOut[ ];
+};
+
+layout (local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
+vec2 checkBounds(vec2 position, vec2 velocity)
+{
+  vec2 resultVelocity = velocity;
+  if (position.x <= -1.0f || position.x >= 1.0f)
+  {
+    resultVelocity.x *= -1.0f;
+  }
+  if (position.y <= -1.0f || position.y >= 1.0f)
+  {
+    resultVelocity.y *= -1.0f;
+  }
+  return resultVelocity;
+}
+
+void main()
+{
+  uint index = gl_GlobalInvocationID.x;
+
+  Particle particleIn = particlesIn[index];
+  vec2 resultVelocity = checkBounds(particleIn.position, particleIn.velocity.xy);
+  vec2 resultPosition = particleIn.position + resultVelocity * ubo.deltaTime;
+  particlesOut[index].position = resultPosition;
+  particlesOut[index].velocity = resultVelocity;
+  particlesOut[index].color = particleIn.color;
+}

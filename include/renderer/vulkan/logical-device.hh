@@ -17,6 +17,8 @@ namespace brasio::renderer::vulkan
         VkQueue &getGraphicsQueue();
         const VkQueue &getPresentationQueue() const;
         VkQueue &getPresentationQueue();
+        const VkQueue &getComputeQueue() const;
+        VkQueue &getComputeQueue();
 
         void waitIdle() const;
 
@@ -24,6 +26,7 @@ namespace brasio::renderer::vulkan
         QueueFamilyIndices _queueFamilyIndices;
 
         VkQueue _graphicsQueue = VK_NULL_HANDLE;
+        VkQueue _computeQueue = VK_NULL_HANDLE;
         VkQueue _presentationQueue = VK_NULL_HANDLE;
     };
 

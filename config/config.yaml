@@ -14,10 +14,12 @@ renderer:
     present_mode: MAILBOX
 
   pipelines:
-    - name: Draw filled polygons
+    - type: GRAPHICS
+      name: Draw particles
+      vertex_input: PARTICLE
       shaders:
-        vertex: vertex/ubo.vert
-        fragment: fragment/texture.frag
+        vertex: vertex/particle.vert
+        fragment: fragment/particle.frag
 
       dynamic_states:
         - VIEWPORT
@@ -25,7 +27,7 @@ renderer:
 
       input_assembly:
         primitive_restart: false
-        primitive_topology: TRIANGLE_LIST
+        primitive_topology: POINT_LIST
 
       rasterizer:
         depth_clamp: false
@@ -56,61 +58,21 @@ renderer:
         dst_alpha_blend_factor: ZERO
         alpha_blend_op: ADD
 
-      color_blend_state: 
+      color_blend_state:
         logic_op_enabled: false
         logic_op: COPY
 
-    - name: Draw wireframe
+    - type: COMPUTE
+      name: Compute particle movement
       shaders:
-        vertex: vertex/ubo.vert
-        fragment: fragment/wireframe.frag
-
-      dynamic_states:
-        - VIEWPORT
-        - SCISSOR
-
-      input_assembly:
-        primitive_restart: false
-        primitive_topology: TRIANGLE_LIST
-
-      rasterizer:
-        depth_clamp: false
-        discard: false
-        polygon_mode: LINE
-        line_width: 3
-        cull_mode: BACK
-        front_face: CCW
-        depth_bias: false
-        depth_bias_constant_factor: 0
-        depth_bias_clamp: 0
-        depth_bias_slope_factor: 0
-
-      multisampling:
-        sample_shading: false
-        rasterization_samples: 16
-        min_sample_shading: 1
-        alpha_to_coverage: false
-        alpha_to_one: false
-
-      color_blend_attachment:
-        writeMask: RGBA
-        blend: false
-        src_color_blend_factor: ONE
-        dst_color_blend_factor: ZERO
-        color_blend_op: ADD
-        src_alpha_blend_factor: ONE
-        dst_alpha_blend_factor: ZERO
-        alpha_blend_op: ADD
-
-      color_blend_state: 
-        logic_op_enabled: false
-        logic_op: COPY
+        compute: compute/particles.comp
 
 logging:
   global_level: TRACE
   specific_levels:
     APPLICATION: DEBUG
     CREATE: INFO
+    COMPUTE: DEBUG
     DESTROY: DEBUG
     DEVICE: INFO
     EVENT: TRACE

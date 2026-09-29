@@ -7,15 +7,16 @@
 #include <core/handler.hh>
 #include <shaders/shader-manager.hh>
 #include <renderer/vulkan/pipeline-layout.hh>
+#include <renderer/vulkan/command-buffer.hh>
 
 namespace brasio::renderer::vulkan
 {
-    class GraphicsPipeline : public core::Handler<VkPipeline>
+    class ComputePipeline : public core::Handler<VkPipeline>
     {
     public:
-        GraphicsPipeline(const VkDevice &logicalDevice,
-                         const VkGraphicsPipelineCreateInfo &createInfo,
-                         PipelineLayoutType pipelineLayout);
+        ComputePipeline(const LogicalDeviceType &logicalDevice,
+                        const VkComputePipelineCreateInfo &createInfo,
+                        PipelineLayoutType pipelineLayout);
 
         void bind(const VkCommandBuffer &commandBuffer) const;
 
@@ -25,5 +26,5 @@ namespace brasio::renderer::vulkan
         PipelineLayoutType _pipelineLayout;
     };
 
-    using GraphicsPipelineType = std::unique_ptr<GraphicsPipeline>;
+    using ComputePipelineType = std::unique_ptr<ComputePipeline>;
 } // namespace brasio::renderer::vulkan

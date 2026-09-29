@@ -4,6 +4,7 @@ target_sources(librenderer PRIVATE
     command-buffer.cc
     command-buffer-array.cc
     command-pool.cc
+    compute-pipeline.cc
     debug-messenger.cc
     depth-attachment.cc
     descriptor-pool.cc

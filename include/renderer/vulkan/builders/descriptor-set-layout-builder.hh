@@ -21,6 +21,16 @@ namespace brasio::renderer::vulkan::builders
         DescriptorSetLayoutBuilder &
         withBindings(const std::vector<VkDescriptorSetLayoutBinding> &bindings);
 
+        DescriptorSetLayoutBuilder &
+        withUniformBuffers(uint32_t uniformBufferCount,
+                           VkShaderStageFlagBits shaderStageFlags = VK_SHADER_STAGE_VERTEX_BIT);
+        DescriptorSetLayoutBuilder &
+        withStorageBuffers(uint32_t storageBufferCount,
+                           VkShaderStageFlagBits shaderStageFlags = VK_SHADER_STAGE_COMPUTE_BIT);
+        DescriptorSetLayoutBuilder &
+        withTextures(uint32_t textureCount,
+                     VkShaderStageFlagBits shaderStageFlags = VK_SHADER_STAGE_FRAGMENT_BIT);
+
     private:
         VkDevice _logicalDevice;
 

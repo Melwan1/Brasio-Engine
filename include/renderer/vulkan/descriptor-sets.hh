@@ -17,7 +17,9 @@ namespace brasio::renderer::vulkan
         DescriptorSets(const VkDevice &logicalDevice,
                        const VkDescriptorSetAllocateInfo &allocateInfo);
 
-        void update(const std::vector<BufferType> &buffers, const TextureType &texture);
+        void update(const std::vector<BufferType> &uniformBuffers,
+                    const std::vector<TextureType> &textures,
+                    const std::vector<BufferType> &storageBuffers);
 
     private:
         const VkDevice &_logicalDevice;

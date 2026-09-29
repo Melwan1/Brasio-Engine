@@ -8,6 +8,7 @@
 #include <renderer/vulkan/builders/color-blend-state-builder.hh>
 #include <renderer/vulkan/builders/command-buffer-array-builder.hh>
 #include <renderer/vulkan/builders/command-pool-builder.hh>
+#include <renderer/vulkan/builders/compute-pipeline-builder.hh>
 #include <renderer/vulkan/builders/debug-messenger-builder.hh>
 #include <renderer/vulkan/builders/depth-attachment-builder.hh>
 #include <renderer/vulkan/builders/depth-stencil-builder.hh>
@@ -20,6 +21,7 @@
 #include <renderer/vulkan/builders/framebuffer-builder.hh>
 #include <renderer/vulkan/builders/image-builder.hh>
 #include <renderer/vulkan/builders/image-attachment-builder.hh>
+#include <renderer/vulkan/builders/index-buffer-builder.hh>
 #include <renderer/vulkan/builders/input-assembly-builder.hh>
 #include <renderer/vulkan/builders/instance-builder.hh>
 #include <renderer/vulkan/builders/logical-device-builder.hh>
@@ -29,12 +31,15 @@
 #include <renderer/vulkan/builders/pipeline-shader-info-builder.hh>
 #include <renderer/vulkan/builders/rasterizer-builder.hh>
 #include <renderer/vulkan/builders/render-pass-builder.hh>
+#include <renderer/vulkan/builders/staging-buffer-builder.hh>
+#include <renderer/vulkan/builders/storage-buffer-builder.hh>
 #include <renderer/vulkan/builders/subpass-dependency-builder.hh>
 #include <renderer/vulkan/builders/subpass-description-builder.hh>
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/builders/swapchain-builder.hh>
 #include <renderer/vulkan/builders/texture-builder.hh>
 #include <renderer/vulkan/builders/texture-sampler-builder.hh>
+#include <renderer/vulkan/builders/uniform-buffer-builder.hh>
 #include <renderer/vulkan/builders/vertex-input-builder.hh>
 #include <renderer/vulkan/builders/viewport-state-builder.hh>
 

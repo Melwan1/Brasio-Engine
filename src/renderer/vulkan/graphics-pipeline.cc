@@ -4,10 +4,13 @@
 namespace brasio::renderer::vulkan
 {
     GraphicsPipeline::GraphicsPipeline(const VkDevice &logicalDevice,
-                                       const VkGraphicsPipelineCreateInfo &createInfo)
-        : Handler("graphics pipeline", [logicalDevice](const VkPipeline &pipeline) {
-            vkDestroyPipeline(logicalDevice, pipeline, nullptr);
-        })
+                                       const VkGraphicsPipelineCreateInfo &createInfo,
+                                       PipelineLayoutType pipelineLayout)
+        : Handler("graphics pipeline",
+                  [logicalDevice](const VkPipeline &pipeline) {
+                      vkDestroyPipeline(logicalDevice, pipeline, nullptr);
+                  })
+        , _pipelineLayout(std::move(pipelineLayout))
     {
         BRASIO_LOG_TRACE("Creating graphics pipeline", { "CREATE" });
 
@@ -22,5 +25,10 @@ namespace brasio::renderer::vulkan
     void GraphicsPipeline::bind(const VkCommandBuffer &commandBuffer) const
     {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, getHandle());
+    }
+
+    const PipelineLayout &GraphicsPipeline::getPipelineLayout() const
+    {
+        return *_pipelineLayout;
     }
 } // namespace brasio::renderer::vulkan
