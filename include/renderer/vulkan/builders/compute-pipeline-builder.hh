@@ -2,6 +2,7 @@
 
 #include <core/builder.hh>
 #include <renderer/vulkan/compute-pipeline.hh>
+#include <renderer/vulkan/builders/pipeline-shader-info-builder.hh>
 
 #include <filesystem>
 
@@ -22,9 +23,9 @@ namespace brasio::renderer::vulkan::builders
 
     private:
         const LogicalDeviceType &_logicalDevice;
-        const shaders::ShaderManager &_shaderManager;
         VkStructureType _structureType;
         PipelineLayoutType _pipelineLayout;
-        fs::path _shaderPath;
+
+        PipelineShaderBuilder _pipelineShaderBuilder;
     };
 } // namespace brasio::renderer::vulkan::builders

@@ -72,6 +72,7 @@ logging:
   specific_levels:
     APPLICATION: DEBUG
     CREATE: INFO
+    COMPUTE: DEBUG
     DESTROY: DEBUG
     DEVICE: INFO
     EVENT: TRACE
