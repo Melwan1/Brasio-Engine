@@ -6,12 +6,17 @@
 
 #include <core/handler.hh>
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::shaders
 {
     class ShaderModule : public core::Handler<VkShaderModule>
     {
     public:
-        ShaderModule(VkDevice &device, const VkShaderModule &module,
+        ShaderModule(const renderer::vulkan::VulkanRenderer &renderer, const VkShaderModule &module,
                      const VkShaderStageFlagBits &shaderType);
 
         const VkShaderStageFlagBits &getShaderType() const;

@@ -1,16 +1,17 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
+#include <renderer/vulkan/queue-family-indices.hh>
 
-#include <renderer/vulkan/physical-device.hh>
 #include <core/handler.hh>
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
     class LogicalDevice : public core::Handler<VkDevice>
     {
     public:
-        LogicalDevice(const VkPhysicalDevice &physicalDevice, const VkDeviceCreateInfo &createInfo,
+        LogicalDevice(const VulkanRenderer &renderer, const VkDeviceCreateInfo &createInfo,
                       const QueueFamilyIndices &indices);
 
         const VkQueue &getGraphicsQueue() const;

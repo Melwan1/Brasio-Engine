@@ -129,50 +129,41 @@ namespace brasio::mesh
         }
     }
 
-    void Mesh::createVertexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                                  const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                                  const renderer::vulkan::CommandPoolType &commandPool)
+    void Mesh::createVertexBuffer(const renderer::vulkan::VulkanRenderer &renderer)
     {
         VkDeviceSize bufferSize = sizeof(getVertices()[0]) * getVertices().size();
 
         renderer::vulkan::BufferType stagingBuffer =
-            renderer::vulkan::builders::StagingBufferBuilder(physicalDevice, logicalDevice)
+            renderer::vulkan::builders::StagingBufferBuilder(renderer)
                 .withSize(bufferSize)
                 .withData(getVertices().data())
                 .build();
 
         _vertexBuffer =
-            renderer::vulkan::builders::VertexBufferBuilder(physicalDevice, logicalDevice)
-                .withSize(bufferSize)
-                .build();
+            renderer::vulkan::builders::VertexBufferBuilder(renderer).withSize(bufferSize).build();
 
-        stagingBuffer->copyInto(*_vertexBuffer, commandPool->getHandle());
+        stagingBuffer->copyInto(*_vertexBuffer);
     }
 
-    void Mesh::createIndexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                                 const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                                 const renderer::vulkan::CommandPoolType &commandPool)
+    void Mesh::createIndexBuffer(const renderer::vulkan::VulkanRenderer &renderer)
     {
         VkDeviceSize bufferSize = sizeof(getIndices()[0]) * getIndices().size();
 
         renderer::vulkan::BufferType stagingBuffer =
-            renderer::vulkan::builders::StagingBufferBuilder(physicalDevice, logicalDevice)
+            renderer::vulkan::builders::StagingBufferBuilder(renderer)
                 .withSize(bufferSize)
                 .withData(getIndices().data())
                 .build();
-        _indexBuffer = renderer::vulkan::builders::IndexBufferBuilder(physicalDevice, logicalDevice)
-                           .withSize(bufferSize)
-                           .build();
+        _indexBuffer =
+            renderer::vulkan::builders::IndexBufferBuilder(renderer).withSize(bufferSize).build();
 
-        stagingBuffer->copyInto(*_indexBuffer, commandPool->getHandle());
+        stagingBuffer->copyInto(*_indexBuffer);
     }
 
-    void Mesh::createBuffers(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                             const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                             const renderer::vulkan::CommandPoolType &commandPool)
+    void Mesh::createBuffers(const renderer::vulkan::VulkanRenderer &renderer)
     {
-        createVertexBuffer(physicalDevice, logicalDevice, commandPool);
-        createIndexBuffer(physicalDevice, logicalDevice, commandPool);
+        createVertexBuffer(renderer);
+        createIndexBuffer(renderer);
     }
 
     void Mesh::print(std::ostream &ostr) const

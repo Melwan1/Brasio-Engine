@@ -8,8 +8,7 @@ namespace brasio::renderer::vulkan::builders
     class ImageAttachmentBuilder : public core::Builder<ImageAttachmentType>
     {
     public:
-        ImageAttachmentBuilder(const PhysicalDeviceType &physicalDevice,
-                               const LogicalDeviceType &logicalDevice);
+        ImageAttachmentBuilder(const VulkanRenderer &renderer);
 
         virtual ImageAttachmentBuilder &base() override;
         virtual ImageAttachmentType build() override;
@@ -25,8 +24,7 @@ namespace brasio::renderer::vulkan::builders
         ImageAttachmentBuilder &withSamples(const VkSampleCountFlagBits &sampleCount);
 
     private:
-        const PhysicalDeviceType &_physicalDevice;
-        const LogicalDeviceType &_logicalDevice;
+        const VulkanRenderer &_renderer;
 
         uint32_t _width;
         uint32_t _height;

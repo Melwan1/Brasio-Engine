@@ -1,4 +1,5 @@
 #include <renderer/vulkan/texture.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <renderer/vulkan/memory.hh>
 #include <renderer/vulkan/command-buffer.hh>
@@ -8,16 +9,12 @@
 namespace brasio::renderer::vulkan
 {
 
-    Texture::Texture(const PhysicalDeviceType &physicalDevice,
-                     const LogicalDeviceType &logicalDevice, const VkCommandPool &commandPool,
-                     const VkImageCreateInfo &imageInfo, VkImageViewCreateInfo imageViewInfo,
-                     images::P3PPM &textureImage)
-        : ImageAttachment(logicalDevice, imageInfo, imageViewInfo)
-        , _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    Texture::Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
+                     VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage)
+        : ImageAttachment(renderer, imageInfo, imageViewInfo)
         , _textureImage(textureImage)
     {
-        initMemory(_physicalDevice, commandPool, textureImage.getSize(), textureImage.getData());
+        initMemory(textureImage.getSize(), textureImage.getData());
         createImageView();
         createTextureSampler();
     }
@@ -29,7 +26,7 @@ namespace brasio::renderer::vulkan
 
     void Texture::createTextureSampler()
     {
-        _textureSampler = builders::TextureSamplerBuilder(_physicalDevice, _logicalDevice).build();
+        _textureSampler = builders::TextureSamplerBuilder(_renderer).build();
     }
 
     TextureSamplerType &Texture::getTextureSampler()

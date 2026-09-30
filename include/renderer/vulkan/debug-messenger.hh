@@ -9,7 +9,6 @@ namespace brasio::renderer::vulkan
     class DebugMessenger : public core::Handler<VkDebugUtilsMessengerEXT>
     {
     public:
-        DebugMessenger(const VkInstance &instance,
-                       const VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+        DebugMessenger(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT &createInfo);
     };
 } // namespace brasio::renderer::vulkan

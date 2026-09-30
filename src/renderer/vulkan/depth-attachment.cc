@@ -1,15 +1,15 @@
 #include <renderer/vulkan/depth-attachment.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan
 {
 
-    DepthAttachment::DepthAttachment(const PhysicalDeviceType &physicalDevice,
-                                     const LogicalDeviceType &logicalDevice,
+    DepthAttachment::DepthAttachment(const VulkanRenderer &renderer,
                                      const VkImageCreateInfo &imageInfo,
                                      const VkImageViewCreateInfo &imageViewInfo)
-        : ImageAttachment(logicalDevice, imageInfo, imageViewInfo)
+        : ImageAttachment(renderer, imageInfo, imageViewInfo)
     {
-        initMemory(physicalDevice);
+        initMemory();
         createImageView();
     }
 

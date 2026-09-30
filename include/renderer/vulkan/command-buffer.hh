@@ -3,22 +3,22 @@
 #include <vulkan/vulkan_core.h>
 
 #include <core/handler.hh>
-#include <renderer/vulkan/logical-device.hh>
 
 namespace brasio::renderer::vulkan
 {
 
+    class VulkanRenderer;
+
     class CommandBuffer : public core::Handler<VkCommandBuffer>
     {
     public:
-        CommandBuffer(const LogicalDeviceType &logicalDevice, const VkCommandPool &comandPool);
+        CommandBuffer(const VulkanRenderer &renderer);
 
         void begin();
         void end();
 
     private:
         bool _ended;
-        const LogicalDeviceType &_logicalDevice;
-        const VkCommandPool &_commandPool;
+        const VulkanRenderer &_renderer;
     };
 } // namespace brasio::renderer::vulkan

@@ -105,8 +105,18 @@ namespace brasio::renderer::vulkan
 
         // getters
 
+        GLFWwindow *getWindow() const;
+        const VkInstance &getInstance() const;
+        const VkSurfaceKHR &getSurface() const;
+        const VkDevice &getLogicalDevice() const;
+        const LogicalDevice &getLogicalDeviceWrapper() const;
+        const VkPhysicalDevice &getPhysicalDevice() const;
+        const PhysicalDevice &getPhysicalDeviceWrapper() const;
+
         const Swapchain &getSwapchain() const;
-        const RenderPass &getRenderPass() const;
+        const VkCommandPool &getCommandPool() const;
+        const VkRenderPass &getRenderPass() const;
+        const RenderPass &getRenderPassWrapper() const;
         const std::vector<GraphicsPipelineType> &getGraphicsPipelines() const;
         const std::vector<ComputePipelineType> &getComputePipelines() const;
         const CommandBufferArrayType &getCommandBuffers() const;
@@ -117,6 +127,8 @@ namespace brasio::renderer::vulkan
         const VkBuffer &getParticleVertexBuffer() const;
         uint32_t getParticleCount() const;
         uint32_t getCurrentFrame() const;
+
+        const shaders::ShaderManager &getShaderManager() const;
 
         static VulkanRendererType fromConfig(const YAML::Node &config, GLFWwindow *window);
 

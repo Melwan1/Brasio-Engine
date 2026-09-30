@@ -13,7 +13,7 @@ namespace brasio::renderer::vulkan::builders
     class DescriptorSetsBuilder : public core::Builder<DescriptorSetsType>
     {
     public:
-        DescriptorSetsBuilder(const VkDevice &logicalDevice,
+        DescriptorSetsBuilder(const VulkanRenderer &renderer,
                               const VkDescriptorPool &descriptorPool);
 
         virtual DescriptorSetsBuilder &base() override;
@@ -23,7 +23,7 @@ namespace brasio::renderer::vulkan::builders
         DescriptorSetsBuilder &withSetLayout(const VkDescriptorSetLayout &descriptorSetLayout);
 
     private:
-        const VkDevice &_logicalDevice;
+        const VulkanRenderer &_renderer;
         const VkDescriptorPool &_descriptorPool;
         VkStructureType _structureType;
 

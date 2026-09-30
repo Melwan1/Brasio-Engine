@@ -15,14 +15,14 @@ namespace brasio::renderer::vulkan::builders
     class LogicalDeviceBuilder : public core::Builder<LogicalDeviceType>
     {
     public:
-        LogicalDeviceBuilder(const PhysicalDevice &physicalDevice);
+        LogicalDeviceBuilder(const VulkanRenderer &renderer);
 
         virtual LogicalDeviceBuilder &base() override;
 
         virtual LogicalDeviceType build() override;
 
     private:
-        const PhysicalDevice &_physicalDevice;
+        const VulkanRenderer &_renderer;
         float _queuePriority;
         std::vector<VkDeviceQueueCreateInfo> _queueCreateInfos;
         QueueFamilyIndices _indices;

@@ -1,14 +1,13 @@
 #pragma once
 
 #include <renderer/vulkan/builders/buffer-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
     template <VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperties>
-    BufferBuilder<usage, memoryProperties>::BufferBuilder(const PhysicalDeviceType &physicalDevice,
-                                                          const LogicalDeviceType &logicalDevice)
-        : _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    BufferBuilder<usage, memoryProperties>::BufferBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -57,7 +56,7 @@ namespace brasio::renderer::vulkan::builders
         bufferCreateInfo.usage = usage;
         bufferCreateInfo.sharingMode = _sharingMode;
 
-        return std::make_unique<Buffer>(_physicalDevice, _logicalDevice, bufferCreateInfo,
-                                        memoryProperties, _data, _size);
+        return std::make_unique<Buffer>(_renderer, bufferCreateInfo, memoryProperties, _data,
+                                        _size);
     }
 } // namespace brasio::renderer::vulkan::builders

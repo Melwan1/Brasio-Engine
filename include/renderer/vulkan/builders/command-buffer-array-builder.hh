@@ -10,7 +10,7 @@ namespace brasio::renderer::vulkan::builders
     class CommandBufferArrayBuilder : public core::Builder<CommandBufferArrayType>
     {
     public:
-        CommandBufferArrayBuilder(const VkDevice &logicalDevice, const VkCommandPool &commandPool);
+        CommandBufferArrayBuilder(const VulkanRenderer &renderer);
 
         virtual CommandBufferArrayBuilder &base() override;
         virtual CommandBufferArrayType build() override;
@@ -19,8 +19,7 @@ namespace brasio::renderer::vulkan::builders
         CommandBufferArrayBuilder &withCommandBufferCount(uint32_t commandBufferCount);
 
     private:
-        VkDevice _logicalDevice;
-        VkCommandPool _commandPool;
+        const VulkanRenderer &_renderer;
 
         VkStructureType _structureType;
         VkCommandBufferLevel _level;

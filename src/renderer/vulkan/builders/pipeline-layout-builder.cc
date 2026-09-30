@@ -2,8 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    PipelineLayoutBuilder::PipelineLayoutBuilder(const VkDevice &logicalDevice)
-        : _logicalDevice(logicalDevice)
+    PipelineLayoutBuilder::PipelineLayoutBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -45,7 +45,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.pushConstantRangeCount = _pushConstantRanges.size();
         createInfo.pPushConstantRanges = _pushConstantRanges.data();
 
-        return std::make_unique<PipelineLayout>(_logicalDevice, std::move(_descriptorSetLayout),
+        return std::make_unique<PipelineLayout>(_renderer, std::move(_descriptorSetLayout),
                                                 createInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

@@ -6,18 +6,17 @@
 
 #include <memory>
 
-#include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/texture-sampler.hh>
 #include <images/p3-ppm.hh>
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
 
     class Texture : public ImageAttachment
     {
     public:
-        Texture(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
-                const VkCommandPool &commandPool, const VkImageCreateInfo &imageInfo,
+        Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
                 VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage);
 
         const images::P3PPM &getTextureImage() const;
@@ -28,8 +27,6 @@ namespace brasio::renderer::vulkan
         const TextureSamplerType &getTextureSampler() const;
 
     private:
-        const PhysicalDeviceType &_physicalDevice;
-        const LogicalDeviceType &_logicalDevice;
         const images::P3PPM _textureImage;
         TextureSamplerType _textureSampler;
     };

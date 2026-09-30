@@ -6,9 +6,11 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class Semaphore : public core::Handler<VkSemaphore>
     {
     public:
-        Semaphore(const VkDevice &logicalDevice, const VkSemaphoreCreateInfo &createInfo);
+        Semaphore(const VulkanRenderer &renderer, const VkSemaphoreCreateInfo &createInfo);
     };
 } // namespace brasio::renderer::vulkan

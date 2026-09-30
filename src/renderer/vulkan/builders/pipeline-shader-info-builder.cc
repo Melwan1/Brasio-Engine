@@ -1,12 +1,11 @@
 #include <renderer/vulkan/builders/pipeline-shader-info-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <vulkan/vulkan_core.h>
 
 namespace brasio::renderer::vulkan::builders
 {
-    PipelineShaderBuilder::PipelineShaderBuilder(const VkDevice &logicalDevice,
-                                                 const shaders::ShaderManager &shaderManager)
-        : _logicalDevice(logicalDevice)
-        , _shaderManager(shaderManager)
+    PipelineShaderBuilder::PipelineShaderBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
         , _structureType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO)
     {}
 
@@ -39,7 +38,8 @@ namespace brasio::renderer::vulkan::builders
         withShaderPath(shaderPath)
             .withShaderType(shaderStageByExtension.at(shaderPath.extension().string().substr(1)));
         _shaderModule = std::make_unique<shaders::ShaderModule>(
-            _logicalDevice, _shaderManager.createShaderModuleFromPath(_logicalDevice, shaderPath),
+            _renderer,
+            _renderer.getShaderManager().createShaderModuleFromPath(_renderer, shaderPath),
             _shaderType);
         return *this;
     }

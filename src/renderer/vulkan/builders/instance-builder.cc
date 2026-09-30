@@ -1,18 +1,16 @@
 #include <renderer/vulkan/builders/instance-builder.hh>
 
-#include <iostream>
-
-#include <vulkan/vulkan.hpp>
-
 #include <io/logging/logger.hh>
 #include <renderer/vulkan/builders/application-info-builder.hh>
 #include <renderer/vulkan/instance.hh>
 #include <vulkan/vulkan_core.h>
+#include <cstring>
 
 namespace brasio::renderer::vulkan::builders
 {
-    InstanceBuilder::InstanceBuilder()
-        : _applicationBuilder{}
+    InstanceBuilder::InstanceBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
+        , _applicationBuilder{}
         , _enableValidationLayers(false)
         , _validationLayers{}
         , _instanceCreateInfo{}
@@ -34,7 +32,7 @@ namespace brasio::renderer::vulkan::builders
                                                _instanceExtensions.data());
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo =
-            DebugMessengerBuilder().getCreateInfo();
+            DebugMessengerBuilder(VK_NULL_HANDLE).getCreateInfo();
 
         if (_enableValidationLayers)
         {
@@ -52,7 +50,7 @@ namespace brasio::renderer::vulkan::builders
 
         std::unique_ptr<VkInstance> instance = std::make_unique<VkInstance>();
 
-        return std::make_unique<Instance>(_instanceCreateInfo);
+        return std::make_unique<Instance>(_renderer, _instanceCreateInfo);
     }
 
     InstanceBuilder &InstanceBuilder::base()

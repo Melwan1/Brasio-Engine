@@ -1,17 +1,15 @@
 #pragma once
 
-#include <renderer/vulkan/logical-device.hh>
-#include <renderer/vulkan/physical-device.hh>
 #include <renderer/vulkan/image-attachment.hh>
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
 
     class DepthAttachment : public ImageAttachment
     {
     public:
-        DepthAttachment(const PhysicalDeviceType &physicalDevice,
-                        const LogicalDeviceType &logicalDevice, const VkImageCreateInfo &imageInfo,
+        DepthAttachment(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
                         const VkImageViewCreateInfo &imageViewInfo);
 
         VkAttachmentDescription getAttachmentDescription() const override;

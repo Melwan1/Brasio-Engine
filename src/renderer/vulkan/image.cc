@@ -1,21 +1,22 @@
 #include <renderer/vulkan/image.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
-#include <io/logging/logger.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
-    Image::Image(const VkDevice &logicalDevice, const VkImage &image,
+    Image::Image(const VulkanRenderer &renderer, const VkImage &image,
                  const VkImageViewCreateInfo &createInfo)
         : Handler("image view",
-                  [logicalDevice](const VkImageView &imageView) {
-                      vkDestroyImageView(logicalDevice, imageView, nullptr);
+                  [&renderer](const VkImageView &imageView) {
+                      vkDestroyImageView(renderer.getLogicalDevice(), imageView, nullptr);
                   })
         , _image(image)
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
-        BRASIO_VULKAN_CHECK(vkCreateImageView(logicalDevice, &createInfo, nullptr, &getHandle()),
-                            "create image view", { "CREATE" });
+        BRASIO_VULKAN_CHECK(
+            vkCreateImageView(renderer.getLogicalDevice(), &createInfo, nullptr, &getHandle()),
+            "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 

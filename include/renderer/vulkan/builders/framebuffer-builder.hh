@@ -4,16 +4,19 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/framebuffer.hh>
+
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
 
 namespace brasio::renderer::vulkan::builders
 {
     class FramebufferBuilder : public core::Builder<FramebufferType>
     {
     public:
-        FramebufferBuilder(const LogicalDeviceType &logicalDevice, const VkRenderPass &renderPass,
-                           const VkExtent2D &extent);
+        FramebufferBuilder(const VulkanRenderer &renderer);
 
         virtual FramebufferBuilder &base() override;
 
@@ -22,10 +25,7 @@ namespace brasio::renderer::vulkan::builders
         virtual FramebufferType build() override;
 
     private:
-        const LogicalDeviceType &_logicalDevice;
-        VkRenderPass _renderPass = VK_NULL_HANDLE;
-        VkExtent2D _extent;
-
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
         std::vector<VkImageView> _attachments = {};
         uint32_t _layers;

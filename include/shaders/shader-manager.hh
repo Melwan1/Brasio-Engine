@@ -7,6 +7,11 @@
 
 #include <vulkan/vulkan.hpp>
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::shaders
 {
     namespace fs = std::filesystem;
@@ -22,9 +27,11 @@ namespace brasio::shaders
 
         const std::string &getSpirVFileContent(const fs::path &entry) const;
 
-        VkShaderModule createShaderModuleFromByteCode(VkDevice &device,
-                                                      const std::string &shaderByteCode) const;
-        VkShaderModule createShaderModuleFromPath(VkDevice &device, const fs::path &entry) const;
+        VkShaderModule
+        createShaderModuleFromByteCode(const renderer::vulkan::VulkanRenderer &renderer,
+                                       const std::string &shaderByteCode) const;
+        VkShaderModule createShaderModuleFromPath(const renderer::vulkan::VulkanRenderer &renderer,
+                                                  const fs::path &entry) const;
 
     private:
         ShaderCompiler _shaderCompiler;

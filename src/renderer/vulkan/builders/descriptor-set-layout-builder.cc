@@ -5,8 +5,8 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    DescriptorSetLayoutBuilder::DescriptorSetLayoutBuilder(const VkDevice &logicalDevice)
-        : _logicalDevice(logicalDevice)
+    DescriptorSetLayoutBuilder::DescriptorSetLayoutBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -75,7 +75,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.bindingCount = _bindings.size();
         createInfo.pBindings = _bindings.data();
 
-        return std::make_unique<DescriptorSetLayout>(_logicalDevice, createInfo);
+        return std::make_unique<DescriptorSetLayout>(_renderer, createInfo);
     }
 
 } // namespace brasio::renderer::vulkan::builders

@@ -1,11 +1,11 @@
 #include <renderer/vulkan/logical-device.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
-#include <io/logging/logger.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
-    LogicalDevice::LogicalDevice(const VkPhysicalDevice &physicalDevice,
+    LogicalDevice::LogicalDevice(const VulkanRenderer &renderer,
                                  const VkDeviceCreateInfo &createInfo,
                                  const QueueFamilyIndices &indices)
         : Handler("logical device",
@@ -13,8 +13,9 @@ namespace brasio::renderer::vulkan
         , _queueFamilyIndices(indices)
     {
         BRASIO_LOG_TRACE("Creating logical device", { "CREATE" });
-        BRASIO_VULKAN_CHECK(vkCreateDevice(physicalDevice, &createInfo, nullptr, &getHandle()),
-                            "create logical device", { "CREATE" });
+        BRASIO_VULKAN_CHECK(
+            vkCreateDevice(renderer.getPhysicalDevice(), &createInfo, nullptr, &getHandle()),
+            "create logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Created logical device", { "CREATE" });
         BRASIO_LOG_TRACE("Setting up device queues", { "CREATE" });
 

@@ -13,8 +13,7 @@ namespace brasio::renderer::vulkan::builders
     class TextureBuilder : public core::Builder<TextureType>
     {
     public:
-        TextureBuilder(const PhysicalDeviceType &physicalDevice,
-                       const LogicalDeviceType &logicalDevice);
+        TextureBuilder(const VulkanRenderer &renderer);
 
         virtual TextureBuilder &base() override;
         virtual TextureType build() override;
@@ -28,11 +27,8 @@ namespace brasio::renderer::vulkan::builders
         TextureBuilder &withSharingMode(const VkSharingMode &sharingMode);
         TextureBuilder &withTiling(const VkImageTiling &tiling);
 
-        TextureBuilder &withCommandPool(const VkCommandPool &commandPool);
-
     private:
-        const PhysicalDeviceType &_physicalDevice;
-        const LogicalDeviceType &_logicalDevice;
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
 
         uint32_t _width;
@@ -43,7 +39,5 @@ namespace brasio::renderer::vulkan::builders
         VkImageUsageFlags _usage;
         VkSharingMode _sharingMode;
         VkImageTiling _tiling;
-
-        VkCommandPool _commandPool;
     };
 } // namespace brasio::renderer::vulkan::builders

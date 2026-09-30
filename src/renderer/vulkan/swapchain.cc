@@ -1,23 +1,21 @@
 #include <renderer/vulkan/swapchain.hh>
-
-#include <io/logging/logger.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <renderer/vulkan/builders/image-builder.hh>
 #include <renderer/vulkan/builders/framebuffer-builder.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
-    Swapchain::Swapchain(const LogicalDeviceType &logicalDevice,
-                         const VkSwapchainCreateInfoKHR &createInfo)
+    Swapchain::Swapchain(const VulkanRenderer &renderer, const VkSwapchainCreateInfoKHR &createInfo)
         : Handler("swapchain",
-                  [&logicalDevice](const VkSwapchainKHR &swapchain) {
-                      vkDestroySwapchainKHR(logicalDevice->getHandle(), swapchain, nullptr);
+                  [&renderer](const VkSwapchainKHR &swapchain) {
+                      vkDestroySwapchainKHR(renderer.getLogicalDevice(), swapchain, nullptr);
                   })
-        , _logicalDevice(logicalDevice)
+        , _renderer(renderer)
     {
         BRASIO_LOG_TRACE("Creating swapchain", { "CREATE" });
         BRASIO_VULKAN_CHECK(
-            vkCreateSwapchainKHR(_logicalDevice->getHandle(), &createInfo, nullptr, &getHandle()),
+            vkCreateSwapchainKHR(renderer.getLogicalDevice(), &createInfo, nullptr, &getHandle()),
             "create swapchain", { "CREATE" });
         BRASIO_LOG_TRACE("Created swapchain", { "CREATE" });
         BRASIO_LOG_TRACE("Setting image format, extent and image count", { "CREATE" });
@@ -85,27 +83,25 @@ namespace brasio::renderer::vulkan
     {
         std::vector<VkImage> rawImages;
         BRASIO_LOG_TRACE("Getting swapchain images", { "CREATE" });
-        vkGetSwapchainImagesKHR(_logicalDevice->getHandle(), getHandle(), &_imageCount, nullptr);
+        vkGetSwapchainImagesKHR(_renderer.getLogicalDevice(), getHandle(), &_imageCount, nullptr);
         BRASIO_LOG_TRACE("Getting " + std::to_string(_imageCount) + " swapchain images",
                          { "CREATE" });
 
         rawImages.resize(_imageCount);
-        vkGetSwapchainImagesKHR(_logicalDevice->getHandle(), getHandle(), &_imageCount,
+        vkGetSwapchainImagesKHR(_renderer.getLogicalDevice(), getHandle(), &_imageCount,
                                 rawImages.data());
         for (const auto &image : rawImages)
         {
-            _images.emplace_back(
-                builders::ImageBuilder(_logicalDevice, image, getFormat()).build());
+            _images.emplace_back(builders::ImageBuilder(_renderer, image, getFormat()).build());
         }
         BRASIO_LOG_TRACE("Got swapchain images", { "CREATE" });
     }
 
-    void Swapchain::createFramebuffers(const VkRenderPass &renderPass,
-                                       const std::vector<VkImageView> &additionalImageViews)
+    void Swapchain::createFramebuffers(const std::vector<VkImageView> &additionalImageViews)
     {
         for (const auto &image : _images)
         {
-            builders::FramebufferBuilder builder(_logicalDevice, renderPass, getExtent());
+            builders::FramebufferBuilder builder(_renderer);
             for (const VkImageView &imageView : additionalImageViews)
             {
                 builder.withAdditionalAttachment(imageView);

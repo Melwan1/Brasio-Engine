@@ -9,13 +9,12 @@ namespace brasio::renderer::vulkan::builders
     class SurfaceBuilder : public core::Builder<SurfaceType>
     {
     public:
-        SurfaceBuilder(const VkInstance &instance, GLFWwindow *window);
+        SurfaceBuilder(const VulkanRenderer &renderer);
 
         virtual SurfaceBuilder &base() override;
         virtual SurfaceType build() override;
 
     private:
-        VkInstance _instance;
-        GLFWwindow *_window;
+        const VulkanRenderer &_renderer;
     };
 } // namespace brasio::renderer::vulkan::builders

@@ -4,28 +4,24 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/logical-device.hh>
-#include <renderer/vulkan/physical-device.hh>
-
 #include <memory>
 
 namespace brasio::renderer::vulkan
 {
     class Buffer;
     class ImageAttachment;
+    class VulkanRenderer;
 
     class Memory : public core::Handler<VkDeviceMemory>
     {
     public:
-        Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
-               const Buffer &buffer, VkMemoryPropertyFlags memoryProperties, void *data,
-               size_t size);
+        Memory(const VulkanRenderer &renderer, const Buffer &buffer,
+               VkMemoryPropertyFlags memoryProperties, void *data, size_t size);
 
-        Memory(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
-               const ImageAttachment &imageAttachment, VkMemoryPropertyFlags memoryProperties);
+        Memory(const VulkanRenderer &renderer, const ImageAttachment &imageAttachment,
+               VkMemoryPropertyFlags memoryProperties);
 
-        void allocate(const PhysicalDeviceType &physicalDevice, const VkDevice &logicalDevice,
-                      const VkMemoryPropertyFlags &memoryProperties,
+        void allocate(const VkMemoryPropertyFlags &memoryProperties,
                       const VkMemoryRequirements &memoryRequirements);
 
         void map();
@@ -33,7 +29,7 @@ namespace brasio::renderer::vulkan
         void setContent(const void *content);
 
     private:
-        VkDevice _logicalDevice;
+        const VulkanRenderer &_renderer;
         size_t _size;
         void *_deviceData;
     };

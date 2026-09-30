@@ -8,11 +8,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
 
     class DescriptorSetLayout : public core::Handler<VkDescriptorSetLayout>
     {
     public:
-        DescriptorSetLayout(const VkDevice &logicalDevice,
+        DescriptorSetLayout(const VulkanRenderer &renderer,
                             const VkDescriptorSetLayoutCreateInfo &createInfo);
     };
 

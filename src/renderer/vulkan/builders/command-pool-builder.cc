@@ -2,8 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    CommandPoolBuilder::CommandPoolBuilder(const VkDevice &logicalDevice)
-        : _logicalDevice(logicalDevice)
+    CommandPoolBuilder::CommandPoolBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -28,6 +28,6 @@ namespace brasio::renderer::vulkan::builders
         createInfo.queueFamilyIndex = _queueFamilyIndex;
         createInfo.flags = _resetFlags;
 
-        return std::make_unique<CommandPool>(_logicalDevice, createInfo);
+        return std::make_unique<CommandPool>(_renderer, createInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

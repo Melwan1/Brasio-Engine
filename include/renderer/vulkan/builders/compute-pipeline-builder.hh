@@ -13,8 +13,7 @@ namespace brasio::renderer::vulkan::builders
     class ComputePipelineBuilder : public core::Builder<ComputePipelineType>
     {
     public:
-        ComputePipelineBuilder(const LogicalDeviceType &logicalDevice,
-                               const shaders::ShaderManager &shaderManager);
+        ComputePipelineBuilder(const VulkanRenderer &renderer);
         virtual ComputePipelineBuilder &base() override;
         virtual ComputePipelineType build() override;
 
@@ -22,7 +21,7 @@ namespace brasio::renderer::vulkan::builders
         ComputePipelineBuilder &withShader(const fs::path &shaderPath);
 
     private:
-        const LogicalDeviceType &_logicalDevice;
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
         PipelineLayoutType _pipelineLayout;
 

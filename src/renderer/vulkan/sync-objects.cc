@@ -1,24 +1,24 @@
 #include <renderer/vulkan/sync-objects.hh>
 
-#include <io/logging/logger.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <vulkan/vulkan_core.h>
 
 namespace brasio::renderer::vulkan
 {
-    SyncObjects::SyncObjects(const VkDevice &logicalDevice, uint32_t semaphoreCount,
+    SyncObjects::SyncObjects(const VulkanRenderer &renderer, uint32_t semaphoreCount,
                              uint32_t fenceCount, const VkSemaphoreCreateInfo &semaphoreCreateInfo,
                              const VkFenceCreateInfo &fenceCreateInfo)
-        : _logicalDevice(logicalDevice)
+        : _renderer(renderer)
     {
         _semaphores.reserve(semaphoreCount);
         _fences.reserve(semaphoreCount);
         for (uint32_t semaphoreIndex = 0; semaphoreIndex < semaphoreCount; semaphoreIndex++)
         {
-            _semaphores.emplace_back(_logicalDevice, semaphoreCreateInfo);
+            _semaphores.emplace_back(renderer, semaphoreCreateInfo);
         }
         for (uint32_t fenceIndex = 0; fenceIndex < fenceCount; fenceIndex++)
         {
-            _fences.emplace_back(_logicalDevice, fenceCreateInfo);
+            _fences.emplace_back(renderer, fenceCreateInfo);
         }
     }
 
@@ -44,7 +44,8 @@ namespace brasio::renderer::vulkan
     void SyncObjects::waitFences(const std::vector<uint32_t> &indices)
     {
         std::vector<VkFence> fencesToWait = toFenceVector(indices);
-        vkWaitForFences(_logicalDevice, indices.size(), fencesToWait.data(), VK_TRUE, UINT64_MAX);
+        vkWaitForFences(_renderer.getLogicalDevice(), indices.size(), fencesToWait.data(), VK_TRUE,
+                        UINT64_MAX);
     }
 
     const VkSemaphore &SyncObjects::semaphoreAt(uint32_t index) const
@@ -104,7 +105,7 @@ namespace brasio::renderer::vulkan
     void SyncObjects::resetFences(const std::vector<uint32_t> &indices)
     {
         std::vector<VkFence> fencesToWait = toFenceVector(indices);
-        vkResetFences(_logicalDevice, fencesToWait.size(), fencesToWait.data());
+        vkResetFences(_renderer.getLogicalDevice(), fencesToWait.size(), fencesToWait.data());
     }
 
     bool SyncObjects::_checkSemaphoreBounds(uint32_t index) const

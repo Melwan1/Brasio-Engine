@@ -8,12 +8,17 @@
 #include <core/builder.hh>
 #include <renderer/vulkan/physical-device.hh>
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::renderer::vulkan::builders
 {
     class PhysicalDeviceBuilder : public core::Builder<PhysicalDeviceType>
     {
     public:
-        PhysicalDeviceBuilder(const VkInstance &instance, const VkSurfaceKHR &surface);
+        PhysicalDeviceBuilder(const VulkanRenderer &renderer);
 
         virtual PhysicalDeviceType build() override;
         virtual PhysicalDeviceBuilder &base() override;
@@ -24,8 +29,7 @@ namespace brasio::renderer::vulkan::builders
         withValidationLayers(const std::vector<const char *> validationLayers);
 
     private:
-        VkInstance _instance;
-        VkSurfaceKHR _surface;
+        const VulkanRenderer &_renderer;
 
         std::vector<const char *> _deviceExtensions;
         std::vector<const char *> _validationLayers;

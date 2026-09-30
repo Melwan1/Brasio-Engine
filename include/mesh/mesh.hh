@@ -55,17 +55,11 @@ namespace brasio::mesh
 
         void setUniformColor(const glm::vec3 &color);
 
-        void createVertexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                                const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                                const renderer::vulkan::CommandPoolType &commandPool);
+        void createVertexBuffer(const renderer::vulkan::VulkanRenderer &renderer);
 
-        void createIndexBuffer(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                               const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                               const renderer::vulkan::CommandPoolType &commandPool);
+        void createIndexBuffer(const renderer::vulkan::VulkanRenderer &renderer);
 
-        void createBuffers(const renderer::vulkan::PhysicalDeviceType &physicalDevice,
-                           const renderer::vulkan::LogicalDeviceType &logicalDevice,
-                           const renderer::vulkan::CommandPoolType &commandPool);
+        void createBuffers(const renderer::vulkan::VulkanRenderer &renderer);
 
         void print(std::ostream &ostr) const;
 

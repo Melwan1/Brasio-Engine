@@ -10,12 +10,15 @@
 namespace brasio::renderer::vulkan
 {
 
+    class VulkanRenderer;
+
     class Instance : public core::Handler<VkInstance>
     {
     public:
-        Instance(const VkInstanceCreateInfo &createInfo);
+        Instance(const VulkanRenderer &renderer, const VkInstanceCreateInfo &createInfo);
 
     private:
+        const VulkanRenderer &_renderer;
         std::unique_ptr<DebugMessenger> _debugMessenger;
     };
 

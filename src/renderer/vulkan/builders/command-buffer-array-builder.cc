@@ -1,11 +1,10 @@
 #include <renderer/vulkan/builders/command-buffer-array-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
-    CommandBufferArrayBuilder::CommandBufferArrayBuilder(const VkDevice &logicalDevice,
-                                                         const VkCommandPool &commandPool)
-        : _logicalDevice(logicalDevice)
-        , _commandPool(commandPool)
+    CommandBufferArrayBuilder::CommandBufferArrayBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -35,8 +34,8 @@ namespace brasio::renderer::vulkan::builders
         VkCommandBufferAllocateInfo allocateInfo{};
         allocateInfo.sType = _structureType;
         allocateInfo.commandBufferCount = _commandBufferCount;
-        allocateInfo.commandPool = _commandPool;
+        allocateInfo.commandPool = _renderer.getCommandPool();
 
-        return std::make_unique<CommandBufferArray>(_logicalDevice, allocateInfo);
+        return std::make_unique<CommandBufferArray>(_renderer, allocateInfo);
     }
 } // namespace brasio::renderer::vulkan::builders

@@ -6,12 +6,17 @@
 
 #include <renderer/vulkan/command-pool.hh>
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::renderer::vulkan::builders
 {
     class CommandPoolBuilder : public core::Builder<CommandPoolType>
     {
     public:
-        CommandPoolBuilder(const VkDevice &logicalDevice);
+        CommandPoolBuilder(const VulkanRenderer &renderer);
 
         virtual CommandPoolBuilder &base() override;
         virtual CommandPoolType build() override;
@@ -19,7 +24,7 @@ namespace brasio::renderer::vulkan::builders
         CommandPoolBuilder &withQueueFamilyIndex(uint32_t queueFamilyIndex);
 
     private:
-        VkDevice _logicalDevice;
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
         uint32_t _queueFamilyIndex;
         VkCommandPoolResetFlags _resetFlags;

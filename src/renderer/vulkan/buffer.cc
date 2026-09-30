@@ -3,31 +3,31 @@
 #include <renderer/vulkan/memory.hh>
 #include <renderer/vulkan/texture.hh>
 #include <renderer/vulkan/command-buffer.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
-    Buffer::Buffer(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
-                   const VkBufferCreateInfo &createInfo,
+    Buffer::Buffer(const VulkanRenderer &renderer, const VkBufferCreateInfo &createInfo,
                    const VkMemoryPropertyFlags memoryProperties, void *data, VkDeviceSize size)
         : Handler("buffer",
-                  [&logicalDevice](const VkBuffer &buffer) {
-                      vkDestroyBuffer(logicalDevice->getHandle(), buffer, nullptr);
+                  [&renderer](const VkBuffer &buffer) {
+                      vkDestroyBuffer(renderer.getLogicalDevice(), buffer, nullptr);
                   })
-        , _logicalDevice(logicalDevice)
+        , _renderer(renderer)
         , _deviceMemory(nullptr)
         , _size(size)
     {
         BRASIO_LOG_TRACE("Creating buffer", { "CREATE" });
         BRASIO_VULKAN_CHECK(
-            vkCreateBuffer(logicalDevice->getHandle(), &createInfo, nullptr, &getHandle()),
+            vkCreateBuffer(renderer.getLogicalDevice(), &createInfo, nullptr, &getHandle()),
             "create buffer", { "CREATE" });
         BRASIO_LOG_TRACE("Created buffer", { "CREATE" });
-        _deviceMemory = std::make_unique<Memory>(physicalDevice, logicalDevice->getHandle(), *this,
-                                                 memoryProperties, data, createInfo.size);
+        _deviceMemory =
+            std::make_unique<Memory>(renderer, *this, memoryProperties, data, createInfo.size);
     }
 
-    void Buffer::copyInto(const Buffer &other, VkCommandPool commandPool)
+    void Buffer::copyInto(const Buffer &other)
     {
         if (other.getSize() < _size)
         {
@@ -35,16 +35,16 @@ namespace brasio::renderer::vulkan
                              "in buffer corruption",
                              { "BUFFER" });
         }
-        CommandBuffer commandBuffer(_logicalDevice, commandPool);
+        CommandBuffer commandBuffer(_renderer);
 
         VkBufferCopy copyRegion{};
         copyRegion.size = _size;
         vkCmdCopyBuffer(commandBuffer.getHandle(), getHandle(), other.getHandle(), 1, &copyRegion);
     }
 
-    void Buffer::copyInto(const ImageAttachment &other, VkCommandPool commandPool)
+    void Buffer::copyInto(const ImageAttachment &other)
     {
-        CommandBuffer commandBuffer(_logicalDevice, commandPool);
+        CommandBuffer commandBuffer(_renderer);
 
         VkBufferImageCopy region{};
         region.bufferOffset = 0;

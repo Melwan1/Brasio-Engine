@@ -1,17 +1,19 @@
 #pragma once
 
+#include <core/handler.hh>
+
 #include <memory>
 
 #include <vulkan/vulkan_core.h>
 
-#include <renderer/vulkan/logical-device.hh>
-
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class RenderPass : public core::Handler<VkRenderPass>
     {
     public:
-        RenderPass(const VkDevice &logicalDevice, const VkRenderPassCreateInfo &createInfo);
+        RenderPass(const VulkanRenderer &renderer, const VkRenderPassCreateInfo &createInfo);
 
     private:
     };

@@ -10,11 +10,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
 
     class DescriptorSets : public core::Handler<std::vector<VkDescriptorSet>>
     {
     public:
-        DescriptorSets(const VkDevice &logicalDevice,
+        DescriptorSets(const VulkanRenderer &renderer,
                        const VkDescriptorSetAllocateInfo &allocateInfo);
 
         void update(const std::vector<BufferType> &uniformBuffers,
@@ -22,7 +23,7 @@ namespace brasio::renderer::vulkan
                     const std::vector<BufferType> &storageBuffers);
 
     private:
-        const VkDevice &_logicalDevice;
+        const VulkanRenderer &_renderer;
     };
 
     using DescriptorSetsType = std::unique_ptr<DescriptorSets>;

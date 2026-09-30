@@ -4,25 +4,20 @@
 #include <limits>
 
 #include <renderer/vulkan/swap-chain-support-details.hh>
-
-#include <io/logging/logger.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
-    SwapchainBuilder::SwapchainBuilder(GLFWwindow *window, const PhysicalDeviceType &physicalDevice,
-                                       const LogicalDeviceType &logicalDevice,
-                                       const VkSurfaceKHR &surface)
-        : _window(window)
-        , _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
-        , _surface(surface)
+    SwapchainBuilder::SwapchainBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
 
     SwapchainBuilder &SwapchainBuilder::base()
     {
-        SwapChainSupportDetails swapchainSupportDetails = _physicalDevice->querySwapChainSupport();
+        SwapChainSupportDetails swapchainSupportDetails =
+            _renderer.getPhysicalDeviceWrapper().querySwapChainSupport();
 
         _availableSurfaceFormats = swapchainSupportDetails.formats;
         BRASIO_LOG_DEBUG("Available surface formats: "
@@ -62,7 +57,7 @@ namespace brasio::renderer::vulkan::builders
     {
         VkSwapchainCreateInfoKHR createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-        createInfo.surface = _surface;
+        createInfo.surface = _renderer.getSurface();
         createInfo.minImageCount = _imageCount;
         createInfo.imageFormat = _surfaceFormat.format;
         createInfo.imageColorSpace = _surfaceFormat.colorSpace;
@@ -70,7 +65,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = _physicalDevice->findQueueFamilies();
+        QueueFamilyIndices indices = _renderer.getPhysicalDeviceWrapper().findQueueFamilies();
         uint32_t queueFamilyIndices[] = { indices.graphicsComputeFamily.value(),
                                           indices.presentFamily.value() };
         bool areIndicesSame =
@@ -80,14 +75,15 @@ namespace brasio::renderer::vulkan::builders
             areIndicesSame ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT;
         createInfo.queueFamilyIndexCount = areIndicesSame ? 0 : 2;
         createInfo.pQueueFamilyIndices = areIndicesSame ? nullptr : queueFamilyIndices;
-        createInfo.preTransform =
-            _physicalDevice->querySwapChainSupport().capabilities.currentTransform;
+        createInfo.preTransform = _renderer.getPhysicalDeviceWrapper()
+                                      .querySwapChainSupport()
+                                      .capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
         createInfo.presentMode = _presentMode;
         createInfo.clipped = VK_TRUE;
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        return std::make_unique<Swapchain>(_logicalDevice, createInfo);
+        return std::make_unique<Swapchain>(_renderer, createInfo);
     }
 
     SwapchainBuilder &SwapchainBuilder::withSurfaceFormat(const VkSurfaceFormatKHR &surfaceFormat)
@@ -144,7 +140,7 @@ namespace brasio::renderer::vulkan::builders
         VkExtent2D extent;
         int width;
         int height;
-        glfwGetFramebufferSize(_window, &width, &height);
+        glfwGetFramebufferSize(_renderer.getWindow(), &width, &height);
 
         uint32_t extentWidth = static_cast<uint32_t>(width);
         uint32_t extentHeight = static_cast<uint32_t>(height);

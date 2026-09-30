@@ -9,10 +9,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class Surface : public core::Handler<VkSurfaceKHR>
     {
     public:
-        Surface(const VkInstance &instance, GLFWwindow *window);
+        Surface(const VulkanRenderer &renderer);
     };
 
     using SurfaceType = std::unique_ptr<Surface>;

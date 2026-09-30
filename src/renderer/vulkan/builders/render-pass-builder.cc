@@ -2,8 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    RenderPassBuilder::RenderPassBuilder(const VkDevice &logicalDevice)
-        : _logicalDevice(logicalDevice)
+    RenderPassBuilder::RenderPassBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -27,7 +27,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.pSubpasses = _subpasses.data();
         createInfo.dependencyCount = _dependencies.size();
         createInfo.pDependencies = _dependencies.data();
-        return std::make_unique<RenderPass>(_logicalDevice, createInfo);
+        return std::make_unique<RenderPass>(_renderer, createInfo);
     }
 
     RenderPassBuilder &RenderPassBuilder::withAdditionalSubpass(const VkSubpassDescription &subpass)

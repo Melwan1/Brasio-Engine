@@ -1,12 +1,11 @@
 #include <renderer/vulkan/builders/texture-sampler-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
 
-    TextureSamplerBuilder::TextureSamplerBuilder(const PhysicalDeviceType &physicalDevice,
-                                                 const LogicalDeviceType &logicalDevice)
-        : _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    TextureSamplerBuilder::TextureSamplerBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -44,7 +43,7 @@ namespace brasio::renderer::vulkan::builders
         samplerInfo.anisotropyEnable = _anisotropyEnable;
 
         VkPhysicalDeviceProperties properties{};
-        vkGetPhysicalDeviceProperties(_physicalDevice->getHandle(), &properties);
+        vkGetPhysicalDeviceProperties(_renderer.getPhysicalDevice(), &properties);
 
         samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
         samplerInfo.borderColor = _borderColor;
@@ -56,7 +55,7 @@ namespace brasio::renderer::vulkan::builders
         samplerInfo.minLod = _minLod;
         samplerInfo.maxLod = _maxLod;
 
-        return std::make_unique<TextureSampler>(_logicalDevice, samplerInfo);
+        return std::make_unique<TextureSampler>(_renderer, samplerInfo);
     }
 
 } // namespace brasio::renderer::vulkan::builders

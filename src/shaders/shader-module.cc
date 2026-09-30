@@ -1,14 +1,15 @@
 #include <shaders/shader-module.hh>
-
-#include <io/logging/logger.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::shaders
 {
-    ShaderModule::ShaderModule(VkDevice &device, const VkShaderModule &module,
+    ShaderModule::ShaderModule(const renderer::vulkan::VulkanRenderer &renderer,
+                               const VkShaderModule &module,
                                const VkShaderStageFlagBits &shaderType)
         : core::Handler<VkShaderModule>(module, "shader module",
-                                        [device](const VkShaderModule &module) {
-                                            vkDestroyShaderModule(device, module, nullptr);
+                                        [&renderer](const VkShaderModule &module) {
+                                            vkDestroyShaderModule(renderer.getLogicalDevice(),
+                                                                  module, nullptr);
                                         })
         , _shaderType(shaderType)
     {}

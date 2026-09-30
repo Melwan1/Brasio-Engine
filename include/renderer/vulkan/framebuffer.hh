@@ -8,11 +8,11 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
     class Framebuffer : public core::Handler<VkFramebuffer>
     {
     public:
-        Framebuffer(const LogicalDeviceType &logicalDevice,
-                    const VkFramebufferCreateInfo &createInfo);
+        Framebuffer(const VulkanRenderer &renderer, const VkFramebufferCreateInfo &createInfo);
     };
 
     using FramebufferType = std::unique_ptr<Framebuffer>;
