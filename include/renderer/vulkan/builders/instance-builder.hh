@@ -18,7 +18,7 @@ namespace brasio::renderer::vulkan::builders
     class InstanceBuilder : public core::Builder<InstanceType>
     {
     public:
-        InstanceBuilder();
+        InstanceBuilder(const VulkanRenderer &renderer);
 
         virtual InstanceType build() override;
         virtual InstanceBuilder &base() override;
@@ -26,6 +26,7 @@ namespace brasio::renderer::vulkan::builders
         withValidationLayers(std::vector<const char *> validationLayers = {});
 
     private:
+        const VulkanRenderer &_renderer;
         ApplicationInfoBuilder _applicationBuilder;
 
         bool _enableValidationLayers;

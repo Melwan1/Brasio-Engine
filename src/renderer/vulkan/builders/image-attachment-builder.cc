@@ -2,10 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    ImageAttachmentBuilder::ImageAttachmentBuilder(const PhysicalDeviceType &physicalDevice,
-                                                   const LogicalDeviceType &logicalDevice)
-        : _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    ImageAttachmentBuilder::ImageAttachmentBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -101,8 +99,8 @@ namespace brasio::renderer::vulkan::builders
                                                  .layerCount = 1 };
 
         ImageAttachmentType imageAttachment =
-            std::make_unique<ImageAttachment>(_logicalDevice, imageCreateInfo, imageViewCreateInfo);
-        imageAttachment->initMemory(_physicalDevice);
+            std::make_unique<ImageAttachment>(_renderer, imageCreateInfo, imageViewCreateInfo);
+        imageAttachment->initMemory();
         imageAttachment->createImageView();
         return imageAttachment;
     }

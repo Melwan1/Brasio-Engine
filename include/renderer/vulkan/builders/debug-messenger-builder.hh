@@ -14,10 +14,9 @@ namespace brasio::renderer::vulkan::builders
     class DebugMessengerBuilder : public core::Builder<DebugMessengerType>
     {
     public:
-        DebugMessengerBuilder();
+        DebugMessengerBuilder(VkInstance instance);
 
         virtual DebugMessengerBuilder &base() override;
-        DebugMessengerBuilder &withInstance(VkInstance &instance);
         virtual DebugMessengerType build() override;
         VkDebugUtilsMessengerCreateInfoEXT getCreateInfo() const;
 

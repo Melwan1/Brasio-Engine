@@ -6,10 +6,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class CommandPool : public core::Handler<VkCommandPool>
     {
     public:
-        CommandPool(const VkDevice &logicalDevice, const VkCommandPoolCreateInfo &createInfo);
+        CommandPool(const VulkanRenderer &renderer, const VkCommandPoolCreateInfo &createInfo);
     };
 
     using CommandPoolType = std::unique_ptr<CommandPool>;

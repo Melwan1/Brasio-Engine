@@ -1,19 +1,21 @@
 #include <renderer/vulkan/compute-pipeline.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
-    ComputePipeline::ComputePipeline(const LogicalDeviceType &logicalDevice,
+    ComputePipeline::ComputePipeline(const VulkanRenderer &renderer,
                                      const VkComputePipelineCreateInfo &createInfo,
                                      PipelineLayoutType pipelineLayout)
         : Handler("compute pipeline",
-                  [&logicalDevice](const VkPipeline &computePipeline) {
-                      vkDestroyPipeline(logicalDevice->getHandle(), computePipeline, nullptr);
+                  [&renderer](const VkPipeline &computePipeline) {
+                      vkDestroyPipeline(renderer.getLogicalDevice(), computePipeline, nullptr);
                   })
+        , _renderer(renderer)
         , _pipelineLayout(std::move(pipelineLayout))
     {
         BRASIO_LOG_TRACE("Creating compute pipeline", { "CREATE" });
-        BRASIO_VULKAN_CHECK(vkCreateComputePipelines(logicalDevice->getHandle(), nullptr, 1,
+        BRASIO_VULKAN_CHECK(vkCreateComputePipelines(renderer.getLogicalDevice(), nullptr, 1,
                                                      &createInfo, nullptr, &getHandle()),
                             "create compute pipeline", { "CREATE" });
         BRASIO_LOG_TRACE("Created compute pipeline", { "CREATE" });

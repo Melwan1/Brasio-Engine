@@ -1,22 +1,21 @@
 #include <renderer/vulkan/command-buffer.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan
 {
 
-    CommandBuffer::CommandBuffer(const LogicalDeviceType &logicalDevice,
-                                 const VkCommandPool &commandPool)
+    CommandBuffer::CommandBuffer(const VulkanRenderer &renderer)
         : Handler("command buffer",
-                  [this, &logicalDevice, commandPool](const VkCommandBuffer &commandBuffer) {
+                  [this, &renderer](const VkCommandBuffer &commandBuffer) {
                       if (!_ended)
                       {
                           end();
                       }
-                      vkFreeCommandBuffers(logicalDevice->getHandle(), commandPool, 1,
-                                           &commandBuffer);
+                      vkFreeCommandBuffers(renderer.getLogicalDevice(), renderer.getCommandPool(),
+                                           1, &commandBuffer);
                   })
         , _ended(false)
-        , _logicalDevice(logicalDevice)
-        , _commandPool(commandPool)
+        , _renderer(renderer)
     {
         begin();
     }
@@ -26,10 +25,10 @@ namespace brasio::renderer::vulkan
         VkCommandBufferAllocateInfo allocateInfo{};
         allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocateInfo.commandPool = _commandPool;
+        allocateInfo.commandPool = _renderer.getCommandPool();
         allocateInfo.commandBufferCount = 1;
 
-        vkAllocateCommandBuffers(_logicalDevice->getHandle(), &allocateInfo, &getHandle());
+        vkAllocateCommandBuffers(_renderer.getLogicalDevice(), &allocateInfo, &getHandle());
 
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -46,8 +45,9 @@ namespace brasio::renderer::vulkan
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &getHandle();
 
-        vkQueueSubmit(_logicalDevice->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(_logicalDevice->getGraphicsQueue());
+        vkQueueSubmit(_renderer.getLogicalDeviceWrapper().getGraphicsQueue(), 1, &submitInfo,
+                      VK_NULL_HANDLE);
+        vkQueueWaitIdle(_renderer.getLogicalDeviceWrapper().getGraphicsQueue());
         _ended = true;
     }
 } // namespace brasio::renderer::vulkan

@@ -13,7 +13,7 @@ namespace brasio::renderer::vulkan::builders
     class DescriptorSetLayoutBuilder : public core::Builder<DescriptorSetLayoutType>
     {
     public:
-        DescriptorSetLayoutBuilder(const VkDevice &logicalDevice);
+        DescriptorSetLayoutBuilder(const VulkanRenderer &renderer);
 
         virtual DescriptorSetLayoutType build() override;
         virtual DescriptorSetLayoutBuilder &base() override;
@@ -32,7 +32,7 @@ namespace brasio::renderer::vulkan::builders
                      VkShaderStageFlagBits shaderStageFlags = VK_SHADER_STAGE_FRAGMENT_BIT);
 
     private:
-        VkDevice _logicalDevice;
+        const VulkanRenderer &_renderer;
 
         VkStructureType _structureType;
         std::vector<VkDescriptorSetLayoutBinding> _bindings;

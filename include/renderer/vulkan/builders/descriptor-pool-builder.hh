@@ -11,7 +11,7 @@ namespace brasio::renderer::vulkan::builders
     class DescriptorPoolBuilder : public core::Builder<DescriptorPoolType>
     {
     public:
-        DescriptorPoolBuilder(const VkDevice &logicalDevice);
+        DescriptorPoolBuilder(const VulkanRenderer &renderer);
 
         virtual DescriptorPoolBuilder &base() override;
         virtual DescriptorPoolType build() override;
@@ -22,7 +22,7 @@ namespace brasio::renderer::vulkan::builders
         DescriptorPoolBuilder &withMaxSets(uint32_t maxSets);
 
     private:
-        VkDevice _logicalDevice;
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
         std::vector<VkDescriptorPoolSize> _poolSizes;
         uint32_t _maxSets;

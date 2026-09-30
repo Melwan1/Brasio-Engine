@@ -1,26 +1,25 @@
 #include <renderer/vulkan/descriptor-sets.hh>
-
-#include <renderer/structs/uniform-buffer-object.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
 namespace brasio::renderer::vulkan
 {
 
-    DescriptorSets::DescriptorSets(const VkDevice &logicalDevice,
+    DescriptorSets::DescriptorSets(const VulkanRenderer &renderer,
                                    const VkDescriptorSetAllocateInfo &allocateInfo)
         : Handler("descriptor sets",
                   [](const std::vector<VkDescriptorSet> &) {
                       BRASIO_LOG_TRACE("nothing to be done to destroy descriptor sets",
                                        { "DESTROY" });
                   })
-        , _logicalDevice(logicalDevice)
+        , _renderer(renderer)
     {
         BRASIO_LOG_TRACE("Allocating descriptor sets", { "CREATE" });
         getHandle().clear();
         getHandle().resize(allocateInfo.descriptorSetCount);
-        BRASIO_VULKAN_CHECK(
-            vkAllocateDescriptorSets(logicalDevice, &allocateInfo, getHandle().data()),
-            "allocate descriptor sets", { "CREATE" });
+        BRASIO_VULKAN_CHECK(vkAllocateDescriptorSets(renderer.getLogicalDevice(), &allocateInfo,
+                                                     getHandle().data()),
+                            "allocate descriptor sets", { "CREATE" });
         BRASIO_LOG_TRACE("Allocated descriptor sets", { "CREATE" });
     }
 
@@ -109,7 +108,8 @@ namespace brasio::renderer::vulkan
                 descriptorWrites[descriptorStorageIndex].pImageInfo = nullptr;
             }
 
-            vkUpdateDescriptorSets(_logicalDevice, static_cast<uint32_t>(descriptorWrites.size()),
+            vkUpdateDescriptorSets(_renderer.getLogicalDevice(),
+                                   static_cast<uint32_t>(descriptorWrites.size()),
                                    descriptorWrites.data(), 0, nullptr);
         }
     }

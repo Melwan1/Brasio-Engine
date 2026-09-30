@@ -16,15 +16,16 @@ namespace brasio::renderer::vulkan
     class Memory;
     using MemoryType = std::unique_ptr<Memory>;
 
+    class VulkanRenderer;
+
     class Buffer : public core::Handler<VkBuffer>
     {
     public:
-        Buffer(const PhysicalDeviceType &physicalDevice, const LogicalDeviceType &logicalDevice,
-               const VkBufferCreateInfo &createInfo, const VkMemoryPropertyFlags memoryProperties,
-               void *data, VkDeviceSize size);
+        Buffer(const VulkanRenderer &renderer, const VkBufferCreateInfo &createInfo,
+               const VkMemoryPropertyFlags memoryProperties, void *data, VkDeviceSize size);
 
-        void copyInto(const Buffer &other, VkCommandPool commandPool);
-        void copyInto(const ImageAttachment &other, VkCommandPool commandPool);
+        void copyInto(const Buffer &other);
+        void copyInto(const ImageAttachment &other);
 
         void mapMemory();
         void unmapMemory();
@@ -33,7 +34,7 @@ namespace brasio::renderer::vulkan
         VkDeviceSize getSize() const;
 
     private:
-        const LogicalDeviceType &_logicalDevice;
+        const VulkanRenderer &_renderer;
         MemoryType _deviceMemory;
         void *_deviceData;
         VkDeviceSize _size;

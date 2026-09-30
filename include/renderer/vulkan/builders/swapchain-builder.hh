@@ -15,8 +15,7 @@ namespace brasio::renderer::vulkan::builders
     class SwapchainBuilder : public core::Builder<SwapchainType>
     {
     public:
-        SwapchainBuilder(GLFWwindow *window, const PhysicalDeviceType &physicalDevice,
-                         const LogicalDeviceType &logicalDevice, const VkSurfaceKHR &surface);
+        SwapchainBuilder(const VulkanRenderer &renderer);
 
         virtual SwapchainBuilder &base() override;
 
@@ -26,10 +25,7 @@ namespace brasio::renderer::vulkan::builders
         virtual SwapchainType build() override;
 
     private:
-        GLFWwindow *_window;
-        const PhysicalDeviceType &_physicalDevice;
-        const LogicalDeviceType &_logicalDevice;
-        VkSurfaceKHR _surface;
+        const VulkanRenderer &_renderer;
         std::vector<VkSurfaceFormatKHR> _availableSurfaceFormats;
         std::vector<VkPresentModeKHR> _availablePresentModes;
         VkSurfaceCapabilitiesKHR _availableCapabilities;

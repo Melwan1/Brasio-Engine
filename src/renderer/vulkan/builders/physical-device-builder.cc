@@ -1,15 +1,12 @@
 #include <renderer/vulkan/builders/physical-device-builder.hh>
-
-#include <iostream>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <io/logging/logger.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
-    PhysicalDeviceBuilder::PhysicalDeviceBuilder(const VkInstance &instance,
-                                                 const VkSurfaceKHR &surface)
-        : _instance(instance)
-        , _surface(surface)
+    PhysicalDeviceBuilder::PhysicalDeviceBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -50,7 +47,7 @@ namespace brasio::renderer::vulkan::builders
     std::vector<PhysicalDeviceType> PhysicalDeviceBuilder::_getAvailablePhysicalDevices()
     {
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(_instance, &deviceCount, nullptr);
+        vkEnumeratePhysicalDevices(_renderer.getInstance(), &deviceCount, nullptr);
 
         if (deviceCount == 0)
         {
@@ -58,12 +55,12 @@ namespace brasio::renderer::vulkan::builders
         }
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(_instance, &deviceCount, devices.data());
+        vkEnumeratePhysicalDevices(_renderer.getInstance(), &deviceCount, devices.data());
         std::vector<PhysicalDeviceType> physicalDevices;
         for (const auto &device : devices)
         {
-            physicalDevices.emplace_back(
-                std::make_unique<PhysicalDevice>(device, _surface, _deviceExtensions));
+            physicalDevices.emplace_back(std::make_unique<PhysicalDevice>(
+                device, _renderer.getSurface(), _deviceExtensions));
         }
         return physicalDevices;
     }

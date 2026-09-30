@@ -1,4 +1,5 @@
 #include <renderer/vulkan/builders/texture-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <vulkan/vulkan_core.h>
 
 #include <algorithm>
@@ -7,10 +8,8 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    TextureBuilder::TextureBuilder(const PhysicalDeviceType &physicalDevice,
-                                   const LogicalDeviceType &logicalDevice)
-        : _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    TextureBuilder::TextureBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
         , _textureImage(images::P3PPM::empty())
     {
         base();
@@ -55,8 +54,7 @@ namespace brasio::renderer::vulkan::builders
                                            .baseArrayLayer = 0,
                                            .layerCount = 1 };
 
-        return std::make_unique<Texture>(_physicalDevice, _logicalDevice, _commandPool, imageInfo,
-                                         imageViewInfo, _textureImage);
+        return std::make_unique<Texture>(_renderer, imageInfo, imageViewInfo, _textureImage);
     }
 
     TextureBuilder &TextureBuilder::withWidth(uint32_t width)
@@ -110,9 +108,4 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
-    TextureBuilder &TextureBuilder::withCommandPool(const VkCommandPool &commandPool)
-    {
-        _commandPool = commandPool;
-        return *this;
-    }
 } // namespace brasio::renderer::vulkan::builders

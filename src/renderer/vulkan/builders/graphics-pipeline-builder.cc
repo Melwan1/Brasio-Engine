@@ -3,13 +3,9 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    GraphicsPipelineBuilder::GraphicsPipelineBuilder(const VkDevice &logicalDevice,
-                                                     const shaders::ShaderManager &shaderManager,
-                                                     const VkRenderPass &renderPass)
-        : _logicalDevice(logicalDevice)
-        , _shaderManager(shaderManager)
-        , _renderPass(renderPass)
-        , _pipelineLayoutBuilder(logicalDevice)
+    GraphicsPipelineBuilder::GraphicsPipelineBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
+        , _pipelineLayoutBuilder(renderer)
     {
         base();
     }
@@ -49,7 +45,7 @@ namespace brasio::renderer::vulkan::builders
         _shaderInfos.clear();
         for (unsigned index = 0; index < shaderPaths.size(); index++)
         {
-            _shaderBuilders.emplace_back(_logicalDevice, _shaderManager);
+            _shaderBuilders.emplace_back(_renderer);
             _shaderBuilders.back().withShader(shaderPaths.at(index));
             _shaderInfos.emplace_back(_shaderBuilders.back().build());
         }
@@ -110,12 +106,12 @@ namespace brasio::renderer::vulkan::builders
         PipelineLayoutType pipelineLayout = _pipelineLayoutBuilder.build();
 
         pipelineCreateInfo.layout = pipelineLayout->getHandle();
-        pipelineCreateInfo.renderPass = _renderPass;
+        pipelineCreateInfo.renderPass = _renderer.getRenderPass();
         pipelineCreateInfo.subpass = 0;
         pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
         pipelineCreateInfo.basePipelineIndex = -1;
 
-        return std::make_unique<GraphicsPipeline>(_logicalDevice, pipelineCreateInfo,
+        return std::make_unique<GraphicsPipeline>(_renderer, pipelineCreateInfo,
                                                   std::move(pipelineLayout));
     }
     bool GraphicsPipelineBuilder::_checkUniqueShaderType(const std::string &extension)

@@ -14,7 +14,7 @@ namespace brasio::renderer::vulkan
     class ComputePipeline : public core::Handler<VkPipeline>
     {
     public:
-        ComputePipeline(const LogicalDeviceType &logicalDevice,
+        ComputePipeline(const VulkanRenderer &renderer,
                         const VkComputePipelineCreateInfo &createInfo,
                         PipelineLayoutType pipelineLayout);
 
@@ -23,6 +23,7 @@ namespace brasio::renderer::vulkan
         const PipelineLayout &getPipelineLayout() const;
 
     private:
+        const VulkanRenderer &_renderer;
         PipelineLayoutType _pipelineLayout;
     };
 

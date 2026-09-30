@@ -18,9 +18,9 @@ namespace brasio::renderer::vulkan::builders
         return VK_FALSE;
     }
 
-    DebugMessengerBuilder::DebugMessengerBuilder()
+    DebugMessengerBuilder::DebugMessengerBuilder(VkInstance instance)
+        : _instance(instance)
     {
-        _instance = VK_NULL_HANDLE;
         base();
     }
 
@@ -34,12 +34,6 @@ namespace brasio::renderer::vulkan::builders
             | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
             | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
         _userCallback = debugCallback;
-        return *this;
-    }
-
-    DebugMessengerBuilder &DebugMessengerBuilder::withInstance(VkInstance &instance)
-    {
-        _instance = instance;
         return *this;
     }
 

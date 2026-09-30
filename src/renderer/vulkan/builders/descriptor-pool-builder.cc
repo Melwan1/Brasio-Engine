@@ -1,10 +1,11 @@
 #include <renderer/vulkan/builders/descriptor-pool-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
 
-    DescriptorPoolBuilder::DescriptorPoolBuilder(const VkDevice &logicalDevice)
-        : _logicalDevice(logicalDevice)
+    DescriptorPoolBuilder::DescriptorPoolBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -36,7 +37,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.poolSizeCount = _poolSizes.size();
         createInfo.pPoolSizes = _poolSizes.data();
         createInfo.maxSets = _maxSets;
-        return std::make_unique<DescriptorPool>(_logicalDevice, createInfo);
+        return std::make_unique<DescriptorPool>(_renderer, createInfo);
     }
 
 } // namespace brasio::renderer::vulkan::builders

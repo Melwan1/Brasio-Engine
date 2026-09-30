@@ -10,13 +10,17 @@
 
 namespace fs = std::filesystem;
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::renderer::vulkan::builders
 {
     class PipelineShaderBuilder : public core::Builder<VkPipelineShaderStageCreateInfo>
     {
     public:
-        PipelineShaderBuilder(const VkDevice &logicalDevice,
-                              const shaders::ShaderManager &shaderManager);
+        PipelineShaderBuilder(const VulkanRenderer &renderer);
 
         virtual PipelineShaderBuilder &base() override;
         virtual VkPipelineShaderStageCreateInfo build() override;
@@ -26,8 +30,7 @@ namespace brasio::renderer::vulkan::builders
         PipelineShaderBuilder &withShader(const fs::path &shaderPath);
 
     private:
-        VkDevice _logicalDevice;
-        const shaders::ShaderManager &_shaderManager;
+        const VulkanRenderer &_renderer;
 
         VkStructureType _structureType;
 

@@ -6,6 +6,11 @@
 
 #include <renderer/vulkan/buffer.hh>
 
+namespace brasio::renderer::vulkan
+{
+    class VulkanRenderer;
+}
+
 namespace brasio::renderer::vulkan::builders
 {
 
@@ -13,8 +18,7 @@ namespace brasio::renderer::vulkan::builders
     class BufferBuilder : public core::Builder<BufferType>
     {
     public:
-        BufferBuilder(const PhysicalDeviceType &physicalDevice,
-                      const LogicalDeviceType &logicalDevice);
+        BufferBuilder(const VulkanRenderer &renderer);
 
         virtual BufferBuilder &base() override;
         virtual BufferType build() override;
@@ -25,8 +29,7 @@ namespace brasio::renderer::vulkan::builders
         BufferBuilder &withData(void *data);
 
     private:
-        const PhysicalDeviceType &_physicalDevice;
-        const LogicalDeviceType &_logicalDevice;
+        const VulkanRenderer &_renderer;
         VkStructureType _structureType;
 
         uint32_t _size;

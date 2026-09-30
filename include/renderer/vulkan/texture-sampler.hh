@@ -4,16 +4,14 @@
 
 #include <core/handler.hh>
 
-#include <renderer/vulkan/logical-device.hh>
-
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
 
     class TextureSampler : public core::Handler<VkSampler>
     {
     public:
-        TextureSampler(const LogicalDeviceType &logicalDevice,
-                       const VkSamplerCreateInfo &samplerInfo);
+        TextureSampler(const VulkanRenderer &renderer, const VkSamplerCreateInfo &samplerInfo);
     };
 
     using TextureSamplerType = std::unique_ptr<TextureSampler>;

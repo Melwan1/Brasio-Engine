@@ -34,12 +34,12 @@ namespace brasio::renderer::vulkan
         , _maxFramesInFlight(MAX_FRAMES_IN_FLIGHT)
     {
         BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
-        _instance = builders::InstanceBuilder()
+        _instance = builders::InstanceBuilder(*this)
 #ifdef BRASIO_ENABLE_VALIDATION_LAYERS
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
 #endif
                         .build();
-        _surface = builders::SurfaceBuilder(_instance->getHandle(), _window).build();
+        _surface = builders::SurfaceBuilder(*this).build();
         pickPhysicalDevice();
         createLogicalDevice();
         createSwapChain();
@@ -52,17 +52,16 @@ namespace brasio::renderer::vulkan
         //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         //_mesh1->applyTranslation(mesh::TransformMode::CPU,
         //                         { -1.0f, 0.0f, 1.0f });
-        _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        _mesh1->createBuffers(*this);
 
         _mesh2 = model.toMesh();
         //_mesh2 = std::make_unique<mesh::Cone>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU, { 1.0f, 0.0f, -1.0f });
-        _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        _mesh2->createBuffers(*this);
         createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(
-            _renderPass->getHandle(),
             { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
         createPipelines();
         createUniformBuffers();
@@ -81,12 +80,12 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
         _maxFramesInFlight = config["max_frames_in_flight"].as<unsigned>();
-        _instance = builders::InstanceBuilder()
+        _instance = builders::InstanceBuilder(*this)
 #ifdef BRASIO_ENABLE_VALIDATION_LAYERS
                         .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
 #endif
                         .build();
-        _surface = builders::SurfaceBuilder(_instance->getHandle(), _window).build();
+        _surface = builders::SurfaceBuilder(*this).build();
         pickPhysicalDevice();
         createLogicalDevice();
         createSwapChain(config["swapchain"]);
@@ -99,18 +98,17 @@ namespace brasio::renderer::vulkan
         //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         //_mesh1->applyTranslation(mesh::TransformMode::CPU,
         //                         { -1.0f, 0.0f, 1.0f });
-        _mesh1->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        _mesh1->createBuffers(*this);
 
         _mesh2 = model.toMesh();
         //_mesh2 = std::make_unique<mesh::Cone>();
         _mesh2->applyTranslation(mesh::TransformMode::CPU, { 1.0f, 0.0f, -1.0f });
-        _mesh2->createBuffers(_physicalDevice, _logicalDevice, _commandPool);
+        _mesh2->createBuffers(*this);
 
         createColorResources();
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(
-            _renderPass->getHandle(),
             { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
         createPipelines(config["pipelines"]);
         createUniformBuffers();
@@ -150,22 +148,20 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::pickPhysicalDevice()
     {
-        _physicalDevice =
-            builders::PhysicalDeviceBuilder(_instance->getHandle(), _surface->getHandle())
-                .withDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
-                .build();
+        _physicalDevice = builders::PhysicalDeviceBuilder(*this)
+                              .withDeviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
+                              .build();
         _msaaSamples = _physicalDevice->getMaxUsableSampleCount();
     }
 
     void VulkanRenderer::createLogicalDevice()
     {
-        _logicalDevice = builders::LogicalDeviceBuilder(*_physicalDevice).build();
+        _logicalDevice = builders::LogicalDeviceBuilder(*this).build();
     }
 
     void VulkanRenderer::createSwapChain(VkPresentModeKHR presentMode)
     {
-        _swapchain = builders::SwapchainBuilder(_window, _physicalDevice, _logicalDevice,
-                                                _surface->getHandle())
+        _swapchain = builders::SwapchainBuilder(*this)
                          .withSurfaceFormat({ .format = VK_FORMAT_R8G8B8A8_SRGB,
                                               .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
                          .withPresentMode(presentMode)
@@ -219,7 +215,7 @@ namespace brasio::renderer::vulkan
                 .build();
 
         builders::RenderPassBuilder builder =
-            builders::RenderPassBuilder(_logicalDevice->getHandle())
+            builders::RenderPassBuilder(*this)
                 .withAdditionalAttachmentDescription(colorAttachmentDescription)
                 .withAdditionalAttachmentDescription(depthAttachmentDescription)
                 .withAdditionalAttachmentDescription(colorAttachmentResolveDescription)
@@ -233,13 +229,11 @@ namespace brasio::renderer::vulkan
     {
         std::vector<fs::path> shaders = { "vertex/ubo.vert", "fragment/texture.frag" };
 
-        builders::GraphicsPipelineBuilder pipelineBuilder(_logicalDevice->getHandle(),
-                                                          _shaderManager, _renderPass->getHandle());
-        pipelineBuilder.withDescriptorSetLayout(
-            builders::DescriptorSetLayoutBuilder(_logicalDevice->getHandle())
-                .withUniformBuffers(1)
-                .withTextures(1)
-                .build());
+        builders::GraphicsPipelineBuilder pipelineBuilder(*this);
+        pipelineBuilder.withDescriptorSetLayout(builders::DescriptorSetLayoutBuilder(*this)
+                                                    .withUniformBuffers(1)
+                                                    .withTextures(1)
+                                                    .build());
         pipelineBuilder.withShaders(shaders);
         _graphicsPipelines.emplace_back(pipelineBuilder.build());
     }
@@ -251,31 +245,28 @@ namespace brasio::renderer::vulkan
             builders::DescriptorSetLayoutBindingBuilder::resetIndex();
             if (!pipelineConfig["type"].as<std::string>().compare("GRAPHICS"))
             {
-                builders::GraphicsPipelineBuilder pipelineBuilder(
-                    _logicalDevice->getHandle(), _shaderManager, _renderPass->getHandle());
-                pipelineBuilder.withDescriptorSetLayout(
-                    builders::DescriptorSetLayoutBuilder(_logicalDevice->getHandle())
-                        .withUniformBuffers(1)
-                        .withTextures(1)
-                        .build());
+                builders::GraphicsPipelineBuilder pipelineBuilder(*this);
+                pipelineBuilder.withDescriptorSetLayout(builders::DescriptorSetLayoutBuilder(*this)
+                                                            .withUniformBuffers(1)
+                                                            .withTextures(1)
+                                                            .build());
                 pipelineBuilder.withConfig(pipelineConfig);
                 _graphicsPipelines.emplace_back(pipelineBuilder.build());
             }
             else if (!pipelineConfig["type"].as<std::string>().compare("COMPUTE"))
             {
                 PipelineLayoutType pipelineLayout =
-                    builders::PipelineLayoutBuilder(_logicalDevice->getHandle())
+                    builders::PipelineLayoutBuilder(*this)
                         .withDescriptorSetLayout(
-                            builders::DescriptorSetLayoutBuilder(_logicalDevice->getHandle())
+                            builders::DescriptorSetLayoutBuilder(*this)
                                 .withUniformBuffers(1, VK_SHADER_STAGE_COMPUTE_BIT)
                                 .withStorageBuffers(2)
                                 .build())
                         .build();
-                _computePipelines.emplace_back(
-                    builders::ComputePipelineBuilder(_logicalDevice, _shaderManager)
-                        .withShader("compute/particles.comp")
-                        .withPipelineLayout(std::move(pipelineLayout))
-                        .build());
+                _computePipelines.emplace_back(builders::ComputePipelineBuilder(*this)
+                                                   .withShader("compute/particles.comp")
+                                                   .withPipelineLayout(std::move(pipelineLayout))
+                                                   .build());
             }
         }
     }
@@ -284,15 +275,14 @@ namespace brasio::renderer::vulkan
     {
         QueueFamilyIndices queueFamilyIndices = _physicalDevice->findQueueFamilies();
 
-        _commandPool = builders::CommandPoolBuilder(_logicalDevice->getHandle())
+        _commandPool = builders::CommandPoolBuilder(*this)
                            .withQueueFamilyIndex(queueFamilyIndices.graphicsComputeFamily.value())
                            .build();
     }
 
     void VulkanRenderer::createCommandBuffers()
     {
-        builders::CommandBufferArrayBuilder commandBufferArrayBuilder(_logicalDevice->getHandle(),
-                                                                      _commandPool->getHandle());
+        builders::CommandBufferArrayBuilder commandBufferArrayBuilder(*this);
         commandBufferArrayBuilder.withLevel(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
             .withCommandBufferCount(MAX_FRAMES_IN_FLIGHT * 2); // graphics and compute
         _commandBuffers = commandBufferArrayBuilder.build();
@@ -307,8 +297,8 @@ namespace brasio::renderer::vulkan
         fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
         fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
         _syncObjects = std::make_unique<SyncObjects>(
-            _logicalDevice->getHandle(), 2 * _maxFramesInFlight + _swapchain->getImageCount(),
-            2 * _maxFramesInFlight, semaphoreCreateInfo, fenceCreateInfo);
+            *this, 2 * _maxFramesInFlight + _swapchain->getImageCount(), 2 * _maxFramesInFlight,
+            semaphoreCreateInfo, fenceCreateInfo);
     }
 
     void VulkanRenderer::drawFrame()
@@ -340,7 +330,7 @@ namespace brasio::renderer::vulkan
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
-        _commandBuffers->record(*this, _currentFrame, imageIndex);
+        _commandBuffers->record(_currentFrame, imageIndex);
 
         updateUniformBuffer(_currentFrame);
 
@@ -417,7 +407,7 @@ namespace brasio::renderer::vulkan
         _syncObjects->resetSingleFence(computeFenceIndex);
 
         _commandBuffers->reset(computeCommandBufferIndex);
-        _commandBuffers->recordCompute(*this, computeCommandBufferIndex, PARTICLE_COUNT / 256);
+        _commandBuffers->recordCompute(computeCommandBufferIndex, PARTICLE_COUNT / 256);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -457,7 +447,6 @@ namespace brasio::renderer::vulkan
         createColorResources();
         createDepthResources();
         _swapchain->createFramebuffers(
-            _renderPass->getHandle(),
             { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
     }
 
@@ -467,9 +456,7 @@ namespace brasio::renderer::vulkan
         for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
         {
             _uniformBuffers.emplace_back(
-                builders::UniformBufferBuilder(_physicalDevice, _logicalDevice)
-                    .withSize(bufferSize)
-                    .build());
+                builders::UniformBufferBuilder(*this).withSize(bufferSize).build());
             _uniformBuffers.back()->mapMemory();
             // persistent mapping for all uniform buffers
         }
@@ -478,9 +465,7 @@ namespace brasio::renderer::vulkan
         for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
         {
             _computeUniformBuffers.emplace_back(
-                builders::UniformBufferBuilder(_physicalDevice, _logicalDevice)
-                    .withSize(computeBufferSize)
-                    .build());
+                builders::UniformBufferBuilder(*this).withSize(computeBufferSize).build());
             _computeUniformBuffers.back()->mapMemory();
         }
     }
@@ -505,18 +490,15 @@ namespace brasio::renderer::vulkan
         }
         VkDeviceSize bufferSize = sizeof(structs::Particle) * PARTICLE_COUNT;
 
-        BufferType particleStagingBuffer =
-            builders::StagingBufferBuilder(_physicalDevice, _logicalDevice)
-                .withSize(bufferSize)
-                .withData(particles.data())
-                .build();
+        BufferType particleStagingBuffer = builders::StagingBufferBuilder(*this)
+                                               .withSize(bufferSize)
+                                               .withData(particles.data())
+                                               .build();
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
             _storageBuffers.emplace_back(
-                builders::StorageBufferBuilder(_physicalDevice, _logicalDevice)
-                    .withSize(bufferSize)
-                    .build());
-            particleStagingBuffer->copyInto(*_storageBuffers.back(), _commandPool->getHandle());
+                builders::StorageBufferBuilder(*this).withSize(bufferSize).build());
+            particleStagingBuffer->copyInto(*_storageBuffers.back());
         }
     }
 
@@ -548,7 +530,7 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createDescriptorPool()
     {
         _graphicsDescriptorPool =
-            builders::DescriptorPoolBuilder(_logicalDevice->getHandle())
+            builders::DescriptorPoolBuilder(*this)
                 .withMaxSets(_maxFramesInFlight)
                 .withDescriptorPoolSizes(
                     { builders::DescriptorPoolSizeBuilder()
@@ -562,7 +544,7 @@ namespace brasio::renderer::vulkan
                 .build();
 
         _computeDescriptorPool =
-            builders::DescriptorPoolBuilder(_logicalDevice->getHandle())
+            builders::DescriptorPoolBuilder(*this)
                 .withMaxSets(_maxFramesInFlight)
                 .withDescriptorPoolSizes(
                     { builders::DescriptorPoolSizeBuilder()
@@ -578,8 +560,7 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createDescriptorSets()
     {
         DescriptorSetsType graphicsDescriptorSets =
-            builders::DescriptorSetsBuilder(_logicalDevice->getHandle(),
-                                            _graphicsDescriptorPool->getHandle())
+            builders::DescriptorSetsBuilder(*this, _graphicsDescriptorPool->getHandle())
                 .withSetsCount(_maxFramesInFlight)
                 .withSetLayout(_graphicsPipelines.at(0)
                                    ->getPipelineLayout()
@@ -590,8 +571,7 @@ namespace brasio::renderer::vulkan
         _graphicsDescriptorPool->setDescriptorSets(std::move(graphicsDescriptorSets));
 
         DescriptorSetsType computeDescriptorSets =
-            builders::DescriptorSetsBuilder(_logicalDevice->getHandle(),
-                                            _computeDescriptorPool->getHandle())
+            builders::DescriptorSetsBuilder(*this, _computeDescriptorPool->getHandle())
                 .withSetsCount(_maxFramesInFlight)
                 .withSetLayout(_computePipelines.at(0)
                                    ->getPipelineLayout()
@@ -605,16 +585,15 @@ namespace brasio::renderer::vulkan
     void VulkanRenderer::createTexture()
     {
         _textures.emplace_back(
-            builders::TextureBuilder(_physicalDevice, _logicalDevice)
+            builders::TextureBuilder(*this)
                 .withTextureImage(images::P3PPM::load("assets/textures/viking_room.ppm"))
-                .withCommandPool(_commandPool->getHandle())
                 .build());
     }
 
     void VulkanRenderer::createDepthResources()
     {
         VkExtent2D swapchainExtent = _swapchain->getExtent();
-        _depthAttachment = builders::DepthAttachmentBuilder(_physicalDevice, _logicalDevice)
+        _depthAttachment = builders::DepthAttachmentBuilder(*this)
                                .withExtent(swapchainExtent.width, swapchainExtent.height)
                                .withSamples(_msaaSamples)
                                .withFormat(_physicalDevice->findDepthFormat())
@@ -625,11 +604,46 @@ namespace brasio::renderer::vulkan
     {
         VkFormat swapchainFormat = _swapchain->getFormat();
         VkExtent2D swapchainExtent = _swapchain->getExtent();
-        _colorAttachment = builders::ImageAttachmentBuilder(_physicalDevice, _logicalDevice)
+        _colorAttachment = builders::ImageAttachmentBuilder(*this)
                                .withExtent(swapchainExtent.width, swapchainExtent.height)
                                .withSamples(_msaaSamples)
                                .withFormat(swapchainFormat)
                                .build();
+    }
+
+    GLFWwindow *VulkanRenderer::getWindow() const
+    {
+        return _window;
+    }
+
+    const VkInstance &VulkanRenderer::getInstance() const
+    {
+        return _instance->getHandle();
+    }
+
+    const VkSurfaceKHR &VulkanRenderer::getSurface() const
+    {
+        return _surface->getHandle();
+    }
+
+    const VkPhysicalDevice &VulkanRenderer::getPhysicalDevice() const
+    {
+        return _physicalDevice->getHandle();
+    }
+
+    const PhysicalDevice &VulkanRenderer::getPhysicalDeviceWrapper() const
+    {
+        return *_physicalDevice;
+    }
+
+    const VkDevice &VulkanRenderer::getLogicalDevice() const
+    {
+        return _logicalDevice->getHandle();
+    }
+
+    const LogicalDevice &VulkanRenderer::getLogicalDeviceWrapper() const
+    {
+        return *_logicalDevice;
     }
 
     const Swapchain &VulkanRenderer::getSwapchain() const
@@ -637,7 +651,17 @@ namespace brasio::renderer::vulkan
         return *_swapchain;
     }
 
-    const RenderPass &VulkanRenderer::getRenderPass() const
+    const VkCommandPool &VulkanRenderer::getCommandPool() const
+    {
+        return _commandPool->getHandle();
+    }
+
+    const VkRenderPass &VulkanRenderer::getRenderPass() const
+    {
+        return _renderPass->getHandle();
+    }
+
+    const RenderPass &VulkanRenderer::getRenderPassWrapper() const
     {
         return *_renderPass;
     }
@@ -690,6 +714,11 @@ namespace brasio::renderer::vulkan
     uint32_t VulkanRenderer::getParticleCount() const
     {
         return PARTICLE_COUNT;
+    }
+
+    const shaders::ShaderManager &VulkanRenderer::getShaderManager() const
+    {
+        return _shaderManager;
     }
 
     VulkanRendererType VulkanRenderer::fromConfig(const YAML::Node &config, GLFWwindow *window)

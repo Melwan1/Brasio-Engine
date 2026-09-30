@@ -10,10 +10,12 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class GraphicsPipeline : public core::Handler<VkPipeline>
     {
     public:
-        GraphicsPipeline(const VkDevice &logicalDevice,
+        GraphicsPipeline(const VulkanRenderer &renderer,
                          const VkGraphicsPipelineCreateInfo &createInfo,
                          PipelineLayoutType pipelineLayout);
 

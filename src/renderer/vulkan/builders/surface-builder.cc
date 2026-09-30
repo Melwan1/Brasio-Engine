@@ -2,9 +2,8 @@
 
 namespace brasio::renderer::vulkan::builders
 {
-    SurfaceBuilder::SurfaceBuilder(const VkInstance &instance, GLFWwindow *window)
-        : _instance(instance)
-        , _window(window)
+    SurfaceBuilder::SurfaceBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -16,6 +15,6 @@ namespace brasio::renderer::vulkan::builders
 
     SurfaceType SurfaceBuilder::build()
     {
-        return std::make_unique<Surface>(_instance, _window);
+        return std::make_unique<Surface>(_renderer);
     }
 } // namespace brasio::renderer::vulkan::builders

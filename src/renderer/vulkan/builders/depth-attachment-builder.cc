@@ -3,10 +3,8 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    DepthAttachmentBuilder::DepthAttachmentBuilder(const PhysicalDeviceType &physicalDevice,
-                                                   const LogicalDeviceType &logicalDevice)
-        : _physicalDevice(physicalDevice)
-        , _logicalDevice(logicalDevice)
+    DepthAttachmentBuilder::DepthAttachmentBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
     {
         base();
     }
@@ -41,8 +39,7 @@ namespace brasio::renderer::vulkan::builders
                                            .baseArrayLayer = 0,
                                            .layerCount = 1 };
 
-        return std::make_unique<DepthAttachment>(_physicalDevice, _logicalDevice, imageInfo,
-                                                 imageViewInfo);
+        return std::make_unique<DepthAttachment>(_renderer, imageInfo, imageViewInfo);
     }
 
     DepthAttachmentBuilder &DepthAttachmentBuilder::withWidth(uint32_t width)

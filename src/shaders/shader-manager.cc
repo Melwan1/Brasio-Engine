@@ -4,7 +4,8 @@
 #include <iostream>
 #include <vector>
 
-#include <io/logging/logger.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
+
 #include <utils/libutils.hh>
 
 namespace brasio::shaders
@@ -69,7 +70,7 @@ namespace brasio::shaders
     }
 
     VkShaderModule
-    ShaderManager::createShaderModuleFromByteCode(VkDevice &device,
+    ShaderManager::createShaderModuleFromByteCode(const renderer::vulkan::VulkanRenderer &renderer,
                                                   const std::string &shaderByteCode) const
     {
         BRASIO_LOG_TRACE("Creating shader module", { "SHADERS" });
@@ -84,16 +85,18 @@ namespace brasio::shaders
         createInfo.pCode = reinterpret_cast<const uint32_t *>(finalShaderByteCode.data());
 
         VkShaderModule shaderModule;
-        BRASIO_VULKAN_CHECK(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule),
-                            "create shader module", { "SHADERS" });
+        BRASIO_VULKAN_CHECK(
+            vkCreateShaderModule(renderer.getLogicalDevice(), &createInfo, nullptr, &shaderModule),
+            "create shader module", { "SHADERS" });
         BRASIO_LOG_TRACE("Created shader module", { "SHADERS" });
         return shaderModule;
     }
 
-    VkShaderModule ShaderManager::createShaderModuleFromPath(VkDevice &device,
-                                                             const fs::path &entry) const
+    VkShaderModule
+    ShaderManager::createShaderModuleFromPath(const renderer::vulkan::VulkanRenderer &renderer,
+                                              const fs::path &entry) const
     {
-        return createShaderModuleFromByteCode(device, getSpirVFileContent(entry));
+        return createShaderModuleFromByteCode(renderer, getSpirVFileContent(entry));
     }
 
     ShaderManager::~ShaderManager()

@@ -10,10 +10,11 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
     class Image : public core::Handler<VkImageView>
     {
     public:
-        Image(const VkDevice &logicalDevice, const VkImage &image,
+        Image(const VulkanRenderer &renderer, const VkImage &image,
               const VkImageViewCreateInfo &createInfo);
 
         const VkImage &getImage() const;

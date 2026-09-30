@@ -6,9 +6,11 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class Fence : public core::Handler<VkFence>
     {
     public:
-        Fence(const VkDevice &logicalDevice, const VkFenceCreateInfo &createInfo);
+        Fence(const VulkanRenderer &renderer, const VkFenceCreateInfo &createInfo);
     };
 } // namespace brasio::renderer::vulkan

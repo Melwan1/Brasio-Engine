@@ -1,13 +1,10 @@
 #include <renderer/vulkan/debug-messenger.hh>
 
-#include <iostream>
-
 #include <io/logging/logger.hh>
 
 namespace brasio::renderer::vulkan
 {
-    void destroyDebugMessenger(const VkInstance &instance,
-                               const VkDebugUtilsMessengerEXT &debugMessenger)
+    void destroyDebugMessenger(VkInstance instance, const VkDebugUtilsMessengerEXT &debugMessenger)
     {
         BRASIO_LOG_TRACE("Destroying debug messenger", { "DESTROY" });
         auto function = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
@@ -27,7 +24,7 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Destroyed debug messenger", { "DESTROY" });
     }
 
-    DebugMessenger::DebugMessenger(const VkInstance &instance,
+    DebugMessenger::DebugMessenger(VkInstance instance,
                                    const VkDebugUtilsMessengerCreateInfoEXT &createInfo)
         : Handler("debug messenger", [instance](const VkDebugUtilsMessengerEXT &debugMessenger) {
             destroyDebugMessenger(instance, debugMessenger);

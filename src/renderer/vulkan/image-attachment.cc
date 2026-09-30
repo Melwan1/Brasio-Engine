@@ -1,4 +1,5 @@
 #include <renderer/vulkan/image-attachment.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <renderer/vulkan/builders/buffer-builder.hh>
 #include <vulkan/vulkan_core.h>
 #include <utils/libutils.hh>
@@ -6,18 +7,18 @@
 namespace brasio::renderer::vulkan
 {
 
-    ImageAttachment::ImageAttachment(const LogicalDeviceType &logicalDevice,
+    ImageAttachment::ImageAttachment(const VulkanRenderer &renderer,
                                      VkImageCreateInfo imageCreateInfo,
                                      VkImageViewCreateInfo imageViewCreateInfo)
         : PairHandler(
               "image view", "image",
-              [&logicalDevice](const VkImageView &imageView) {
-                  vkDestroyImageView(logicalDevice->getHandle(), imageView, nullptr);
+              [&renderer](const VkImageView &imageView) {
+                  vkDestroyImageView(renderer.getLogicalDevice(), imageView, nullptr);
               },
-              [&logicalDevice](const VkImage &image) {
-                  vkDestroyImage(logicalDevice->getHandle(), image, nullptr);
+              [&renderer](const VkImage &image) {
+                  vkDestroyImage(renderer.getLogicalDevice(), image, nullptr);
               })
-        , _logicalDevice(logicalDevice)
+        , _renderer(renderer)
         , _deviceMemory(nullptr)
         , _format(imageCreateInfo.format)
         , _imageViewCreateInfo(imageViewCreateInfo)
@@ -29,17 +30,17 @@ namespace brasio::renderer::vulkan
         _imageViewCreateInfo.image = getImage();
     }
 
-    ImageAttachment::ImageAttachment(const LogicalDeviceType &logicalDevice, const VkImage &image,
+    ImageAttachment::ImageAttachment(const VulkanRenderer &renderer, const VkImage &image,
                                      const VkImageViewCreateInfo &imageViewCreateInfo)
         : PairHandler(
               VK_NULL_HANDLE, image, "image view", "image",
-              [&logicalDevice](const VkImageView &imageView) {
-                  vkDestroyImageView(logicalDevice->getHandle(), imageView, nullptr);
+              [&renderer](const VkImageView &imageView) {
+                  vkDestroyImageView(renderer.getLogicalDevice(), imageView, nullptr);
               },
               [](const VkImage &) {
                   BRASIO_LOG_TRACE("Nothing to be done to destroy image", { "DESTROY" });
               })
-        , _logicalDevice(logicalDevice)
+        , _renderer(renderer)
         , _deviceMemory(nullptr)
         , _format(imageViewCreateInfo.format)
         , _width(0)
@@ -74,7 +75,7 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Creating image", { "CREATE" });
 
         BRASIO_VULKAN_CHECK(
-            vkCreateImage(_logicalDevice->getHandle(), &imageCreateInfo, nullptr, &getImage()),
+            vkCreateImage(_renderer.getLogicalDevice(), &imageCreateInfo, nullptr, &getImage()),
             "create image", { "CREATE" });
         BRASIO_LOG_TRACE("Created image", { "CREATE" });
     }
@@ -88,18 +89,17 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Creating image view", { "CREATE" });
 
-        BRASIO_VULKAN_CHECK(vkCreateImageView(_logicalDevice->getHandle(), &imageViewCreateInfo,
+        BRASIO_VULKAN_CHECK(vkCreateImageView(_renderer.getLogicalDevice(), &imageViewCreateInfo,
                                               nullptr, &getImageView()),
                             "create image view", { "CREATE" });
         BRASIO_LOG_TRACE("Created image view", { "CREATE" });
     }
 
-    void ImageAttachment::transitionImageLayout(const VkCommandPool &commandPool,
-                                                [[maybe_unused]] const VkFormat &format,
+    void ImageAttachment::transitionImageLayout([[maybe_unused]] const VkFormat &format,
                                                 const VkImageLayout &oldLayout,
                                                 const VkImageLayout &newLayout)
     {
-        CommandBuffer commandBuffer(_logicalDevice, commandPool);
+        CommandBuffer commandBuffer(_renderer);
 
         if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED
             && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
@@ -187,11 +187,10 @@ namespace brasio::renderer::vulkan
         return { newWidth, newHeight };
     }
 
-    void ImageAttachment::generateMipmaps(const PhysicalDeviceType &physicalDevice,
-                                          const VkCommandPool &commandPool)
+    void ImageAttachment::generateMipmaps()
     {
         VkFormatProperties formatProperties;
-        vkGetPhysicalDeviceFormatProperties(physicalDevice->getHandle(), _format,
+        vkGetPhysicalDeviceFormatProperties(_renderer.getPhysicalDevice(), _format,
                                             &formatProperties);
         if (!(formatProperties.optimalTilingFeatures
               & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
@@ -200,7 +199,7 @@ namespace brasio::renderer::vulkan
                                 { "IMAGE" });
         }
 
-        CommandBuffer commandBuffer(_logicalDevice, commandPool);
+        CommandBuffer commandBuffer(_renderer);
 
         uint32_t mipLevels = getMipLevels();
         int32_t mipWidth = getWidth();
@@ -229,23 +228,22 @@ namespace brasio::renderer::vulkan
                         VK_ACCESS_SHADER_READ_BIT, mipLevels - 1);
     }
 
-    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice,
-                                     const VkCommandPool &commandPool, size_t size, void *data)
+    void ImageAttachment::initMemory(size_t size, void *data)
     {
-        initMemory(physicalDevice);
-        builders::StagingBufferBuilder stagingBuilder(physicalDevice, _logicalDevice);
+        initMemory();
+        builders::StagingBufferBuilder stagingBuilder(_renderer);
         BufferType stagingBuffer = stagingBuilder.withSize(size).withData(data).build();
 
-        transitionImageLayout(commandPool, _format, VK_IMAGE_LAYOUT_UNDEFINED,
+        transitionImageLayout(_format, VK_IMAGE_LAYOUT_UNDEFINED,
                               VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-        stagingBuffer->copyInto(*this, commandPool);
-        generateMipmaps(physicalDevice, commandPool);
+        stagingBuffer->copyInto(*this);
+        generateMipmaps();
     }
 
-    void ImageAttachment::initMemory(const PhysicalDeviceType &physicalDevice)
+    void ImageAttachment::initMemory()
     {
-        _deviceMemory = std::make_unique<Memory>(physicalDevice, _logicalDevice->getHandle(), *this,
-                                                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        _deviceMemory =
+            std::make_unique<Memory>(_renderer, *this, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     }
 
     size_t ImageAttachment::getWidth() const

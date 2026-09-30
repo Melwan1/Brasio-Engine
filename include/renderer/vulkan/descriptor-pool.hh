@@ -9,10 +9,13 @@
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class DescriptorPool : public core::Handler<VkDescriptorPool>
     {
     public:
-        DescriptorPool(const VkDevice &logicalDevice, const VkDescriptorPoolCreateInfo &createInfo);
+        DescriptorPool(const VulkanRenderer &renderer,
+                       const VkDescriptorPoolCreateInfo &createInfo);
 
         void setDescriptorSets(DescriptorSetsType descriptorSets);
         const DescriptorSets &getDescriptorSets() const;

@@ -1,11 +1,11 @@
 #include <renderer/vulkan/builders/compute-pipeline-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 namespace brasio::renderer::vulkan::builders
 {
-    ComputePipelineBuilder::ComputePipelineBuilder(const LogicalDeviceType &logicalDevice,
-                                                   const shaders::ShaderManager &shaderManager)
-        : _logicalDevice(logicalDevice)
-        , _pipelineShaderBuilder(_logicalDevice->getHandle(), shaderManager)
+    ComputePipelineBuilder::ComputePipelineBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
+        , _pipelineShaderBuilder(renderer)
     {
         base();
     }
@@ -23,8 +23,7 @@ namespace brasio::renderer::vulkan::builders
         createInfo.layout = _pipelineLayout->getHandle();
         createInfo.stage = _pipelineShaderBuilder.build();
 
-        return std::make_unique<ComputePipeline>(_logicalDevice, createInfo,
-                                                 std::move(_pipelineLayout));
+        return std::make_unique<ComputePipeline>(_renderer, createInfo, std::move(_pipelineLayout));
     }
 
     ComputePipelineBuilder &

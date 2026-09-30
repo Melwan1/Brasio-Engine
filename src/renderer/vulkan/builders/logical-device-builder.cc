@@ -1,11 +1,12 @@
 #include <renderer/vulkan/builders/logical-device-builder.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <set>
 
 namespace brasio::renderer::vulkan::builders
 {
-    LogicalDeviceBuilder::LogicalDeviceBuilder(const PhysicalDevice &physicalDevice)
-        : _physicalDevice(physicalDevice)
+    LogicalDeviceBuilder::LogicalDeviceBuilder(const VulkanRenderer &renderer)
+        : _renderer(renderer)
         , _queuePriority(1.0f)
     {
         base();
@@ -13,7 +14,7 @@ namespace brasio::renderer::vulkan::builders
 
     LogicalDeviceBuilder &LogicalDeviceBuilder::base()
     {
-        _indices = _physicalDevice.findQueueFamilies();
+        _indices = _renderer.getPhysicalDeviceWrapper().findQueueFamilies();
         std::set<uint32_t> uniqueQueueFamilies = { _indices.graphicsComputeFamily.value(),
                                                    _indices.presentFamily.value() };
         for (const uint32_t queueFamilyIndex : uniqueQueueFamilies)
@@ -40,9 +41,10 @@ namespace brasio::renderer::vulkan::builders
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(_queueCreateInfos.size());
         createInfo.pEnabledFeatures = &deviceFeatures;
 
-        createInfo.enabledExtensionCount =
-            static_cast<uint32_t>(_physicalDevice.getDeviceExtensions().size());
-        createInfo.ppEnabledExtensionNames = _physicalDevice.getDeviceExtensions().data();
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(
+            _renderer.getPhysicalDeviceWrapper().getDeviceExtensions().size());
+        createInfo.ppEnabledExtensionNames =
+            _renderer.getPhysicalDeviceWrapper().getDeviceExtensions().data();
 
         /* if (_validationLayers.empty())
          {
@@ -57,6 +59,6 @@ namespace brasio::renderer::vulkan::builders
          */ // FIXME
         createInfo.enabledLayerCount = 0;
 
-        return std::make_unique<LogicalDevice>(_physicalDevice.getHandle(), createInfo, _indices);
+        return std::make_unique<LogicalDevice>(_renderer, createInfo, _indices);
     }
 } // namespace brasio::renderer::vulkan::builders

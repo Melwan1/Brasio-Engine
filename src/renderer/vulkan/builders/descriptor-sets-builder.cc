@@ -3,9 +3,9 @@
 namespace brasio::renderer::vulkan::builders
 {
 
-    DescriptorSetsBuilder::DescriptorSetsBuilder(const VkDevice &logicalDevice,
+    DescriptorSetsBuilder::DescriptorSetsBuilder(const VulkanRenderer &renderer,
                                                  const VkDescriptorPool &descriptorPool)
-        : _logicalDevice(logicalDevice)
+        : _renderer(renderer)
         , _descriptorPool(descriptorPool)
     {
         base();
@@ -26,7 +26,7 @@ namespace brasio::renderer::vulkan::builders
         allocInfo.descriptorSetCount = _setsCount;
         allocInfo.pSetLayouts = _layouts.data();
 
-        return std::make_unique<DescriptorSets>(_logicalDevice, allocInfo);
+        return std::make_unique<DescriptorSets>(_renderer, allocInfo);
     }
 
     DescriptorSetsBuilder &DescriptorSetsBuilder::withSetsCount(uint32_t setsCount)
