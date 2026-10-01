@@ -5,8 +5,10 @@
 #include <vulkan/vulkan_core.h>
 
 #include <memory>
+#include <optional>
 
 #include <renderer/vulkan/texture-sampler.hh>
+#include <images/p2-pgm.hh>
 #include <images/p3-ppm.hh>
 
 namespace brasio::renderer::vulkan
@@ -19,7 +21,12 @@ namespace brasio::renderer::vulkan
         Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
                 VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage);
 
-        const images::P3PPM &getTextureImage() const;
+        // only used for font rendering
+        Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
+                VkImageViewCreateInfo imageViewInfo, images::P2PGM &textureImage);
+
+        const images::P2PGM &getGrayTextureImage() const;
+        const images::P3PPM &getColorTextureImage() const;
 
         void createTextureSampler();
 
@@ -27,7 +34,8 @@ namespace brasio::renderer::vulkan
         const TextureSamplerType &getTextureSampler() const;
 
     private:
-        const images::P3PPM _textureImage;
+        std::optional<const images::P2PGM> _grayTextureImage;
+        std::optional<const images::P3PPM> _colorTextureImage;
         TextureSamplerType _textureSampler;
     };
 

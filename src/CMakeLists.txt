@@ -22,6 +22,7 @@ target_link_libraries(brasio PRIVATE
 add_subdirectory(application)
 add_subdirectory(core)
 add_subdirectory(events)
+add_subdirectory(fonts)
 add_subdirectory(geometry)
 add_subdirectory(images)
 add_subdirectory(io)
@@ -36,6 +37,7 @@ target_link_libraries(brasio PRIVATE
     libapplication
     libcore
     libevents
+    libfonts
     libgeometry
     libimages
     libio

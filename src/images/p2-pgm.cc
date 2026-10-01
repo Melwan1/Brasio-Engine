@@ -1,34 +1,34 @@
-#include <images/p3-ppm.hh>
+#include <images/p2-pgm.hh>
+
+#include <io/logging/logger.hh>
+#include <utils/libutils.hh>
 
 #include <fstream>
 #include <sstream>
-#include <io/logging/logger.hh>
-#include <utils/libutils.hh>
-#include "utils/image-conversions.hh"
 
 namespace brasio::images
 {
 
-    P3PPM::P3PPM(unsigned width, unsigned height, const PixelArray &pixels)
+    P2PGM::P2PGM(unsigned width, unsigned height, const PixelArray &pixels)
         : _width(width)
         , _height(height)
         , _pixels(pixels)
     {}
 
-    P3PPM P3PPM::load(const fs::path &path)
+    P2PGM P2PGM::load(const fs::path &path)
     {
         std::ifstream ifs(path);
         std::string format;
         if (!(std::getline(ifs, format)))
         {
-            BRASIO_LOG_WARNING("Unknown PPM format, assuming P3.", { "IMAGES", "PPM", "LOAD" });
-            format = "P3";
+            BRASIO_LOG_WARNING("Unknown PPM format, assuming P2.", { "IMAGES", "PPM", "LOAD" });
+            format = "P2";
         }
         unsigned width, height, maxValue;
         if (!(ifs >> width >> height >> maxValue))
         {
             BRASIO_LOG_ERROR("Could not parse width, height or max value from "
-                             "the P3 PPM file, aborting.",
+                             "the P2 PGM file, aborting.",
                              { "IMAGES", "PPM", "LOAD" });
         }
         // there should be no overflow here, it's not possible to
@@ -47,8 +47,8 @@ namespace brasio::images
         {
             for (unsigned col = 0; col < width; col++)
             {
-                unsigned red, green, blue;
-                if (!(ifs >> red >> green >> blue))
+                unsigned value;
+                if (!(ifs >> value))
                 {
                     std::ostringstream oss;
                     oss << "Could not read pixel at coordinates (" << line << ", " << col
@@ -56,9 +56,7 @@ namespace brasio::images
                     BRASIO_LOG_ERROR(oss.str(), { "IMAGES", "PPM", "LOAD" });
                 }
 
-                pixels[index++] = { utils::pixel_to_unsigned_char(red, maxValue),
-                                    utils::pixel_to_unsigned_char(green, maxValue),
-                                    utils::pixel_to_unsigned_char(blue, maxValue), 255 };
+                pixels[index++] = utils::pixel_to_unsigned_char(value, maxValue);
             }
         }
         unsigned thrownUnsigned;
@@ -70,23 +68,22 @@ namespace brasio::images
         return { width, height, pixels };
     }
 
-    P3PPM P3PPM::empty()
+    P2PGM P2PGM::empty()
     {
-        return { 1, 1, { { 0, 0, 0 } } };
+        return { 1, 1, { 0 } };
     }
 
-    void P3PPM::print(std::ostream &ostr)
+    void P2PGM::print(std::ostream &ostr)
     {
-        ostr << "P3\n" << _width << " " << _height << "\n" << 255 << "\n";
-        unsigned curWidth = 0;
+        ostr << "P2\n" << _width << " " << _height << "\n" << 255 << "\n";
+        unsigned cur_width = 0;
         for (const PixelType &pixel : _pixels)
         {
-            ostr << static_cast<unsigned>(pixel.at(0)) << " " << static_cast<unsigned>(pixel.at(1))
-                 << " " << static_cast<unsigned>(pixel.at(2));
-            if (curWidth++ == _width - 1)
+            ostr << pixel;
+            if (cur_width++ == _width - 1)
             {
                 ostr << "\n";
-                curWidth = 0;
+                cur_width = 0;
             }
             else
             {
@@ -95,35 +92,35 @@ namespace brasio::images
         }
     }
 
-    void P3PPM::save(const fs::path &path)
+    void P2PGM::save(const fs::path &path)
     {
         std::ofstream ostr(path);
         print(ostr);
     }
 
-    size_t P3PPM::getSize() const
+    size_t P2PGM::getSize() const
     {
-        return _width * _height * 4;
+        return _width * _height;
     }
 
-    size_t P3PPM::getWidth() const
+    size_t P2PGM::getWidth() const
     {
         return _width;
     }
 
-    size_t P3PPM::getHeight() const
+    size_t P2PGM::getHeight() const
     {
         return _height;
     }
 
-    const void *P3PPM::getData() const
+    const void *P2PGM::getData() const
     {
-        return _pixels.data()->data();
+        return _pixels.data();
     }
 
-    void *P3PPM::getData()
+    void *P2PGM::getData()
     {
-        return _pixels.data()->data();
+        return _pixels.data();
     }
 
 } // namespace brasio::images

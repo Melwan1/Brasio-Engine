@@ -95,6 +95,7 @@ namespace brasio::application
         {
             return false;
         }
+        initFontManager();
         if (!setVersion(VersionControlType::LATEST_GIT_TAG, config["application"]))
         {
             setVersion(VersionControlType::CONFIG_FILE, config["application"]);
@@ -113,6 +114,12 @@ namespace brasio::application
         _renderer = std::move(renderer);
         _renderer->init();
         return true;
+    }
+
+    void Application::initFontManager()
+    {
+        _fontManager = std::make_unique<fonts::FontManager>();
+        _fontManager->loadFontDirectory("assets/fonts");
     }
 
     bool Application::setupWindow(const YAML::Node &windowConfig, bool useOpengl)

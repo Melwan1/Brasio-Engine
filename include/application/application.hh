@@ -5,6 +5,7 @@
 #include <events/listeners/listeners.hh>
 #include <renderer/renderer.hh>
 #include <utils/libutils.hh>
+#include <fonts/font-manager.hh>
 
 #include <yaml-cpp/yaml.h>
 
@@ -35,6 +36,7 @@ namespace brasio::application
         bool init(const YAML::Node &config);
 
         bool initRenderer(std::unique_ptr<renderer::Renderer> renderer);
+        void initFontManager();
 
         // various setups
 
@@ -70,6 +72,7 @@ namespace brasio::application
     private:
         GLFWwindow *_window;
         std::unique_ptr<renderer::Renderer> _renderer;
+        std::unique_ptr<fonts::FontManager> _fontManager;
         std::string _title;
         utils::Version _version;
 
