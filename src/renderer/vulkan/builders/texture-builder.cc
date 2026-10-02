@@ -94,7 +94,7 @@ namespace brasio::renderer::vulkan::builders
         return withWidth(textureImage.getWidth())
             .withHeight(textureImage.getHeight())
             .withImageType(VK_IMAGE_TYPE_2D)
-            .withFormat(VK_FORMAT_R8_SRGB);
+            .withFormat(VK_FORMAT_R8_UNORM);
     }
 
     TextureBuilder &TextureBuilder::withTextureImage(const images::P3PPM &textureImage)

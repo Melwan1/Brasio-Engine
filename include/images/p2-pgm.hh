@@ -29,6 +29,8 @@ namespace brasio::images
         const void *getData() const;
         void *getData();
 
+        PixelType operator[](unsigned index) const;
+
     private:
         unsigned _width;
         unsigned _height;

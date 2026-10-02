@@ -79,7 +79,7 @@ namespace brasio::images
         unsigned cur_width = 0;
         for (const PixelType &pixel : _pixels)
         {
-            ostr << pixel;
+            ostr << static_cast<unsigned>(pixel);
             if (cur_width++ == _width - 1)
             {
                 ostr << "\n";
@@ -121,6 +121,11 @@ namespace brasio::images
     void *P2PGM::getData()
     {
         return _pixels.data();
+    }
+
+    P2PGM::PixelType P2PGM::operator[](unsigned index) const
+    {
+        return _pixels[index];
     }
 
 } // namespace brasio::images

@@ -126,4 +126,9 @@ namespace brasio::images
         return _pixels.data()->data();
     }
 
+    const P3PPM::PixelType &P3PPM::operator[](unsigned index) const
+    {
+        return _pixels[index];
+    }
+
 } // namespace brasio::images
