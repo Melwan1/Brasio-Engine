@@ -12,6 +12,7 @@
         pkgs = import nixpkgs { inherit system; };
 
         buildInputs = with pkgs; [
+          freetype
           libGL
           libGLU
           glew

@@ -10,7 +10,8 @@ namespace brasio::renderer::vulkan::builders
 
     TextureBuilder::TextureBuilder(const VulkanRenderer &renderer)
         : _renderer(renderer)
-        , _textureImage(images::P3PPM::empty())
+        , _grayTextureImage{}
+        , _colorTextureImage{}
     {
         base();
     }
@@ -53,8 +54,14 @@ namespace brasio::renderer::vulkan::builders
                                            .levelCount = mipLevels,
                                            .baseArrayLayer = 0,
                                            .layerCount = 1 };
+        if (_colorTextureImage.has_value())
+        {
+            return std::make_unique<Texture>(_renderer, imageInfo, imageViewInfo,
+                                             _colorTextureImage.value());
+        }
 
-        return std::make_unique<Texture>(_renderer, imageInfo, imageViewInfo, _textureImage);
+        return std::make_unique<Texture>(_renderer, imageInfo, imageViewInfo,
+                                         _grayTextureImage.value());
     }
 
     TextureBuilder &TextureBuilder::withWidth(uint32_t width)
@@ -81,9 +88,18 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    TextureBuilder &TextureBuilder::withTextureImage(const images::P2PGM &textureImage)
+    {
+        _grayTextureImage = textureImage;
+        return withWidth(textureImage.getWidth())
+            .withHeight(textureImage.getHeight())
+            .withImageType(VK_IMAGE_TYPE_2D)
+            .withFormat(VK_FORMAT_R8_UNORM);
+    }
+
     TextureBuilder &TextureBuilder::withTextureImage(const images::P3PPM &textureImage)
     {
-        _textureImage = textureImage;
+        _colorTextureImage = textureImage;
         return withWidth(textureImage.getWidth())
             .withHeight(textureImage.getHeight())
             .withImageType(VK_IMAGE_TYPE_2D)

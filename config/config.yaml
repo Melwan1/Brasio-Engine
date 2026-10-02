@@ -15,11 +15,10 @@ renderer:
 
   pipelines:
     - type: GRAPHICS
-      name: Draw particles
-      vertex_input: PARTICLE
+      name: Draw cube
       shaders:
-        vertex: vertex/particle.vert
-        fragment: fragment/particle.frag
+        vertex: vertex/ubo.vert
+        fragment: fragment/texture.frag
 
       dynamic_states:
         - VIEWPORT
@@ -27,7 +26,7 @@ renderer:
 
       input_assembly:
         primitive_restart: false
-        primitive_topology: POINT_LIST
+        primitive_topology: TRIANGLE_LIST
 
       rasterizer:
         depth_clamp: false
@@ -43,7 +42,7 @@ renderer:
 
       multisampling:
         sample_shading: false
-        rasterization_samples: 16
+        rasterization_samples: 1
         min_sample_shading: 1
         alpha_to_coverage: false
         alpha_to_one: false
@@ -75,7 +74,8 @@ logging:
     COMPUTE: DEBUG
     DESTROY: DEBUG
     DEVICE: INFO
-    EVENT: TRACE
+    EVENT: DEBUG
+    FONTS: TRACE
     GENERAL: INFO
     RENDER: DEBUG
     SHADERS: INFO

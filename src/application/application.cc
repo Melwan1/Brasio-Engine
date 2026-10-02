@@ -95,6 +95,8 @@ namespace brasio::application
         {
             return false;
         }
+        initFontManager();
+        _renderer->init();
         if (!setVersion(VersionControlType::LATEST_GIT_TAG, config["application"]))
         {
             setVersion(VersionControlType::CONFIG_FILE, config["application"]);
@@ -111,8 +113,19 @@ namespace brasio::application
             return false;
         }
         _renderer = std::move(renderer);
-        _renderer->init();
         return true;
+    }
+
+    void Application::initFontManager()
+    {
+        _fontManager = std::make_unique<fonts::FontManager>();
+        _fontManager->loadFontDirectory("assets/fonts");
+        auto *vulkanRenderer =
+            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
+        renderer::vulkan::TextureType fontTexture = _fontManager->loadText(
+            *vulkanRenderer, "Delfino",
+            "La grève des lycéens est reconduite aujourd'hui et tissu est toujours bleu", 24, 1000);
+        vulkanRenderer->addTexture(std::move(fontTexture));
     }
 
     bool Application::setupWindow(const YAML::Node &windowConfig, bool useOpengl)

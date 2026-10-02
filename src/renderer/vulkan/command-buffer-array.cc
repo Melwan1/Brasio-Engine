@@ -59,10 +59,20 @@ namespace brasio::renderer::vulkan
         renderPassBeginInfo.renderArea.offset = { 0, 0 };
         renderPassBeginInfo.renderArea.extent = _renderer.getSwapchain().getExtent();
 
-        std::array<VkClearValue, 3> clearValues{};
-        clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
-        clearValues[1].depthStencil = { 1.0f, 0 };
-        clearValues[2].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+        std::vector<VkClearValue> clearValues;
+        if (_renderer.isMultisampled())
+        {
+            clearValues.resize(3);
+            clearValues[0].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+            clearValues[1].depthStencil = { 1.0f, 0 };
+            clearValues[2].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+        }
+        else
+        {
+            clearValues.resize(2);
+            clearValues[0].depthStencil = { 1.0f, 0 };
+            clearValues[1].color = { { 0.0f, 0.0f, 0.0f, 0.0f } };
+        }
         renderPassBeginInfo.clearValueCount = clearValues.size();
         renderPassBeginInfo.pClearValues = clearValues.data();
 
@@ -106,11 +116,8 @@ namespace brasio::renderer::vulkan
         {
             BRASIO_LOG_TRACE("Binding graphics pipeline", { "RENDER" });
             graphicsPipeline->bind(commandBuffer);
-            BRASIO_LOG_TRACE("Rendering particles", { "RENDER" });
-            VkBuffer vertexBuffers[] = { _renderer.getParticleVertexBuffer() };
-            VkDeviceSize offsets[] = { 0 };
-            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-            vkCmdDraw(commandBuffer, _renderer.getParticleCount(), 1, 0, 0);
+            BRASIO_LOG_TRACE("Rendering cube", { "RENDER" });
+            _renderer.getMesh1().draw(commandBuffer, _renderer);
         }
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });

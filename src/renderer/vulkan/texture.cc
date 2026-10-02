@@ -12,16 +12,31 @@ namespace brasio::renderer::vulkan
     Texture::Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
                      VkImageViewCreateInfo imageViewInfo, images::P3PPM &textureImage)
         : ImageAttachment(renderer, imageInfo, imageViewInfo)
-        , _textureImage(textureImage)
+        , _colorTextureImage(textureImage)
     {
         initMemory(textureImage.getSize(), textureImage.getData());
         createImageView();
         createTextureSampler();
     }
 
-    const images::P3PPM &Texture::getTextureImage() const
+    Texture::Texture(const VulkanRenderer &renderer, const VkImageCreateInfo &imageInfo,
+                     VkImageViewCreateInfo imageViewInfo, images::P2PGM &textureImage)
+        : ImageAttachment(renderer, imageInfo, imageViewInfo)
+        , _grayTextureImage(textureImage)
     {
-        return _textureImage;
+        initMemory(textureImage.getSize(), textureImage.getData());
+        createImageView();
+        createTextureSampler();
+    }
+
+    const images::P2PGM &Texture::getGrayTextureImage() const
+    {
+        return _grayTextureImage.value();
+    }
+
+    const images::P3PPM &Texture::getColorTextureImage() const
+    {
+        return _colorTextureImage.value();
     }
 
     void Texture::createTextureSampler()

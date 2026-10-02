@@ -17,5 +17,6 @@ target_link_libraries(libimages PRIVATE
 )
 
 target_sources(libimages PRIVATE
+    p2-pgm.cc
     p3-ppm.cc
 )

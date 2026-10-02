@@ -24,7 +24,8 @@ namespace brasio::renderer::vulkan::builders
         {
             subpass.pDepthStencilAttachment = &(*_depthAttachmentReference);
         }
-        subpass.pResolveAttachments = _resolveAttachmentReferences.data();
+        subpass.pResolveAttachments =
+            _resolveAttachmentReferences.empty() ? nullptr : _resolveAttachmentReferences.data();
         return subpass;
     }
 

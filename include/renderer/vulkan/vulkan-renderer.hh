@@ -103,6 +103,10 @@ namespace brasio::renderer::vulkan
 
         void runCompute();
 
+        void addTexture(TextureType texture);
+
+        bool isMultisampled() const;
+
         // getters
 
         GLFWwindow *getWindow() const;
@@ -133,6 +137,8 @@ namespace brasio::renderer::vulkan
         static VulkanRendererType fromConfig(const YAML::Node &config, GLFWwindow *window);
 
     private:
+        std::vector<VkImageView> framebufferAttachmentViews() const;
+
         GLFWwindow *_window;
         shaders::ShaderManager _shaderManager;
         unsigned _maxFramesInFlight;

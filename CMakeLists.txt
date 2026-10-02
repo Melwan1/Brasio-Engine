@@ -48,5 +48,7 @@ find_package(Vulkan REQUIRED)
 
 find_package(yaml-cpp REQUIRED)
 
+find_package(Freetype 2.14 REQUIRED)
+
 add_subdirectory(src)
 add_subdirectory(tests)

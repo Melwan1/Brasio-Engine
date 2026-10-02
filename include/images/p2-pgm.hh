@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <filesystem>
 #include <ostream>
 #include <vector>
@@ -10,16 +9,16 @@ namespace fs = std::filesystem;
 namespace brasio::images
 {
 
-    class P3PPM
+    class P2PGM
     {
     public:
-        using PixelType = std::array<unsigned char, 4>;
+        using PixelType = unsigned char;
         using PixelArray = std::vector<PixelType>;
 
-        P3PPM(unsigned width, unsigned height, const PixelArray &pixels);
+        P2PGM(unsigned width, unsigned height, const PixelArray &pixels);
 
-        static P3PPM load(const fs::path &path);
-        static P3PPM empty();
+        static P2PGM load(const fs::path &path);
+        static P2PGM empty();
 
         void print(std::ostream &ostr);
         void save(const fs::path &path);
@@ -30,7 +29,7 @@ namespace brasio::images
         const void *getData() const;
         void *getData();
 
-        const PixelType &operator[](unsigned index) const;
+        PixelType operator[](unsigned index) const;
 
     private:
         unsigned _width;
