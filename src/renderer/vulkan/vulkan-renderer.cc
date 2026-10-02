@@ -61,8 +61,7 @@ namespace brasio::renderer::vulkan
         createColorResources();
         createDepthResources();
         createRenderPass();
-        _swapchain->createFramebuffers(
-            { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
+        _swapchain->createFramebuffers(framebufferAttachmentViews());
         createPipelines();
         createUniformBuffers();
         createTexture();
@@ -95,6 +94,7 @@ namespace brasio::renderer::vulkan
         objParser.load();
         model::Model model(objParser);
         _mesh1 = model.toMesh();
+        _mesh1 = std::make_unique<mesh::Cube>();
         //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         //_mesh1->applyTranslation(mesh::TransformMode::CPU,
         //                         { -1.0f, 0.0f, 1.0f });
@@ -105,24 +105,34 @@ namespace brasio::renderer::vulkan
         _mesh2->applyTranslation(mesh::TransformMode::CPU, { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(*this);
 
+        for (const YAML::Node &pipelineConfig : config["pipelines"])
+        {
+            if (!pipelineConfig["type"].as<std::string>().compare("GRAPHICS")
+                && pipelineConfig["multisampling"]["rasterization_samples"])
+            {
+                _msaaSamples = static_cast<VkSampleCountFlagBits>(
+                    pipelineConfig["multisampling"]["rasterization_samples"].as<unsigned>());
+                break;
+            }
+        }
+
         createColorResources();
         createDepthResources();
         createRenderPass();
-        _swapchain->createFramebuffers(
-            { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
+        _swapchain->createFramebuffers(framebufferAttachmentViews());
         createPipelines(config["pipelines"]);
         createUniformBuffers();
-        createTexture();
         createStorageBuffers();
-        createDescriptorPool();
-        createDescriptorSets();
         createCommandBuffers();
         createSyncObjects();
         BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     void VulkanRenderer::init()
-    {}
+    {
+        createDescriptorPool();
+        createDescriptorSets();
+    }
 
     VulkanRenderer::~VulkanRenderer()
     {
@@ -183,12 +193,48 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createRenderPass()
     {
+        VkSubpassDependency dependency =
+            builders::SubpassDependencyBuilder()
+                .withSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+                                  | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
+                .withSrcAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+                                   | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
+                .withDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
+                                  | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
+                .withDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+                                   | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
+                .build();
+
+        VkAttachmentDescription depthAttachmentDescription =
+            _depthAttachment->getAttachmentDescription();
+
+        if (!isMultisampled())
+        {
+            VkAttachmentReference depthAttachmentReference =
+                _depthAttachment->getAttachmentReference(0);
+            VkAttachmentDescription colorAttachmentDescription =
+                ImageAttachment::sGetAttachmentDescription(_swapchain->getFormat());
+            VkAttachmentReference colorAttachmentReference =
+                ImageAttachment::sGetAttachmentReference(1);
+            builders::SubpassDescriptionBuilder subpassBuilder =
+                builders::SubpassDescriptionBuilder()
+                    .withAdditionalAttachment(colorAttachmentDescription, colorAttachmentReference)
+                    .withAdditionalAttachment(depthAttachmentDescription, depthAttachmentReference);
+            VkSubpassDescription subpass = subpassBuilder.build();
+
+            _renderPass = builders::RenderPassBuilder(*this)
+                              .withAdditionalAttachmentDescription(depthAttachmentDescription)
+                              .withAdditionalAttachmentDescription(colorAttachmentDescription)
+                              .withAdditionalSubpass(subpass)
+                              .withAdditionalSubpassDependency(dependency)
+                              .build();
+            return;
+        }
+
         VkAttachmentDescription colorAttachmentDescription =
             _colorAttachment->getAttachmentDescription();
         VkAttachmentReference colorAttachmentReference =
             _colorAttachment->getAttachmentReference(0);
-        VkAttachmentDescription depthAttachmentDescription =
-            _depthAttachment->getAttachmentDescription();
         VkAttachmentReference depthAttachmentReference =
             _depthAttachment->getAttachmentReference(1);
         VkAttachmentDescription colorAttachmentResolveDescription =
@@ -202,27 +248,13 @@ namespace brasio::renderer::vulkan
                 .withAdditionalResolveAttachment(colorAttachmentResolveReference);
         VkSubpassDescription subpass = subpassBuilder.build();
 
-        VkSubpassDependency dependency =
-            builders::SubpassDependencyBuilder()
-                .withSrcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
-                                  | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
-                .withSrcAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
-                                   | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
-                .withDstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT
-                                  | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT)
-                .withDstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
-                                   | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)
-                .build();
-
-        builders::RenderPassBuilder builder =
-            builders::RenderPassBuilder(*this)
-                .withAdditionalAttachmentDescription(colorAttachmentDescription)
-                .withAdditionalAttachmentDescription(depthAttachmentDescription)
-                .withAdditionalAttachmentDescription(colorAttachmentResolveDescription)
-                .withAdditionalSubpass(subpass)
-                .withAdditionalSubpassDependency(dependency);
-
-        _renderPass = builder.build();
+        _renderPass = builders::RenderPassBuilder(*this)
+                          .withAdditionalAttachmentDescription(colorAttachmentDescription)
+                          .withAdditionalAttachmentDescription(depthAttachmentDescription)
+                          .withAdditionalAttachmentDescription(colorAttachmentResolveDescription)
+                          .withAdditionalSubpass(subpass)
+                          .withAdditionalSubpassDependency(dependency)
+                          .build();
     }
 
     void VulkanRenderer::createPipelines()
@@ -425,6 +457,11 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Ending frame compute", { "COMPUTE" });
     }
 
+    void VulkanRenderer::addTexture(TextureType texture)
+    {
+        _textures.emplace_back(std::move(texture));
+    }
+
     void VulkanRenderer::cleanupSwapChain()
     {
         _logicalDevice->waitIdle();
@@ -446,8 +483,7 @@ namespace brasio::renderer::vulkan
         createSwapChain(presentMode);
         createColorResources();
         createDepthResources();
-        _swapchain->createFramebuffers(
-            { _colorAttachment->getImageView(), _depthAttachment->getImageView() });
+        _swapchain->createFramebuffers(framebufferAttachmentViews());
     }
 
     void VulkanRenderer::createUniformBuffers()
@@ -602,6 +638,11 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createColorResources()
     {
+        if (!isMultisampled())
+        {
+            _colorAttachment.reset();
+            return;
+        }
         VkFormat swapchainFormat = _swapchain->getFormat();
         VkExtent2D swapchainExtent = _swapchain->getExtent();
         _colorAttachment = builders::ImageAttachmentBuilder(*this)
@@ -609,6 +650,20 @@ namespace brasio::renderer::vulkan
                                .withSamples(_msaaSamples)
                                .withFormat(swapchainFormat)
                                .build();
+    }
+
+    bool VulkanRenderer::isMultisampled() const
+    {
+        return _msaaSamples != VK_SAMPLE_COUNT_1_BIT;
+    }
+
+    std::vector<VkImageView> VulkanRenderer::framebufferAttachmentViews() const
+    {
+        if (isMultisampled())
+        {
+            return { _colorAttachment->getImageView(), _depthAttachment->getImageView() };
+        }
+        return { _depthAttachment->getImageView() };
     }
 
     GLFWwindow *VulkanRenderer::getWindow() const
