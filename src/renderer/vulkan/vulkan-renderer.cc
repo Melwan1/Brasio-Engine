@@ -45,7 +45,7 @@ namespace brasio::renderer::vulkan
         createSwapChain();
         _shaderManager.compileAllShaders();
         createCommandPool();
-        io::files::OBJParser objParser("assets/models/viking_room.obj");
+        io::files::OBJParser objParser("assets/models/viking-room.obj");
         objParser.load();
         model::Model model(objParser);
         _mesh1 = model.toMesh();
@@ -90,7 +90,7 @@ namespace brasio::renderer::vulkan
         createSwapChain(config["swapchain"]);
         _shaderManager.compileAllShaders();
         createCommandPool();
-        io::files::OBJParser objParser("assets/models/viking_room.obj");
+        io::files::OBJParser objParser("assets/models/viking-room.obj");
         objParser.load();
         model::Model model(objParser);
         _mesh1 = model.toMesh();
@@ -622,7 +622,7 @@ namespace brasio::renderer::vulkan
     {
         _textures.emplace_back(
             builders::TextureBuilder(*this)
-                .withTextureImage(images::P3PPM::load("assets/textures/viking_room.ppm"))
+                .withTextureImage(images::P3PPM::load("assets/textures/viking-room.ppm"))
                 .build());
     }
 

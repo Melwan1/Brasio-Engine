@@ -14,7 +14,8 @@ renderer:
     present_mode: MAILBOX
 
   pipelines:
-    - type: GRAPHICS
+    - id: draw_cube
+      type: GRAPHICS
       name: Draw cube
       shaders:
         vertex: vertex/ubo.vert
@@ -61,7 +62,8 @@ renderer:
         logic_op_enabled: false
         logic_op: COPY
 
-    - type: COMPUTE
+    - id: compute_particle_movement
+      type: COMPUTE
       name: Compute particle movement
       shaders:
         compute: compute/particles.comp

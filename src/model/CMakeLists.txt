@@ -14,6 +14,7 @@ target_include_directories(libmodel PRIVATE
 
 target_link_libraries(libmodel PRIVATE
     Vulkan::Vulkan
+    libcore
     libgeometry
     libio
     libmesh
@@ -21,4 +22,5 @@ target_link_libraries(libmodel PRIVATE
 
 target_sources(libmodel PRIVATE
     model.cc
+    model-manager.cc
 )

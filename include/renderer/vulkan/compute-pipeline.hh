@@ -2,29 +2,18 @@
 
 #include <memory>
 
-#include <vulkan/vulkan_core.h>
-
-#include <core/handler.hh>
-#include <shaders/shader-manager.hh>
-#include <renderer/vulkan/pipeline-layout.hh>
-#include <renderer/vulkan/command-buffer.hh>
+#include <renderer/vulkan/pipeline.hh>
 
 namespace brasio::renderer::vulkan
 {
-    class ComputePipeline : public core::Handler<VkPipeline>
+    class ComputePipeline : public Pipeline
     {
     public:
         ComputePipeline(const VulkanRenderer &renderer,
                         const VkComputePipelineCreateInfo &createInfo,
                         PipelineLayoutType pipelineLayout);
 
-        void bind(const VkCommandBuffer &commandBuffer) const;
-
-        const PipelineLayout &getPipelineLayout() const;
-
-    private:
-        const VulkanRenderer &_renderer;
-        PipelineLayoutType _pipelineLayout;
+        virtual void bind(const VkCommandBuffer &commandBuffer) const override;
     };
 
     using ComputePipelineType = std::unique_ptr<ComputePipeline>;

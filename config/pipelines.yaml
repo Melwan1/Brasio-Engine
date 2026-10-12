@@ -1,0 +1,53 @@
+- id: draw_cube
+  type: GRAPHICS
+  name: Draw cube
+  shaders:
+    vertex: vertex/ubo.vert
+    fragment: fragment/texture.frag
+
+  dynamic_states:
+    - VIEWPORT
+    - SCISSOR
+
+  input_assembly:
+    primitive_restart: false
+    primitive_topology: TRIANGLE_LIST
+
+  rasterizer:
+    depth_clamp: false
+    discard: false
+    polygon_mode: FILL
+    line_width: 1
+    cull_mode: BACK
+    front_face: CCW
+    depth_bias: false
+    depth_bias_constant_factor: 0
+    depth_bias_clamp: 0
+    depth_bias_slope_factor: 0
+
+  multisampling:
+    sample_shading: false
+    rasterization_samples: 1
+    min_sample_shading: 1
+    alpha_to_coverage: false
+    alpha_to_one: false
+
+  color_blend_attachment:
+    writeMask: RGBA
+    blend: false
+    src_color_blend_factor: ONE
+    dst_color_blend_factor: ZERO
+    color_blend_op: ADD
+    src_alpha_blend_factor: ONE
+    dst_alpha_blend_factor: ZERO
+    alpha_blend_op: ADD
+
+  color_blend_state:
+    logic_op_enabled: false
+    logic_op: COPY
+
+- id: compute_particle_movement
+  type: COMPUTE
+  name: Compute particle movement
+  shaders:
+    compute: compute/particles.comp

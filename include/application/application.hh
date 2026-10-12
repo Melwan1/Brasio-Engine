@@ -7,6 +7,11 @@
 #include <utils/libutils.hh>
 #include <fonts/font-manager.hh>
 
+#include <renderer/vulkan/pipeline-manager.hh>
+#include <renderer/vulkan/material-manager.hh>
+#include <renderer/vulkan/texture-manager.hh>
+#include <model/model-manager.hh>
+
 #include <yaml-cpp/yaml.h>
 
 namespace brasio::application
@@ -37,6 +42,10 @@ namespace brasio::application
 
         bool initRenderer(std::unique_ptr<renderer::Renderer> renderer);
         void initFontManager();
+        void initModelManager();
+        void initTextureManager();
+        void initPipelineManager();
+        void initMaterialManager();
 
         // various setups
 
@@ -73,6 +82,10 @@ namespace brasio::application
         GLFWwindow *_window;
         std::unique_ptr<renderer::Renderer> _renderer;
         std::unique_ptr<fonts::FontManager> _fontManager;
+        std::unique_ptr<model::ModelManager> _modelManager;
+        std::unique_ptr<renderer::vulkan::TextureManager> _textureManager;
+        std::unique_ptr<renderer::vulkan::PipelineManager> _pipelineManager;
+        std::unique_ptr<renderer::vulkan::MaterialManager> _materialManager;
         std::string _title;
         utils::Version _version;
 

@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstdint>
-#include <map>
+#include <memory>
 #include <tuple>
 #include <vector>
 
@@ -21,6 +21,9 @@ namespace brasio::model
     using VertexInfoType = std::tuple<VertexType, TextureCoordinatesType, NormalType>;
     using FaceIndicesType = std::array<uint32_t, 3>;
 
+    class Model;
+    using ModelType = std::unique_ptr<Model>;
+
     class Model
     {
     public:
@@ -29,8 +32,17 @@ namespace brasio::model
 
         mesh::MeshType toMesh();
 
+        void upload(const renderer::vulkan::VulkanRenderer &renderer);
+        mesh::Mesh &mesh();
+        const mesh::Mesh &mesh() const;
+
+        static ModelType unitQuad();
+
     private:
         std::vector<VertexInfoType> _verticesInfo;
         std::vector<FaceIndicesType> _faceIndices;
+
+        mesh::MeshType _mesh;
     };
+
 } // namespace brasio::model

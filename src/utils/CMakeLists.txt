@@ -25,5 +25,6 @@ target_link_libraries(libutils PRIVATE
 target_sources(libutils PRIVATE
     image-conversions.cc
     version.cc
+    vk-result.cc
 )
 

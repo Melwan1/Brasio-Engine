@@ -78,4 +78,35 @@ namespace brasio::model
         }
         return std::make_unique<mesh::Mesh>(meshVertices, meshIndices);
     }
+
+    void Model::upload(const renderer::vulkan::VulkanRenderer &renderer)
+    {
+        _mesh = toMesh();
+        _mesh->createBuffers(renderer);
+    }
+
+    mesh::Mesh &Model::mesh()
+    {
+        return *_mesh;
+    }
+
+    const mesh::Mesh &Model::mesh() const
+    {
+        return *_mesh;
+    }
+
+    ModelType Model::unitQuad()
+    {
+        ModelType model = std::make_unique<Model>();
+        model->_verticesInfo.reserve(4);
+        model->_faceIndices.reserve(6);
+        model->_faceIndices.insert(model->_faceIndices.begin(), { { 0, 1, 2 }, { 2, 3, 0 } });
+        model->_verticesInfo.insert(
+            model->_verticesInfo.begin(),
+            { { { -0.5f, +0.5f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { -0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { +0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { +0.5f, +0.5f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } } });
+        return model;
+    }
 } // namespace brasio::model

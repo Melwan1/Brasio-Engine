@@ -1,0 +1,2 @@
+- id: mat_3d_textured
+  pipeline: draw_cube
