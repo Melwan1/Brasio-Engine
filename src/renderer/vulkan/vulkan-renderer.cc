@@ -56,7 +56,6 @@ namespace brasio::renderer::vulkan
 
         _mesh2 = model.toMesh();
         //_mesh2 = std::make_unique<mesh::Cone>();
-        _mesh2->applyTranslation(mesh::TransformMode::CPU, { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(*this);
         createColorResources();
         createDepthResources();
@@ -101,7 +100,6 @@ namespace brasio::renderer::vulkan
 
         _mesh2 = model.toMesh();
         //_mesh2 = std::make_unique<mesh::Cone>();
-        _mesh2->applyTranslation(mesh::TransformMode::CPU, { 1.0f, 0.0f, -1.0f });
         _mesh2->createBuffers(*this);
 
         for (const YAML::Node &pipelineConfig : config["pipelines"])
@@ -545,13 +543,6 @@ namespace brasio::renderer::vulkan
                 .count();
         (void)time;
         structs::UniformBufferObject ubo{};
-        // ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f),
-        //                         glm::vec3(0.0f, 0.0f, 1.0f));
-        // ubo.model = glm::rotate(ubo.model, time / 2 * glm::radians(90.0f),
-        //                         glm::vec3(0.0f, 1.0f, 0.0f));
-        // ubo.model = glm::rotate(ubo.model, time / 4 * glm::radians(90.0f),
-        //                         glm::vec3(1.0f, 0.0f, 0.0f));
-        ubo.model = glm::mat4(1.0f);
         ubo.view = glm::lookAt(glm::vec3(3.0f, 1.5f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f),
                                glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.proj = glm::perspective(glm::radians(45.0f),

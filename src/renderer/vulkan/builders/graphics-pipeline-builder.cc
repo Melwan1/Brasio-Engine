@@ -17,6 +17,13 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    GraphicsPipelineBuilder &GraphicsPipelineBuilder::withPushConstantRanges(
+        const std::vector<VkPushConstantRange> &pushConstantRanges)
+    {
+        _pipelineLayoutBuilder.withPushConstantRanges(pushConstantRanges);
+        return *this;
+    }
+
     GraphicsPipelineBuilder &GraphicsPipelineBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;

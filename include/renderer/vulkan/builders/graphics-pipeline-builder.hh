@@ -20,6 +20,8 @@ namespace brasio::renderer::vulkan::builders
         GraphicsPipelineBuilder &withConfig(const YAML::Node &config);
         GraphicsPipelineBuilder &
         withDescriptorSetLayout(DescriptorSetLayoutType descriptorSetLayout);
+        GraphicsPipelineBuilder &
+        withPushConstantRanges(const std::vector<VkPushConstantRange> &pushConstantRanges);
 
     private:
         const VulkanRenderer &_renderer;

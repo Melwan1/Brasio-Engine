@@ -2,7 +2,7 @@
   type: GRAPHICS
   name: Draw cube
   shaders:
-    vertex: vertex/ubo.vert
+    vertex: vertex/push-constant.vert
     fragment: fragment/texture.frag
 
   dynamic_states:

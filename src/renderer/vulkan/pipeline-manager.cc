@@ -1,5 +1,7 @@
 #include <renderer/vulkan/pipeline-manager.hh>
 
+#include <glm/mat4x4.hpp>
+
 namespace brasio::renderer::vulkan
 {
     PipelineManager::PipelineManager(const VulkanRenderer &renderer)
@@ -16,6 +18,11 @@ namespace brasio::renderer::vulkan
                                                         .withUniformBuffers(1)
                                                         .withTextures(1)
                                                         .build());
+            VkPushConstantRange pushConstantRange{};
+            pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+            pushConstantRange.offset = 0;
+            pushConstantRange.size = sizeof(glm::mat4);
+            pipelineBuilder.withPushConstantRanges({ pushConstantRange });
             pipelineBuilder.withConfig(config);
             return pipelineBuilder.build();
         }
