@@ -68,11 +68,17 @@ renderer:
       shaders:
         compute: compute/particles.comp
 
+scenes:
+  directory: scenes/
+  root: root
+
 logging:
   global_level: TRACE
   specific_levels:
     APPLICATION: DEBUG
-    CREATE: INFO
+    CREATE:
+      global: INFO
+      SCENES: TRACE
     COMPUTE: DEBUG
     DESTROY: DEBUG
     DEVICE: INFO

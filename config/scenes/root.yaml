@@ -1,0 +1,14 @@
+- id: root
+  name: Root scene
+  type: LEAF
+  target: SCREEN
+  scene_rectangle:
+    top: 0
+    left: 0
+    width: 1920
+    height: 1080
+  drawables:
+    - model: viking-room
+      material: mat_3d_textured
+      transform: identity
+

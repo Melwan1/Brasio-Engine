@@ -12,6 +12,7 @@
 #include <renderer/vulkan/material-manager.hh>
 #include <renderer/vulkan/texture-manager.hh>
 #include <model/model-manager.hh>
+#include <scenes/scene-manager.hh>
 
 #include <yaml-cpp/yaml.h>
 
@@ -47,6 +48,7 @@ namespace brasio::application
         void initTextureManager();
         void initPipelineManager();
         void initMaterialManager();
+        void initSceneManager();
 
         // various setups
 
@@ -87,6 +89,7 @@ namespace brasio::application
         std::unique_ptr<renderer::vulkan::TextureManager> _textureManager;
         std::unique_ptr<renderer::vulkan::PipelineManager> _pipelineManager;
         std::unique_ptr<renderer::vulkan::MaterialManager> _materialManager;
+        std::unique_ptr<scenes::SceneManager> _sceneManager;
         std::string _title;
         utils::Version _version;
 

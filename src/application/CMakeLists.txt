@@ -21,6 +21,7 @@ target_link_libraries(libapplication PRIVATE
 target_link_libraries(libapplication PRIVATE
     libfonts
     librenderer
+    libscenes
     libutils
 )
 

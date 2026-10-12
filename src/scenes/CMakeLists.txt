@@ -26,5 +26,6 @@ target_sources(libscenes PRIVATE
     branch-scene.cc
     drawable.cc
     leaf-scene.cc
+    scene-manager.cc
 )
 

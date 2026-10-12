@@ -2,6 +2,7 @@
 
 #include <scenes/scene-node.hh>
 
+#include <memory>
 #include <vector>
 
 namespace brasio::scenes
@@ -18,4 +19,6 @@ namespace brasio::scenes
         SceneRectangle _sceneRectangle;
         std::vector<SceneNodeType> _childScenes;
     };
+
+    using BranchSceneType = std::unique_ptr<BranchScene>;
 } // namespace brasio::scenes
