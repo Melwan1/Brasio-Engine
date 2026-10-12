@@ -40,10 +40,7 @@ namespace brasio::mesh
         const renderer::vulkan::BufferType &getIndexBuffer() const;
         renderer::vulkan::BufferType &getIndexBuffer();
 
-        void draw(const VkCommandBuffer &commandBuffer,
-                  const renderer::vulkan::VulkanRenderer &renderer) const;
-        void drawWireframe(const VkCommandBuffer &commandBuffer,
-                           const renderer::vulkan::VulkanRenderer &renderer) const;
+        void draw(const VkCommandBuffer &commandBuffer) const;
 
         void applyTransform(TransformMode transformMode, const glm::mat4 &transform);
 

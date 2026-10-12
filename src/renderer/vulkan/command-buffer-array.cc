@@ -1,4 +1,5 @@
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/material.hh>
 #include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
@@ -112,12 +113,13 @@ namespace brasio::renderer::vulkan
         setViewport(commandBufferIndex);
         setScissor(commandBufferIndex);
 
-        for (const GraphicsPipelineType &graphicsPipeline : _renderer.getGraphicsPipelines())
+        const Material *material = _renderer.getActiveMaterial();
+        if (material)
         {
-            BRASIO_LOG_TRACE("Binding graphics pipeline", { "RENDER" });
-            graphicsPipeline->bind(commandBuffer);
+            BRASIO_LOG_TRACE("Binding material", { "RENDER" });
+            material->bind(commandBuffer);
             BRASIO_LOG_TRACE("Rendering cube", { "RENDER" });
-            _renderer.getMesh1().draw(commandBuffer, _renderer);
+            _renderer.getMesh1().draw(commandBuffer);
         }
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });

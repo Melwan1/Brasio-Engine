@@ -4,6 +4,8 @@
 
 #include <renderer/vulkan/pipeline.hh>
 #include <renderer/vulkan/texture.hh>
+#include <renderer/vulkan/descriptor-pool.hh>
+#include <renderer/vulkan/descriptor-sets.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -23,6 +25,9 @@ namespace brasio::renderer::vulkan
         const VulkanRenderer &_renderer;
         const Pipeline *_pipeline;
         const Texture *_texture;
+
+        DescriptorPoolType _descriptorPool;
+        DescriptorSetsType _descriptorSets;
     };
 
     using MaterialType = std::unique_ptr<Material>;

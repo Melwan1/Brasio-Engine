@@ -22,6 +22,10 @@ namespace brasio::application
 
     Application::~Application()
     {
+        if (_renderer)
+        {
+            _renderer->waitIdle();
+        }
         _materialManager.reset();
         _pipelineManager.reset();
         _textureManager.reset();
@@ -87,17 +91,8 @@ namespace brasio::application
         initListeners();
 
         setupCallbacks();
-        std::unique_ptr<renderer::Renderer> renderer = nullptr;
-        if (useOpengl)
-        {
-            renderer = std::make_unique<renderer::DefaultRenderer>();
-        }
-        else
-        {
-            /*renderer =
-                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);*/
-            renderer = renderer::vulkan::VulkanRenderer::fromConfig(config["renderer"], _window);
-        }
+        renderer::vulkan::VulkanRendererType renderer =
+            renderer::vulkan::VulkanRenderer::fromConfig(config["renderer"], _window);
         if (!initRenderer(std::move(renderer)))
         {
             return false;
@@ -117,7 +112,7 @@ namespace brasio::application
         return true;
     }
 
-    bool Application::initRenderer(std::unique_ptr<renderer::Renderer> renderer)
+    bool Application::initRenderer(renderer::vulkan::VulkanRendererType renderer)
     {
         if (!renderer)
         {
@@ -131,45 +126,32 @@ namespace brasio::application
     {
         _fontManager = std::make_unique<fonts::FontManager>();
         _fontManager->loadFontDirectory("assets/fonts");
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
-        renderer::vulkan::TextureType fontTexture = _fontManager->loadText(
-            *vulkanRenderer, "Delfino",
-            "La grève des lycéens est reconduite aujourd'hui et tissu est toujours bleu", 24, 1000);
-        vulkanRenderer->addTexture(std::move(fontTexture));
     }
 
     void Application::initModelManager()
     {
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
-        _modelManager = std::make_unique<model::ModelManager>(*vulkanRenderer);
+        _modelManager = std::make_unique<model::ModelManager>(*_renderer);
         _modelManager->loadFile("config/assets/models.yaml");
     }
 
     void Application::initTextureManager()
     {
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
-        _textureManager = std::make_unique<renderer::vulkan::TextureManager>(*vulkanRenderer);
+        _textureManager = std::make_unique<renderer::vulkan::TextureManager>(*_renderer);
         _textureManager->loadFile("config/assets/textures.yaml");
     }
 
     void Application::initPipelineManager()
     {
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
-        _pipelineManager = std::make_unique<renderer::vulkan::PipelineManager>(*vulkanRenderer);
+        _pipelineManager = std::make_unique<renderer::vulkan::PipelineManager>(*_renderer);
         _pipelineManager->loadFile("config/pipelines.yaml");
     }
 
     void Application::initMaterialManager()
     {
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
         _materialManager = std::make_unique<renderer::vulkan::MaterialManager>(
-            *vulkanRenderer, *_pipelineManager, *_textureManager);
+            *_renderer, *_pipelineManager, *_textureManager);
         _materialManager->loadFile("config/assets/materials.yaml");
+        _renderer->setActiveMaterial(_materialManager->get("mat_3d_textured"));
     }
 
     bool Application::setupWindow(const YAML::Node &windowConfig, bool useOpengl)

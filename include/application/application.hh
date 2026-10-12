@@ -4,6 +4,7 @@
 #include <events/emitters/emitters.hh>
 #include <events/listeners/listeners.hh>
 #include <renderer/renderer.hh>
+#include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 #include <fonts/font-manager.hh>
 
@@ -40,7 +41,7 @@ namespace brasio::application
         void initListeners();
         bool init(const YAML::Node &config);
 
-        bool initRenderer(std::unique_ptr<renderer::Renderer> renderer);
+        bool initRenderer(renderer::vulkan::VulkanRendererType renderer);
         void initFontManager();
         void initModelManager();
         void initTextureManager();
@@ -80,7 +81,7 @@ namespace brasio::application
 
     private:
         GLFWwindow *_window;
-        std::unique_ptr<renderer::Renderer> _renderer;
+        renderer::vulkan::VulkanRendererType _renderer;
         std::unique_ptr<fonts::FontManager> _fontManager;
         std::unique_ptr<model::ModelManager> _modelManager;
         std::unique_ptr<renderer::vulkan::TextureManager> _textureManager;

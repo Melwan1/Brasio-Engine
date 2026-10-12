@@ -58,8 +58,7 @@ namespace brasio::mesh
         return _indices;
     }
 
-    void Mesh::draw(const VkCommandBuffer &commandBuffer,
-                    const renderer::vulkan::VulkanRenderer &renderer) const
+    void Mesh::draw(const VkCommandBuffer &commandBuffer) const
     {
         VkBuffer vertexBuffers[] = { getVertexBuffer()->getHandle() };
         VkDeviceSize offsets[] = { 0 };
@@ -67,22 +66,12 @@ namespace brasio::mesh
         uint32_t bindingCount = 1;
         vkCmdBindVertexBuffers(commandBuffer, firstBinding, bindingCount, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(commandBuffer, getIndexBuffer()->getHandle(), 0, VK_INDEX_TYPE_UINT32);
-        vkCmdBindDescriptorSets(
-            commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-            renderer.getGraphicsPipelines().at(0)->getPipelineLayout().getHandle(), 0, 1,
-            &renderer.getDescriptorSets().getHandle().at(renderer.getCurrentFrame()), 0, nullptr);
         uint32_t instanceCount = 1;
         uint32_t firstVertex = 0;
         uint32_t firstInstance = 0;
         uint32_t instanceOffset = 0;
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(getIndices().size()), instanceCount,
                          firstVertex, firstInstance, instanceOffset);
-    }
-    void Mesh::drawWireframe(const VkCommandBuffer &commandBuffer,
-                             const renderer::vulkan::VulkanRenderer &renderer) const
-    {
-        (void)commandBuffer;
-        (void)renderer;
     }
 
     void Mesh::applyTransform(TransformMode transformMode, const glm::mat4 &transform)

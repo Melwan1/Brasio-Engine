@@ -64,7 +64,6 @@ namespace brasio::renderer::vulkan
         _swapchain->createFramebuffers(framebufferAttachmentViews());
         createPipelines();
         createUniformBuffers();
-        createTexture();
         createStorageBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -140,9 +139,7 @@ namespace brasio::renderer::vulkan
         cleanupSwapChain();
         _mesh1.reset();
         _mesh2.reset();
-        _graphicsDescriptorPool.reset();
         _computeDescriptorPool.reset();
-        _textures.clear();
         _storageBuffers.clear();
         _uniformBuffers.clear();
         _computeUniformBuffers.clear();
@@ -457,9 +454,9 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Ending frame compute", { "COMPUTE" });
     }
 
-    void VulkanRenderer::addTexture(TextureType texture)
+    void VulkanRenderer::waitIdle() const
     {
-        _textures.emplace_back(std::move(texture));
+        _logicalDevice->waitIdle();
     }
 
     void VulkanRenderer::cleanupSwapChain()
@@ -565,20 +562,6 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createDescriptorPool()
     {
-        _graphicsDescriptorPool =
-            builders::DescriptorPoolBuilder(*this)
-                .withMaxSets(_maxFramesInFlight)
-                .withDescriptorPoolSizes(
-                    { builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight)
-                          .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-                          .build(),
-                      builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight * _textures.size())
-                          .withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
-                          .build() })
-                .build();
-
         _computeDescriptorPool =
             builders::DescriptorPoolBuilder(*this)
                 .withMaxSets(_maxFramesInFlight)
@@ -595,17 +578,6 @@ namespace brasio::renderer::vulkan
     }
     void VulkanRenderer::createDescriptorSets()
     {
-        DescriptorSetsType graphicsDescriptorSets =
-            builders::DescriptorSetsBuilder(*this, _graphicsDescriptorPool->getHandle())
-                .withSetsCount(_maxFramesInFlight)
-                .withSetLayout(_graphicsPipelines.at(0)
-                                   ->getPipelineLayout()
-                                   .getDescriptorSetLayout()
-                                   .getHandle())
-                .build();
-        graphicsDescriptorSets->update(_uniformBuffers, _textures, {});
-        _graphicsDescriptorPool->setDescriptorSets(std::move(graphicsDescriptorSets));
-
         DescriptorSetsType computeDescriptorSets =
             builders::DescriptorSetsBuilder(*this, _computeDescriptorPool->getHandle())
                 .withSetsCount(_maxFramesInFlight)
@@ -614,16 +586,9 @@ namespace brasio::renderer::vulkan
                                    .getDescriptorSetLayout()
                                    .getHandle())
                 .build();
-        computeDescriptorSets->update(_computeUniformBuffers, {}, _storageBuffers);
+        computeDescriptorSets->update(_computeUniformBuffers, std::vector<const Texture *>{},
+                                      _storageBuffers);
         _computeDescriptorPool->setDescriptorSets(std::move(computeDescriptorSets));
-    }
-
-    void VulkanRenderer::createTexture()
-    {
-        _textures.emplace_back(
-            builders::TextureBuilder(*this)
-                .withTextureImage(images::P3PPM::load("assets/textures/viking-room.ppm"))
-                .build());
     }
 
     void VulkanRenderer::createDepthResources()
@@ -746,14 +711,29 @@ namespace brasio::renderer::vulkan
         return *_mesh2;
     }
 
-    const DescriptorSets &VulkanRenderer::getDescriptorSets() const
+    void VulkanRenderer::setActiveMaterial(const Material *material)
     {
-        return _graphicsDescriptorPool->getDescriptorSets();
+        _activeMaterial = material;
+    }
+
+    const Material *VulkanRenderer::getActiveMaterial() const
+    {
+        return _activeMaterial;
     }
 
     const DescriptorSets &VulkanRenderer::getComputeDescriptorSets() const
     {
         return _computeDescriptorPool->getDescriptorSets();
+    }
+
+    const std::vector<BufferType> &VulkanRenderer::getUniformBuffers() const
+    {
+        return _uniformBuffers;
+    }
+
+    unsigned VulkanRenderer::getMaxFramesInFlight() const
+    {
+        return _maxFramesInFlight;
     }
 
     uint32_t VulkanRenderer::getCurrentFrame() const

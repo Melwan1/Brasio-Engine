@@ -24,7 +24,7 @@ namespace brasio::renderer::vulkan
     }
 
     void DescriptorSets::update(const std::vector<BufferType> &uniformBuffers,
-                                const std::vector<TextureType> &textures,
+                                const std::vector<const Texture *> &textures,
                                 const std::vector<BufferType> &storageBuffers)
     {
         size_t uniformBuffersPerFrame = uniformBuffers.size() / getHandle().size();
@@ -112,5 +112,18 @@ namespace brasio::renderer::vulkan
                                    static_cast<uint32_t>(descriptorWrites.size()),
                                    descriptorWrites.data(), 0, nullptr);
         }
+    }
+
+    void DescriptorSets::update(const std::vector<BufferType> &uniformBuffers,
+                                const std::vector<TextureType> &textures,
+                                const std::vector<BufferType> &storageBuffers)
+    {
+        std::vector<const Texture *> newTextures;
+        newTextures.reserve(textures.size());
+        for (const TextureType &texture : textures)
+        {
+            newTextures.emplace_back(texture.get());
+        }
+        update(uniformBuffers, newTextures, storageBuffers);
     }
 } // namespace brasio::renderer::vulkan

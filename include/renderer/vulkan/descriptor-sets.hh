@@ -19,6 +19,10 @@ namespace brasio::renderer::vulkan
                        const VkDescriptorSetAllocateInfo &allocateInfo);
 
         void update(const std::vector<BufferType> &uniformBuffers,
+                    const std::vector<const Texture *> &textures,
+                    const std::vector<BufferType> &storageBuffers);
+
+        void update(const std::vector<BufferType> &uniformBuffers,
                     const std::vector<TextureType> &textures,
                     const std::vector<BufferType> &storageBuffers);
 

@@ -48,6 +48,7 @@ namespace brasio::renderer::vulkan
 {
 
     class VulkanRenderer;
+    class Material;
 
     using VulkanRendererType = std::unique_ptr<VulkanRenderer>;
 
@@ -67,6 +68,8 @@ namespace brasio::renderer::vulkan
 
         virtual void init() override;
         virtual void drawFrame() override;
+
+        void waitIdle() const;
 
         void pickPhysicalDevice();
         void createLogicalDevice();
@@ -96,14 +99,11 @@ namespace brasio::renderer::vulkan
 
         void createDescriptorPool();
         void createDescriptorSets();
-        void createTexture();
 
         void createDepthResources();
         void createColorResources();
 
         void runCompute();
-
-        void addTexture(TextureType texture);
 
         bool isMultisampled() const;
 
@@ -126,9 +126,12 @@ namespace brasio::renderer::vulkan
         const CommandBufferArrayType &getCommandBuffers() const;
         const mesh::Mesh &getMesh1() const;
         const mesh::Mesh &getMesh2() const;
-        const DescriptorSets &getDescriptorSets() const;
+        void setActiveMaterial(const Material *material);
+        const Material *getActiveMaterial() const;
         const DescriptorSets &getComputeDescriptorSets() const;
         const VkBuffer &getParticleVertexBuffer() const;
+        const std::vector<BufferType> &getUniformBuffers() const;
+        unsigned getMaxFramesInFlight() const;
         uint32_t getParticleCount() const;
         uint32_t getCurrentFrame() const;
 
@@ -162,6 +165,7 @@ namespace brasio::renderer::vulkan
         CommandPoolType _commandPool;
         mesh::MeshType _mesh1;
         mesh::MeshType _mesh2;
+        const Material *_activeMaterial = nullptr;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;
@@ -169,8 +173,6 @@ namespace brasio::renderer::vulkan
         std::vector<BufferType> _uniformBuffers;
         std::vector<BufferType> _computeUniformBuffers;
         std::vector<BufferType> _storageBuffers;
-        std::vector<TextureType> _textures;
-        DescriptorPoolType _graphicsDescriptorPool;
         DescriptorPoolType _computeDescriptorPool;
 
         DepthAttachmentType _depthAttachment;
