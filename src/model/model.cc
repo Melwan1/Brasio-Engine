@@ -4,13 +4,15 @@
 
 namespace brasio::model
 {
-    Model::Model()
+    Model::Model(const std::string &id)
+        : _id(id)
     {
         _verticesInfo.clear();
         _faceIndices.clear();
     }
 
-    Model::Model(io::files::OBJParser &objParser)
+    Model::Model(const std::string &id, io::files::OBJParser &objParser)
+        : Model(id)
     {
         uint32_t vertexCount = objParser.getVertexCount();
         _verticesInfo.resize(vertexCount);
@@ -47,6 +49,11 @@ namespace brasio::model
             }
             _faceIndices.emplace_back(indices);
         }
+    }
+
+    const std::string &Model::getId() const
+    {
+        return _id;
     }
 
     mesh::MeshType Model::toMesh()
@@ -97,7 +104,7 @@ namespace brasio::model
 
     ModelType Model::unitQuad()
     {
-        ModelType model = std::make_unique<Model>();
+        ModelType model = std::make_unique<Model>("_unitQuad");
         model->_verticesInfo.reserve(4);
         model->_faceIndices.reserve(6);
         model->_faceIndices.insert(model->_faceIndices.begin(), { { 0, 1, 2 }, { 2, 3, 0 } });
@@ -108,5 +115,11 @@ namespace brasio::model
               { { +0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
               { { +0.5f, +0.5f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } } });
         return model;
+    }
+
+    YAML::Emitter &operator<<(YAML::Emitter &out, const Model &model)
+    {
+        out << model.getId();
+        return out;
     }
 } // namespace brasio::model

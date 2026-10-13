@@ -20,6 +20,7 @@ namespace brasio::renderer::vulkan
             texture = _textureManager.get(config["texture"].as<std::string>());
         }
 
-        return std::make_unique<Material>(_renderer, pipeline, texture);
+        return std::make_unique<Material>(config["id"].as<std::string>(), _renderer, pipeline,
+                                          texture);
     }
 } // namespace brasio::renderer::vulkan

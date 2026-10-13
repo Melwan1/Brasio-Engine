@@ -48,7 +48,7 @@ namespace brasio::application
         void initTextureManager();
         void initPipelineManager();
         void initMaterialManager();
-        void initSceneManager();
+        void initSceneManager(const YAML::Node &scenesConfig);
 
         // various setups
 

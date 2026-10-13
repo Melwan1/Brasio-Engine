@@ -104,7 +104,7 @@ namespace brasio::application
         initPipelineManager();
         initTextureManager();
         initMaterialManager();
-        initSceneManager();
+        initSceneManager(config["scenes"]);
         if (!setVersion(VersionControlType::LATEST_GIT_TAG, config["application"]))
         {
             setVersion(VersionControlType::CONFIG_FILE, config["application"]);
@@ -156,10 +156,11 @@ namespace brasio::application
         _renderer->setActiveMaterial(_materialManager->get("mat_3d_textured"));
     }
 
-    void Application::initSceneManager()
+    void Application::initSceneManager(const YAML::Node &scenesConfig)
     {
         _sceneManager = std::make_unique<scenes::SceneManager>(*_modelManager, *_materialManager);
-        _sceneManager->loadFile("config/scenes/root.yaml");
+        const std::string directory = "config/" + scenesConfig["directory"].as<std::string>();
+        _sceneManager->load(directory, scenesConfig["root"].as<std::string>());
     }
 
     bool Application::setupWindow(const YAML::Node &windowConfig, bool useOpengl)

@@ -14,7 +14,10 @@ namespace brasio::renderer::vulkan
     class Material
     {
     public:
-        Material(const VulkanRenderer &renderer, const Pipeline *pipeline, const Texture *texture);
+        Material(const std::string &id, const VulkanRenderer &renderer, const Pipeline *pipeline,
+                 const Texture *texture);
+
+        const std::string &getId() const;
 
         void bind(const VkCommandBuffer &commandBuffer) const;
 
@@ -22,6 +25,7 @@ namespace brasio::renderer::vulkan
         const Texture *getTexture() const;
 
     private:
+        const std::string _id;
         const VulkanRenderer &_renderer;
         const Pipeline *_pipeline;
         const Texture *_texture;
@@ -29,6 +33,8 @@ namespace brasio::renderer::vulkan
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
     };
+
+    YAML::Emitter &operator<<(YAML::Emitter &out, const Material &material);
 
     using MaterialType = std::unique_ptr<Material>;
 } // namespace brasio::renderer::vulkan

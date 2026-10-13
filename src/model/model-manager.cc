@@ -13,7 +13,7 @@ namespace brasio::model
         const fs::path path(config["path"].as<std::string>());
         io::files::OBJParser parser("assets" / path);
         parser.load();
-        ModelType model = std::make_unique<Model>(parser);
+        ModelType model = std::make_unique<Model>(config["id"].as<std::string>(), parser);
         model->upload(_renderer);
         return model;
     }

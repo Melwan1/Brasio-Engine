@@ -6,9 +6,10 @@
 
 namespace brasio::renderer::vulkan
 {
-    Material::Material(const VulkanRenderer &renderer, const Pipeline *pipeline,
-                       const Texture *texture)
-        : _renderer(renderer)
+    Material::Material(const std::string &id, const VulkanRenderer &renderer,
+                       const Pipeline *pipeline, const Texture *texture)
+        : _id(id)
+        , _renderer(renderer)
         , _pipeline(pipeline)
         , _texture(texture)
         , _descriptorPool{}
@@ -42,6 +43,11 @@ namespace brasio::renderer::vulkan
         _descriptorSets->update(renderer.getUniformBuffers(), { _texture }, {});
     }
 
+    const std::string &Material::getId() const
+    {
+        return _id;
+    }
+
     void Material::bind(const VkCommandBuffer &commandBuffer) const
     {
         _pipeline->bind(commandBuffer);
@@ -62,5 +68,11 @@ namespace brasio::renderer::vulkan
     const Texture *Material::getTexture() const
     {
         return _texture;
+    }
+
+    YAML::Emitter &operator<<(YAML::Emitter &out, const Material &material)
+    {
+        out << material.getId();
+        return out;
     }
 } // namespace brasio::renderer::vulkan

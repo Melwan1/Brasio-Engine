@@ -12,11 +12,13 @@ namespace brasio::scenes
     class LeafScene : public SceneNode
     {
     public:
-        LeafScene(const SceneRectangle &sceneRectangle, DrawTarget drawTarget,
-                  std::vector<Drawable> drawables);
+        LeafScene(const std::string &id, const SceneRectangle &sceneRectangle,
+                  DrawTarget drawTarget, std::vector<Drawable> drawables);
 
         virtual void render(const VkCommandBuffer &commandBuffer) override;
         virtual void checkLayout(const SceneRectangle &sceneRectangle) override;
+
+        virtual void emit(YAML::Emitter &out) const override;
 
     private:
         SceneRectangle _sceneRectangle;

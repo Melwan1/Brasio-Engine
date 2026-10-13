@@ -4,9 +4,10 @@
 
 namespace brasio::scenes
 {
-    LeafScene::LeafScene(const SceneRectangle &sceneRectangle, DrawTarget drawTarget,
-                         std::vector<Drawable> drawables)
-        : _sceneRectangle(sceneRectangle)
+    LeafScene::LeafScene(const std::string &id, const SceneRectangle &sceneRectangle,
+                         DrawTarget drawTarget, std::vector<Drawable> drawables)
+        : SceneNode(id)
+        , _sceneRectangle(sceneRectangle)
         , _drawTarget(drawTarget)
         , _drawables(std::move(drawables))
     {}
@@ -32,13 +33,21 @@ namespace brasio::scenes
         {
             drawable.material->bind(commandBuffer);
             drawable.pushTransform(commandBuffer);
-            drawable.mesh->draw(commandBuffer);
+            drawable.model->mesh().draw(commandBuffer);
         }
     }
 
     void LeafScene::checkLayout(const SceneRectangle &sceneRectangle)
     {
         _sceneRectangle = sceneRectangle;
+    }
+
+    void LeafScene::emit(YAML::Emitter &out) const
+    {
+        out << YAML::BeginMap << BRASIO_YAML_KV(id, _id) << BRASIO_YAML_KV(type, "LEAF")
+            << BRASIO_YAML_KV(target, drawTargetToString(_drawTarget))
+            << BRASIO_YAML_KV(scene_rectangle, _sceneRectangle)
+            << BRASIO_YAML_KV(drawables, _drawables) << YAML::EndMap;
     }
 
 } // namespace brasio::scenes

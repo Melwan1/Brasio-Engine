@@ -3,6 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include <io/logging/logger.hh>
 #include <utils/vk-result.hh>
+#include <yaml-cpp/yaml.h>
 
 #define BRASIO_VULKAN_CHECK(command_result, fail_message, fail_tags)                               \
     do                                                                                             \
@@ -15,3 +16,6 @@
                                 fail_tags);                                                        \
         }                                                                                          \
     } while (0)
+
+#define BRASIO_YAML_ATTRIBUTE(attribute) YAML::Key << #attribute << YAML::Value << attribute
+#define BRASIO_YAML_KV(key, value) YAML::Key << #key << YAML::Value << value

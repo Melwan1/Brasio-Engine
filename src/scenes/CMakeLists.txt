@@ -25,7 +25,10 @@ target_link_libraries(libscenes PRIVATE
 target_sources(libscenes PRIVATE
     branch-scene.cc
     drawable.cc
+    draw-target.cc
     leaf-scene.cc
     scene-manager.cc
+    scene-node.cc
+    scene-rectangle.cc
 )
 

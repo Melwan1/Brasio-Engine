@@ -3,6 +3,7 @@
 #include <core/manager.hh>
 
 #include <string>
+#include <set>
 
 #include <scenes/scene-node.hh>
 #include <scenes/branch-scene.hh>
@@ -23,6 +24,8 @@ namespace brasio::scenes
                      const renderer::vulkan::MaterialManager &materialManager);
         virtual SceneNodeType createObject(const YAML::Node &config) override;
 
+        void load(const fs::path &directory, const std::string &rootSceneId);
+
         glm::mat4 parseTransform(const YAML::Node &transformConfig);
         SceneRectangle parseSceneRectangle(const YAML::Node &sceneRectangle);
 
@@ -33,5 +36,8 @@ namespace brasio::scenes
     private:
         const model::ModelManager &_modelManager;
         const renderer::vulkan::MaterialManager &_materialManager;
+
+        fs::path _directory;
+        std::set<std::string> _visited;
     };
 } // namespace brasio::scenes

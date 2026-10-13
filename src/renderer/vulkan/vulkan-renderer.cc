@@ -47,7 +47,7 @@ namespace brasio::renderer::vulkan
         createCommandPool();
         io::files::OBJParser objParser("assets/models/viking-room.obj");
         objParser.load();
-        model::Model model(objParser);
+        model::Model model("viking-room", objParser);
         _mesh1 = model.toMesh();
         //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
         //_mesh1->applyTranslation(mesh::TransformMode::CPU,
@@ -90,7 +90,7 @@ namespace brasio::renderer::vulkan
         createCommandPool();
         io::files::OBJParser objParser("assets/models/viking-room.obj");
         objParser.load();
-        model::Model model(objParser);
+        model::Model model("viking-room", objParser);
         _mesh1 = model.toMesh();
         _mesh1 = std::make_unique<mesh::Cube>();
         //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);

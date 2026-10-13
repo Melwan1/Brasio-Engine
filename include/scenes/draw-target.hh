@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace brasio::scenes
 {
     enum DrawTarget
@@ -7,4 +9,6 @@ namespace brasio::scenes
         SCREEN = 0,
         OFFSCREEN = 1
     };
-}
+
+    std::string drawTargetToString(DrawTarget drawTarget);
+} // namespace brasio::scenes

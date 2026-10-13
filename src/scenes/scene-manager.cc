@@ -17,6 +17,14 @@ namespace brasio::scenes
         , _materialManager(materialManager)
     {}
 
+    void SceneManager::load(const fs::path &directory, const std::string &rootSceneId)
+    {
+        _directory = directory;
+        _visited.insert(rootSceneId);
+        const fs::path rootPath = _directory / (rootSceneId + ".yaml");
+        registerObject(rootSceneId, createObject(YAML::LoadFile(rootPath.string())));
+    }
+
     SceneNodeType SceneManager::createObject(const YAML::Node &config)
     {
         if (!config["type"].as<std::string>().compare("LEAF"))
@@ -43,30 +51,70 @@ namespace brasio::scenes
         {
             drawTarget = DrawTarget::OFFSCREEN;
         }
+        if (config["children"])
+        {
+            BRASIO_LOG_ERROR("Leaf scene '" + config["id"].as<std::string>()
+                                 + "' must not declare children, ignoring them",
+                             { "CREATE", "SCENES" });
+        }
         SceneRectangle sceneRectangle = parseSceneRectangle(config["scene_rectangle"]);
         std::vector<Drawable> drawables{};
         for (const YAML::Node &drawableNode : config["drawables"])
         {
             drawables.emplace_back(parseDrawable(drawableNode));
         }
+        LeafSceneType leafScene = std::make_unique<LeafScene>(
+            config["id"].as<std::string>(), sceneRectangle, drawTarget, std::move(drawables));
         BRASIO_LOG_DEBUG("Parsed leaf scene " + config["id"].as<std::string>(),
                          { "CREATE", "SCENES" });
-        return std::make_unique<LeafScene>(sceneRectangle, drawTarget, std::move(drawables));
+        YAML::Emitter out;
+        out << *leafScene;
+        std::ostringstream oss;
+        oss << "Scene config for id " << leafScene->getId() << " is:\n" << out.c_str();
+        BRASIO_LOG_TRACE(oss.str(), { "CREATE", "SCENES" });
+        return leafScene;
     }
 
     BranchSceneType SceneManager::parseBranchScene(const YAML::Node &config)
     {
+        if (config["drawables"])
+        {
+            BRASIO_LOG_ERROR("Branch scene '" + config["id"].as<std::string>()
+                                 + "' must not declare drawables, ignoring them",
+                             { "CREATE", "SCENES" });
+        }
+        if (config["target"])
+        {
+            BRASIO_LOG_ERROR("Branch scene '" + config["id"].as<std::string>()
+                                 + "' must not declare a target, ignoring it",
+                             { "CREATE", "SCENES" });
+        }
         SceneRectangle sceneRectangle = parseSceneRectangle(config["scene_rectangle"]);
         std::vector<SceneNodeType> subscenes;
         for (const YAML::Node &sceneConfig : config["children"])
         {
             const std::string sceneName = sceneConfig.as<std::string>();
-            const fs::path scenePath = fs::path("config") / "scenes" / sceneName;
-            subscenes.emplace_back(createObject(YAML::LoadFile(scenePath)));
+            if (_visited.contains(sceneName))
+            {
+                BRASIO_LOG_INFO("Scene '" + sceneName
+                                    + "' already loaded (cycle or duplicate reference), skipping",
+                                { "CREATE", "SCENES" });
+                continue;
+            }
+            _visited.insert(sceneName);
+            const fs::path scenePath = _directory / (sceneName + ".yaml");
+            subscenes.emplace_back(createObject(YAML::LoadFile(scenePath.string())));
         }
+        BranchSceneType branchScene = std::make_unique<BranchScene>(
+            config["id"].as<std::string>(), sceneRectangle, std::move(subscenes));
         BRASIO_LOG_DEBUG("Parsed branch scene " + config["id"].as<std::string>(),
                          { "CREATE", "SCENES" });
-        return std::make_unique<BranchScene>(sceneRectangle, std::move(subscenes));
+        YAML::Emitter out;
+        out << *branchScene;
+        std::ostringstream oss;
+        oss << "Scene config for id " << branchScene->getId() << " is:\n" << out.c_str();
+        BRASIO_LOG_TRACE(oss.str(), { "CREATE", "SCENES" });
+        return branchScene;
     }
 
     Drawable SceneManager::parseDrawable(const YAML::Node &config)
@@ -80,7 +128,7 @@ namespace brasio::scenes
             BRASIO_LOG_WARNING("Creating drawable with missing model or material",
                                { "CREATE", "SCENES" });
         }
-        return { &model->mesh(), material, transform };
+        return { model, material, transform };
     }
 
     SceneRectangle SceneManager::parseSceneRectangle(const YAML::Node &config)
