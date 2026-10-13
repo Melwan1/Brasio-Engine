@@ -22,7 +22,7 @@ namespace brasio::renderer
         DefaultRenderer();
 
         virtual void init() override;
-        virtual void drawFrame() override;
+        virtual void drawFrame(Renderable &root) override;
 
         static DefaultRendererType fromConfig(const YAML::Node &config);
     };

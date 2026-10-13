@@ -1,9 +1,6 @@
 #include <scenes/scene-manager.hh>
 #include <scenes/draw-target.hh>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
-
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -20,6 +17,7 @@ namespace brasio::scenes
     void SceneManager::load(const fs::path &directory, const std::string &rootSceneId)
     {
         _directory = directory;
+        _rootId = rootSceneId;
         _visited.insert(rootSceneId);
         const fs::path rootPath = _directory / (rootSceneId + ".yaml");
         registerObject(rootSceneId, createObject(YAML::LoadFile(rootPath.string())));
@@ -122,13 +120,13 @@ namespace brasio::scenes
         model::Model *model = _modelManager.get(config["model"].as<std::string>());
         renderer::vulkan::Material *material =
             _materialManager.get(config["material"].as<std::string>());
-        glm::mat4 transform = parseTransform(config["transform"]);
+        Transform transform = parseTransform(config["transform"]);
         if (!model || !material)
         {
             BRASIO_LOG_WARNING("Creating drawable with missing model or material",
                                { "CREATE", "SCENES" });
         }
-        return { model, material, transform };
+        return { model, material, transform, transform.matrix() };
     }
 
     SceneRectangle SceneManager::parseSceneRectangle(const YAML::Node &config)
@@ -137,29 +135,31 @@ namespace brasio::scenes
                  config["width"].as<unsigned>(), config["height"].as<unsigned>() };
     }
 
-    glm::mat4 SceneManager::parseTransform(const YAML::Node &config)
+    Transform SceneManager::parseTransform(const YAML::Node &config)
     {
         if (!config.IsMap())
         {
-            if (!config.as<std::string>().compare("identity"))
+            if (config.as<std::string>().compare("identity"))
             {
-                return glm::mat4(1.0f);
+                BRASIO_LOG_ERROR("Unrecognized transform config format, assuming identity",
+                                 { "CREATE", "SCENES" });
             }
-            BRASIO_LOG_ERROR("Unrecognized transform config format, assuming identity",
-                             { "CREATE", "SCENES" });
-            return glm::mat4(1.0f);
+            return {};
         }
-        glm::vec3 translation = { config["translation"][0].as<float>(),
+        Transform transform;
+        transform.translation = { config["translation"][0].as<float>(),
                                   config["translation"][1].as<float>(),
                                   config["translation"][2].as<float>() };
-        glm::vec3 rotation = { config["rotation"][0].as<float>(), config["rotation"][1].as<float>(),
+        transform.rotation = { config["rotation"][0].as<float>(), config["rotation"][1].as<float>(),
                                config["rotation"][2].as<float>() };
-        glm::vec3 scale = { config["scale"][0].as<float>(), config["scale"][1].as<float>(),
+        transform.scale = { config["scale"][0].as<float>(), config["scale"][1].as<float>(),
                             config["scale"][2].as<float>() };
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
-            * glm::mat4_cast(glm::quat(glm::radians(rotation)))
-            * glm::scale(glm::mat4(1.0f), scale);
         return transform;
+    }
+
+    SceneNode *SceneManager::getRoot() const
+    {
+        return get(_rootId);
     }
 
 } // namespace brasio::scenes

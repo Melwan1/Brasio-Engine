@@ -30,5 +30,6 @@ target_sources(libscenes PRIVATE
     scene-manager.cc
     scene-node.cc
     scene-rectangle.cc
+    transform.cc
 )
 

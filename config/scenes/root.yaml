@@ -12,5 +12,12 @@ drawables:
     material: mat_3d_textured
     transform:
       translation: [0, 0, 0]
-      rotation: [45, 90, 135]
-      scale: [1, 2, 3.2]
+      rotation: [0, 0, 0]
+      scale: [1, 1, 1]
+
+  - model: viking-room
+    material: mat_3d_textured
+    transform:
+      translation: [2, 0, 0]
+      rotation: [0, 0, 180]
+      scale: [1, 1, 1]

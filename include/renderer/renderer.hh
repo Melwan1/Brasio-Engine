@@ -2,6 +2,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <renderer/renderable.hh>
+
 #include <yaml-cpp/yaml.h>
 
 namespace brasio::renderer
@@ -48,7 +50,7 @@ namespace brasio::renderer
          * Again, each derived class implements this method since it depends on
          * the API used.
          */
-        virtual void drawFrame() = 0;
+        virtual void drawFrame(Renderable &root) = 0;
 
         /**
          * Set the framebuffer as resized.

@@ -28,49 +28,6 @@
 
 namespace brasio::renderer::vulkan
 {
-    VulkanRenderer::VulkanRenderer(GLFWwindow *window)
-        : _window(window)
-        , _shaderManager("shaders", "output.log")
-        , _maxFramesInFlight(MAX_FRAMES_IN_FLIGHT)
-    {
-        BRASIO_LOG_TRACE("Creating Vulkan renderer", { "CREATE" });
-        _instance = builders::InstanceBuilder(*this)
-#ifdef BRASIO_ENABLE_VALIDATION_LAYERS
-                        .withValidationLayers({ "VK_LAYER_KHRONOS_validation" })
-#endif
-                        .build();
-        _surface = builders::SurfaceBuilder(*this).build();
-        pickPhysicalDevice();
-        createLogicalDevice();
-        createSwapChain();
-        _shaderManager.compileAllShaders();
-        createCommandPool();
-        io::files::OBJParser objParser("assets/models/viking-room.obj");
-        objParser.load();
-        model::Model model("viking-room", objParser);
-        _mesh1 = model.toMesh();
-        //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
-        //_mesh1->applyTranslation(mesh::TransformMode::CPU,
-        //                         { -1.0f, 0.0f, 1.0f });
-        _mesh1->createBuffers(*this);
-
-        _mesh2 = model.toMesh();
-        //_mesh2 = std::make_unique<mesh::Cone>();
-        _mesh2->createBuffers(*this);
-        createColorResources();
-        createDepthResources();
-        createRenderPass();
-        _swapchain->createFramebuffers(framebufferAttachmentViews());
-        createPipelines();
-        createUniformBuffers();
-        createStorageBuffers();
-        createDescriptorPool();
-        createDescriptorSets();
-        createCommandBuffers();
-        createSyncObjects();
-        BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
-    }
-
     VulkanRenderer::VulkanRenderer(GLFWwindow *window, const YAML::Node &config)
         : _window(window)
         , _shaderManager("shaders", "output.log")
@@ -88,20 +45,6 @@ namespace brasio::renderer::vulkan
         createSwapChain(config["swapchain"]);
         _shaderManager.compileAllShaders();
         createCommandPool();
-        io::files::OBJParser objParser("assets/models/viking-room.obj");
-        objParser.load();
-        model::Model model("viking-room", objParser);
-        _mesh1 = model.toMesh();
-        _mesh1 = std::make_unique<mesh::Cube>();
-        //_mesh1 = std::make_unique<mesh::Sphere>(16, 16);
-        //_mesh1->applyTranslation(mesh::TransformMode::CPU,
-        //                         { -1.0f, 0.0f, 1.0f });
-        _mesh1->createBuffers(*this);
-
-        _mesh2 = model.toMesh();
-        //_mesh2 = std::make_unique<mesh::Cone>();
-        _mesh2->createBuffers(*this);
-
         for (const YAML::Node &pipelineConfig : config["pipelines"])
         {
             if (!pipelineConfig["type"].as<std::string>().compare("GRAPHICS")
@@ -117,7 +60,7 @@ namespace brasio::renderer::vulkan
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(framebufferAttachmentViews());
-        createPipelines(config["pipelines"]);
+        createComputePipelines(config["pipelines"]);
         createUniformBuffers();
         createStorageBuffers();
         createCommandBuffers();
@@ -135,14 +78,11 @@ namespace brasio::renderer::vulkan
     {
         BRASIO_LOG_TRACE("Destroying Vulkan renderer", { "DESTROY" });
         cleanupSwapChain();
-        _mesh1.reset();
-        _mesh2.reset();
         _computeDescriptorPool.reset();
         _storageBuffers.clear();
         _uniformBuffers.clear();
         _computeUniformBuffers.clear();
         _computePipelines.clear();
-        _graphicsPipelines.clear();
         _renderPass.reset();
         _depthAttachment.reset();
         _colorAttachment.reset();
@@ -252,35 +192,21 @@ namespace brasio::renderer::vulkan
                           .build();
     }
 
-    void VulkanRenderer::createPipelines()
+    void VulkanRenderer::createCommandPool()
     {
-        std::vector<fs::path> shaders = { "vertex/ubo.vert", "fragment/texture.frag" };
+        QueueFamilyIndices queueFamilyIndices = _physicalDevice->findQueueFamilies();
 
-        builders::GraphicsPipelineBuilder pipelineBuilder(*this);
-        pipelineBuilder.withDescriptorSetLayout(builders::DescriptorSetLayoutBuilder(*this)
-                                                    .withUniformBuffers(1)
-                                                    .withTextures(1)
-                                                    .build());
-        pipelineBuilder.withShaders(shaders);
-        _graphicsPipelines.emplace_back(pipelineBuilder.build());
+        _commandPool = builders::CommandPoolBuilder(*this)
+                           .withQueueFamilyIndex(queueFamilyIndices.graphicsComputeFamily.value())
+                           .build();
     }
 
-    void VulkanRenderer::createPipelines(const YAML::Node &config)
+    void VulkanRenderer::createComputePipelines(const YAML::Node &config)
     {
         for (const YAML::Node &pipelineConfig : config)
         {
             builders::DescriptorSetLayoutBindingBuilder::resetIndex();
-            if (!pipelineConfig["type"].as<std::string>().compare("GRAPHICS"))
-            {
-                builders::GraphicsPipelineBuilder pipelineBuilder(*this);
-                pipelineBuilder.withDescriptorSetLayout(builders::DescriptorSetLayoutBuilder(*this)
-                                                            .withUniformBuffers(1)
-                                                            .withTextures(1)
-                                                            .build());
-                pipelineBuilder.withConfig(pipelineConfig);
-                _graphicsPipelines.emplace_back(pipelineBuilder.build());
-            }
-            else if (!pipelineConfig["type"].as<std::string>().compare("COMPUTE"))
+            if (!pipelineConfig["type"].as<std::string>().compare("COMPUTE"))
             {
                 PipelineLayoutType pipelineLayout =
                     builders::PipelineLayoutBuilder(*this)
@@ -296,15 +222,6 @@ namespace brasio::renderer::vulkan
                                                    .build());
             }
         }
-    }
-
-    void VulkanRenderer::createCommandPool()
-    {
-        QueueFamilyIndices queueFamilyIndices = _physicalDevice->findQueueFamilies();
-
-        _commandPool = builders::CommandPoolBuilder(*this)
-                           .withQueueFamilyIndex(queueFamilyIndices.graphicsComputeFamily.value())
-                           .build();
     }
 
     void VulkanRenderer::createCommandBuffers()
@@ -328,7 +245,7 @@ namespace brasio::renderer::vulkan
             semaphoreCreateInfo, fenceCreateInfo);
     }
 
-    void VulkanRenderer::drawFrame()
+    void VulkanRenderer::drawFrame(Renderable &root)
     {
         runCompute();
 
@@ -357,7 +274,7 @@ namespace brasio::renderer::vulkan
 
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
-        _commandBuffers->record(_currentFrame, imageIndex);
+        _commandBuffers->record(_currentFrame, imageIndex, root);
 
         updateUniformBuffer(_currentFrame);
 
@@ -677,39 +594,14 @@ namespace brasio::renderer::vulkan
         return *_renderPass;
     }
 
-    const std::vector<GraphicsPipelineType> &VulkanRenderer::getGraphicsPipelines() const
-    {
-        return _graphicsPipelines;
-    }
-
-    const std::vector<ComputePipelineType> &VulkanRenderer::getComputePipelines() const
-    {
-        return _computePipelines;
-    }
-
     const CommandBufferArrayType &VulkanRenderer::getCommandBuffers() const
     {
         return _commandBuffers;
     }
 
-    const mesh::Mesh &VulkanRenderer::getMesh1() const
+    const std::vector<ComputePipelineType> &VulkanRenderer::getComputePipelines() const
     {
-        return *_mesh1;
-    }
-
-    const mesh::Mesh &VulkanRenderer::getMesh2() const
-    {
-        return *_mesh2;
-    }
-
-    void VulkanRenderer::setActiveMaterial(const Material *material)
-    {
-        _activeMaterial = material;
-    }
-
-    const Material *VulkanRenderer::getActiveMaterial() const
-    {
-        return _activeMaterial;
+        return _computePipelines;
     }
 
     const DescriptorSets &VulkanRenderer::getComputeDescriptorSets() const

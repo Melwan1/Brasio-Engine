@@ -26,18 +26,21 @@ namespace brasio::scenes
 
         void load(const fs::path &directory, const std::string &rootSceneId);
 
-        glm::mat4 parseTransform(const YAML::Node &transformConfig);
+        Transform parseTransform(const YAML::Node &transformConfig);
         SceneRectangle parseSceneRectangle(const YAML::Node &sceneRectangle);
 
         LeafSceneType parseLeafScene(const YAML::Node &config);
         BranchSceneType parseBranchScene(const YAML::Node &config);
         Drawable parseDrawable(const YAML::Node &config);
 
+        SceneNode *getRoot() const;
+
     private:
         const model::ModelManager &_modelManager;
         const renderer::vulkan::MaterialManager &_materialManager;
 
         fs::path _directory;
+        std::string _rootId;
         std::set<std::string> _visited;
     };
 } // namespace brasio::scenes

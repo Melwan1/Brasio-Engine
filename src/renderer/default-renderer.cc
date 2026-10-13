@@ -8,8 +8,10 @@ namespace brasio::renderer
     void DefaultRenderer::init()
     {}
 
-    void DefaultRenderer::drawFrame()
-    {}
+    void DefaultRenderer::drawFrame(Renderable &root)
+    {
+        (void)root;
+    }
 
     DefaultRendererType DefaultRenderer::fromConfig(const YAML::Node &config)
     {

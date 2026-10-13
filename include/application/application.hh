@@ -46,7 +46,7 @@ namespace brasio::application
         void initFontManager();
         void initModelManager();
         void initTextureManager();
-        void initPipelineManager();
+        void initPipelineManager(const std::string &pipelinesFile);
         void initMaterialManager();
         void initSceneManager(const YAML::Node &scenesConfig);
 

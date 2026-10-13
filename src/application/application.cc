@@ -92,8 +92,11 @@ namespace brasio::application
         initListeners();
 
         setupCallbacks();
+        YAML::Node rendererConfig = config["renderer"];
+        rendererConfig["pipelines"] =
+            YAML::LoadFile(rendererConfig["pipelines_file"].as<std::string>());
         renderer::vulkan::VulkanRendererType renderer =
-            renderer::vulkan::VulkanRenderer::fromConfig(config["renderer"], _window);
+            renderer::vulkan::VulkanRenderer::fromConfig(rendererConfig, _window);
         if (!initRenderer(std::move(renderer)))
         {
             return false;
@@ -101,7 +104,7 @@ namespace brasio::application
         initFontManager();
         _renderer->init();
         initModelManager();
-        initPipelineManager();
+        initPipelineManager(config["renderer"]["pipelines_file"].as<std::string>());
         initTextureManager();
         initMaterialManager();
         initSceneManager(config["scenes"]);
@@ -142,10 +145,10 @@ namespace brasio::application
         _textureManager->loadFile("config/assets/textures.yaml");
     }
 
-    void Application::initPipelineManager()
+    void Application::initPipelineManager(const std::string &pipelinesFile)
     {
         _pipelineManager = std::make_unique<renderer::vulkan::PipelineManager>(*_renderer);
-        _pipelineManager->loadFile("config/pipelines.yaml");
+        _pipelineManager->loadFile(pipelinesFile);
     }
 
     void Application::initMaterialManager()
@@ -153,7 +156,6 @@ namespace brasio::application
         _materialManager = std::make_unique<renderer::vulkan::MaterialManager>(
             *_renderer, *_pipelineManager, *_textureManager);
         _materialManager->loadFile("config/assets/materials.yaml");
-        _renderer->setActiveMaterial(_materialManager->get("mat_3d_textured"));
     }
 
     void Application::initSceneManager(const YAML::Node &scenesConfig)
@@ -227,7 +229,7 @@ namespace brasio::application
 
     void Application::onEvent(events::subevents::ApplicationRenderEvent &event)
     {
-        _renderer->drawFrame();
+        _renderer->drawFrame(*_sceneManager->getRoot());
         event.handle();
     }
 

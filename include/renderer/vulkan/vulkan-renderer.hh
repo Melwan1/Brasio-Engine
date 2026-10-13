@@ -9,6 +9,7 @@
 #include <renderer/vulkan/builders/all.hh>
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/command-pool.hh>
 #include <renderer/vulkan/compute-pipeline.hh>
 #include <renderer/vulkan/depth-attachment.hh>
 #include <renderer/vulkan/descriptor-pool.hh>
@@ -28,7 +29,6 @@
 #include <renderer/vulkan/texture.hh>
 #include <renderer/vulkan/texture-sampler.hh>
 #include <shaders/shader-manager.hh>
-#include <mesh/mesh.hh>
 
 #include <yaml-cpp/yaml.h>
 
@@ -37,12 +37,6 @@ namespace brasio::renderer::vulkan
     class CommandBufferArray;
     using CommandBufferArrayType = std::unique_ptr<CommandBufferArray>;
 } // namespace brasio::renderer::vulkan
-
-namespace brasio::mesh
-{
-    class Mesh;
-    using MeshType = std::unique_ptr<Mesh>;
-} // namespace brasio::mesh
 
 namespace brasio::renderer::vulkan
 {
@@ -61,13 +55,12 @@ namespace brasio::renderer::vulkan
     class VulkanRenderer : public Renderer
     {
     public:
-        VulkanRenderer(GLFWwindow *window);
         VulkanRenderer(GLFWwindow *window, const YAML::Node &config);
 
         ~VulkanRenderer();
 
         virtual void init() override;
-        virtual void drawFrame() override;
+        virtual void drawFrame(Renderable &root) override;
 
         void waitIdle() const;
 
@@ -81,11 +74,11 @@ namespace brasio::renderer::vulkan
         void createImageViews();
 
         void createRenderPass();
-        void createPipelines();
-        void createPipelines(const YAML::Node &pipelineConfig);
 
         void createCommandPool();
         void createCommandBuffers();
+
+        void createComputePipelines(const YAML::Node &config);
 
         void createSyncObjects();
 
@@ -121,13 +114,8 @@ namespace brasio::renderer::vulkan
         const VkCommandPool &getCommandPool() const;
         const VkRenderPass &getRenderPass() const;
         const RenderPass &getRenderPassWrapper() const;
-        const std::vector<GraphicsPipelineType> &getGraphicsPipelines() const;
-        const std::vector<ComputePipelineType> &getComputePipelines() const;
         const CommandBufferArrayType &getCommandBuffers() const;
-        const mesh::Mesh &getMesh1() const;
-        const mesh::Mesh &getMesh2() const;
-        void setActiveMaterial(const Material *material);
-        const Material *getActiveMaterial() const;
+        const std::vector<ComputePipelineType> &getComputePipelines() const;
         const DescriptorSets &getComputeDescriptorSets() const;
         const VkBuffer &getParticleVertexBuffer() const;
         const std::vector<BufferType> &getUniformBuffers() const;
@@ -159,13 +147,9 @@ namespace brasio::renderer::vulkan
         LogicalDeviceType _logicalDevice;
         SwapchainType _swapchain;
         RenderPassType _renderPass;
-        std::vector<GraphicsPipelineType> _graphicsPipelines;
         std::vector<ComputePipelineType> _computePipelines;
 
         CommandPoolType _commandPool;
-        mesh::MeshType _mesh1;
-        mesh::MeshType _mesh2;
-        const Material *_activeMaterial = nullptr;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;

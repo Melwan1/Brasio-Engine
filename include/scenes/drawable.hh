@@ -2,6 +2,7 @@
 
 #include <model/model.hh>
 #include <renderer/vulkan/material.hh>
+#include <scenes/transform.hh>
 #include <glm/glm.hpp>
 #include <yaml-cpp/yaml.h>
 
@@ -11,7 +12,8 @@ namespace brasio::scenes
     {
         const model::Model *model;
         const renderer::vulkan::Material *material;
-        glm::mat4 transform;
+        Transform transform;
+        glm::mat4 matrix;
 
         void pushTransform(const VkCommandBuffer &commandBuffer) const;
     };
