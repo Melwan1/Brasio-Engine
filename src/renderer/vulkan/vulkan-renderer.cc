@@ -1,30 +1,22 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-#include <random>
-
 #include <renderer/vulkan/vulkan-renderer.hh>
 
-#include <GLFW/glfw3.h>
-#include <vulkan/vulkan_core.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <io/debug/vulkan-renderer-debug-printer.hh>
-#include <io/files/obj-parser.hh>
-#include <io/logging/logger.hh>
-#include <geometry/vertex.hh>
-#include <model/model.hh>
-#include <renderer/structs/all.hh>
-
-#include <renderer/vulkan/builders/all.hh>
-
-#include <shaders/shader-module.hh>
-#include <mesh/fwd.hh>
-#include <utils/libutils.hh>
+#include <renderer/vulkan/builders/command-buffer-array-builder.hh>
+#include <renderer/vulkan/builders/command-pool-builder.hh>
+#include <renderer/vulkan/builders/depth-attachment-builder.hh>
+#include <renderer/vulkan/builders/image-attachment-builder.hh>
+#include <renderer/vulkan/builders/instance-builder.hh>
+#include <renderer/vulkan/builders/logical-device-builder.hh>
+#include <renderer/vulkan/builders/physical-device-builder.hh>
+#include <renderer/vulkan/builders/render-pass-builder.hh>
+#include <renderer/vulkan/builders/subpass-dependency-builder.hh>
+#include <renderer/vulkan/builders/subpass-description-builder.hh>
+#include <renderer/vulkan/builders/surface-builder.hh>
+#include <renderer/vulkan/builders/swapchain-builder.hh>
 
 #define MAX_FRAMES_IN_FLIGHT 2
-#define PARTICLE_COUNT 8192
 
 namespace brasio::renderer::vulkan
 {
@@ -60,28 +52,18 @@ namespace brasio::renderer::vulkan
         createDepthResources();
         createRenderPass();
         _swapchain->createFramebuffers(framebufferAttachmentViews());
-        createComputePipelines(config["pipelines"]);
-        createUniformBuffers();
-        createStorageBuffers();
         createCommandBuffers();
         createSyncObjects();
         BRASIO_LOG_TRACE("Created Vulkan renderer", { "CREATE" });
     }
 
     void VulkanRenderer::init()
-    {
-        createDescriptorPool();
-        createDescriptorSets();
-    }
+    {}
 
     VulkanRenderer::~VulkanRenderer()
     {
         BRASIO_LOG_TRACE("Destroying Vulkan renderer", { "DESTROY" });
         cleanupSwapChain();
-        _computeDescriptorPool.reset();
-        _storageBuffers.clear();
-        _computeUniformBuffers.clear();
-        _computePipelines.clear();
         _renderPass.reset();
         _depthAttachment.reset();
         _colorAttachment.reset();
@@ -200,28 +182,6 @@ namespace brasio::renderer::vulkan
                            .build();
     }
 
-    void VulkanRenderer::createComputePipelines(const YAML::Node &config)
-    {
-        for (const YAML::Node &pipelineConfig : config)
-        {
-            if (!pipelineConfig["type"].as<std::string>().compare("COMPUTE"))
-            {
-                PipelineLayoutType pipelineLayout =
-                    builders::PipelineLayoutBuilder(*this)
-                        .withDescriptorSetLayout(
-                            builders::DescriptorSetLayoutBuilder(*this)
-                                .withUniformBuffers(1, VK_SHADER_STAGE_COMPUTE_BIT)
-                                .withStorageBuffers(2)
-                                .build())
-                        .build();
-                _computePipelines.emplace_back(builders::ComputePipelineBuilder(*this)
-                                                   .withShader("compute/particles.comp")
-                                                   .withPipelineLayout(std::move(pipelineLayout))
-                                                   .build());
-            }
-        }
-    }
-
     void VulkanRenderer::createCommandBuffers()
     {
         builders::CommandBufferArrayBuilder commandBufferArrayBuilder(*this);
@@ -245,8 +205,6 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::drawFrame(Renderable &root)
     {
-        runCompute();
-
         BRASIO_LOG_TRACE("Starting frame render", { "RENDER" });
         _syncObjects->waitSingleFence(_currentFrame);
         BRASIO_LOG_TRACE("fence waited for", { "RENDER" });
@@ -277,13 +235,9 @@ namespace brasio::renderer::vulkan
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-        uint32_t computeSemaphoreIndex =
-            MAX_FRAMES_IN_FLIGHT + _swapchain->getImageCount() + _currentFrame;
-        VkSemaphore waitSemaphores[] = { _syncObjects->semaphoreAt(computeSemaphoreIndex),
-                                         _syncObjects->semaphoreAt(_currentFrame) };
-        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
-                                              VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-        submitInfo.waitSemaphoreCount = 2;
+        VkSemaphore waitSemaphores[] = { _syncObjects->semaphoreAt(_currentFrame) };
+        VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+        submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
         submitInfo.commandBufferCount = 1;
@@ -324,47 +278,6 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Ending frame render", { "RENDER" });
     }
 
-    void VulkanRenderer::runCompute()
-    {
-        BRASIO_LOG_TRACE("Starting frame compute", { "COMPUTE" });
-
-        uint32_t computeFenceIndex = MAX_FRAMES_IN_FLIGHT + _currentFrame;
-        uint32_t computeCommandBufferIndex = MAX_FRAMES_IN_FLIGHT + _currentFrame;
-        uint32_t computeSemaphoreIndex =
-            MAX_FRAMES_IN_FLIGHT + _swapchain->getImageCount() + _currentFrame;
-
-        _syncObjects->waitSingleFence(computeFenceIndex);
-
-        static auto lastFrameTime = std::chrono::high_resolution_clock::now();
-        auto currentFrameTime = std::chrono::high_resolution_clock::now();
-        structs::ComputeUniformBufferObject cubo{};
-        cubo.deltaTime = std::chrono::duration<float, std::chrono::milliseconds::period>(
-                             currentFrameTime - lastFrameTime)
-                             .count();
-        lastFrameTime = currentFrameTime;
-        _computeUniformBuffers.at(_currentFrame)->setContent(&cubo);
-
-        _syncObjects->resetSingleFence(computeFenceIndex);
-
-        _commandBuffers->reset(computeCommandBufferIndex);
-        _commandBuffers->recordCompute(computeCommandBufferIndex, PARTICLE_COUNT / 256);
-
-        VkSubmitInfo submitInfo{};
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &_commandBuffers->at(computeCommandBufferIndex);
-
-        VkSemaphore signalSemaphores[] = { _syncObjects->semaphoreAt(computeSemaphoreIndex) };
-        submitInfo.signalSemaphoreCount = 1;
-        submitInfo.pSignalSemaphores = signalSemaphores;
-
-        BRASIO_VULKAN_CHECK(vkQueueSubmit(_logicalDevice->getComputeQueue(), 1, &submitInfo,
-                                          _syncObjects->fenceAt(computeFenceIndex)),
-                            "submit compute command buffer", { "COMPUTE" });
-
-        BRASIO_LOG_TRACE("Ending frame compute", { "COMPUTE" });
-    }
-
     void VulkanRenderer::waitIdle() const
     {
         _logicalDevice->waitIdle();
@@ -392,80 +305,6 @@ namespace brasio::renderer::vulkan
         createColorResources();
         createDepthResources();
         _swapchain->createFramebuffers(framebufferAttachmentViews());
-    }
-
-    void VulkanRenderer::createUniformBuffers()
-    {
-        VkDeviceSize computeBufferSize = sizeof(structs::ComputeUniformBufferObject);
-        for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
-        {
-            _computeUniformBuffers.emplace_back(
-                builders::UniformBufferBuilder(*this).withSize(computeBufferSize).build());
-            _computeUniformBuffers.back()->mapMemory();
-        }
-    }
-
-    void VulkanRenderer::createStorageBuffers()
-    {
-        std::default_random_engine rndEngine(static_cast<unsigned>(std::time(nullptr)));
-        std::uniform_real_distribution<float> rndDist(0.0f, 1.0f);
-
-        std::vector<structs::Particle> particles(PARTICLE_COUNT);
-
-        for (structs::Particle &particle : particles)
-        {
-            float r = 0.25f * std::sqrt(rndDist(rndEngine));
-            float theta = rndDist(rndEngine) * 2 * std::numbers::pi;
-            float x = r * std::cos(theta) * _swapchain->getHeight() / _swapchain->getWidth();
-            float y = r * std::sin(theta);
-            particle.position = glm::vec2(x, y);
-            particle.velocity = glm::normalize(glm::vec2(x, y)) * 2.5e-4f;
-            particle.color =
-                glm::vec4(rndDist(rndEngine), rndDist(rndEngine), rndDist(rndEngine), 1.0f);
-        }
-        VkDeviceSize bufferSize = sizeof(structs::Particle) * PARTICLE_COUNT;
-
-        BufferType particleStagingBuffer = builders::StagingBufferBuilder(*this)
-                                               .withSize(bufferSize)
-                                               .withData(particles.data())
-                                               .build();
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
-        {
-            _storageBuffers.emplace_back(
-                builders::StorageBufferBuilder(*this).withSize(bufferSize).build());
-            particleStagingBuffer->copyInto(*_storageBuffers.back());
-        }
-    }
-
-    void VulkanRenderer::createDescriptorPool()
-    {
-        _computeDescriptorPool =
-            builders::DescriptorPoolBuilder(*this)
-                .withMaxSets(_maxFramesInFlight)
-                .withDescriptorPoolSizes(
-                    { builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight)
-                          .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-                          .build(),
-                      builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(_maxFramesInFlight * 2)
-                          .withDescriptorType(VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)
-                          .build() })
-                .build();
-    }
-    void VulkanRenderer::createDescriptorSets()
-    {
-        DescriptorSetsType computeDescriptorSets =
-            builders::DescriptorSetsBuilder(*this, _computeDescriptorPool->getHandle())
-                .withSetsCount(_maxFramesInFlight)
-                .withSetLayout(_computePipelines.at(0)
-                                   ->getPipelineLayout()
-                                   .getDescriptorSetLayout()
-                                   .getHandle())
-                .build();
-        computeDescriptorSets->update(_computeUniformBuffers, std::vector<const Texture *>{},
-                                      _storageBuffers);
-        _computeDescriptorPool->setDescriptorSets(std::move(computeDescriptorSets));
     }
 
     void VulkanRenderer::createDepthResources()
@@ -568,16 +407,6 @@ namespace brasio::renderer::vulkan
         return _commandBuffers;
     }
 
-    const std::vector<ComputePipelineType> &VulkanRenderer::getComputePipelines() const
-    {
-        return _computePipelines;
-    }
-
-    const DescriptorSets &VulkanRenderer::getComputeDescriptorSets() const
-    {
-        return _computeDescriptorPool->getDescriptorSets();
-    }
-
     unsigned VulkanRenderer::getMaxFramesInFlight() const
     {
         return _maxFramesInFlight;
@@ -586,16 +415,6 @@ namespace brasio::renderer::vulkan
     uint32_t VulkanRenderer::getCurrentFrame() const
     {
         return _currentFrame;
-    }
-
-    const VkBuffer &VulkanRenderer::getParticleVertexBuffer() const
-    {
-        return _storageBuffers[_currentFrame]->getHandle();
-    }
-
-    uint32_t VulkanRenderer::getParticleCount() const
-    {
-        return PARTICLE_COUNT;
     }
 
     const shaders::ShaderManager &VulkanRenderer::getShaderManager() const

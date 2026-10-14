@@ -2,6 +2,11 @@
 
 #include <glm/mat4x4.hpp>
 
+#include <renderer/vulkan/builders/descriptor-set-layout-builder.hh>
+#include <renderer/vulkan/builders/compute-pipeline-builder.hh>
+#include <renderer/vulkan/builders/pipeline-layout-builder.hh>
+#include <renderer/vulkan/builders/graphics-pipeline-builder.hh>
+
 namespace brasio::renderer::vulkan
 {
     PipelineManager::PipelineManager(const VulkanRenderer &renderer)

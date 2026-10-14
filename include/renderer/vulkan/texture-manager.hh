@@ -2,10 +2,12 @@
 
 #include <core/manager.hh>
 
-#include <renderer/vulkan/vulkan-renderer.hh>
+#include <renderer/vulkan/texture.hh>
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class TextureManager : public core::Manager<std::string, Texture>
     {
     public:

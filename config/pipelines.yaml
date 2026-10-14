@@ -45,9 +45,3 @@
   color_blend_state:
     logic_op_enabled: false
     logic_op: COPY
-
-- id: compute_particle_movement
-  type: COMPUTE
-  name: Compute particle movement
-  shaders:
-    compute: compute/particles.comp

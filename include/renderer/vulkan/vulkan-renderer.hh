@@ -6,31 +6,20 @@
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
 
-#include <renderer/vulkan/builders/all.hh>
-#include <renderer/vulkan/buffer.hh>
-#include <renderer/vulkan/command-buffer-array.hh>
+#include <yaml-cpp/yaml.h>
+
 #include <renderer/vulkan/command-pool.hh>
-#include <renderer/vulkan/compute-pipeline.hh>
 #include <renderer/vulkan/depth-attachment.hh>
-#include <renderer/vulkan/descriptor-pool.hh>
-#include <renderer/vulkan/descriptor-set-layout.hh>
-#include <renderer/vulkan/descriptor-sets.hh>
-#include <renderer/vulkan/graphics-pipeline.hh>
+#include <renderer/vulkan/image-attachment.hh>
 #include <renderer/vulkan/instance.hh>
 #include <renderer/vulkan/logical-device.hh>
 #include <renderer/vulkan/physical-device.hh>
-#include <renderer/vulkan/pipeline-layout.hh>
-#include <renderer/vulkan/queue-family-indices.hh>
 #include <renderer/vulkan/render-pass.hh>
 #include <renderer/vulkan/surface.hh>
-#include <renderer/vulkan/swap-chain-support-details.hh>
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
-#include <renderer/vulkan/texture.hh>
-#include <renderer/vulkan/texture-sampler.hh>
-#include <shaders/shader-manager.hh>
 
-#include <yaml-cpp/yaml.h>
+#include <shaders/shader-manager.hh>
 
 namespace brasio::renderer::vulkan
 {
@@ -78,23 +67,13 @@ namespace brasio::renderer::vulkan
         void createCommandPool();
         void createCommandBuffers();
 
-        void createComputePipelines(const YAML::Node &config);
-
         void createSyncObjects();
 
         void cleanupSwapChain();
         void recreateSwapChain();
 
-        void createUniformBuffers();
-        void createStorageBuffers();
-
-        void createDescriptorPool();
-        void createDescriptorSets();
-
         void createDepthResources();
         void createColorResources();
-
-        void runCompute();
 
         bool isMultisampled() const;
 
@@ -113,11 +92,7 @@ namespace brasio::renderer::vulkan
         const VkRenderPass &getRenderPass() const;
         const RenderPass &getRenderPassWrapper() const;
         const CommandBufferArrayType &getCommandBuffers() const;
-        const std::vector<ComputePipelineType> &getComputePipelines() const;
-        const DescriptorSets &getComputeDescriptorSets() const;
-        const VkBuffer &getParticleVertexBuffer() const;
         unsigned getMaxFramesInFlight() const;
-        uint32_t getParticleCount() const;
         uint32_t getCurrentFrame() const;
 
         const shaders::ShaderManager &getShaderManager() const;
@@ -144,16 +119,11 @@ namespace brasio::renderer::vulkan
         LogicalDeviceType _logicalDevice;
         SwapchainType _swapchain;
         RenderPassType _renderPass;
-        std::vector<ComputePipelineType> _computePipelines;
 
         CommandPoolType _commandPool;
         CommandBufferArrayType _commandBuffers;
 
         SyncObjectsType _syncObjects;
-
-        std::vector<BufferType> _computeUniformBuffers;
-        std::vector<BufferType> _storageBuffers;
-        DescriptorPoolType _computeDescriptorPool;
 
         DepthAttachmentType _depthAttachment;
         ImageAttachmentType _colorAttachment;

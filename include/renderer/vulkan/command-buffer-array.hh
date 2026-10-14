@@ -28,8 +28,6 @@ namespace brasio::renderer::vulkan
 
         void record(uint32_t commandBufferIndex, uint32_t imageIndex, Renderable &root);
 
-        void recordCompute(uint32_t commandBufferIndex, uint32_t workGroupCount);
-
     private:
         const VulkanRenderer &_renderer;
     };

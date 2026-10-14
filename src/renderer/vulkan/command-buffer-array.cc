@@ -103,34 +103,4 @@ namespace brasio::renderer::vulkan
         BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end command buffer record",
                             { "RENDER" });
     }
-
-    void CommandBufferArray::recordCompute(uint32_t commandBufferIndex, uint32_t workGroupCount)
-    {
-        BRASIO_LOG_TRACE("Starting compute command buffer record", { "COMPUTE" });
-
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = 0;
-        beginInfo.pInheritanceInfo = nullptr;
-
-        VkCommandBuffer commandBuffer = at(commandBufferIndex);
-        BRASIO_VULKAN_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo),
-                            "begin compute command buffer", { "COMPUTE" });
-
-        for (const ComputePipelineType &computePipeline : _renderer.getComputePipelines())
-        {
-            BRASIO_LOG_TRACE("Binding compute pipeline", { "COMPUTE" });
-            computePipeline->bind(commandBuffer);
-            vkCmdBindDescriptorSets(
-                commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipeline->getPipelineLayout().getHandle(), 0, 1,
-                &_renderer.getComputeDescriptorSets().getHandle().at(_renderer.getCurrentFrame()),
-                0, nullptr);
-            BRASIO_LOG_TRACE("Dispatching compute", { "COMPUTE" });
-            vkCmdDispatch(commandBuffer, workGroupCount, 1, 1);
-        }
-
-        BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end compute command buffer record",
-                            { "COMPUTE" });
-    }
 } // namespace brasio::renderer::vulkan

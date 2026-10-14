@@ -1,11 +1,12 @@
 #pragma once
 
 #include <core/manager.hh>
-#include <renderer/vulkan/vulkan-renderer.hh>
 #include <renderer/vulkan/pipeline.hh>
 
 namespace brasio::renderer::vulkan
 {
+    class VulkanRenderer;
+
     class PipelineManager : public core::Manager<std::string, Pipeline>
     {
     public:

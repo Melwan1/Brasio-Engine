@@ -5,6 +5,8 @@
 
 #include <filesystem>
 
+#include <renderer/vulkan/builders/texture-builder.hh>
+
 namespace fs = std::filesystem;
 
 namespace brasio::renderer::vulkan
