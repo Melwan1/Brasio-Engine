@@ -1,6 +1,3 @@
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-
 #include <renderer/vulkan/vulkan-renderer.hh>
 
 #include <renderer/vulkan/builders/command-buffer-array-builder.hh>

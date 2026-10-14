@@ -158,10 +158,8 @@ namespace brasio::scenes
         if (!type.compare("ORTHOGRAPHIC"))
         {
             return std::make_unique<OrthographicCamera>(
-                eye, lookAt, up, static_cast<float>(sceneRectangle.left),
-                static_cast<float>(sceneRectangle.left + sceneRectangle.width),
-                static_cast<float>(sceneRectangle.top + sceneRectangle.height),
-                static_cast<float>(sceneRectangle.top), zNear, zFar);
+                eye, lookAt, up, config["left"].as<float>(), config["right"].as<float>(),
+                config["bottom"].as<float>(), config["top"].as<float>(), zNear, zFar);
         }
         if (type.compare("PERSPECTIVE"))
         {

@@ -107,6 +107,7 @@ namespace brasio::renderer::vulkan::builders
             { "FILL", VK_POLYGON_MODE_FILL },
         };
         std::map<std::string, VkCullModeFlags> cullModeMap = {
+            { "NONE", VK_CULL_MODE_NONE },
             { "FRONT", VK_CULL_MODE_FRONT_BIT },
             { "BACK", VK_CULL_MODE_BACK_BIT },
         };

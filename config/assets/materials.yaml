@@ -1,3 +1,6 @@
 - id: mat_3d_textured
   pipeline: draw_cube
   texture: viking-room
+- id: rectangle1
+  pipeline: draw_ui
+  texture: viking-room

@@ -5,7 +5,9 @@ namespace brasio::model
     ModelManager::ModelManager(const renderer::vulkan::VulkanRenderer &renderer)
         : _renderer(renderer)
     {
-        registerObject("_unitQuad", Model::unitQuad());
+        ModelType unitQuad = Model::unitQuad();
+        unitQuad->upload(_renderer);
+        registerObject("_unitQuad", std::move(unitQuad));
     }
 
     ModelType ModelManager::createObject(const YAML::Node &config)

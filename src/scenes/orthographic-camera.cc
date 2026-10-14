@@ -25,10 +25,7 @@ namespace brasio::scenes
 
     void OrthographicCamera::resize(const SceneRectangle &sceneRectangle)
     {
-        _left = static_cast<float>(sceneRectangle.left);
-        _right = static_cast<float>(sceneRectangle.left + sceneRectangle.width);
-        _top = static_cast<float>(sceneRectangle.top);
-        _bottom = static_cast<float>(sceneRectangle.top + sceneRectangle.height);
+        (void)sceneRectangle;
         buildProj();
     }
 

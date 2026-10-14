@@ -40,8 +40,9 @@ namespace brasio::scenes
         uint32_t frame = _renderer.getCurrentFrame();
         renderer::structs::UniformBufferObject ubo{};
         ubo.view = _camera->getView();
-        ubo.proj = _camera->getProj();
-        ubo.proj[1][1] *= -1;
+        glm::mat4 vulkanClipYFlip(1.0f);
+        vulkanClipYFlip[1][1] = -1.0f;
+        ubo.proj = vulkanClipYFlip * _camera->getProj();
         _cameraUniform->setContent(frame, ubo);
 
         for (const Drawable &drawable : _drawables)

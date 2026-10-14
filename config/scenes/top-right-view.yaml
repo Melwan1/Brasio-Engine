@@ -1,5 +1,5 @@
-id: top-left-view
-name: Top left view
+id: top-right-view
+name: Top right view
 type: LEAF
 target: SCREEN
 scene_rectangle:

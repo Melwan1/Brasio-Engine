@@ -84,7 +84,7 @@ namespace brasio::renderer::vulkan::builders
                                                                 { 'B', VK_COLOR_COMPONENT_B_BIT },
                                                                 { 'A', VK_COLOR_COMPONENT_A_BIT } };
         VkColorComponentFlags colorMask = 0;
-        for (char c : config["writeMask"].as<std::string>())
+        for (char c : config["write_mask"].as<std::string>())
         {
             colorMask |= sampleMaskMap.at(c);
         }
