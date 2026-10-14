@@ -1,5 +1,6 @@
 target_sources(librenderer PRIVATE
     buffer.cc
+    camera-uniform.cc
     command-buffer.cc
     command-buffer-array.cc
     command-pool.cc

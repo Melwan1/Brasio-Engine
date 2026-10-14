@@ -19,6 +19,7 @@ namespace brasio::scenes
         virtual void emit(YAML::Emitter &out) const override;
 
     private:
+        SceneRectangle _relativeRectangle;
         SceneRectangle _sceneRectangle;
         std::vector<SceneNodeType> _childScenes;
     };

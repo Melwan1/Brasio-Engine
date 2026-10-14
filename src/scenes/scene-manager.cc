@@ -1,5 +1,7 @@
 #include <scenes/scene-manager.hh>
 #include <scenes/draw-target.hh>
+#include <scenes/perspective-camera.hh>
+#include <scenes/orthographic-camera.hh>
 
 #include <filesystem>
 
@@ -9,9 +11,11 @@ namespace brasio::scenes
 {
 
     SceneManager::SceneManager(const model::ModelManager &modelManager,
-                               const renderer::vulkan::MaterialManager &materialManager)
+                               const renderer::vulkan::MaterialManager &materialManager,
+                               const renderer::vulkan::VulkanRenderer &renderer)
         : _modelManager(modelManager)
         , _materialManager(materialManager)
+        , _renderer(renderer)
     {}
 
     void SceneManager::load(const fs::path &directory, const std::string &rootSceneId)
@@ -61,8 +65,10 @@ namespace brasio::scenes
         {
             drawables.emplace_back(parseDrawable(drawableNode));
         }
-        LeafSceneType leafScene = std::make_unique<LeafScene>(
-            config["id"].as<std::string>(), sceneRectangle, drawTarget, std::move(drawables));
+        CameraType camera = parseCamera(config["camera"], sceneRectangle);
+        LeafSceneType leafScene =
+            std::make_unique<LeafScene>(config["id"].as<std::string>(), sceneRectangle, drawTarget,
+                                        std::move(drawables), std::move(camera), _renderer);
         BRASIO_LOG_DEBUG("Parsed leaf scene " + config["id"].as<std::string>(),
                          { "CREATE", "SCENES" });
         YAML::Emitter out;
@@ -129,10 +135,49 @@ namespace brasio::scenes
         return { model, material, transform, transform.matrix() };
     }
 
+    CameraType SceneManager::parseCamera(const YAML::Node &config,
+                                         const SceneRectangle &sceneRectangle)
+    {
+        if (!config)
+        {
+            BRASIO_LOG_ERROR("Leaf scene has no camera, using a default perspective camera",
+                             { "CREATE", "SCENES" });
+            return std::make_unique<PerspectiveCamera>(
+                glm::vec3(3.0f, 1.5f, 2.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f),
+                glm::radians(45.0f), sceneRectangle.width, sceneRectangle.height);
+        }
+        glm::vec3 eye = { config["eye"][0].as<float>(), config["eye"][1].as<float>(),
+                          config["eye"][2].as<float>() };
+        glm::vec3 lookAt = { config["look_at"][0].as<float>(), config["look_at"][1].as<float>(),
+                             config["look_at"][2].as<float>() };
+        glm::vec3 up = { config["up"][0].as<float>(), config["up"][1].as<float>(),
+                         config["up"][2].as<float>() };
+        float zNear = config["near"] ? config["near"].as<float>() : 0.1f;
+        float zFar = config["far"] ? config["far"].as<float>() : 100.0f;
+        const std::string type = config["type"].as<std::string>();
+        if (!type.compare("ORTHOGRAPHIC"))
+        {
+            return std::make_unique<OrthographicCamera>(
+                eye, lookAt, up, static_cast<float>(sceneRectangle.left),
+                static_cast<float>(sceneRectangle.left + sceneRectangle.width),
+                static_cast<float>(sceneRectangle.top + sceneRectangle.height),
+                static_cast<float>(sceneRectangle.top), zNear, zFar);
+        }
+        if (type.compare("PERSPECTIVE"))
+        {
+            BRASIO_LOG_ERROR("Unknown camera type '" + type + "', using a perspective camera",
+                             { "CREATE", "SCENES" });
+        }
+        float fieldOfView = config["fov"] ? config["fov"].as<float>() : 45.0f;
+        return std::make_unique<PerspectiveCamera>(eye, lookAt, up, glm::radians(fieldOfView),
+                                                   sceneRectangle.width, sceneRectangle.height,
+                                                   zNear, zFar);
+    }
+
     SceneRectangle SceneManager::parseSceneRectangle(const YAML::Node &config)
     {
-        return { config["top"].as<unsigned>(), config["left"].as<unsigned>(),
-                 config["width"].as<unsigned>(), config["height"].as<unsigned>() };
+        return { config["top"].as<float>(), config["left"].as<float>(), config["width"].as<float>(),
+                 config["height"].as<float>() };
     }
 
     Transform SceneManager::parseTransform(const YAML::Node &config)

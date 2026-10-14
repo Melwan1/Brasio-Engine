@@ -10,14 +10,13 @@ namespace brasio::renderer::vulkan
 
     PipelineType PipelineManager::createObject(const YAML::Node &config)
     {
-        builders::DescriptorSetLayoutBindingBuilder::resetIndex();
         if (!config["type"].as<std::string>().compare("GRAPHICS"))
         {
             builders::GraphicsPipelineBuilder pipelineBuilder(_renderer);
-            pipelineBuilder.withDescriptorSetLayout(builders::DescriptorSetLayoutBuilder(_renderer)
-                                                        .withUniformBuffers(1)
-                                                        .withTextures(1)
-                                                        .build());
+            pipelineBuilder.withDescriptorSetLayout(
+                builders::DescriptorSetLayoutBuilder(_renderer).withUniformBuffers(1).build());
+            pipelineBuilder.withDescriptorSetLayout(
+                builders::DescriptorSetLayoutBuilder(_renderer).withTextures(1).build());
             VkPushConstantRange pushConstantRange{};
             pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
             pushConstantRange.offset = 0;

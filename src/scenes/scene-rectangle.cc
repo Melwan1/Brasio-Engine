@@ -3,6 +3,12 @@
 
 namespace brasio::scenes
 {
+    SceneRectangle SceneRectangle::absoluteIn(const SceneRectangle &parent) const
+    {
+        return { parent.top + top * parent.height, parent.left + left * parent.width,
+                 width * parent.width, height * parent.height };
+    }
+
     YAML::Emitter &operator<<(YAML::Emitter &out, const SceneRectangle &sceneRectangle)
     {
         const auto &[top, left, width, height] = sceneRectangle;

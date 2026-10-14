@@ -1,23 +1,13 @@
 id: root
 name: Root scene
-type: LEAF
-target: SCREEN
+type: BRANCH
 scene_rectangle:
   top: 0
   left: 0
-  width: 1920
-  height: 1080
-drawables:
-  - model: viking-room
-    material: mat_3d_textured
-    transform:
-      translation: [0, 0, 0]
-      rotation: [0, 0, 0]
-      scale: [1, 1, 1]
-
-  - model: viking-room
-    material: mat_3d_textured
-    transform:
-      translation: [2, 0, 0]
-      rotation: [0, 0, 180]
-      scale: [1, 1, 1]
+  width: 1
+  height: 1
+children:
+  - top-left-view
+  - top-right-view
+  - bottom-left-view
+  - bottom-right-view

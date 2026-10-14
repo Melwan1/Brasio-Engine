@@ -24,7 +24,7 @@ namespace brasio::renderer::vulkan::builders
         const VulkanRenderer &_renderer;
         VkStructureType _structureType;
 
-        DescriptorSetLayoutType _descriptorSetLayout;
+        std::vector<DescriptorSetLayoutType> _descriptorSetLayouts;
         std::vector<VkPushConstantRange> _pushConstantRanges;
     };
 } // namespace brasio::renderer::vulkan::builders

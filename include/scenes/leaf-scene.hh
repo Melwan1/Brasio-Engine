@@ -3,6 +3,10 @@
 #include <scenes/scene-node.hh>
 #include <scenes/drawable.hh>
 #include <scenes/draw-target.hh>
+#include <scenes/camera.hh>
+
+#include <renderer/vulkan/vulkan-renderer.hh>
+#include <renderer/vulkan/camera-uniform.hh>
 
 #include <memory>
 #include <vector>
@@ -13,7 +17,8 @@ namespace brasio::scenes
     {
     public:
         LeafScene(const std::string &id, const SceneRectangle &sceneRectangle,
-                  DrawTarget drawTarget, std::vector<Drawable> drawables);
+                  DrawTarget drawTarget, std::vector<Drawable> drawables, CameraType camera,
+                  const renderer::vulkan::VulkanRenderer &renderer);
 
         virtual void render(const VkCommandBuffer &commandBuffer) override;
         virtual void checkLayout(const SceneRectangle &sceneRectangle) override;
@@ -21,9 +26,13 @@ namespace brasio::scenes
         virtual void emit(YAML::Emitter &out) const override;
 
     private:
+        SceneRectangle _relativeRectangle;
         SceneRectangle _sceneRectangle;
         const DrawTarget _drawTarget;
         std::vector<Drawable> _drawables;
+        CameraType _camera;
+        const renderer::vulkan::VulkanRenderer &_renderer;
+        renderer::vulkan::CameraUniformType _cameraUniform;
     };
 
     using LeafSceneType = std::unique_ptr<LeafScene>;

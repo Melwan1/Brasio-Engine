@@ -8,6 +8,7 @@ namespace brasio::scenes
     BranchScene::BranchScene(const std::string &id, const SceneRectangle &sceneRectangle,
                              std::vector<SceneNodeType> childScenes)
         : SceneNode(id)
+        , _relativeRectangle(sceneRectangle)
         , _sceneRectangle(sceneRectangle)
         , _childScenes(std::move(childScenes))
     {}
@@ -22,7 +23,7 @@ namespace brasio::scenes
 
     void BranchScene::checkLayout(const SceneRectangle &sceneRectangle)
     {
-        _sceneRectangle = sceneRectangle;
+        _sceneRectangle = _relativeRectangle.absoluteIn(sceneRectangle);
         for (SceneNodeType &scene : _childScenes)
         {
             scene->checkLayout(_sceneRectangle);
@@ -32,7 +33,7 @@ namespace brasio::scenes
     void BranchScene::emit(YAML::Emitter &out) const
     {
         out << YAML::BeginMap << BRASIO_YAML_KV(id, _id) << BRASIO_YAML_KV(type, "BRANCH")
-            << BRASIO_YAML_KV(scene_rectangle, _sceneRectangle);
+            << BRASIO_YAML_KV(scene_rectangle, _relativeRectangle);
         out << YAML::Key << "children" << YAML::BeginSeq;
         for (const SceneNodeType &sceneNode : _childScenes)
         {

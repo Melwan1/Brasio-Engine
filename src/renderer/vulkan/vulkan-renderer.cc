@@ -80,7 +80,6 @@ namespace brasio::renderer::vulkan
         cleanupSwapChain();
         _computeDescriptorPool.reset();
         _storageBuffers.clear();
-        _uniformBuffers.clear();
         _computeUniformBuffers.clear();
         _computePipelines.clear();
         _renderPass.reset();
@@ -205,7 +204,6 @@ namespace brasio::renderer::vulkan
     {
         for (const YAML::Node &pipelineConfig : config)
         {
-            builders::DescriptorSetLayoutBindingBuilder::resetIndex();
             if (!pipelineConfig["type"].as<std::string>().compare("COMPUTE"))
             {
                 PipelineLayoutType pipelineLayout =
@@ -275,8 +273,6 @@ namespace brasio::renderer::vulkan
         _syncObjects->resetSingleFence(_currentFrame);
         _commandBuffers->reset(_currentFrame);
         _commandBuffers->record(_currentFrame, imageIndex, root);
-
-        updateUniformBuffer(_currentFrame);
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -400,15 +396,6 @@ namespace brasio::renderer::vulkan
 
     void VulkanRenderer::createUniformBuffers()
     {
-        VkDeviceSize bufferSize = sizeof(structs::UniformBufferObject);
-        for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
-        {
-            _uniformBuffers.emplace_back(
-                builders::UniformBufferBuilder(*this).withSize(bufferSize).build());
-            _uniformBuffers.back()->mapMemory();
-            // persistent mapping for all uniform buffers
-        }
-
         VkDeviceSize computeBufferSize = sizeof(structs::ComputeUniformBufferObject);
         for (uint32_t index = 0; index < MAX_FRAMES_IN_FLIGHT; index++)
         {
@@ -448,24 +435,6 @@ namespace brasio::renderer::vulkan
                 builders::StorageBufferBuilder(*this).withSize(bufferSize).build());
             particleStagingBuffer->copyInto(*_storageBuffers.back());
         }
-    }
-
-    void VulkanRenderer::updateUniformBuffer(uint32_t currentImage)
-    {
-        static auto startTime = std::chrono::high_resolution_clock::now();
-
-        auto currentTime = std::chrono::high_resolution_clock::now();
-        float time =
-            std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime)
-                .count();
-        (void)time;
-        structs::UniformBufferObject ubo{};
-        ubo.view = glm::lookAt(glm::vec3(3.0f, 1.5f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f),
-                               glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f),
-                                    _swapchain->getWidth() / _swapchain->getHeight(), 0.1f, 10.0f);
-        ubo.proj[1][1] *= -1;
-        _uniformBuffers.at(currentImage)->setContent(&ubo);
     }
 
     void VulkanRenderer::createDescriptorPool()
@@ -607,11 +576,6 @@ namespace brasio::renderer::vulkan
     const DescriptorSets &VulkanRenderer::getComputeDescriptorSets() const
     {
         return _computeDescriptorPool->getDescriptorSets();
-    }
-
-    const std::vector<BufferType> &VulkanRenderer::getUniformBuffers() const
-    {
-        return _uniformBuffers;
     }
 
     unsigned VulkanRenderer::getMaxFramesInFlight() const

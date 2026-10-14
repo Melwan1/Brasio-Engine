@@ -25,10 +25,6 @@ namespace brasio::renderer::vulkan
                 .withDescriptorPoolSizes(
                     { builders::DescriptorPoolSizeBuilder()
                           .withDescriptorCount(framesInFlight)
-                          .withDescriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-                          .build(),
-                      builders::DescriptorPoolSizeBuilder()
-                          .withDescriptorCount(framesInFlight)
                           .withDescriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER)
                           .build() })
                 .withMaxSets(framesInFlight)
@@ -37,10 +33,10 @@ namespace brasio::renderer::vulkan
         _descriptorSets =
             builders::DescriptorSetsBuilder(renderer, _descriptorPool->getHandle())
                 .withSetsCount(framesInFlight)
-                .withSetLayout(_pipeline->getPipelineLayout().getDescriptorSetLayout().getHandle())
+                .withSetLayout(_pipeline->getPipelineLayout().getDescriptorSetLayout(1).getHandle())
                 .build();
 
-        _descriptorSets->update(renderer.getUniformBuffers(), { _texture }, {});
+        _descriptorSets->update({}, { _texture }, {});
     }
 
     const std::string &Material::getId() const
@@ -54,7 +50,7 @@ namespace brasio::renderer::vulkan
         if (_descriptorSets)
         {
             vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    _pipeline->getPipelineLayout().getHandle(), 0, 1,
+                                    _pipeline->getPipelineLayout().getHandle(), 1, 1,
                                     &_descriptorSets->getHandle().at(_renderer.getCurrentFrame()),
                                     0, nullptr);
         }

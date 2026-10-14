@@ -160,7 +160,8 @@ namespace brasio::application
 
     void Application::initSceneManager(const YAML::Node &scenesConfig)
     {
-        _sceneManager = std::make_unique<scenes::SceneManager>(*_modelManager, *_materialManager);
+        _sceneManager =
+            std::make_unique<scenes::SceneManager>(*_modelManager, *_materialManager, *_renderer);
         const std::string directory = "config/" + scenesConfig["directory"].as<std::string>();
         _sceneManager->load(directory, scenesConfig["root"].as<std::string>());
     }

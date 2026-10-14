@@ -88,8 +88,6 @@ namespace brasio::renderer::vulkan
         void createUniformBuffers();
         void createStorageBuffers();
 
-        void updateUniformBuffer(uint32_t currentImage);
-
         void createDescriptorPool();
         void createDescriptorSets();
 
@@ -118,7 +116,6 @@ namespace brasio::renderer::vulkan
         const std::vector<ComputePipelineType> &getComputePipelines() const;
         const DescriptorSets &getComputeDescriptorSets() const;
         const VkBuffer &getParticleVertexBuffer() const;
-        const std::vector<BufferType> &getUniformBuffers() const;
         unsigned getMaxFramesInFlight() const;
         uint32_t getParticleCount() const;
         uint32_t getCurrentFrame() const;
@@ -154,7 +151,6 @@ namespace brasio::renderer::vulkan
 
         SyncObjectsType _syncObjects;
 
-        std::vector<BufferType> _uniformBuffers;
         std::vector<BufferType> _computeUniformBuffers;
         std::vector<BufferType> _storageBuffers;
         DescriptorPoolType _computeDescriptorPool;

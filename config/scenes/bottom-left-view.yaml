@@ -1,0 +1,24 @@
+id: top-left-view
+name: Top left view
+type: LEAF
+target: SCREEN
+scene_rectangle:
+  top: 0.5
+  left: 0
+  width: 0.5
+  height: 0.5
+camera:
+  type: PERSPECTIVE
+  eye: [3, 1.5, 2]
+  look_at: [0, 0, 0]
+  up: [0, 0, 1]
+  fov: 45
+  near: 0.1
+  far: 10
+drawables:
+  - model: viking-room
+    material: mat_3d_textured
+    transform:
+      translation: [0, 0, 0]
+      rotation: [0, 0, 0]
+      scale: [1, 1, 1]

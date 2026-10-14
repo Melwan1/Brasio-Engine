@@ -21,7 +21,8 @@ namespace brasio::scenes
     {
     public:
         SceneManager(const model::ModelManager &modelManager,
-                     const renderer::vulkan::MaterialManager &materialManager);
+                     const renderer::vulkan::MaterialManager &materialManager,
+                     const renderer::vulkan::VulkanRenderer &renderer);
         virtual SceneNodeType createObject(const YAML::Node &config) override;
 
         void load(const fs::path &directory, const std::string &rootSceneId);
@@ -32,12 +33,14 @@ namespace brasio::scenes
         LeafSceneType parseLeafScene(const YAML::Node &config);
         BranchSceneType parseBranchScene(const YAML::Node &config);
         Drawable parseDrawable(const YAML::Node &config);
+        CameraType parseCamera(const YAML::Node &config, const SceneRectangle &sceneRectangle);
 
         SceneNode *getRoot() const;
 
     private:
         const model::ModelManager &_modelManager;
         const renderer::vulkan::MaterialManager &_materialManager;
+        const renderer::vulkan::VulkanRenderer &_renderer;
 
         fs::path _directory;
         std::string _rootId;

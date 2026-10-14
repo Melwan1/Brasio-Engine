@@ -24,9 +24,12 @@ target_link_libraries(libscenes PRIVATE
 
 target_sources(libscenes PRIVATE
     branch-scene.cc
+    camera.cc
     drawable.cc
     draw-target.cc
     leaf-scene.cc
+    orthographic-camera.cc
+    perspective-camera.cc
     scene-manager.cc
     scene-node.cc
     scene-rectangle.cc
