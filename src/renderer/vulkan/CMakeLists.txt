@@ -1,5 +1,6 @@
 target_sources(librenderer PRIVATE
     buffer.cc
+    camera-uniform.cc
     command-buffer.cc
     command-buffer-array.cc
     command-pool.cc
@@ -17,9 +18,13 @@ target_sources(librenderer PRIVATE
     image-attachment.cc
     instance.cc
     logical-device.cc
+    material.cc
+    material-manager.cc
     memory.cc
     physical-device.cc
+    pipeline.cc
     pipeline-layout.cc
+    pipeline-manager.cc
     queue-family-indices.cc
     render-pass.cc
     semaphore.cc
@@ -28,6 +33,7 @@ target_sources(librenderer PRIVATE
     swapchain.cc
     sync-objects.cc
     texture.cc
+    texture-manager.cc
     texture-sampler.cc
     vulkan-renderer.cc
 )

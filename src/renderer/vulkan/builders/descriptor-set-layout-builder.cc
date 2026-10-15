@@ -15,6 +15,7 @@ namespace brasio::renderer::vulkan::builders
     {
         _structureType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         _bindings.clear();
+        DescriptorSetLayoutBindingBuilder::resetIndex();
         return *this;
     }
 

@@ -23,7 +23,10 @@ target_link_libraries(libutils PRIVATE
 )
 
 target_sources(libutils PRIVATE
+    fps-counter.cc
     image-conversions.cc
+    timer.cc
     version.cc
+    vk-result.cc
 )
 

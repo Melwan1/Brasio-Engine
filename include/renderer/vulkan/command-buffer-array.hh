@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include <renderer/renderable.hh>
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/graphics-pipeline.hh>
 
@@ -25,13 +26,7 @@ namespace brasio::renderer::vulkan
 
         void begin(uint32_t commandBufferIndex, uint32_t imageIndex);
 
-        void setViewport(uint32_t commandBufferIndex);
-
-        void setScissor(uint32_t commandBufferIndex);
-
-        void record(uint32_t commandBufferIndex, uint32_t imageIndex);
-
-        void recordCompute(uint32_t commandBufferIndex, uint32_t workGroupCount);
+        void record(uint32_t commandBufferIndex, uint32_t imageIndex, Renderable &root);
 
     private:
         const VulkanRenderer &_renderer;

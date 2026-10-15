@@ -1,4 +1,5 @@
 #include <renderer/vulkan/command-buffer-array.hh>
+#include <renderer/vulkan/material.hh>
 #include <renderer/vulkan/vulkan-renderer.hh>
 #include <utils/libutils.hh>
 
@@ -82,43 +83,17 @@ namespace brasio::renderer::vulkan
                          { "RENDER" });
     }
 
-    void CommandBufferArray::setViewport(uint32_t commandBufferIndex)
-    {
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = _renderer.getSwapchain().getWidth();
-        viewport.height = _renderer.getSwapchain().getHeight();
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(at(commandBufferIndex), 0, 1, &viewport);
-    }
-
-    void CommandBufferArray::setScissor(uint32_t commandBufferIndex)
-    {
-        VkRect2D scissor{};
-        scissor.offset = { 0, 0 };
-        scissor.extent = _renderer.getSwapchain().getExtent();
-        vkCmdSetScissor(at(commandBufferIndex), 0, 1, &scissor);
-    }
-
-    void CommandBufferArray::record(uint32_t commandBufferIndex, uint32_t imageIndex)
+    void CommandBufferArray::record(uint32_t commandBufferIndex, uint32_t imageIndex,
+                                    Renderable &root)
     {
         BRASIO_LOG_TRACE("Starting command buffer record", { "RENDER" });
         begin(commandBufferIndex, imageIndex);
         VkCommandBuffer commandBuffer = at(commandBufferIndex);
 
-        BRASIO_LOG_TRACE("Setting viewport and scissor", { "RENDER" });
-        setViewport(commandBufferIndex);
-        setScissor(commandBufferIndex);
-
-        for (const GraphicsPipelineType &graphicsPipeline : _renderer.getGraphicsPipelines())
-        {
-            BRASIO_LOG_TRACE("Binding graphics pipeline", { "RENDER" });
-            graphicsPipeline->bind(commandBuffer);
-            BRASIO_LOG_TRACE("Rendering cube", { "RENDER" });
-            _renderer.getMesh1().draw(commandBuffer, _renderer);
-        }
+        BRASIO_LOG_TRACE("Laying out and rendering scene", { "RENDER" });
+        const VkExtent2D extent = _renderer.getSwapchain().getExtent();
+        root.checkLayout(extent.width, extent.height);
+        root.render(commandBuffer);
 
         BRASIO_LOG_TRACE("Ending render pass", { "RENDER" });
         vkCmdEndRenderPass(commandBuffer);
@@ -127,35 +102,5 @@ namespace brasio::renderer::vulkan
 
         BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end command buffer record",
                             { "RENDER" });
-    }
-
-    void CommandBufferArray::recordCompute(uint32_t commandBufferIndex, uint32_t workGroupCount)
-    {
-        BRASIO_LOG_TRACE("Starting compute command buffer record", { "COMPUTE" });
-
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = 0;
-        beginInfo.pInheritanceInfo = nullptr;
-
-        VkCommandBuffer commandBuffer = at(commandBufferIndex);
-        BRASIO_VULKAN_CHECK(vkBeginCommandBuffer(commandBuffer, &beginInfo),
-                            "begin compute command buffer", { "COMPUTE" });
-
-        for (const ComputePipelineType &computePipeline : _renderer.getComputePipelines())
-        {
-            BRASIO_LOG_TRACE("Binding compute pipeline", { "COMPUTE" });
-            computePipeline->bind(commandBuffer);
-            vkCmdBindDescriptorSets(
-                commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipeline->getPipelineLayout().getHandle(), 0, 1,
-                &_renderer.getComputeDescriptorSets().getHandle().at(_renderer.getCurrentFrame()),
-                0, nullptr);
-            BRASIO_LOG_TRACE("Dispatching compute", { "COMPUTE" });
-            vkCmdDispatch(commandBuffer, workGroupCount, 1, 1);
-        }
-
-        BRASIO_VULKAN_CHECK(vkEndCommandBuffer(commandBuffer), "end compute command buffer record",
-                            { "COMPUTE" });
     }
 } // namespace brasio::renderer::vulkan

@@ -1,3 +1,4 @@
+#include <vulkan/vulkan.h>
 #include "application/application.hh"
 #include <application/libapplication.hh>
 #include <application/callbacks.hh>
@@ -21,6 +22,16 @@ namespace brasio::application
 
     Application::~Application()
     {
+        if (_renderer)
+        {
+            _renderer->waitIdle();
+        }
+        _sceneManager.reset();
+        _materialManager.reset();
+        _pipelineManager.reset();
+        _textureManager.reset();
+        _modelManager.reset();
+        _fontManager.reset();
         _renderer.reset();
         BRASIO_LOG_DEBUG("Destroying window", { "APPLICATION", "TEARDOWN" });
         glfwDestroyWindow(_window);
@@ -48,6 +59,7 @@ namespace brasio::application
         io::logging::Logger::fromConfig(config["logging"]);
         BRASIO_LOG_DEBUG("Configured logger", { "APPLICATION", "SETUP" });
 
+        glfwInitVulkanLoader(vkGetInstanceProcAddr);
         if (!glfwInit())
         {
             BRASIO_LOG_CRITICAL("Unable to initialize GLFW", { "APPLICATION", "SETUP" });
@@ -80,23 +92,23 @@ namespace brasio::application
         initListeners();
 
         setupCallbacks();
-        std::unique_ptr<renderer::Renderer> renderer = nullptr;
-        if (useOpengl)
-        {
-            renderer = std::make_unique<renderer::DefaultRenderer>();
-        }
-        else
-        {
-            /*renderer =
-                std::make_unique<renderer::vulkan::VulkanRenderer>(_window);*/
-            renderer = renderer::vulkan::VulkanRenderer::fromConfig(config["renderer"], _window);
-        }
+        YAML::Node rendererConfig = config["renderer"];
+        rendererConfig["pipelines"] =
+            YAML::LoadFile(rendererConfig["pipelines_file"].as<std::string>());
+        renderer::vulkan::VulkanRendererType renderer =
+            renderer::vulkan::VulkanRenderer::fromConfig(rendererConfig, _window);
         if (!initRenderer(std::move(renderer)))
         {
             return false;
         }
         initFontManager();
         _renderer->init();
+        initModelManager();
+        initPipelineManager(config["renderer"]["pipelines_file"].as<std::string>());
+        initTextureManager();
+        initMaterialManager();
+        initSceneManager(config["scenes"]);
+        _timer = std::make_unique<utils::Timer>(100.0f);
         if (!setVersion(VersionControlType::LATEST_GIT_TAG, config["application"]))
         {
             setVersion(VersionControlType::CONFIG_FILE, config["application"]);
@@ -106,7 +118,7 @@ namespace brasio::application
         return true;
     }
 
-    bool Application::initRenderer(std::unique_ptr<renderer::Renderer> renderer)
+    bool Application::initRenderer(renderer::vulkan::VulkanRendererType renderer)
     {
         if (!renderer)
         {
@@ -120,12 +132,39 @@ namespace brasio::application
     {
         _fontManager = std::make_unique<fonts::FontManager>();
         _fontManager->loadFontDirectory("assets/fonts");
-        auto *vulkanRenderer =
-            dynamic_cast<brasio::renderer::vulkan::VulkanRenderer *>(&(*_renderer));
-        renderer::vulkan::TextureType fontTexture = _fontManager->loadText(
-            *vulkanRenderer, "Delfino",
-            "La grève des lycéens est reconduite aujourd'hui et tissu est toujours bleu", 24, 1000);
-        vulkanRenderer->addTexture(std::move(fontTexture));
+    }
+
+    void Application::initModelManager()
+    {
+        _modelManager = std::make_unique<model::ModelManager>(*_renderer);
+        _modelManager->loadFile("config/assets/models.yaml");
+    }
+
+    void Application::initTextureManager()
+    {
+        _textureManager = std::make_unique<renderer::vulkan::TextureManager>(*_renderer);
+        _textureManager->loadFile("config/assets/textures.yaml");
+    }
+
+    void Application::initPipelineManager(const std::string &pipelinesFile)
+    {
+        _pipelineManager = std::make_unique<renderer::vulkan::PipelineManager>(*_renderer);
+        _pipelineManager->loadFile(pipelinesFile);
+    }
+
+    void Application::initMaterialManager()
+    {
+        _materialManager = std::make_unique<renderer::vulkan::MaterialManager>(
+            *_renderer, *_pipelineManager, *_textureManager);
+        _materialManager->loadFile("config/assets/materials.yaml");
+    }
+
+    void Application::initSceneManager(const YAML::Node &scenesConfig)
+    {
+        _sceneManager = std::make_unique<scenes::SceneManager>(
+            *_modelManager, *_materialManager, *_pipelineManager, *_fontManager, *_renderer);
+        const std::string directory = "config/" + scenesConfig["directory"].as<std::string>();
+        _sceneManager->load(directory, scenesConfig["root"].as<std::string>());
     }
 
     bool Application::setupWindow(const YAML::Node &windowConfig, bool useOpengl)
@@ -192,12 +231,28 @@ namespace brasio::application
 
     void Application::onEvent(events::subevents::ApplicationRenderEvent &event)
     {
-        _renderer->drawFrame();
+        _renderer->drawFrame(*_sceneManager->getRoot());
         event.handle();
     }
 
     void Application::onEvent(events::subevents::ApplicationTickEvent &event)
     {
+        _fpsCounter.tick();
+        if (_sceneManager)
+        {
+            if (scenes::TextLabel *fpsLabel = _sceneManager->getRoot()->findText("game_fps"))
+            {
+                fpsLabel->setText(_fpsCounter.toString());
+            }
+            if (_timer)
+            {
+                if (scenes::TextLabel *label = _sceneManager->getRoot()->findText("timer"))
+                {
+                    label->setText(_timer->toString());
+                    label->setColor(_timer->color());
+                }
+            }
+        }
         events::subevents::ApplicationRenderEvent renderEvent;
         ApplicationEventEmitter::fire(renderEvent);
         event.handle();

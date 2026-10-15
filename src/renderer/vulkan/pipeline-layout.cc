@@ -5,13 +5,13 @@
 namespace brasio::renderer::vulkan
 {
     PipelineLayout::PipelineLayout(const VulkanRenderer &renderer,
-                                   DescriptorSetLayoutType descriptorSetLayout,
+                                   std::vector<DescriptorSetLayoutType> descriptorSetLayouts,
                                    const VkPipelineLayoutCreateInfo &createInfo)
         : Handler("pipeline layout",
                   [&renderer](const VkPipelineLayout &pipelineLayout) {
                       vkDestroyPipelineLayout(renderer.getLogicalDevice(), pipelineLayout, nullptr);
                   })
-        , _descriptorSetLayout(std::move(descriptorSetLayout))
+        , _descriptorSetLayouts(std::move(descriptorSetLayouts))
     {
         BRASIO_LOG_TRACE("Creating pipeline layout", { "CREATE" });
         BRASIO_VULKAN_CHECK(
@@ -20,8 +20,8 @@ namespace brasio::renderer::vulkan
         BRASIO_LOG_TRACE("Created pipeline layout", { "CREATE" });
     }
 
-    const DescriptorSetLayout &PipelineLayout::getDescriptorSetLayout() const
+    const DescriptorSetLayout &PipelineLayout::getDescriptorSetLayout(size_t index) const
     {
-        return *_descriptorSetLayout;
+        return *_descriptorSetLayouts.at(index);
     }
 } // namespace brasio::renderer::vulkan

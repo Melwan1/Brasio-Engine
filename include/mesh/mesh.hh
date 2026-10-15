@@ -4,7 +4,6 @@
 #include <renderer/renderer.hh>
 
 #include <geometry/vertex.hh>
-#include <mesh/transform-mode.hh>
 
 #include <renderer/vulkan/buffer.hh>
 #include <renderer/vulkan/command-pool.hh>
@@ -40,18 +39,7 @@ namespace brasio::mesh
         const renderer::vulkan::BufferType &getIndexBuffer() const;
         renderer::vulkan::BufferType &getIndexBuffer();
 
-        void draw(const VkCommandBuffer &commandBuffer,
-                  const renderer::vulkan::VulkanRenderer &renderer) const;
-        void drawWireframe(const VkCommandBuffer &commandBuffer,
-                           const renderer::vulkan::VulkanRenderer &renderer) const;
-
-        void applyTransform(TransformMode transformMode, const glm::mat4 &transform);
-
-        void applyRotate(TransformMode transformMode, const glm::vec3 &eulerAngles);
-
-        void applyTranslation(TransformMode transformMode, const glm::vec3 &translation);
-
-        void applyScale(TransformMode transformMode, const glm::vec3 &scale);
+        void draw(const VkCommandBuffer &commandBuffer) const;
 
         void setUniformColor(const glm::vec3 &color);
 
@@ -69,9 +57,6 @@ namespace brasio::mesh
 
         renderer::vulkan::BufferType _vertexBuffer;
         renderer::vulkan::BufferType _indexBuffer;
-
-        glm::mat4 _transformGPU;
-        glm::mat4 _transformCPU;
     };
 
     using MeshType = std::unique_ptr<Mesh>;

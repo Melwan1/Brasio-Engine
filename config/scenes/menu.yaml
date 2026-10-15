@@ -1,0 +1,52 @@
+id: menu
+name: Menu Scene
+type: LEAF
+target: SCREEN
+scene_rectangle:
+  top: 0.0
+  left: 0.0
+  width: 1.0
+  height: 0.1
+camera:
+  type: ORTHOGRAPHIC
+  eye: [0, 0, 3]
+  look_at: [0, 0, 0]
+  up: [0, 1, 0]
+  left: 0.0
+  right: 1.0
+  top: 0.0
+  bottom: 1.0
+  near: 0.0
+  far: 10.0
+drawables:
+  - model: _unitQuad
+    text:
+      id: game_name
+      font: Delfino
+      size: 18
+      value: "Regarde Julie"
+      color: [0.8, 0.8, 1]
+      max_width: 2048
+      alignment:
+        horizontal: LEFT
+        vertical: CENTER
+    transform:
+      translation: [0.05, 0.3, 0]
+      rotation: [0, 0, 0]
+      scale: [0.1, 0.1, 1]
+  - model: _unitQuad
+    material: rectangle1
+    text:
+      id: et_finalement_pourquoi_pas
+      font: Delfino
+      size: 18
+      value: "Et finalement pourquoi pas"
+      color: [0.8, 0.8, 1]
+      max_width: 2048
+      alignment:
+        horizontal: LEFT
+        vertical: CENTER
+    transform:
+      translation: [0.4, 0.3, 0]
+      rotation: [0, 0, 0]
+      scale: [0.4, 0.4, 1]

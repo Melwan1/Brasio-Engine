@@ -1,0 +1,24 @@
+id: right-scene
+name: Right scene
+type: LEAF
+target: SCREEN
+scene_rectangle:
+  top: 0.1
+  left: 0.5
+  width: 0.5
+  height: 0.8
+camera:
+  type: PERSPECTIVE
+  eye: [0, 0, 3]
+  look_at: [0, 0, 0]
+  up: [0, 1, 0]
+  fov: 45
+  near: 0.1
+  far: 10.0
+drawables:
+  - model: viking-room
+    material: mat_3d_textured
+    transform:
+      translation: [0, 0, 0]
+      rotation: [0, -45, -90]
+      scale: [1, 1, 1]

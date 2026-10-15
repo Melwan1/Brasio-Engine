@@ -17,6 +17,13 @@ namespace brasio::renderer::vulkan::builders
         return *this;
     }
 
+    GraphicsPipelineBuilder &GraphicsPipelineBuilder::withPushConstantRanges(
+        const std::vector<VkPushConstantRange> &pushConstantRanges)
+    {
+        _pipelineLayoutBuilder.withPushConstantRanges(pushConstantRanges);
+        return *this;
+    }
+
     GraphicsPipelineBuilder &GraphicsPipelineBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -67,6 +74,7 @@ namespace brasio::renderer::vulkan::builders
         _multisamplingBuilder.withConfig(config["multisampling"]);
         _colorBlendAttachmentBuilder.withConfig(config["color_blend_attachment"]);
         _colorBlendStateBuilder.withConfig(config["color_blend_state"]);
+        _depthStencilBuilder.withConfig(config["depth_stencil"]);
 
         std::vector<fs::path> shaders = { config["shaders"]["vertex"].as<std::string>(),
                                           config["shaders"]["fragment"].as<std::string>() };

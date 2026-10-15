@@ -29,7 +29,7 @@ endif()
 option(BRASIO_ENABLE_VALIDATION "Enable Vulkan validation layers" ${_validation_default})
 
 add_compile_options(-Wall -Wextra -Werror -Wvla -pedantic -Wold-style-cast)
-add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL GLM_FORCE_RADIANS GLM_FORCE_DEPTH_ZERO_TO_ONE)
 
 if(BRASIO_ENABLE_VALIDATION)
     add_compile_definitions(BRASIO_ENABLE_VALIDATION_LAYERS)

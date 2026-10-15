@@ -18,4 +18,5 @@ target_link_libraries(libcore PRIVATE INTERFACE
 
 target_sources(libcore PRIVATE
     handler.hxx
+    manager.hxx
 )

@@ -1,0 +1,12 @@
+id: root
+name: Root scene
+type: BRANCH
+scene_rectangle:
+  top: 0
+  left: 0
+  width: 1
+  height: 1
+children:
+  - main-scene
+  - menu
+  - debug

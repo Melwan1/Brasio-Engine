@@ -30,6 +30,7 @@ add_subdirectory(math)
 add_subdirectory(mesh)
 add_subdirectory(model)
 add_subdirectory(renderer)
+add_subdirectory(scenes)
 add_subdirectory(shaders)
 add_subdirectory(utils)
 
@@ -45,6 +46,7 @@ target_link_libraries(brasio PRIVATE
     libmesh
     libmodel
     librenderer
+    libscenes
     libshaders
     libutils
 )

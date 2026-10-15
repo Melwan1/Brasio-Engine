@@ -7,4 +7,3 @@
 #include <mesh/plane.hh>
 #include <mesh/sphere.hh>
 #include <mesh/triangle.hh>
-#include <mesh/transform-mode.hh>

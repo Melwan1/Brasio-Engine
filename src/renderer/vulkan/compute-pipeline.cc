@@ -7,12 +7,7 @@ namespace brasio::renderer::vulkan
     ComputePipeline::ComputePipeline(const VulkanRenderer &renderer,
                                      const VkComputePipelineCreateInfo &createInfo,
                                      PipelineLayoutType pipelineLayout)
-        : Handler("compute pipeline",
-                  [&renderer](const VkPipeline &computePipeline) {
-                      vkDestroyPipeline(renderer.getLogicalDevice(), computePipeline, nullptr);
-                  })
-        , _renderer(renderer)
-        , _pipelineLayout(std::move(pipelineLayout))
+        : Pipeline(renderer, std::move(pipelineLayout))
     {
         BRASIO_LOG_TRACE("Creating compute pipeline", { "CREATE" });
         BRASIO_VULKAN_CHECK(vkCreateComputePipelines(renderer.getLogicalDevice(), nullptr, 1,
@@ -26,8 +21,4 @@ namespace brasio::renderer::vulkan
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, getHandle());
     }
 
-    const PipelineLayout &ComputePipeline::getPipelineLayout() const
-    {
-        return *_pipelineLayout;
-    }
 } // namespace brasio::renderer::vulkan

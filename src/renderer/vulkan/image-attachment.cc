@@ -24,6 +24,7 @@ namespace brasio::renderer::vulkan
         , _imageViewCreateInfo(imageViewCreateInfo)
         , _width(imageCreateInfo.extent.width)
         , _height(imageCreateInfo.extent.height)
+        , _mipLevels(imageCreateInfo.mipLevels)
         , _sampleCount(imageCreateInfo.samples)
     {
         createImage(imageCreateInfo);
@@ -45,6 +46,7 @@ namespace brasio::renderer::vulkan
         , _format(imageViewCreateInfo.format)
         , _width(0)
         , _height(0)
+        , _mipLevels(imageViewCreateInfo.subresourceRange.levelCount)
         , _sampleCount(VK_SAMPLE_COUNT_1_BIT)
     {
         createImageView(imageViewCreateInfo);
@@ -97,10 +99,9 @@ namespace brasio::renderer::vulkan
 
     void ImageAttachment::transitionImageLayout([[maybe_unused]] const VkFormat &format,
                                                 const VkImageLayout &oldLayout,
-                                                const VkImageLayout &newLayout)
+                                                const VkImageLayout &newLayout,
+                                                const CommandBuffer &commandBuffer)
     {
-        CommandBuffer commandBuffer(_renderer);
-
         if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED
             && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         {
@@ -187,7 +188,7 @@ namespace brasio::renderer::vulkan
         return { newWidth, newHeight };
     }
 
-    void ImageAttachment::generateMipmaps()
+    void ImageAttachment::generateMipmaps(const CommandBuffer &commandBuffer)
     {
         VkFormatProperties formatProperties;
         vkGetPhysicalDeviceFormatProperties(_renderer.getPhysicalDevice(), _format,
@@ -198,8 +199,6 @@ namespace brasio::renderer::vulkan
             BRASIO_LOG_CRITICAL("Texture image format does not support linear blitting.",
                                 { "IMAGE" });
         }
-
-        CommandBuffer commandBuffer(_renderer);
 
         uint32_t mipLevels = getMipLevels();
         int32_t mipWidth = getWidth();
@@ -234,10 +233,11 @@ namespace brasio::renderer::vulkan
         builders::StagingBufferBuilder stagingBuilder(_renderer);
         BufferType stagingBuffer = stagingBuilder.withSize(size).withData(data).build();
 
+        CommandBuffer commandBuffer(_renderer);
         transitionImageLayout(_format, VK_IMAGE_LAYOUT_UNDEFINED,
-                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-        stagingBuffer->copyInto(*this);
-        generateMipmaps();
+                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, commandBuffer);
+        stagingBuffer->copyInto(*this, commandBuffer);
+        generateMipmaps(commandBuffer);
     }
 
     void ImageAttachment::initMemory()
@@ -263,7 +263,7 @@ namespace brasio::renderer::vulkan
 
     uint32_t ImageAttachment::getMipLevels() const
     {
-        return 1 + static_cast<uint32_t>(std::floor(std::log2(std::max(getWidth(), getHeight()))));
+        return _mipLevels;
     }
 
     VkAttachmentDescription ImageAttachment::getAttachmentDescription() const

@@ -1,0 +1,6 @@
+- id: mario
+  path: textures/mario.ppm
+- id: p3-minimal
+  path: textures/p3-minimal.ppm
+- id: viking-room
+  path: textures/viking-room.ppm

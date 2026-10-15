@@ -4,13 +4,15 @@
 
 namespace brasio::model
 {
-    Model::Model()
+    Model::Model(const std::string &id)
+        : _id(id)
     {
         _verticesInfo.clear();
         _faceIndices.clear();
     }
 
-    Model::Model(io::files::OBJParser &objParser)
+    Model::Model(const std::string &id, io::files::OBJParser &objParser)
+        : Model(id)
     {
         uint32_t vertexCount = objParser.getVertexCount();
         _verticesInfo.resize(vertexCount);
@@ -49,6 +51,11 @@ namespace brasio::model
         }
     }
 
+    const std::string &Model::getId() const
+    {
+        return _id;
+    }
+
     mesh::MeshType Model::toMesh()
     {
         std::vector<geometry::Vertex> meshVertices;
@@ -77,5 +84,42 @@ namespace brasio::model
             meshIndices.emplace_back(face[2]);
         }
         return std::make_unique<mesh::Mesh>(meshVertices, meshIndices);
+    }
+
+    void Model::upload(const renderer::vulkan::VulkanRenderer &renderer)
+    {
+        _mesh = toMesh();
+        _mesh->createBuffers(renderer);
+    }
+
+    mesh::Mesh &Model::mesh()
+    {
+        return *_mesh;
+    }
+
+    const mesh::Mesh &Model::mesh() const
+    {
+        return *_mesh;
+    }
+
+    ModelType Model::unitQuad()
+    {
+        ModelType model = std::make_unique<Model>("_unitQuad");
+        model->_verticesInfo.reserve(4);
+        model->_faceIndices.reserve(6);
+        model->_faceIndices.insert(model->_faceIndices.begin(), { { 0, 1, 2 }, { 2, 3, 0 } });
+        model->_verticesInfo.insert(
+            model->_verticesInfo.begin(),
+            { { { -0.5f, +0.5f, 0.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { -0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { +0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } },
+              { { +0.5f, +0.5f, 0.0f }, { 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f } } });
+        return model;
+    }
+
+    YAML::Emitter &operator<<(YAML::Emitter &out, const Model &model)
+    {
+        out << model.getId();
+        return out;
     }
 } // namespace brasio::model
