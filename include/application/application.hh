@@ -90,6 +90,8 @@ namespace brasio::application
         std::unique_ptr<renderer::vulkan::PipelineManager> _pipelineManager;
         std::unique_ptr<renderer::vulkan::MaterialManager> _materialManager;
         std::unique_ptr<scenes::SceneManager> _sceneManager;
+        std::unique_ptr<utils::Timer> _timer;
+        utils::FpsCounter _fpsCounter;
         std::string _title;
         utils::Version _version;
 

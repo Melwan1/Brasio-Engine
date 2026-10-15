@@ -7,7 +7,6 @@ scene_rectangle:
   width: 1
   height: 1
 children:
-  - top-left-view
-  - top-right-view
-  - bottom-left-view
-  - bottom-right-view
+  - main-scene
+  - menu
+  - debug

@@ -20,8 +20,17 @@ camera:
   far: 10.0
 drawables:
   - model: _unitQuad
-    material: rectangle1
+    text:
+      id: timer
+      font: Delfino
+      size: 24
+      value: "timer"
+      color: [1, 1, 1]
+      max_width: 2048
+      alignment:
+        horizontal: LEFT
+        vertical: CENTER
     transform:
       translation: [0.5, 0.5, 0]
       rotation: [0, 0, 0]
-      scale: [0.5, 0.5, 1]
+      scale: [0.5, 0.1, 1]

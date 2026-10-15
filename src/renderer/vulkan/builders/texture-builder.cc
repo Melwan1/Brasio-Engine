@@ -19,6 +19,7 @@ namespace brasio::renderer::vulkan::builders
     TextureBuilder &TextureBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        _mipmaps = true;
         return withImageType(VK_IMAGE_TYPE_2D)
             .withSharingMode(VK_SHARING_MODE_EXCLUSIVE)
             .withUsage(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
@@ -32,8 +33,9 @@ namespace brasio::renderer::vulkan::builders
         imageInfo.sType = _structureType;
         imageInfo.imageType = _imageType;
         imageInfo.extent = { .width = _width, .height = _height, .depth = 1 };
-        uint32_t mipLevels =
-            1 + static_cast<uint32_t>(std::floor(std::log2(std::max(_width, _height))));
+        uint32_t mipLevels = _mipmaps
+            ? 1 + static_cast<uint32_t>(std::floor(std::log2(std::max(_width, _height))))
+            : 1;
         imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1;
         imageInfo.format = _format;
@@ -91,6 +93,7 @@ namespace brasio::renderer::vulkan::builders
     TextureBuilder &TextureBuilder::withTextureImage(const images::P2PGM &textureImage)
     {
         _grayTextureImage = textureImage;
+        _mipmaps = false;
         return withWidth(textureImage.getWidth())
             .withHeight(textureImage.getHeight())
             .withImageType(VK_IMAGE_TYPE_2D)

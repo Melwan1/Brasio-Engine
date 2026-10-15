@@ -21,6 +21,8 @@ namespace brasio::renderer::vulkan
 
         void bind(const VkCommandBuffer &commandBuffer) const;
 
+        void setTexture(const Texture *texture);
+
         const Pipeline *getPipeline() const;
         const Texture *getTexture() const;
 
@@ -32,6 +34,7 @@ namespace brasio::renderer::vulkan
 
         DescriptorPoolType _descriptorPool;
         DescriptorSetsType _descriptorSets;
+        mutable std::vector<bool> _dirtyFrames;
     };
 
     YAML::Emitter &operator<<(YAML::Emitter &out, const Material &material);

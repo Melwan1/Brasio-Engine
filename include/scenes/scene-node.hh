@@ -10,6 +10,8 @@
 
 namespace brasio::scenes
 {
+    class TextLabel;
+
     class SceneNode : public renderer::Renderable
     {
     public:
@@ -23,6 +25,8 @@ namespace brasio::scenes
 
         void checkLayout(uint32_t width, uint32_t height) override;
         virtual void checkLayout(const SceneRectangle &sceneRectangle) = 0;
+
+        virtual TextLabel *findText(const std::string &id);
 
         virtual void emit(YAML::Emitter &out) const = 0;
 

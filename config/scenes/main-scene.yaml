@@ -1,0 +1,12 @@
+id: main-scene
+name: Main scene
+type: BRANCH
+target: SCREEN
+scene_rectangle:
+  top: 0.1
+  left: 0.0
+  width: 1.0
+  height: 0.8
+children:
+  - left-scene
+  - right-scene

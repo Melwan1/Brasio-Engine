@@ -39,6 +39,7 @@ namespace brasio::renderer::vulkan::builders
         VkFormat _format;
         std::optional<images::P2PGM> _grayTextureImage;
         std::optional<images::P3PPM> _colorTextureImage;
+        bool _mipmaps;
         VkImageUsageFlags _usage;
         VkSharingMode _sharingMode;
         VkImageTiling _tiling;

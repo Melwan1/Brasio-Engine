@@ -108,6 +108,7 @@ namespace brasio::application
         initTextureManager();
         initMaterialManager();
         initSceneManager(config["scenes"]);
+        _timer = std::make_unique<utils::Timer>(100.0f);
         if (!setVersion(VersionControlType::LATEST_GIT_TAG, config["application"]))
         {
             setVersion(VersionControlType::CONFIG_FILE, config["application"]);
@@ -160,8 +161,8 @@ namespace brasio::application
 
     void Application::initSceneManager(const YAML::Node &scenesConfig)
     {
-        _sceneManager =
-            std::make_unique<scenes::SceneManager>(*_modelManager, *_materialManager, *_renderer);
+        _sceneManager = std::make_unique<scenes::SceneManager>(
+            *_modelManager, *_materialManager, *_pipelineManager, *_fontManager, *_renderer);
         const std::string directory = "config/" + scenesConfig["directory"].as<std::string>();
         _sceneManager->load(directory, scenesConfig["root"].as<std::string>());
     }
@@ -236,6 +237,22 @@ namespace brasio::application
 
     void Application::onEvent(events::subevents::ApplicationTickEvent &event)
     {
+        _fpsCounter.tick();
+        if (_sceneManager)
+        {
+            if (scenes::TextLabel *fpsLabel = _sceneManager->getRoot()->findText("game_fps"))
+            {
+                fpsLabel->setText(_fpsCounter.toString());
+            }
+            if (_timer)
+            {
+                if (scenes::TextLabel *label = _sceneManager->getRoot()->findText("timer"))
+                {
+                    label->setText(_timer->toString());
+                    label->setColor(_timer->color());
+                }
+            }
+        }
         events::subevents::ApplicationRenderEvent renderEvent;
         ApplicationEventEmitter::fire(renderEvent);
         event.handle();

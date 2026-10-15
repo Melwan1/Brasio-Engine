@@ -74,6 +74,7 @@ namespace brasio::renderer::vulkan::builders
         _multisamplingBuilder.withConfig(config["multisampling"]);
         _colorBlendAttachmentBuilder.withConfig(config["color_blend_attachment"]);
         _colorBlendStateBuilder.withConfig(config["color_blend_state"]);
+        _depthStencilBuilder.withConfig(config["depth_stencil"]);
 
         std::vector<fs::path> shaders = { config["shaders"]["vertex"].as<std::string>(),
                                           config["shaders"]["fragment"].as<std::string>() };

@@ -46,6 +46,58 @@
     logic_op_enabled: false
     logic_op: COPY
 
+- id: draw_text
+  type: GRAPHICS
+  name: Draw text
+  shaders:
+    vertex: vertex/text.vert
+    fragment: fragment/text.frag
+
+  dynamic_states:
+    - VIEWPORT
+    - SCISSOR
+
+  input_assembly:
+    primitive_restart: false
+    primitive_topology: TRIANGLE_LIST
+
+  rasterizer:
+    depth_clamp: false
+    discard: false
+    polygon_mode: FILL
+    line_width: 1
+    cull_mode: NONE
+    front_face: CCW
+    depth_bias: false
+    depth_bias_constant_factor: 0
+    depth_bias_clamp: 0
+    depth_bias_slope_factor: 0
+
+  multisampling:
+    sample_shading: false
+    rasterization_samples: 16
+    min_sample_shading: 1
+    alpha_to_coverage: false
+    alpha_to_one: false
+
+  color_blend_attachment:
+    write_mask: RGBA
+    blend: true
+    src_color_blend_factor: SRC_ALPHA
+    dst_color_blend_factor: ONE_MINUS_SRC_ALPHA
+    color_blend_op: ADD
+    src_alpha_blend_factor: ONE
+    dst_alpha_blend_factor: ONE_MINUS_SRC_ALPHA
+    alpha_blend_op: ADD
+
+  color_blend_state:
+    logic_op_enabled: false
+    logic_op: COPY
+
+  depth_stencil:
+    depth_test: false
+    depth_write: false
+
 - id: draw_ui
   type: GRAPHICS
   name: Draw UI

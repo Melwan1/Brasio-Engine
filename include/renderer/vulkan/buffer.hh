@@ -25,7 +25,7 @@ namespace brasio::renderer::vulkan
                const VkMemoryPropertyFlags memoryProperties, void *data, VkDeviceSize size);
 
         void copyInto(const Buffer &other);
-        void copyInto(const ImageAttachment &other);
+        void copyInto(const ImageAttachment &other, const CommandBuffer &commandBuffer);
 
         void mapMemory();
         void unmapMemory();

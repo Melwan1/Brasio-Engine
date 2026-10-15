@@ -12,9 +12,13 @@ namespace brasio::scenes
 
     SceneManager::SceneManager(const model::ModelManager &modelManager,
                                const renderer::vulkan::MaterialManager &materialManager,
+                               const renderer::vulkan::PipelineManager &pipelineManager,
+                               fonts::FontManager &fontManager,
                                const renderer::vulkan::VulkanRenderer &renderer)
         : _modelManager(modelManager)
         , _materialManager(materialManager)
+        , _pipelineManager(pipelineManager)
+        , _fontManager(fontManager)
         , _renderer(renderer)
     {}
 
@@ -61,14 +65,15 @@ namespace brasio::scenes
         }
         SceneRectangle sceneRectangle = parseSceneRectangle(config["scene_rectangle"]);
         std::vector<Drawable> drawables{};
+        std::vector<TextLabelType> textLabels{};
         for (const YAML::Node &drawableNode : config["drawables"])
         {
-            drawables.emplace_back(parseDrawable(drawableNode));
+            drawables.emplace_back(parseDrawable(drawableNode, textLabels));
         }
         CameraType camera = parseCamera(config["camera"], sceneRectangle);
-        LeafSceneType leafScene =
-            std::make_unique<LeafScene>(config["id"].as<std::string>(), sceneRectangle, drawTarget,
-                                        std::move(drawables), std::move(camera), _renderer);
+        LeafSceneType leafScene = std::make_unique<LeafScene>(
+            config["id"].as<std::string>(), sceneRectangle, drawTarget, std::move(drawables),
+            std::move(textLabels), std::move(camera), _renderer);
         BRASIO_LOG_DEBUG("Parsed leaf scene " + config["id"].as<std::string>(),
                          { "CREATE", "SCENES" });
         YAML::Emitter out;
@@ -121,18 +126,61 @@ namespace brasio::scenes
         return branchScene;
     }
 
-    Drawable SceneManager::parseDrawable(const YAML::Node &config)
+    Drawable SceneManager::parseDrawable(const YAML::Node &config,
+                                         std::vector<TextLabelType> &textLabels)
     {
-        model::Model *model = _modelManager.get(config["model"].as<std::string>());
-        renderer::vulkan::Material *material =
-            _materialManager.get(config["material"].as<std::string>());
-        Transform transform = parseTransform(config["transform"]);
-        if (!model || !material)
+        Drawable drawable{};
+        drawable.model = _modelManager.get(config["model"].as<std::string>());
+        drawable.transform = parseTransform(config["transform"]);
+        drawable.matrix = drawable.transform.matrix();
+
+        if (config["material"])
+        {
+            drawable.material = _materialManager.get(config["material"].as<std::string>());
+        }
+
+        if (config["text"])
+        {
+            const YAML::Node &textConfig = config["text"];
+            HorizontalAlignment horizontalAlignment = HorizontalAlignment::LEFT;
+            VerticalAlignment verticalAlignment = VerticalAlignment::CENTER;
+            if (textConfig["alignment"])
+            {
+                const YAML::Node &alignmentConfig = textConfig["alignment"];
+                if (alignmentConfig["horizontal"])
+                {
+                    horizontalAlignment = horizontalAlignmentFromString(
+                        alignmentConfig["horizontal"].as<std::string>());
+                }
+                if (alignmentConfig["vertical"])
+                {
+                    verticalAlignment =
+                        verticalAlignmentFromString(alignmentConfig["vertical"].as<std::string>());
+                }
+            }
+            glm::vec4 color(1.0f);
+            if (textConfig["color"])
+            {
+                color = { textConfig["color"][0].as<float>(), textConfig["color"][1].as<float>(),
+                          textConfig["color"][2].as<float>(), 1.0f };
+            }
+            TextLabelType label = std::make_unique<TextLabel>(
+                textConfig["id"].as<std::string>(), _renderer, _fontManager,
+                _pipelineManager.get("draw_text"), textConfig["font"].as<std::string>(),
+                textConfig["size"].as<unsigned>(),
+                textConfig["max_width"] ? textConfig["max_width"].as<unsigned>() : 2048,
+                textConfig["value"].as<std::string>(), color, horizontalAlignment,
+                verticalAlignment);
+            drawable.textLabel = label.get();
+            textLabels.emplace_back(std::move(label));
+        }
+
+        if (!drawable.model || (!drawable.material && !drawable.textLabel))
         {
             BRASIO_LOG_WARNING("Creating drawable with missing model or material",
                                { "CREATE", "SCENES" });
         }
-        return { model, material, transform, transform.matrix() };
+        return drawable;
     }
 
     CameraType SceneManager::parseCamera(const YAML::Node &config,

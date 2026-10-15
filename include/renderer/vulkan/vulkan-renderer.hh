@@ -18,6 +18,7 @@
 #include <renderer/vulkan/surface.hh>
 #include <renderer/vulkan/swapchain.hh>
 #include <renderer/vulkan/sync-objects.hh>
+#include <renderer/vulkan/texture.hh>
 
 #include <shaders/shader-manager.hh>
 
@@ -52,6 +53,8 @@ namespace brasio::renderer::vulkan
         virtual void drawFrame(Renderable &root) override;
 
         void waitIdle() const;
+
+        void deferFreeTexture(TextureType texture) const;
 
         void pickPhysicalDevice();
         void createLogicalDevice();
@@ -130,5 +133,13 @@ namespace brasio::renderer::vulkan
 
         VkSampleCountFlagBits _msaaSamples = VK_SAMPLE_COUNT_1_BIT;
         uint32_t _currentFrame = 0;
+
+        struct PendingTextureFree
+        {
+            TextureType texture;
+            uint64_t freeAtFrame;
+        };
+        mutable std::vector<PendingTextureFree> _pendingTextureFrees;
+        uint64_t _frameCounter = 0;
     };
 } // namespace brasio::renderer::vulkan

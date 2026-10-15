@@ -30,6 +30,18 @@ namespace brasio::scenes
         }
     }
 
+    TextLabel *BranchScene::findText(const std::string &id)
+    {
+        for (SceneNodeType &scene : _childScenes)
+        {
+            if (TextLabel *label = scene->findText(id))
+            {
+                return label;
+            }
+        }
+        return nullptr;
+    }
+
     void BranchScene::emit(YAML::Emitter &out) const
     {
         out << YAML::BeginMap << BRASIO_YAML_KV(id, _id) << BRASIO_YAML_KV(type, "BRANCH")

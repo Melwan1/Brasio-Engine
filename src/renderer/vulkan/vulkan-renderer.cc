@@ -13,6 +13,9 @@
 #include <renderer/vulkan/builders/surface-builder.hh>
 #include <renderer/vulkan/builders/swapchain-builder.hh>
 
+#include <utility>
+#include <vector>
+
 #define MAX_FRAMES_IN_FLIGHT 2
 
 namespace brasio::renderer::vulkan
@@ -200,9 +203,18 @@ namespace brasio::renderer::vulkan
             semaphoreCreateInfo, fenceCreateInfo);
     }
 
+    void VulkanRenderer::deferFreeTexture(TextureType texture) const
+    {
+        _pendingTextureFrees.push_back(
+            { std::move(texture), _frameCounter + 2 * _maxFramesInFlight });
+    }
+
     void VulkanRenderer::drawFrame(Renderable &root)
     {
         BRASIO_LOG_TRACE("Starting frame render", { "RENDER" });
+        std::erase_if(_pendingTextureFrees, [this](const PendingTextureFree &pending) {
+            return _frameCounter >= pending.freeAtFrame;
+        });
         _syncObjects->waitSingleFence(_currentFrame);
         BRASIO_LOG_TRACE("fence waited for", { "RENDER" });
 
@@ -271,6 +283,7 @@ namespace brasio::renderer::vulkan
 
         _currentFrame++;
         _currentFrame %= MAX_FRAMES_IN_FLIGHT;
+        _frameCounter++;
 
         BRASIO_LOG_TRACE("Ending frame render", { "RENDER" });
     }

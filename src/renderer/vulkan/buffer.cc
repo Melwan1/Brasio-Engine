@@ -42,10 +42,8 @@ namespace brasio::renderer::vulkan
         vkCmdCopyBuffer(commandBuffer.getHandle(), getHandle(), other.getHandle(), 1, &copyRegion);
     }
 
-    void Buffer::copyInto(const ImageAttachment &other)
+    void Buffer::copyInto(const ImageAttachment &other, const CommandBuffer &commandBuffer)
     {
-        CommandBuffer commandBuffer(_renderer);
-
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
         region.bufferRowLength = 0;

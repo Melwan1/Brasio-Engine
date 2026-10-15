@@ -27,7 +27,8 @@ namespace brasio::renderer::vulkan
         void createImageView(VkImageViewCreateInfo imageViewCreateInfo);
 
         void transitionImageLayout([[maybe_unused]] const VkFormat &format,
-                                   const VkImageLayout &oldLayout, const VkImageLayout &newLayout);
+                                   const VkImageLayout &oldLayout, const VkImageLayout &newLayout,
+                                   const CommandBuffer &commandBuffer);
         void barrierTransfer(const CommandBuffer &commandBuffer, VkPipelineStageFlags sourceStage,
                              VkPipelineStageFlags destinationStage, VkImageLayout oldLayout,
                              VkImageLayout newLayout, VkAccessFlags srcAccess,
@@ -40,7 +41,7 @@ namespace brasio::renderer::vulkan
         std::pair<int32_t, int32_t> blitToNextMipLevel(const CommandBuffer &commandBuffer,
                                                        uint32_t mipLevel, int32_t mipWidth,
                                                        int32_t mipHeight);
-        void generateMipmaps();
+        void generateMipmaps(const CommandBuffer &commandBuffer);
 
         void initMemory(size_t size, void *data);
         void initMemory();
@@ -65,6 +66,7 @@ namespace brasio::renderer::vulkan
         VkImageViewCreateInfo _imageViewCreateInfo{};
         size_t _width;
         size_t _height;
+        uint32_t _mipLevels;
         VkSampleCountFlagBits _sampleCount;
     };
 

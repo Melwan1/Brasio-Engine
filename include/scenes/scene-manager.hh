@@ -11,6 +11,8 @@
 
 #include <model/model-manager.hh>
 #include <renderer/vulkan/material-manager.hh>
+#include <renderer/vulkan/pipeline-manager.hh>
+#include <fonts/font-manager.hh>
 
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
@@ -22,6 +24,8 @@ namespace brasio::scenes
     public:
         SceneManager(const model::ModelManager &modelManager,
                      const renderer::vulkan::MaterialManager &materialManager,
+                     const renderer::vulkan::PipelineManager &pipelineManager,
+                     fonts::FontManager &fontManager,
                      const renderer::vulkan::VulkanRenderer &renderer);
         virtual SceneNodeType createObject(const YAML::Node &config) override;
 
@@ -32,7 +36,7 @@ namespace brasio::scenes
 
         LeafSceneType parseLeafScene(const YAML::Node &config);
         BranchSceneType parseBranchScene(const YAML::Node &config);
-        Drawable parseDrawable(const YAML::Node &config);
+        Drawable parseDrawable(const YAML::Node &config, std::vector<TextLabelType> &textLabels);
         CameraType parseCamera(const YAML::Node &config, const SceneRectangle &sceneRectangle);
 
         SceneNode *getRoot() const;
@@ -40,6 +44,8 @@ namespace brasio::scenes
     private:
         const model::ModelManager &_modelManager;
         const renderer::vulkan::MaterialManager &_materialManager;
+        const renderer::vulkan::PipelineManager &_pipelineManager;
+        fonts::FontManager &_fontManager;
         const renderer::vulkan::VulkanRenderer &_renderer;
 
         fs::path _directory;

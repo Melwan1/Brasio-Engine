@@ -37,6 +37,7 @@ namespace brasio::renderer::vulkan
                 .build();
 
         _descriptorSets->update({}, { _texture }, {});
+        _dirtyFrames.assign(framesInFlight, false);
     }
 
     const std::string &Material::getId() const
@@ -44,15 +45,29 @@ namespace brasio::renderer::vulkan
         return _id;
     }
 
+    void Material::setTexture(const Texture *texture)
+    {
+        _texture = texture;
+        if (_descriptorSets)
+        {
+            _dirtyFrames.assign(_renderer.getMaxFramesInFlight(), true);
+        }
+    }
+
     void Material::bind(const VkCommandBuffer &commandBuffer) const
     {
         _pipeline->bind(commandBuffer);
         if (_descriptorSets)
         {
+            uint32_t frame = _renderer.getCurrentFrame();
+            if (!_dirtyFrames.empty() && _dirtyFrames[frame])
+            {
+                _descriptorSets->updateTexture(frame, _texture);
+                _dirtyFrames[frame] = false;
+            }
             vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     _pipeline->getPipelineLayout().getHandle(), 1, 1,
-                                    &_descriptorSets->getHandle().at(_renderer.getCurrentFrame()),
-                                    0, nullptr);
+                                    &_descriptorSets->getHandle().at(frame), 0, nullptr);
         }
     }
 

@@ -2,6 +2,7 @@
 
 #include <core/builder.hh>
 #include <vulkan/vulkan_core.h>
+#include <yaml-cpp/yaml.h>
 
 namespace brasio::renderer::vulkan::builders
 {
@@ -11,9 +12,12 @@ namespace brasio::renderer::vulkan::builders
         DepthStencilBuilder();
 
         virtual DepthStencilBuilder &base() override;
+        DepthStencilBuilder &withConfig(const YAML::Node &config);
         virtual VkPipelineDepthStencilStateCreateInfo build() override;
 
     private:
         VkStructureType _structureType;
+        bool _depthTestEnable;
+        bool _depthWriteEnable;
     };
 } // namespace brasio::renderer::vulkan::builders

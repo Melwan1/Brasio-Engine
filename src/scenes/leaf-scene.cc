@@ -6,14 +6,34 @@
 
 namespace brasio::scenes
 {
+    namespace
+    {
+        glm::vec2 computeBoxPixelSize(const renderer::structs::UniformBufferObject &ubo,
+                                      const glm::mat4 &boxMatrix, const SceneRectangle &rectangle)
+        {
+            glm::mat4 viewProjection = ubo.proj * ubo.view;
+            auto project = [&](const glm::vec4 &localCorner) {
+                glm::vec4 clip = viewProjection * boxMatrix * localCorner;
+                glm::vec3 ndc = glm::vec3(clip) / clip.w;
+                return glm::vec2((ndc.x * 0.5f + 0.5f) * rectangle.width,
+                                 (ndc.y * 0.5f + 0.5f) * rectangle.height);
+            };
+            glm::vec2 corner0 = project({ -0.5f, -0.5f, 0.0f, 1.0f });
+            glm::vec2 corner1 = project({ 0.5f, 0.5f, 0.0f, 1.0f });
+            return glm::abs(corner1 - corner0);
+        }
+    } // namespace
+
     LeafScene::LeafScene(const std::string &id, const SceneRectangle &sceneRectangle,
-                         DrawTarget drawTarget, std::vector<Drawable> drawables, CameraType camera,
+                         DrawTarget drawTarget, std::vector<Drawable> drawables,
+                         std::vector<TextLabelType> textLabels, CameraType camera,
                          const renderer::vulkan::VulkanRenderer &renderer)
         : SceneNode(id)
         , _relativeRectangle(sceneRectangle)
         , _sceneRectangle(sceneRectangle)
         , _drawTarget(drawTarget)
         , _drawables(std::move(drawables))
+        , _textLabels(std::move(textLabels))
         , _camera(std::move(camera))
         , _renderer(renderer)
         , _cameraUniform(std::make_unique<renderer::vulkan::CameraUniform>(renderer))
@@ -47,12 +67,26 @@ namespace brasio::scenes
 
         for (const Drawable &drawable : _drawables)
         {
-            drawable.material->bind(commandBuffer);
-            _cameraUniform->bind(commandBuffer,
-                                 drawable.material->getPipeline()->getPipelineLayout().getHandle(),
-                                 frame);
-            drawable.pushTransform(commandBuffer);
-            drawable.model->mesh().draw(commandBuffer);
+            if (drawable.material)
+            {
+                drawable.material->bind(commandBuffer);
+                _cameraUniform->bind(
+                    commandBuffer,
+                    drawable.material->getPipeline()->getPipelineLayout().getHandle(), frame);
+                drawable.pushTransform(commandBuffer);
+                drawable.model->mesh().draw(commandBuffer);
+            }
+            if (drawable.textLabel)
+            {
+                const renderer::vulkan::Material *textMaterial = drawable.textLabel->getMaterial();
+                textMaterial->bind(commandBuffer);
+                _cameraUniform->bind(commandBuffer,
+                                     textMaterial->getPipeline()->getPipelineLayout().getHandle(),
+                                     frame);
+                drawable.pushText(commandBuffer,
+                                  computeBoxPixelSize(ubo, drawable.matrix, _sceneRectangle));
+                drawable.model->mesh().draw(commandBuffer);
+            }
         }
     }
 
@@ -60,6 +94,18 @@ namespace brasio::scenes
     {
         _sceneRectangle = _relativeRectangle.absoluteIn(sceneRectangle);
         _camera->resize(_sceneRectangle);
+    }
+
+    TextLabel *LeafScene::findText(const std::string &id)
+    {
+        for (const TextLabelType &label : _textLabels)
+        {
+            if (label->getId() == id)
+            {
+                return label.get();
+            }
+        }
+        return nullptr;
     }
 
     void LeafScene::emit(YAML::Emitter &out) const

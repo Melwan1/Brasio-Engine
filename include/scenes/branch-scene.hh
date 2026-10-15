@@ -16,6 +16,8 @@ namespace brasio::scenes
         virtual void render(const VkCommandBuffer &cmd) override;
         virtual void checkLayout(const SceneRectangle &sceneRectangle) override;
 
+        virtual TextLabel *findText(const std::string &id) override;
+
         virtual void emit(YAML::Emitter &out) const override;
 
     private:

@@ -114,6 +114,25 @@ namespace brasio::renderer::vulkan
         }
     }
 
+    void DescriptorSets::updateTexture(size_t frameIndex, const Texture *texture, uint32_t binding)
+    {
+        VkDescriptorImageInfo textureInfo{};
+        textureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        textureInfo.imageView = texture->getImageView();
+        textureInfo.sampler = texture->getTextureSampler()->getHandle();
+
+        VkWriteDescriptorSet descriptorWrite{};
+        descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrite.dstSet = getHandle().at(frameIndex);
+        descriptorWrite.dstBinding = binding;
+        descriptorWrite.dstArrayElement = 0;
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descriptorWrite.descriptorCount = 1;
+        descriptorWrite.pImageInfo = &textureInfo;
+
+        vkUpdateDescriptorSets(_renderer.getLogicalDevice(), 1, &descriptorWrite, 0, nullptr);
+    }
+
     void DescriptorSets::update(const std::vector<BufferType> &uniformBuffers,
                                 const std::vector<TextureType> &textures,
                                 const std::vector<BufferType> &storageBuffers)

@@ -11,6 +11,25 @@ namespace brasio::renderer::vulkan::builders
     DepthStencilBuilder &DepthStencilBuilder::base()
     {
         _structureType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        _depthTestEnable = true;
+        _depthWriteEnable = true;
+        return *this;
+    }
+
+    DepthStencilBuilder &DepthStencilBuilder::withConfig(const YAML::Node &config)
+    {
+        if (!config)
+        {
+            return *this;
+        }
+        if (config["depth_test"])
+        {
+            _depthTestEnable = config["depth_test"].as<bool>();
+        }
+        if (config["depth_write"])
+        {
+            _depthWriteEnable = config["depth_write"].as<bool>();
+        }
         return *this;
     }
 
@@ -18,8 +37,8 @@ namespace brasio::renderer::vulkan::builders
     {
         VkPipelineDepthStencilStateCreateInfo createInfo{};
         createInfo.sType = _structureType;
-        createInfo.depthTestEnable = VK_TRUE;
-        createInfo.depthWriteEnable = VK_TRUE;
+        createInfo.depthTestEnable = _depthTestEnable ? VK_TRUE : VK_FALSE;
+        createInfo.depthWriteEnable = _depthWriteEnable ? VK_TRUE : VK_FALSE;
         createInfo.depthCompareOp = VK_COMPARE_OP_LESS;
         createInfo.depthBoundsTestEnable = VK_FALSE;
         createInfo.minDepthBounds = 0.0f;

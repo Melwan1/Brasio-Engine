@@ -16,10 +16,12 @@ target_link_libraries(libscenes PRIVATE
     ${OPENGL_opengl_LIBRARY}
     glfw
     GLEW::glew
+    Freetype::Freetype
 )
 
 target_link_libraries(libscenes PRIVATE
     librenderer
+    libfonts
 )
 
 target_sources(libscenes PRIVATE
@@ -33,6 +35,8 @@ target_sources(libscenes PRIVATE
     scene-manager.cc
     scene-node.cc
     scene-rectangle.cc
+    text-alignment.cc
+    text-label.cc
     transform.cc
 )
 

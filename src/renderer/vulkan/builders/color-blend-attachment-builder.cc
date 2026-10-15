@@ -89,8 +89,18 @@ namespace brasio::renderer::vulkan::builders
             colorMask |= sampleMaskMap.at(c);
         }
 
-        std::map<std::string, VkBlendFactor> blendFactorMap = { { "ZERO", VK_BLEND_FACTOR_ZERO },
-                                                                { "ONE", VK_BLEND_FACTOR_ONE } };
+        std::map<std::string, VkBlendFactor> blendFactorMap = {
+            { "ZERO", VK_BLEND_FACTOR_ZERO },
+            { "ONE", VK_BLEND_FACTOR_ONE },
+            { "SRC_ALPHA", VK_BLEND_FACTOR_SRC_ALPHA },
+            { "ONE_MINUS_SRC_ALPHA", VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA },
+            { "DST_ALPHA", VK_BLEND_FACTOR_DST_ALPHA },
+            { "ONE_MINUS_DST_ALPHA", VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA },
+            { "SRC_COLOR", VK_BLEND_FACTOR_SRC_COLOR },
+            { "ONE_MINUS_SRC_COLOR", VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR },
+            { "DST_COLOR", VK_BLEND_FACTOR_DST_COLOR },
+            { "ONE_MINUS_DST_COLOR", VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR }
+        };
 
         std::map<std::string, VkBlendOp> blendOpMap = { { "ADD", VK_BLEND_OP_ADD } };
 

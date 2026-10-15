@@ -17,6 +17,11 @@ namespace brasio::scenes
             SceneRectangle{ 0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height) });
     }
 
+    TextLabel *SceneNode::findText(const std::string &)
+    {
+        return nullptr;
+    }
+
     YAML::Emitter &operator<<(YAML::Emitter &out, const SceneNode &node)
     {
         node.emit(out);
